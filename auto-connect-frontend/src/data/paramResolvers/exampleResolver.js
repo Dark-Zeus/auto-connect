@@ -1,4 +1,4 @@
-import { exampleSlice } from "store/slices/exampleSlice";
+import exampleSlice from "@store/slices/exampleSlice";
 
 export const resolveExample = (state, dispatch, params) => {
     // const meters = state.meters.list;

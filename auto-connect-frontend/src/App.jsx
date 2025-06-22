@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import IconButton from "./components/atoms/IconButton";
+import IconButton from "@components/atoms/IconButton";
 
-import Dashboard from "./pages/Dashboard";
-import AuthPage from "./pages/AuthPage";
-import LoginForm from "./components/LoginForm";
-import { UserContext } from "./contexts/UserContext";
+import Dashboard from "@pages/Dashboard";
+import AuthPage from "@pages/AuthPage";
+import LoginForm from "@components/LoginForm";
+import { UserContext } from "@contexts/UserContext";
 
-import AdaptiveSubTable from "./components/atoms/AdaptiveSubTable";
-import Confirm from "./components/atoms/Confirm";
-import AdaptiveTable from "./components/atoms/AdaptiveTable";
-import AdaptivePaginatableTable from "./components/atoms/AdaptivePaginatableTable";
+import AdaptiveSubTable from "@components/atoms/AdaptiveSubTable";
+import Confirm from "@components/atoms/Confirm";
+import AdaptiveTable from "@components/atoms/AdaptiveTable";
+import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 
 //Pages
 function App() {
@@ -108,7 +108,9 @@ function App() {
             <Route path="" element={<AuthPage><LoginForm /></AuthPage>} />
           </Route>
 
-          <Route path="/*" element={<Dashboard/>} />
+          <Route path="/*" element={
+            <Dashboard/>
+          } />
           
           <Route path="/sub2" element={<Dashboard>
             <AdaptivePaginatableTable

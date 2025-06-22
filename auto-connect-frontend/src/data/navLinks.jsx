@@ -1,5 +1,5 @@
-import AdaptivePaginatableTable from "components/atoms/AdaptivePaginatableTable";
-import exampleResolver from "./paramResolvers/exampleResolver"
+import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
+import {resolveExample} from "./paramResolvers/exampleResolver"
 
 function getNavLinks(userContext) {
   let nav = [];

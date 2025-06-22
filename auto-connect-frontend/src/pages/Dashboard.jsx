@@ -2,14 +2,14 @@ import { useContext, useState } from "react";
 import { Route, Routes, useLocation } from "react-router";
 import { toast } from "react-toastify";
 
-import { UserContext } from "contexts/UserContext";
-import { getNavLinks } from "data/navLinks";
-import { matchRoute } from "utils/matchRoute";
+import { UserContext } from "@contexts/UserContext";
+import { getNavLinks } from "@data/navLinks";
+import { matchRoute } from "@utils/matchRoute";
 
-import NavBar from "components/NavBar";
-import BreadcrumbNavigator from "components/atoms/BreadcrumbNavigator";
-import Header from "components/atoms/Header";
-import SubNavBar from "components/SubNavBar";
+import NavBar from "@components/NavBar";
+import BreadcrumbNavigator from "@components/atoms/BreadcrumbNavigator";
+import Header from "@components/atoms/Header";
+import SubNavBar from "@components/SubNavBar";
 
 function Dashboard({ children }) {
     const location = useLocation();
@@ -113,7 +113,6 @@ function Dashboard({ children }) {
                                         ))
                                     ))}
                                 </Routes>
-                                <br />
                                 <br />
                                 <br />
                             </div>
