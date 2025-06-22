@@ -1,0 +1,23 @@
+#node modules
+node_modules
+.yarn
+#build files
+build
+#pnpm files
+.pnpm
+.pnpm-store
+#docker files
+.dockerignore
+Dockerfile
+#git files
+.git
+.gitignore
+#editor files
+.vscode
+#npm files
+package-lock.json
+
+.pnp.cjs
+.pnp.js
+.pnp.loader.mjs
+

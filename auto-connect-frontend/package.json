@@ -1,0 +1,61 @@
+{
+  "name": "auto-connect-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.2",
+    "@mui/material": "^7.1.2",
+    "@reduxjs/toolkit": "^2.8.2",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "axios": "^1.7.9",
+    "eslint": "8.1.0",
+    "html2canvas": "^1.4.1",
+    "jquery": "^3.7.1",
+    "jspdf": "^3.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "react-router": "^7.1.1",
+    "react-router-dom": "^7.1.1",
+    "react-scripts": "^5.0.1",
+    "react-toastify": "^11.0.3",
+    "recharts": "^2.15.3",
+    "web-vitals": "^4.2.4"
+  },
+  "scripts": {
+    "start:dev": "react-scripts start",
+    "dev": "PORT=3001 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "packageManager": "yarn@4.9.2",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "eslint-config-react-app": "^7.0.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.10"
+  }
+}

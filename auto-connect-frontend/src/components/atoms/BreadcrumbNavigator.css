@@ -1,0 +1,51 @@
+.breadcrumb-container {
+  padding: 5px 0;
+  width: 100%;
+  box-shadow: 0px 1px 0px rgb(from var(--color-800) r g b / 0.3);
+  z-index: 997;
+}
+
+.breadcrumb-container .breadcrumb {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  background-color: var(--accent-color-7);
+  user-select: none;
+}
+
+.breadcrumb-container .breadcrumb .path-part {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-height: 30px;
+  color: var(--color-800);
+  background-color: hsl(from var(--accent-color-7) h s calc(l - 10));
+}
+
+.breadcrumb-container .breadcrumb span.path-part {
+  font-weight: 500;
+  color: var(--color-700);
+}
+
+.breadcrumb-container .breadcrumb a.path-part:hover {
+  background-color: hsl(from var(--accent-color-7) h s calc(l - 6));
+}
+
+.breadcrumb-container .breadcrumb .path-part--text {
+  text-decoration: none;
+  text-wrap: nowrap;
+}
+
+.breadcrumb-container .breadcrumb .path-part .path-part--icon {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-size: 1rem;
+}
+
+.breadcrumb-container .breadcrumb .path-part--divider {
+  font-size: 1.4rem;
+}
