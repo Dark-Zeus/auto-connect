@@ -26,5 +26,4 @@ const send = async (receivers, subject, html, text) => {
         console.log(error);
     }
 }
-
 module.exports = {send};
