@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-import LOG from './log.config';
+import LOG from './log.config.js';
 
 async function connectToDatabase(maxTime = 60000) {
     if (!process.env.AUTO_CONNECT_DB_URL) {
