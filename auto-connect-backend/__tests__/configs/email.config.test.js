@@ -3,10 +3,10 @@ jest.mock("nodemailer");
 
 describe("SMTP Transport", () => {
     beforeAll(() => {
-        process.env.SMTP_HOST = "smtp.test.com";
-        process.env.SMTP_PORT = "465";
-        process.env.SMTP_EMAIL = "test@test.com";
-        process.env.SMTP_KEY = "secret-key";
+        process.env.AUTO_CONNECT_SMTP_HOST = "smtp.test.com";
+        process.env.AUTO_CONNECT_SMTP_PORT = "465";
+        process.env.AUTO_CONNECT_SMTP_EMAIL = "test@test.com";
+        process.env.AUTO_CONNECT_SMTP_KEY = "secret-key";
     });
 
     afterEach(() => {

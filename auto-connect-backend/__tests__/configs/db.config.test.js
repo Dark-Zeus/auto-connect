@@ -22,24 +22,24 @@ describe('connectToDatabase', () => {
         jest.clearAllMocks();
     });
 
-    it('should exit if DATABASE_URL is not set', async () => {
-        delete process.env.DATABASE_URL;
+    it('should exit if AUTO_CONNECT_DB_URL is not set', async () => {
+        delete process.env.AUTO_CONNECT_DB_URL;
 
         await connectToDatabase(5000);
 
-        expect(logErrorSpy).toHaveBeenCalledWith(expect.stringContaining('DATABASE_URL is not set'));
+        expect(logErrorSpy).toHaveBeenCalledWith(expect.stringContaining('AUTO_CONNECT_DB_URL is not set'));
         expect(exitSpy).toHaveBeenCalledWith(1);
     });
 
     it('should connect successfully on the first try', async () => {
-        process.env.DATABASE_URL = 'mongodb://localhost/testdb';
+        process.env.AUTO_CONNECT_DB_URL = 'mongodb://localhost/testdb';
 
         mongoose.connect.mockResolvedValueOnce(); // simulate success
 
         await connectToDatabase(5000);
 
         expect(mongoose.connect).toHaveBeenCalledWith(
-            process.env.DATABASE_URL,
+            process.env.AUTO_CONNECT_DB_URL,
             expect.objectContaining({
                 serverApi: expect.objectContaining({ version: '1' })
             })
@@ -49,7 +49,7 @@ describe('connectToDatabase', () => {
     });
 
     it('should retry and eventually succeed', async () => {
-        process.env.DATABASE_URL = 'mongodb://localhost/testdb';
+        process.env.AUTO_CONNECT_DB_URL = 'mongodb://localhost/testdb';
 
         // Fail twice then succeed
         mongoose.connect
