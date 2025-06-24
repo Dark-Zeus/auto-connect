@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
 
 async function validateUser(user, dbUser) {
   let res = await bcrypt.compare(user.password, dbUser.password);
@@ -8,7 +8,8 @@ async function validateUser(user, dbUser) {
 function generateRandomPassword(length) {
   // Generate a random password 8 characters long
   let password = "";
-  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@!$";
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@!$";
   let charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     password += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -16,7 +17,4 @@ function generateRandomPassword(length) {
   return password;
 }
 
-module.exports = {
-  validateUser,
-  generateRandomPassword,
-};
+export { validateUser, generateRandomPassword };
