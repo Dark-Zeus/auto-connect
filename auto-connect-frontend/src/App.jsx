@@ -13,6 +13,9 @@ import Confirm from "@components/atoms/Confirm";
 import AdaptiveTable from "@components/atoms/AdaptiveTable";
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 
+import VehicleRegistrationPage from "./pages/VehicleRegistrationPage";
+import VehicleDashboardPage from "./pages/VehicleDashboardPage";
+
 //Pages
 function App() {
   const [userContext, setUserContext] = useState(null);
@@ -99,258 +102,463 @@ function App() {
 
 
   return (
-
     <UserContext.Provider value={{ userContext, setUserContext }}>
-
       <BrowserRouter>
         <Routes>
           <Route path="/auth">
-            <Route path="" element={<AuthPage><LoginForm /></AuthPage>} />
+            <Route
+              path=""
+              element={
+                <AuthPage>
+                  <LoginForm />
+                </AuthPage>
+              }
+            />
           </Route>
 
-          <Route path="/*" element={
-            <Dashboard/>
-          } />
-          
-          <Route path="/sub2" element={<Dashboard>
-            <AdaptivePaginatableTable
-              title={"Tenants"}
-              subtitle={"List of all tenants"}
-              headers={[
-                {
-                  colKey: "id", icon: "person", label: "ID", visible: true,
-                  container: (value) => (
-                    <span
-                      style={{
-                        padding: "4px 12px",
-                        borderRadius: "8px",
-                        backgroundColor: value === "user0001" ? "#e0f7e9" : "#fdecea",
-                        color: value === "user0001" ? "#2e7d32" : "#c62828",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {value}
-                    </span>)
-                },
-                { colKey: "name", icon: "person", label: "Name", visible: true },
-                { colKey: "email", icon: "email", label: "Email", visible: true },
-                { colKey: "address", icon: "location_on", label: "Address", visible: true },
-                { colKey: "phone", icon: "phone", label: "Phone", visible: true },
-                { colKey: "status", icon: "check_circle", label: "Status" },
-                { colKey: "created_at", icon: "calendar_today", label: "Created At" },
-                { colKey: "updated_at", icon: "update", label: "Updated At" },
-              ]}
-              isSettingsBtn={true}
-              isExportBtn={true}
-              isAddBtn={true}
-              isCollapsible={false}
-              actions={{
-                enable: true,
-                actionHeaderLabel: "Actions",
-                actionHeaderIcon: "settings",
-                dataContainerClass: "horizontal-container flex-end",
-                getActions: (row) => [
-                  <IconButton icona="edit" c="blue" size={30} onClick={() => handleEdit(row)} />,
-                  <IconButton icona="delete" c="red" size={30} onClick={() => handleDelete(row.id)} />
-                ]
-              }}
+          <Route path="/*" element={<Dashboard />} />
 
-              fetchData={fetchData}
-              // data={[
-              //   { id: "user0001", name: "John Doe", email: "a@b.c", address: "123 Main St", phone: "123-456-7890", status: "Active", created_at: "2023-01-01", updated_at: "2023-01-02" },
-              //   { id: "user0002", name: "Jane Doe", email: "b@c.d", address: "456 Elm St", phone: "234-567-8901", status: "Inactive", created_at: "2023-01-03", updated_at: "2023-01-04" },
-              //   { id: "user0003", name: "Alice Smith", email: "c@d.e", address: "789 Oak St", phone: "345-678-9012", status: "Active", created_at: "2023-01-05", updated_at: "2023-01-06" },
-              //   { id: "user0004", name: "Bob Johnson", email: "d@e.f", address: "321 Pine St", phone: "456-789-0123", status: "Inactive", created_at: "2023-01-07", updated_at: "2023-01-08" },
-              //   { id: "user0005", name: "Charlie Brown", email: "e@f.g", address: "654 Maple St", phone: "567-890-1234", status: "Active", created_at: "2023-01-09", updated_at: "2023-01-10" },
-              //   { id: "user0006", name: "David Wilson", email: "f@g.h", address: "987 Cedar St", phone: "678-901-2345", status: "Inactive", created_at: "2023-01-11", updated_at: "2023-01-12" },
-              //   { id: "user0007", name: "Eve Davis", email: "g@h.i", address: "123 Birch St", phone: "789-012-3456", status: "Active", created_at: "2023-01-13", updated_at: "2023-01-14" },
-              //   { id: "user0008", name: "Frank Miller", email: "h@i.j", address: "456 Spruce St", phone: "890-123-4567", status: "Inactive", created_at: "2023-01-15", updated_at: "2023-01-16" },
-              //   { id: "user0009", name: "Grace Lee", email: "i@j.k", address: "789 Fir St", phone: "901-234-5678", status: "Active", created_at: "2023-01-17", updated_at: "2023-01-18" },
-              //   { id: "user0010", name: "Hank Taylor", email: "j@k.l", address: "321 Willow St", phone: "012-345-6789", status: "Inactive", created_at: "2023-01-19", updated_at: "2023-01-20" },
-              // ]}
-              serverPageSize={10}
-            />
+          <Route
+            path="/sub2"
+            element={
+              <Dashboard>
+                <AdaptivePaginatableTable
+                  title={"Tenants"}
+                  subtitle={"List of all tenants"}
+                  headers={[
+                    {
+                      colKey: "id",
+                      icon: "person",
+                      label: "ID",
+                      visible: true,
+                      container: (value) => (
+                        <span
+                          style={{
+                            padding: "4px 12px",
+                            borderRadius: "8px",
+                            backgroundColor:
+                              value === "user0001" ? "#e0f7e9" : "#fdecea",
+                            color: value === "user0001" ? "#2e7d32" : "#c62828",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {value}
+                        </span>
+                      ),
+                    },
+                    {
+                      colKey: "name",
+                      icon: "person",
+                      label: "Name",
+                      visible: true,
+                    },
+                    {
+                      colKey: "email",
+                      icon: "email",
+                      label: "Email",
+                      visible: true,
+                    },
+                    {
+                      colKey: "address",
+                      icon: "location_on",
+                      label: "Address",
+                      visible: true,
+                    },
+                    {
+                      colKey: "phone",
+                      icon: "phone",
+                      label: "Phone",
+                      visible: true,
+                    },
+                    { colKey: "status", icon: "check_circle", label: "Status" },
+                    {
+                      colKey: "created_at",
+                      icon: "calendar_today",
+                      label: "Created At",
+                    },
+                    {
+                      colKey: "updated_at",
+                      icon: "update",
+                      label: "Updated At",
+                    },
+                  ]}
+                  isSettingsBtn={true}
+                  isExportBtn={true}
+                  isAddBtn={true}
+                  isCollapsible={false}
+                  actions={{
+                    enable: true,
+                    actionHeaderLabel: "Actions",
+                    actionHeaderIcon: "settings",
+                    dataContainerClass: "horizontal-container flex-end",
+                    getActions: (row) => [
+                      <IconButton
+                        icona="edit"
+                        c="blue"
+                        size={30}
+                        onClick={() => handleEdit(row)}
+                      />,
+                      <IconButton
+                        icona="delete"
+                        c="red"
+                        size={30}
+                        onClick={() => handleDelete(row.id)}
+                      />,
+                    ],
+                  }}
+                  fetchData={fetchData}
+                  // data={[
+                  //   { id: "user0001", name: "John Doe", email: "a@b.c", address: "123 Main St", phone: "123-456-7890", status: "Active", created_at: "2023-01-01", updated_at: "2023-01-02" },
+                  //   { id: "user0002", name: "Jane Doe", email: "b@c.d", address: "456 Elm St", phone: "234-567-8901", status: "Inactive", created_at: "2023-01-03", updated_at: "2023-01-04" },
+                  //   { id: "user0003", name: "Alice Smith", email: "c@d.e", address: "789 Oak St", phone: "345-678-9012", status: "Active", created_at: "2023-01-05", updated_at: "2023-01-06" },
+                  //   { id: "user0004", name: "Bob Johnson", email: "d@e.f", address: "321 Pine St", phone: "456-789-0123", status: "Inactive", created_at: "2023-01-07", updated_at: "2023-01-08" },
+                  //   { id: "user0005", name: "Charlie Brown", email: "e@f.g", address: "654 Maple St", phone: "567-890-1234", status: "Active", created_at: "2023-01-09", updated_at: "2023-01-10" },
+                  //   { id: "user0006", name: "David Wilson", email: "f@g.h", address: "987 Cedar St", phone: "678-901-2345", status: "Inactive", created_at: "2023-01-11", updated_at: "2023-01-12" },
+                  //   { id: "user0007", name: "Eve Davis", email: "g@h.i", address: "123 Birch St", phone: "789-012-3456", status: "Active", created_at: "2023-01-13", updated_at: "2023-01-14" },
+                  //   { id: "user0008", name: "Frank Miller", email: "h@i.j", address: "456 Spruce St", phone: "890-123-4567", status: "Inactive", created_at: "2023-01-15", updated_at: "2023-01-16" },
+                  //   { id: "user0009", name: "Grace Lee", email: "i@j.k", address: "789 Fir St", phone: "901-234-5678", status: "Active", created_at: "2023-01-17", updated_at: "2023-01-18" },
+                  //   { id: "user0010", name: "Hank Taylor", email: "j@k.l", address: "321 Willow St", phone: "012-345-6789", status: "Inactive", created_at: "2023-01-19", updated_at: "2023-01-20" },
+                  // ]}
+                  serverPageSize={10}
+                />
 
-            <AdaptiveTable
-              title={"Tenants"}
-              subtitle={"List of all tenants"}
-              headers={[
-                {
-                  colKey: "id", icon: "person", label: "ID", visible: true,
-                  container: (value) => (
-                    <span
-                      style={{
-                        padding: "4px 12px",
-                        borderRadius: "8px",
-                        backgroundColor: value === "user0001" ? "#e0f7e9" : "#fdecea",
-                        color: value === "user0001" ? "#2e7d32" : "#c62828",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {value}
-                    </span>)
-                },
-                { colKey: "name", icon: "person", label: "Name", visible: true },
-                { colKey: "email", icon: "email", label: "Email", visible: true },
-                { colKey: "address", icon: "location_on", label: "Address", visible: true },
-                { colKey: "phone", icon: "phone", label: "Phone", visible: true },
-                { colKey: "status", icon: "check_circle", label: "Status" },
-                { colKey: "created_at", icon: "calendar_today", label: "Created At" },
-                { colKey: "updated_at", icon: "update", label: "Updated At" },
-              ]}
-              isSettingsBtn={true}
-              isExportBtn={true}
-              isAddBtn={true}
-              isCollapsible={false}
-              actions={{
-                enable: true,
-                actionHeaderLabel: "Actions",
-                actionHeaderIcon: "settings",
-                dataContainerClass: "horizontal-container flex-end",
-                getActions: (row) => [
-                  <IconButton icona="edit" c="blue" size={30} onClick={() => handleEdit(row)} />,
-                  <IconButton icona="delete" c="red" size={30} onClick={() => handleDelete(row.id)} />
-                ]
-              }}
+                <AdaptiveTable
+                  title={"Tenants"}
+                  subtitle={"List of all tenants"}
+                  headers={[
+                    {
+                      colKey: "id",
+                      icon: "person",
+                      label: "ID",
+                      visible: true,
+                      container: (value) => (
+                        <span
+                          style={{
+                            padding: "4px 12px",
+                            borderRadius: "8px",
+                            backgroundColor:
+                              value === "user0001" ? "#e0f7e9" : "#fdecea",
+                            color: value === "user0001" ? "#2e7d32" : "#c62828",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {value}
+                        </span>
+                      ),
+                    },
+                    {
+                      colKey: "name",
+                      icon: "person",
+                      label: "Name",
+                      visible: true,
+                    },
+                    {
+                      colKey: "email",
+                      icon: "email",
+                      label: "Email",
+                      visible: true,
+                    },
+                    {
+                      colKey: "address",
+                      icon: "location_on",
+                      label: "Address",
+                      visible: true,
+                    },
+                    {
+                      colKey: "phone",
+                      icon: "phone",
+                      label: "Phone",
+                      visible: true,
+                    },
+                    { colKey: "status", icon: "check_circle", label: "Status" },
+                    {
+                      colKey: "created_at",
+                      icon: "calendar_today",
+                      label: "Created At",
+                    },
+                    {
+                      colKey: "updated_at",
+                      icon: "update",
+                      label: "Updated At",
+                    },
+                  ]}
+                  isSettingsBtn={true}
+                  isExportBtn={true}
+                  isAddBtn={true}
+                  isCollapsible={false}
+                  actions={{
+                    enable: true,
+                    actionHeaderLabel: "Actions",
+                    actionHeaderIcon: "settings",
+                    dataContainerClass: "horizontal-container flex-end",
+                    getActions: (row) => [
+                      <IconButton
+                        icona="edit"
+                        c="blue"
+                        size={30}
+                        onClick={() => handleEdit(row)}
+                      />,
+                      <IconButton
+                        icona="delete"
+                        c="red"
+                        size={30}
+                        onClick={() => handleDelete(row.id)}
+                      />,
+                    ],
+                  }}
+                  data={[
+                    {
+                      id: "user0001",
+                      name: "John Doe",
+                      email: "a@b.c",
+                      address: "123 Main St",
+                      phone: "123-456-7890",
+                      status: "Active",
+                      created_at: "2023-01-01",
+                      updated_at: "2023-01-02",
+                    },
+                    {
+                      id: "user0002",
+                      name: "Jane Doe",
+                      email: "b@c.d",
+                      address: "456 Elm St",
+                      phone: "234-567-8901",
+                      status: "Inactive",
+                      created_at: "2023-01-03",
+                      updated_at: "2023-01-04",
+                    },
+                    {
+                      id: "user0003",
+                      name: "Alice Smith",
+                      email: "c@d.e",
+                      address: "789 Oak St",
+                      phone: "345-678-9012",
+                      status: "Active",
+                      created_at: "2023-01-05",
+                      updated_at: "2023-01-06",
+                    },
+                    {
+                      id: "user0004",
+                      name: "Bob Johnson",
+                      email: "d@e.f",
+                      address: "321 Pine St",
+                      phone: "456-789-0123",
+                      status: "Inactive",
+                      created_at: "2023-01-07",
+                      updated_at: "2023-01-08",
+                    },
+                    {
+                      id: "user0005",
+                      name: "Charlie Brown",
+                      email: "e@f.g",
+                      address: "654 Maple St",
+                      phone: "567-890-1234",
+                      status: "Active",
+                      created_at: "2023-01-09",
+                      updated_at: "2023-01-10",
+                    },
+                    {
+                      id: "user0006",
+                      name: "David Wilson",
+                      email: "f@g.h",
+                      address: "987 Cedar St",
+                      phone: "678-901-2345",
+                      status: "Inactive",
+                      created_at: "2023-01-11",
+                      updated_at: "2023-01-12",
+                    },
+                    {
+                      id: "user0007",
+                      name: "Eve Davis",
+                      email: "g@h.i",
+                      address: "123 Birch St",
+                      phone: "789-012-3456",
+                      status: "Active",
+                      created_at: "2023-01-13",
+                      updated_at: "2023-01-14",
+                    },
+                    {
+                      id: "user0008",
+                      name: "Frank Miller",
+                      email: "h@i.j",
+                      address: "456 Spruce St",
+                      phone: "890-123-4567",
+                      status: "Inactive",
+                      created_at: "2023-01-15",
+                      updated_at: "2023-01-16",
+                    },
+                    {
+                      id: "user0009",
+                      name: "Grace Lee",
+                      email: "i@j.k",
+                      address: "789 Fir St",
+                      phone: "901-234-5678",
+                      status: "Active",
+                      created_at: "2023-01-17",
+                      updated_at: "2023-01-18",
+                    },
+                    {
+                      id: "user0010",
+                      name: "Hank Taylor",
+                      email: "j@k.l",
+                      address: "321 Willow St",
+                      phone: "012-345-6789",
+                      status: "Inactive",
+                      created_at: "2023-01-19",
+                      updated_at: "2023-01-20",
+                    },
+                  ]}
+                  serverPageSize={10}
+                />
 
-              data={[
-                { id: "user0001", name: "John Doe", email: "a@b.c", address: "123 Main St", phone: "123-456-7890", status: "Active", created_at: "2023-01-01", updated_at: "2023-01-02" },
-                { id: "user0002", name: "Jane Doe", email: "b@c.d", address: "456 Elm St", phone: "234-567-8901", status: "Inactive", created_at: "2023-01-03", updated_at: "2023-01-04" },
-                { id: "user0003", name: "Alice Smith", email: "c@d.e", address: "789 Oak St", phone: "345-678-9012", status: "Active", created_at: "2023-01-05", updated_at: "2023-01-06" },
-                { id: "user0004", name: "Bob Johnson", email: "d@e.f", address: "321 Pine St", phone: "456-789-0123", status: "Inactive", created_at: "2023-01-07", updated_at: "2023-01-08" },
-                { id: "user0005", name: "Charlie Brown", email: "e@f.g", address: "654 Maple St", phone: "567-890-1234", status: "Active", created_at: "2023-01-09", updated_at: "2023-01-10" },
-                { id: "user0006", name: "David Wilson", email: "f@g.h", address: "987 Cedar St", phone: "678-901-2345", status: "Inactive", created_at: "2023-01-11", updated_at: "2023-01-12" },
-                { id: "user0007", name: "Eve Davis", email: "g@h.i", address: "123 Birch St", phone: "789-012-3456", status: "Active", created_at: "2023-01-13", updated_at: "2023-01-14" },
-                { id: "user0008", name: "Frank Miller", email: "h@i.j", address: "456 Spruce St", phone: "890-123-4567", status: "Inactive", created_at: "2023-01-15", updated_at: "2023-01-16" },
-                { id: "user0009", name: "Grace Lee", email: "i@j.k", address: "789 Fir St", phone: "901-234-5678", status: "Active", created_at: "2023-01-17", updated_at: "2023-01-18" },
-                { id: "user0010", name: "Hank Taylor", email: "j@k.l", address: "321 Willow St", phone: "012-345-6789", status: "Inactive", created_at: "2023-01-19", updated_at: "2023-01-20" },
-              ]}
-              serverPageSize={10}
-            />
+                <AdaptiveSubTable
+                  title={"Tenants"}
+                  subtitle={"List of all tenants"}
+                  headers={[
+                    { colKey: "id", icon: "person", label: "ID" },
+                    { colKey: "name", icon: "person", label: "Name" },
+                    { colKey: "email", icon: "email", label: "Email" },
+                  ]}
+                  isSettingsBtn={true}
+                  isExportBtn={true}
+                  isAddBtn={true}
+                  isCollapsible={true}
+                  actions={{
+                    enable: true,
+                    actionHeaderLabel: "Actions",
+                    actionHeaderIcon: "settings",
+                    dataContainerClass: "horizontal-container flex-end",
+                    actions: [
+                      <IconButton icona="add" c="green" size={30} />,
+                      <IconButton icona="edit" c="blue" size={30} />,
+                      <IconButton icona="delete" c="red" size={30} />,
+                    ],
+                    subActions: [
+                      <IconButton icona="edit" c="blue" size={30} />,
+                      <IconButton icona="delete" c="red" size={30} />,
+                    ],
+                  }}
+                  data={[
+                    {
+                      id: "user0001",
+                      name: "John Doe",
+                      email: "ssai",
+                      subdata: [
+                        { id: "", name: "John Doe", email: "ssai" },
+                        { id: "", name: "John Doe1", email: "ssai" },
+                        { id: "", name: "John Doe2", email: "ssai" },
+                      ],
+                    },
+                    {
+                      id: "user0002",
+                      name: "Jane Doe",
+                      email: "asfaw",
+                      subdata: [
+                        { id: "", name: "John Doe", email: "ssai" },
+                        { id: "", name: "John Doe1", email: "ssai" },
+                        { id: "", name: "John Doe2", email: "ssai" },
+                      ],
+                    },
+                    { id: "user0001", name: "John Doe", email: "ssai" },
+                    {
+                      id: "user0002",
+                      name: "Jane Doe",
+                      email: "asfaw",
+                      subdata: [
+                        { id: "", name: "John Doe", email: "ssai" },
+                        { id: "", name: "John Doe1", email: "ssai" },
+                      ],
+                    },
+                    { id: "user0001", name: "John Doe", email: "ssai" },
+                    { id: "user0002", name: "Jane Doe", email: "asfaw" },
+                  ]}
+                />
+              </Dashboard>
+            }
+          />
 
-            <AdaptiveSubTable
-              title={"Tenants"}
-              subtitle={"List of all tenants"}
-              headers={[
-                { colKey: "id", icon: "person", label: "ID" },
-                { colKey: "name", icon: "person", label: "Name" },
-                { colKey: "email", icon: "email", label: "Email" },
-
-              ]}
-              isSettingsBtn={true}
-              isExportBtn={true}
-              isAddBtn={true}
-              isCollapsible={true}
-              actions={{
-                enable: true,
-                actionHeaderLabel: "Actions",
-                actionHeaderIcon: "settings",
-                dataContainerClass: "horizontal-container flex-end",
-                actions: [
-                  <IconButton icona="add" c="green" size={30} />,
-                  <IconButton icona="edit" c="blue" size={30} />,
-                  <IconButton icona="delete" c="red" size={30} />,
-                ],
-                subActions: [
-                  <IconButton icona="edit" c="blue" size={30} />,
-                  <IconButton icona="delete" c="red" size={30} />,
-                ]
-              }}
-
-              data={[
-                {
-                  id: "user0001", name: "John Doe", email: "ssai",
-                  subdata: [
-                    { id: "", name: "John Doe", email: "ssai" },
-                    { id: "", name: "John Doe1", email: "ssai" },
-                    { id: "", name: "John Doe2", email: "ssai" },
-                  ]
-                },
-                {
-                  id: "user0002", name: "Jane Doe", email: "asfaw",
-                  subdata: [
-                    { id: "", name: "John Doe", email: "ssai" },
-                    { id: "", name: "John Doe1", email: "ssai" },
-                    { id: "", name: "John Doe2", email: "ssai" },
-                  ]
-                },
-                { id: "user0001", name: "John Doe", email: "ssai" },
-                {
-                  id: "user0002", name: "Jane Doe", email: "asfaw",
-                  subdata: [
-                    { id: "", name: "John Doe", email: "ssai" },
-                    { id: "", name: "John Doe1", email: "ssai" },
-                  ]
-                },
-                { id: "user0001", name: "John Doe", email: "ssai" },
-                { id: "user0002", name: "Jane Doe", email: "asfaw" },
-              ]}
-            />
-          </Dashboard>} />
-
-          <Route path="/tab" element={<Dashboard>
-            <AdaptiveSubTable
-              title={"Tenants"}
-              subtitle={"List of all tenants"}
-              headers={[
-                { colKey: "id", icon: "person", label: "ID" },
-                { colKey: "name", icon: "person", label: "Name" },
-                { colKey: "email", icon: "email", label: "Email" },
-                { colKey: "id", icon: "person", label: "ID" },
-                { colKey: "name", icon: "person", label: "Name" },
-                { colKey: "email", icon: "email", label: "Email" },
-                { colKey: "id", icon: "person", label: "ID" },
-                { colKey: "name", icon: "person", label: "Name" },
-                { colKey: "email", icon: "email", label: "Email" },
-                { colKey: "id", icon: "person", label: "ID" },
-                { colKey: "name", icon: "person", label: "Name" },
-              ]}
-              actions={{
-                enable: true,
-                actionHeaderLabel: "Actions",
-                actionHeaderIcon: "settings",
-                dataContainerClass: "horizontal-container flex-end",
-                actions: [
-                  <IconButton icona="add" c="green" size={30} />,
-                  <IconButton icona="edit" c="blue" size={30} />,
-                  <IconButton icona="delete" c="red" size={30} />,
-                ],
-                subActions: [
-                  <IconButton icona="edit" c="blue" size={30} />,
-                  <IconButton icona="delete" c="red" size={30} />,
-                ]
-              }}
-
-              data={[
-                {
-                  id: "user0001", name: "John Doe", email: "ssai",
-                  subdata: [
-                    { id: "", name: "John Doe", email: "ssai" },
-                    { id: "", name: "John Doe1", email: "ssai" },
-                    { id: "", name: "John Doe2", email: "ssai" },
-                  ]
-                },
-                {
-                  id: "user0002", name: "Jane Doe", email: "asfaw",
-                  subdata: [
-                    { id: "", name: "John Doe", email: "ssai" },
-                    { id: "", name: "John Doe1", email: "ssai" },
-                    { id: "", name: "John Doe2", email: "ssai" },
-                  ]
-                },
-                { id: "user0001", name: "John Doe", email: "ssai" },
-                {
-                  id: "user0002", name: "Jane Doe", email: "asfaw",
-                  subdata: [
-                    { id: "", name: "John Doe", email: "ssai" },
-                    { id: "", name: "John Doe1", email: "ssai" },
-                  ]
-                },
-                { id: "user0001", name: "John Doe", email: "ssai" },
-                { id: "user0002", name: "Jane Doe", email: "asfaw" },
-              ]}
-            />
-          </Dashboard>} />
+          <Route
+            path="/tab"
+            element={
+              <Dashboard>
+                <AdaptiveSubTable
+                  title={"Tenants"}
+                  subtitle={"List of all tenants"}
+                  headers={[
+                    { colKey: "id", icon: "person", label: "ID" },
+                    { colKey: "name", icon: "person", label: "Name" },
+                    { colKey: "email", icon: "email", label: "Email" },
+                    { colKey: "id", icon: "person", label: "ID" },
+                    { colKey: "name", icon: "person", label: "Name" },
+                    { colKey: "email", icon: "email", label: "Email" },
+                    { colKey: "id", icon: "person", label: "ID" },
+                    { colKey: "name", icon: "person", label: "Name" },
+                    { colKey: "email", icon: "email", label: "Email" },
+                    { colKey: "id", icon: "person", label: "ID" },
+                    { colKey: "name", icon: "person", label: "Name" },
+                  ]}
+                  actions={{
+                    enable: true,
+                    actionHeaderLabel: "Actions",
+                    actionHeaderIcon: "settings",
+                    dataContainerClass: "horizontal-container flex-end",
+                    actions: [
+                      <IconButton icona="add" c="green" size={30} />,
+                      <IconButton icona="edit" c="blue" size={30} />,
+                      <IconButton icona="delete" c="red" size={30} />,
+                    ],
+                    subActions: [
+                      <IconButton icona="edit" c="blue" size={30} />,
+                      <IconButton icona="delete" c="red" size={30} />,
+                    ],
+                  }}
+                  data={[
+                    {
+                      id: "user0001",
+                      name: "John Doe",
+                      email: "ssai",
+                      subdata: [
+                        { id: "", name: "John Doe", email: "ssai" },
+                        { id: "", name: "John Doe1", email: "ssai" },
+                        { id: "", name: "John Doe2", email: "ssai" },
+                      ],
+                    },
+                    {
+                      id: "user0002",
+                      name: "Jane Doe",
+                      email: "asfaw",
+                      subdata: [
+                        { id: "", name: "John Doe", email: "ssai" },
+                        { id: "", name: "John Doe1", email: "ssai" },
+                        { id: "", name: "John Doe2", email: "ssai" },
+                      ],
+                    },
+                    { id: "user0001", name: "John Doe", email: "ssai" },
+                    {
+                      id: "user0002",
+                      name: "Jane Doe",
+                      email: "asfaw",
+                      subdata: [
+                        { id: "", name: "John Doe", email: "ssai" },
+                        { id: "", name: "John Doe1", email: "ssai" },
+                      ],
+                    },
+                    { id: "user0001", name: "John Doe", email: "ssai" },
+                    { id: "user0002", name: "Jane Doe", email: "asfaw" },
+                  ]}
+                />
+                <Route
+                  path="/register-vehicle"
+                  element={<VehicleRegistrationPage />}
+                />
+                <Route path="/vehicles" element={<VehicleDashboardPage />} />
+                <Route
+                  path="/vehicles/:vehicleId"
+                  element={<VehicleDetailsPage />}
+                />
+              </Dashboard>
+            }
+          />
 
           {/* <Route path="/*" element={
             <ProtectedRoute isCheckingAuth={isCheckingAuth}>
