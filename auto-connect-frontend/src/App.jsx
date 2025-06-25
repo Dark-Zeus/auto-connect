@@ -12,6 +12,10 @@ import AdaptiveSubTable from "@components/atoms/AdaptiveSubTable";
 import Confirm from "@components/atoms/Confirm";
 import AdaptiveTable from "@components/atoms/AdaptiveTable";
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
+import SignInPage from "@pages/SignInPage";
+import RegisterForm from "@components/RegisterForm";
+
+
 
 //Pages
 function App() {
@@ -107,6 +111,12 @@ function App() {
           <Route path="/auth">
             <Route path="" element={<AuthPage><LoginForm /></AuthPage>} />
           </Route>
+
+          <Route path="/register" element={
+            <SignInPage>
+              <RegisterForm />
+            </SignInPage>
+          } />
 
           <Route path="/*" element={
             <Dashboard/>

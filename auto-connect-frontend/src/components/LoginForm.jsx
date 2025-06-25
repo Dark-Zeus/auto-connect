@@ -67,7 +67,15 @@ function LoginForm() {
                         } 
                 />
 
-                <IconButton iconb="login" content={"Login"} bg="color" c="white" extraClass={"btn-margin login-btn"} type="submit"/>                
+                <IconButton iconb="login" content={"Login"} bg="color" c="white" extraClass={"btn-margin login-btn"} type="submit"/> 
+                <IconButton
+                    iconb="person_add"
+                    content={"Sign Up"}
+                    bg="transparent"
+                    c="#3f51b5"
+                    extraClass={"btn-margin"}
+                    onClick={() => navigate("/auth/register")}
+                    />               
             </form>
             <div className="form-bottom-bar">
                 <div>T&C</div>

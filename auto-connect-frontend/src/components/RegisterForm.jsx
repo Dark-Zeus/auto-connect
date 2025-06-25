@@ -10,9 +10,12 @@ import IconButton from "./atoms/IconButton";
 
 import { UserContext } from "../contexts/UserContext";
 
-import "../css/login-form.css"
+import "./RegisterForm.css";
 
-import { ReactComponent as GoogleIcon } from '../images/google-icon.svg';
+
+//import "../css/login-form.css"
+
+//import { ReactComponent as GoogleIcon } from '../images/google-icon.svg';
 
 
 

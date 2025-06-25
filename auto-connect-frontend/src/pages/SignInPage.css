@@ -1,0 +1,29 @@
+/* SignInPage.css */
+
+.logo-background {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* dark overlay if bgImage is too bright */
+  backdrop-filter: blur(4px);
+  border-radius: 0.5rem;
+}
+
+.logo-container {
+  width: 100px;
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 1rem;
+}
+
+.logo-background h2 {
+  font-size: 1.8rem;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+}
