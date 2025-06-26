@@ -1,0 +1,216 @@
+/* LandingPage.css */
+.landing-page {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 50%, #7AB2D3 100%);
+  }
+  
+  .hero-wrapper {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .section {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 0;
+  }
+  
+  .section.cta-section {
+    background: linear-gradient(135deg, #4A628A 0%, #7AB2D3 100%);
+    color: white;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .cta-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: white;
+    line-height: 1.2;
+  }
+  
+  .cta-description {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.95;
+    line-height: 1.6;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    min-width: 180px;
+    justify-content: center;
+  }
+  
+  .cta-button.primary {
+    background-color: white;
+    color: #4A628A;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cta-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cta-button.secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .cta-button.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .button-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .cta-button:hover .button-icon {
+    transform: translateX(4px);
+  }
+  
+  /* Background Elements */
+  .background-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+    animation: float 20s ease-in-out infinite;
+  }
+  
+  .bg-circle-1 {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: -5%;
+    animation-delay: 0s;
+  }
+  
+  .bg-circle-2 {
+    width: 200px;
+    height: 200px;
+    top: 60%;
+    right: -5%;
+    animation-delay: -7s;
+  }
+  
+  .bg-circle-3 {
+    width: 150px;
+    height: 150px;
+    bottom: 20%;
+    left: 50%;
+    animation-delay: -14s;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+      opacity: 0.6;
+    }
+    25% {
+      transform: translateY(-20px) translateX(10px) rotate(90deg);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(-10px) translateX(-10px) rotate(180deg);
+      opacity: 0.4;
+    }
+    75% {
+      transform: translateY(-30px) translateX(5px) rotate(270deg);
+      opacity: 0.9;
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .cta-title {
+      font-size: 2rem;
+    }
+    
+    .cta-description {
+      font-size: 1.125rem;
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .cta-button {
+      width: 100%;
+      max-width: 280px;
+    }
+    
+    .bg-circle-1 {
+      width: 200px;
+      height: 200px;
+    }
+    
+    .bg-circle-2 {
+      width: 120px;
+      height: 120px;
+    }
+    
+    .bg-circle-3 {
+      width: 80px;
+      height: 80px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .section {
+      padding: 2rem 0;
+    }
+    
+    .cta-title {
+      font-size: 1.75rem;
+    }
+    
+    .cta-description {
+      font-size: 1rem;
+    }
+  }
