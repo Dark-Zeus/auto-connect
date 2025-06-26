@@ -80,7 +80,7 @@ function NavBar({ navLinks, version, icon, userId }) {
           <div className="nav__logo">{icon}</div>
         </div>
         <div className="nav__name">
-          <div className="nav__name-details">BMS Reporter</div>
+          <div className="nav__name-details">Auto Connect</div>
           <div className="nav__name-version">{version}</div>
         </div>
       </div>
