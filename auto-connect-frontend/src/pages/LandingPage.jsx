@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/NavBar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import Testimonials from "../components/Testimonials";
 import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
+
 import "./LandingPage.css";
 
 const LandingPage = () => {
