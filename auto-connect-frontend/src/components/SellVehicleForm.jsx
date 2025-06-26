@@ -1,5 +1,61 @@
 import React, { useState } from 'react';
+import { 
+  TextField, Select, MenuItem, FormControl, InputLabel, 
+  FormControlLabel, Radio, RadioGroup, Checkbox, Button, 
+  Box, Grid, Typography, Paper, InputAdornment,
+  FormHelperText, Divider
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { Camera, X } from 'lucide-react';
+
+// Custom styled components to match the original design
+const SectionHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  marginBottom: '1.5rem',
+}));
+
+const IconBox = styled(Box)(({ theme, bgcolor = theme.palette.grey[700] }) => ({
+  backgroundColor: bgcolor,
+  padding: '0.5rem',
+  borderRadius: '0.5rem',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: 'white',
+}));
+
+const HeaderWrapper = styled(Box)(({ theme }) => ({
+  background: `linear-gradient(to right, ${theme.palette.grey[700]}, ${theme.palette.grey[800]})`,
+  color: 'white',
+  padding: '2rem',
+  borderTopLeftRadius: '0.75rem',
+  borderTopRightRadius: '0.75rem',
+  boxShadow: theme.shadows[4],
+}));
+
+const FormSectionWrapper = styled(Box)(({ theme }) => ({
+  padding: '2rem',
+  borderBottom: `1px solid ${theme.palette.grey[200]}`,
+}));
+
+
+const PhotoUploadLabel = styled('label')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  height: '8rem',
+  border: `2px dashed ${theme.palette.grey[300]}`,
+  borderRadius: '0.5rem',
+  cursor: 'pointer',
+  transition: 'border-color 0.2s',
+  '&:hover': {
+    borderColor: theme.palette.grey[400],
+  },
+}));
 
 const SellVehicleForm = () => {
   const [formData, setFormData] = useState({
@@ -32,25 +88,25 @@ const SellVehicleForm = () => {
   ];
 
   const vehicleTypes = [
-    'car', 'van', 'suv', 'crew cab', 'pickup/double cab', 'bus', 'lorry/tipper', 
-    'tractor', 'threewheel', 'heavyduty', 'other', 'motorcycle'
+    'Car', 'Van', 'Suv', 'Crew Cab', 'Pickup/Double Cab', 'Bus', 'Lorry/Tipper', 
+    'Tractor', 'Threewheel', 'Heavyduty', 'Other', 'Motorcycle'
   ];
 
   const vehicleMakes = [
-    'Acura', 'Alfa-Romeo', 'Aprilia', 'Ashok', 'Aston', 'Atco', 'Audi', 'Austin', 'Baic', 
-    'Bajaj', 'BP-U', 'Borgward', 'Cadillac', 'Cal', 'Ceygra', 'Changan', 'Chevrolet', 
-    'Chrysler', 'Citroen', 'Corvette', 'Daewoo', 'Daihatsu', 'Datsun', 'Deepal', 'Demak', 
-    'Dfac', 'Ducati', 'Dyno', 'Eicher', 'Ferrari', 'Fiat', 'Force', 'Ford', 'Foton', 
-    'Hero', 'Hero-Honda', 'Hillman', 'Hitachi', 'Holden', 'Honda', 'Hummer', 'Hyundai', 
-    'Iveco', 'JiaLing', 'John-Deere', 'Jonway', 'Kawasaki', 'Kia', 'Kinetic', 'Kobelco', 
-    'Komatsu', 'Kubota', 'Lamborghini', 'Land-Rover', 'Lexus', 'Loncin', 'Longjia', 'Lotus', 
-    'Lti', 'Mahindra', 'Maserati', 'Massey-Ferguson', 'Mercedes-Benz', 'Metrocab', 'MG', 
-    'Mg-Rover', 'Micro', 'Mini', 'Minnelli', 'Mitsubishi', 'Morgan', 'Morris', 'New-Holland', 
-    'Opel', 'Perodua', 'Peugeot', 'Piaggio', 'Powertrac', 'Proton', 'Range-Rover', 'Renault', 
-    'Rolls-Royce', 'Saab', 'Sakai', 'Seat', 'Senaro', 'Singer', 'Skoda', 'Smart', 'Sonalika', 
-    'Subaru', 'Suzuki', 'Swaraj', 'Syuk', 'Tata', 'Tesla', 'Toyota', 'Triumph', 'Vauxhall', 
-    'Vespa', 'Volkswagen', 'Volvo', 'Wave', 'Willys', 'Yadea', 'Yamaha', 'Yanmar', 'Yuejin', 
-    'Zongshen', 'Zotye'
+    'Acura', 'Alfa-Romeo', 'Aprilia', 'Ashok Leyland', 'Aston Martin', 'Atco', 'Audi', 'Austin', 'Baic', 
+    'Bajaj', 'BYD', 'Borgward', 'Cadillac', 'Cal', 'Ceygra', 'Changan', 'Chevrolet', 
+    'Chrysler', 'Citroen', 'Corvette', 'Daewoo','DAF', 'Daido', 'Daihatsu', 'Datsun', 'Deepal', 'Demak', 'Dfac', 
+    'DFSK', 'Ducati', 'Dyno', 'Eicher', 'Ferrari', 'Fiat', 'Force', 'Ford', 'Foton', 'GAC', 'Gallant',
+    'Hero', 'Hero-Honda', 'Hillman', 'HINO', 'Hitachi', 'Holden', 'Honda', 'Hummer', 'Hyundai', 
+    'IHI', 'Isuzu', 'Iveco', 'JCB','Jeep','JiaLing', 'JMC', 'John-Deere', 'Jonway', 'JMEV', 'Kapla', 'Kawasaki', 'Kia', 'Kinetic','King Long', 'Kobelco', 
+    'Komatsu', 'KTM', 'Kubota', 'Lamborghini', 'Land-Rover', 'Lexus', 'Lincoln', 'Longjia', 'Lotus', 
+    'Lti', 'Mahindra', 'MAN', 'Maserati', 'Massey-Ferguson', 'Mazda', 'Mercedes-Benz', 'Metrocab', 'MG', 
+    'Mg-Rover', 'Micro', 'Mini', 'Minnelli', 'Mitsubishi', 'Morgan', 'Morris', 'New-Holland', 'Nissan', 'NWOW',
+    'Opel', 'Perodua', 'Peugeot', 'Piaggio', 'Porsche', 'Powertrac', 'Proton', 'Range-Rover', 'Ranomoto', 'Reva', 'REVOLT', 'Renault', 
+    'Rolls-Royce', 'Saab', 'Sakai','Scania', 'Seat', 'Senaro', 'Singer', 'Skoda', 'Smart', 'Sonalika', 
+    'Subaru','Sunlong', 'Suzuki', 'Swaraj', 'Syuk', 'TAFE', 'TAILG', 'Tata', 'Tesla', 'Toyota', 'Triumph','TVS', 'Vauxhall', 
+    'Vespa', 'Volkswagen', 'Volvo', 'Wave', 'Willys', 'Yadea', 'Yamaha', 'Yanmar', 'Yuejin','Yutong', 'Zhongtong', 
+    'Zongshen', 'Zotye', 'Other'
   ];
 
   const years = Array.from({ length: 100 }, (_, i) => 2025 - i);
@@ -99,391 +155,524 @@ const SellVehicleForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="tw:w-full">
-      <div className="tw:w-full">
+    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: '800px', mx: 'auto', mt: 4, mb: 6}}>
+      <Box sx={{ width: '100%' }}>
         
-        <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
-          <div className="tw:flex tw:items-center tw:gap-3">
-            <div className="tw:bg-red-500 tw:p-2 tw:rounded-lg">
-              <svg className="tw:w-6 tw:h-6" fill="currentColor" viewBox="0 0 24 24">
+        <HeaderWrapper>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <IconBox bgcolor="#ef4444">
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-              {/*  <path d="M3 4a1 1 0 00-1 1v1a1 1 0 001 1h1l1.68 5.39A3 3 0 008.49 15H15a1 1 0 000-2H8.49a1 1 0 01-.96-.73L6.9 11h8.1a1 1 0 00.96-.73l1.5-6A1 1 0 0016.5 3H4.72L4.22 1.39A1 1 0 003.28 1H2a1 1 0 000 2h.72L3 4z"/> */}
               </svg>
-            </div>
-            <div>
-              <h1 className="tw:text-3xl tw:font-bold">List Your Vehicle</h1>
-              <p className="tw:text-slate-200 tw:mt-1">Items marked with * are required.</p>
-            </div>
-          </div>
-        </div>
+            </IconBox>
+            <Box>
+              <Typography variant="h4" fontWeight="700">List Your Vehicle</Typography>
+              <Typography variant="subtitle1" color="rgba(255,255,255,0.8)" mt={0.5}>
+                Items marked with * are required.
+              </Typography>
+            </Box>
+          </Box>
+        </HeaderWrapper>
 
-        <div className="tw:bg-white tw:rounded-b-xl tw:shadow-lg">
+        <Paper sx={{ borderBottomLeftRadius: '0.75rem', borderBottomRightRadius: '0.75rem', boxShadow: 4 }}>
           
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
-            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
-              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
-                <svg className="tw:w-5 tw:h-5 tw:text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                </svg>
-              </div>
-              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Contact Information</h2>
-            </div>
-
-            <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Name <span className="tw:text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Mobile Phone <span className="tw:text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="mobile"
-                  value={formData.mobile}
-                  onChange={handleInputChange}
-                  pattern="07[0-9]{8}"
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="07xxxxxxxx"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  District <span className="tw:text-red-500">*</span>
-                </label>
-                <select
-                  name="district"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  required
-                >
-                  <option value="">Select District</option>
-                  {sriLankanDistricts.map(district => (
-                    <option key={district} value={district}>{district}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">City</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
-                />
-              </div>
-
-              <div className="md:tw:col-span-2">
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-            </div>
-          </div>
-
-          
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
-            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
-              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
-                <svg className="tw:w-5 tw:h-5 tw:text-white" fill="currentColor" viewBox="0 0 20 20">
+          {/* Vehicle Information Section - Now First */}
+          <FormSectionWrapper>
+            <SectionHeader>
+              <IconBox>
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                  {/* <path d="M3 4a1 1 0 00-1 1v1a1 1 0 001 1h1l1.68 5.39A3 3 0 008.49 15H15a1 1 0 000-2H8.49a1 1 0 01-.96-.73L6.9 11h8.1a1 1 0 00.96-.73l1.5-6A1 1 0 0016.5 3H4.72L4.22 1.39A1 1 0 003.28 1H2a1 1 0 000 2h.72L3 4z"/> */}
                 </svg>
-              </div>
-              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Vehicle Information</h2>
-            </div>
+              </IconBox>
+              <Typography variant="h6" fontWeight="600" color="text.primary">
+                Vehicle Information
+              </Typography>
+            </SectionHeader>
 
-            <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6">
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Vehicle Type <span className="tw:text-red-500">*</span>
-                </label>
-                <select
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <FormControl fullWidth required>
+                <InputLabel id="vehicle-type-label">Vehicle Type</InputLabel>
+                <Select
+                  labelId="vehicle-type-label"
                   name="vehicleType"
                   value={formData.vehicleType}
                   onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  required
+                  label="Vehicle Type"
+                  sx={{
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'black',
+                    }
+                  }}
                 >
-                  <option value="">Select Type</option>
+                  <MenuItem value=""><em>Select Type</em></MenuItem>
                   {vehicleTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
+                    <MenuItem key={type} value={type}>{type}</MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Condition <span className="tw:text-red-500">*</span>
-                </label>
-                <div className="tw:space-y-2">
+              <FormControl component="fieldset" required>
+                <Typography variant="body2" fontWeight="500" color="text.primary" gutterBottom>
+                  Condition *
+                </Typography>
+                <RadioGroup
+                  name="condition"
+                  value={formData.condition}
+                  onChange={handleInputChange}
+                >
                   {['Brand New', 'Used', 'Reconditioned'].map(condition => (
-                    <label key={condition} className="tw:flex tw:items-center">
-                      <input
-                        type="radio"
-                        name="condition"
-                        value={condition}
-                        checked={formData.condition === condition}
-                        onChange={handleInputChange}
-                        className="tw:mr-2 tw:text-slate-600 focus:tw:ring-slate-500"
-                        required
-                      />
-                      <span className="tw:text-sm tw:text-slate-700">{condition}</span>
-                    </label>
+                    <FormControlLabel 
+                      key={condition} 
+                      value={condition} 
+                      control={<Radio sx={{ '&.Mui-checked': { color: 'black' } }} />} 
+                      label={condition} 
+                    />
                   ))}
-                </div>
-              </div>
+                </RadioGroup>
+              </FormControl>
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Vehicle Make <span className="tw:text-red-500">*</span>
-                </label>
-                <select
+              <FormControl fullWidth required>
+                <InputLabel id="make-label">Vehicle Make</InputLabel>
+                <Select
+                  labelId="make-label"
                   name="make"
                   value={formData.make}
                   onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  required
+                  label="Vehicle Make"
+                  sx={{
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'black',
+                    }
+                  }}
                 >
-                  <option value="">Select Make</option>
+                  <MenuItem value=""><em>Select Make</em></MenuItem>
                   {vehicleMakes.map(make => (
-                    <option key={make} value={make}>{make}</option>
+                    <MenuItem key={make} value={make}>{make}</MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Model <span className="tw:text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="model"
-                  value={formData.model}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="e.g., CLA180, Corolla, CT100"
-                  required
-                />
-              </div>
+              <TextField
+                fullWidth
+                required
+                label="Model"
+                name="model"
+                value={formData.model}
+                onChange={handleInputChange}
+                placeholder="e.g., CLA180, Corolla, CT100"
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Manufactured Year <span className="tw:text-red-500">*</span>
-                </label>
-                <select
+              <FormControl fullWidth required>
+                <InputLabel id="year-label">Manufactured Year</InputLabel>
+                <Select
+                  labelId="year-label"
                   name="year"
                   value={formData.year}
                   onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  required
+                  label="Manufactured Year"
+                  sx={{
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'black',
+                    }
+                  }}
                 >
-                  <option value="">Select Year</option>
+                  <MenuItem value=""><em>Select Year</em></MenuItem>
                   {years.map(year => (
-                    <option key={year} value={year}>{year}</option>
+                    <MenuItem key={year} value={year}>{year}</MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Price (Rs.)</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="0"
-                  min="0"
-                />
-              </div>
+              <TextField
+                fullWidth
+                label="Price (Rs.)"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleInputChange}
+                placeholder="0"
+                inputProps={{ min: "0" }}
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
 
-              <div className="tw:flex tw:items-center">
-                <label className="tw:flex tw:items-center">
-                  <input
-                    type="checkbox"
-                    name="ongoingLease"
-                    checked={formData.ongoingLease}
-                    onChange={handleInputChange}
-                    className="tw:mr-2 tw:text-slate-600 focus:tw:ring-slate-500"
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={formData.ongoingLease} 
+                    onChange={handleInputChange} 
+                    name="ongoingLease" 
+                    sx={{ '&.Mui-checked': { color: 'black' } }}
                   />
-                  <span className="tw:text-sm tw:text-slate-700">Ongoing Lease</span>
-                </label>
-              </div>
+                }
+                label="Ongoing Lease"
+              />
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Transmission <span className="tw:text-red-500">*</span>
-                </label>
-                <select
+              <FormControl fullWidth required>
+                <InputLabel id="transmission-label">Transmission</InputLabel>
+                <Select
+                  labelId="transmission-label"
                   name="transmission"
                   value={formData.transmission}
                   onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  required
+                  label="Transmission"
+                  sx={{
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'black',
+                    }
+                  }}
                 >
-                  <option value="">Select Transmission</option>
+                  <MenuItem value=""><em>Select Transmission</em></MenuItem>
                   {['Manual', 'Automatic', 'Triptonic', 'Other'].map(trans => (
-                    <option key={trans} value={trans}>{trans}</option>
+                    <MenuItem key={trans} value={trans}>{trans}</MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Fuel Type <span className="tw:text-red-500">*</span>
-                </label>
-                <select
+              <FormControl fullWidth required>
+                <InputLabel id="fuel-type-label">Fuel Type</InputLabel>
+                <Select
+                  labelId="fuel-type-label"
                   name="fuelType"
                   value={formData.fuelType}
                   onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  required
+                  label="Fuel Type"
+                  sx={{
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'black',
+                    }
+                  }}
                 >
-                  <option value="">Select Fuel Type</option>
+                  <MenuItem value=""><em>Select Fuel Type</em></MenuItem>
                   {['Petrol', 'Diesel', 'Hybrid', 'Electric', 'CNG'].map(fuel => (
-                    <option key={fuel} value={fuel}>{fuel}</option>
+                    <MenuItem key={fuel} value={fuel}>{fuel}</MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Engine Capacity (cc)</label>
-                <input
-                  type="number"
-                  name="engineCapacity"
-                  value={formData.engineCapacity}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="1500"
-                  min="1"
-                  max="10000"
-                />
-              </div>
+              <TextField
+                fullWidth
+                label="Engine Capacity (cc)"
+                name="engineCapacity"
+                type="number"
+                value={formData.engineCapacity}
+                onChange={handleInputChange}
+                placeholder="1500"
+                inputProps={{ min: "1", max: "10000" }}
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
 
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Mileage (km) <span className="tw:text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="mileage"
-                  value={formData.mileage}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="45000"
-                  min="0"
-                  max="1000000"
-                  required
-                />
-              </div>
-            </div>
+              <TextField
+                fullWidth
+                required
+                label="Mileage (km)"
+                name="mileage"
+                type="number"
+                value={formData.mileage}
+                onChange={handleInputChange}
+                placeholder="45000"
+                inputProps={{ min: "0", max: "1000000" }}
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
 
-            <div className="tw:mt-6">
-              <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Description</label>
-              <textarea
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                label="Description"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                rows="4"
-                maxLength="5000"
-                className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all tw:resize-none"
                 placeholder="Describe your vehicle's features, condition and any additional information..."
+                inputProps={{ maxLength: 5000 }}
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
               />
-              <div className="tw:text-right tw:text-sm tw:text-slate-500 tw:mt-1">
+              <Typography variant="caption" color="text.secondary" align="right" sx={{ display: 'block', mt: 0.5 }}>
                 {formData.description.length}/5000 characters
-              </div>
-            </div>
-          </div>
+              </Typography>
+            </Box>
+          </FormSectionWrapper>
 
-          
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
-            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
-              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
-                <Camera className="tw:w-5 tw:h-5 tw:text-white" />
-              </div>
-              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Vehicle Photos</h2>
-            </div>
+          {/* Vehicle Photos Section - Now Second */}
+          <FormSectionWrapper>
+            <SectionHeader>
+              <IconBox>
+                <Camera size={20} />
+              </IconBox>
+              <Typography variant="h6" fontWeight="600" color="text.primary">
+                Vehicle Photos
+              </Typography>
+            </SectionHeader>
 
-            <div className="tw:grid tw:grid-cols-2 md:tw:grid-cols-3 tw:gap-4">
-              {photos.map((photo, index) => (
-                <div key={index} className="tw:relative">
-                  {photo ? (
-                    <div className="tw:relative tw:group">
-                      <img
-                        src={photo}
-                        alt={`Vehicle photo ${index + 1}`}
-                        className="tw:w-full tw:h-32 tw:object-cover tw:rounded-lg tw:border-2 tw:border-slate-200"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removePhoto(index)}
-                        className="tw:absolute tw:top-2 tw:right-2 tw:bg-red-500 tw:text-white tw:rounded-full tw:p-1 tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity"
-                      >
-                        <X className="tw:w-4 tw:h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="tw:flex tw:flex-col tw:items-center tw:justify-center tw:w-full tw:h-32 tw:border-2 tw:border-dashed tw:border-slate-300 tw:rounded-lg tw:cursor-pointer hover:tw:border-slate-400 tw:transition-colors">
-                      <Camera className="tw:w-8 tw:h-8 tw:text-slate-400 tw:mb-2" />
-                      <span className="tw:text-sm tw:text-slate-500">Add Photo</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handlePhotoUpload(index, e)}
-                        className="tw:hidden"
-                      />
-                    </label>
-                  )}
-                </div>
+            <Grid container spacing={2}>
+              {[0, 2, 4].map(rowStartIndex => (
+                <Grid container item spacing={2} key={`row-${rowStartIndex}`}>
+                  {[0, 1].map(colIndex => {
+                    const photoIndex = rowStartIndex + colIndex;
+                    return (
+                      <Grid item xs={6} key={photoIndex}>
+                        {photos[photoIndex] ? (
+                          <Box sx={{ position: 'relative', '&:hover .removeBtn': { opacity: 1 } }}>
+                            <Box
+                              component="img"
+                              src={photos[photoIndex]}
+                              alt={`Vehicle photo ${photoIndex + 1}`}
+                              sx={{
+                                width: '100%',
+                                height: '8rem',
+                                objectFit: 'cover',
+                                borderRadius: '0.5rem',
+                                border: '2px solid',
+                                borderColor: 'grey.200'
+                              }}
+                            />
+                            <Button
+                              className="removeBtn"
+                              onClick={() => removePhoto(photoIndex)}
+                              sx={{
+                                position: 'absolute',
+                                top: '0.5rem',
+                                right: '0.5rem',
+                                minWidth: 'unset',
+                                p: '0.25rem',
+                                bgcolor: 'error.main',
+                                color: 'white',
+                                borderRadius: '50%',
+                                opacity: 0,
+                                transition: 'opacity 0.2s',
+                                '&:hover': {
+                                  bgcolor: 'error.dark',
+                                }
+                              }}
+                            >
+                              <X size={16} />
+                            </Button>
+                          </Box>
+                        ) : (
+                          <PhotoUploadLabel>
+                            <Camera size={32} color="#9ca3af" style={{ marginBottom: '0.5rem' }} />
+                            <Typography variant="body2" color="text.secondary">Add Photo</Typography>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handlePhotoUpload(photoIndex, e)}
+                              style={{ display: 'none' }}
+                            />
+                          </PhotoUploadLabel>
+                        )}
+                      </Grid>
+                    );
+                  })}
+                </Grid>
               ))}
-            </div>
-          </div>
-
+            </Grid>
+          </FormSectionWrapper>
           
-          <div className="tw:p-8 tw:flex tw:flex-col sm:tw:flex-row tw:gap-4 tw:justify-end">
-            <button
-              type="button"
+          {/* Contact Information Section - Now Last */}
+          <FormSectionWrapper>
+            <SectionHeader>
+              <IconBox>
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                </svg>
+              </IconBox>
+              <Typography variant="h6" fontWeight="600" color="text.primary">
+                Contact Information
+              </Typography>
+            </SectionHeader>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <TextField
+                fullWidth
+                required
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Your full name"
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
+
+              <TextField
+                fullWidth
+                required
+                label="Mobile Phone"
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleInputChange}
+                placeholder="07xxxxxxxx"
+                inputProps={{ pattern: "07[0-9]{8}" }}
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
+
+              <FormControl fullWidth required>
+                <InputLabel id="district-label">District</InputLabel>
+                <Select
+                  labelId="district-label"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  label="District"
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: formData.district ? 'rgba(0, 0, 0, 0.23)' : 'rgba(0, 0, 0, 0.23)',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'black',
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'black',
+                    }
+                  }}
+                >
+                  <MenuItem value=""><em>Select District</em></MenuItem>
+                  {sriLankanDistricts.map(district => (
+                    <MenuItem key={district} value={district}>{district}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                label="City"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  },
+                  '& .MuiInputBase-input::placeholder': {
+                    color: 'grey',
+                    opacity: 0.7,
+                  },
+                }}
+              />
+
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="your.email@example.com"
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black',
+                  }
+                }}
+              />
+            </Box>
+          </FormSectionWrapper>
+
+          <Box sx={{ p: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: 'flex-end' }}>
+            <Button
+              variant="outlined"
               onClick={handleDiscard}
-              className="tw:px-8 tw:py-3 tw:border tw:border-slate-300 tw:text-slate-700 tw:rounded-lg hover:tw:bg-slate-50 tw:transition-colors tw:font-medium"
+              sx={{
+                px: 5, 
+                py: 1.5, 
+                color: 'text.primary', 
+                borderColor: 'grey.300',
+                fontWeight: 500,
+                boxShadow: 3,
+                '&:hover': {
+                  bgcolor: '#bd2115',
+                  borderColor: 'grey.400',
+                  color: 'white',
+                }
+              }}
             >
               Discard
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="contained"
               onClick={handleSubmit}
-              className="tw:px-8 tw:py-3 tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:rounded-lg hover:tw:from-slate-700 hover:tw:to-slate-800 tw:transition-all tw:font-medium tw:shadow-lg"
+              sx={{
+                px: 5, 
+                py: 1.5, 
+                background: 'linear-gradient(to right, #475569, #334155)',
+                color: 'white',
+                fontWeight: 500,
+                boxShadow: 3,
+                '&:hover': {
+                  background: '#2563eb',
+                }
+              }}
             >
               List Vehicle
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
   );
 };
 
