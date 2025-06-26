@@ -99,8 +99,8 @@ const SellVehicleForm = () => {
   };
 
   return (
-    <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4">
-      <div className="tw:max-w-4xl tw:mx-auto">
+    <form onSubmit={handleSubmit} className="tw:w-full">
+      <div className="tw:w-full">
         
         <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
           <div className="tw:flex tw:items-center tw:gap-3">
@@ -483,7 +483,7 @@ const SellVehicleForm = () => {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
