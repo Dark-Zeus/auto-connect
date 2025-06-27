@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -10,51 +10,51 @@ import {
   Avatar,
   Chip,
   Card,
-  CardContent
-} from '@mui/material';
+  CardContent,
+} from "@mui/material";
 import {
   Logout as LogoutIcon,
   Person as PersonIcon,
   Dashboard as DashboardIcon,
   Settings as SettingsIcon,
-  Notifications as NotificationsIcon
-} from '@mui/icons-material';
-import { toast } from 'react-toastify';
+  Notifications as NotificationsIcon,
+} from "@mui/icons-material";
+import { toast } from "react-toastify";
 
-import { UserContext } from '../contexts/UserContext';
-import './Dashboard.css';
+import { UserContext } from "../contexts/UserContext";
+import "./Dashboard.css";
 
-const Dashboard = () => {
+const DashboardNew = () => {
   const navigate = useNavigate();
   const { userContext, setUserContext } = useContext(UserContext);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUserContext(null);
-    toast.success('Logged out successfully');
-    navigate('/');
+    toast.success("Logged out successfully");
+    navigate("/");
   };
 
   const dashboardCards = [
     {
-      title: 'Profile',
-      description: 'Manage your account settings and personal information',
+      title: "Profile",
+      description: "Manage your account settings and personal information",
       icon: <PersonIcon />,
-      color: '#7AB2D3'
+      color: "#7AB2D3",
     },
     {
-      title: 'Settings',
-      description: 'Configure your preferences and application settings',
+      title: "Settings",
+      description: "Configure your preferences and application settings",
       icon: <SettingsIcon />,
-      color: '#4A628A'
+      color: "#4A628A",
     },
     {
-      title: 'Notifications',
-      description: 'View and manage your notifications',
+      title: "Notifications",
+      description: "View and manage your notifications",
       icon: <NotificationsIcon />,
-      color: '#B9E5E8'
-    }
+      color: "#B9E5E8",
+    },
   ];
 
   return (
@@ -72,17 +72,19 @@ const Dashboard = () => {
             <Box className="header-right">
               <Box className="user-info">
                 <Avatar className="user-avatar">
-                  {userContext?.firstName?.charAt(0) || userContext?.email?.charAt(0) || 'U'}
+                  {userContext?.firstName?.charAt(0) ||
+                    userContext?.email?.charAt(0) ||
+                    "U"}
                 </Avatar>
                 <Box className="user-details">
                   <Typography variant="subtitle1" className="user-name">
-                    {userContext?.firstName && userContext?.lastName 
+                    {userContext?.firstName && userContext?.lastName
                       ? `${userContext.firstName} ${userContext.lastName}`
-                      : userContext?.email || 'User'}
+                      : userContext?.email || "User"}
                   </Typography>
-                  <Chip 
-                    label={userContext?.role || 'User'} 
-                    size="small" 
+                  <Chip
+                    label={userContext?.role || "User"}
+                    size="small"
                     className="user-role"
                   />
                 </Box>
@@ -105,11 +107,12 @@ const Dashboard = () => {
         <Box className="welcome-section">
           <Paper className="welcome-card">
             <Typography variant="h5" className="welcome-title">
-              Welcome back, {userContext?.firstName || 'User'}! 👋
+              Welcome back, {userContext?.firstName || "User"}! 👋
             </Typography>
             <Typography variant="body1" className="welcome-text">
-              You have successfully logged into your AutoConnect dashboard. 
-              From here you can manage your account, view your activity, and access all available features.
+              You have successfully logged into your AutoConnect dashboard. From
+              here you can manage your account, view your activity, and access
+              all available features.
             </Typography>
           </Paper>
         </Box>
@@ -120,7 +123,7 @@ const Dashboard = () => {
               <Grid item xs={12} md={4} key={index}>
                 <Card className="dashboard-card">
                   <CardContent className="card-content">
-                    <Box 
+                    <Box
                       className="card-icon"
                       sx={{ backgroundColor: card.color }}
                     >
@@ -132,8 +135,8 @@ const Dashboard = () => {
                     <Typography variant="body2" className="card-description">
                       {card.description}
                     </Typography>
-                    <Button 
-                      variant="outlined" 
+                    <Button
+                      variant="outlined"
                       className="card-button"
                       sx={{ borderColor: card.color, color: card.color }}
                     >
@@ -185,4 +188,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardNew;

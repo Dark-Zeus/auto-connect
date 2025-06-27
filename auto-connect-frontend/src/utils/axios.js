@@ -1,14 +1,14 @@
-import axios from 'axios';
-import {toast} from 'react-toastify';
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const instance = axios.create({
-  baseURL: `${import.meta.env.VITE_REACT_APP_BACKEND_API_URL}`,
+  baseURL: `${import.meta.env.VITE_REACT_APP_BACKEND_API_URL}/api/v1`,
   // other custom settings
 });
 
 instance.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('token');
-  config.headers.Authorization = token ? `Bearer ${token}` : '';
+  const token = localStorage.getItem("token");
+  config.headers.Authorization = token ? `Bearer ${token}` : "";
   return config;
 });
 
@@ -17,24 +17,26 @@ instance.interceptors.response.use(
     return response;
   },
   function (error) {
-    showError(error)
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      window.location.href = '/auth';
+    showError(error);
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403)
+    ) {
+      window.location.href = "/auth";
     }
     return Promise.reject(error);
   }
-  
 );
 
 const showError = (err) => {
   console.log(err);
   if (err?.response?.data.message) {
-      toast.error(err.response?.data.message);
+    toast.error(err.response?.data.message);
   } else if (err?.message) {
-      toast.error(err.message);
+    toast.error(err.message);
   } else {
-      toast.error(err);
+    toast.error(err);
   }
-}
+};
 
 export default instance;
