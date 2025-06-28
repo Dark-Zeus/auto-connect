@@ -1,4 +1,4 @@
-import SellVehicleForm from "@components/SellVehicleForm";
+import SellVehicleForm from "@components/CarSeller/SellVehicleForm";
 
 const SellVehiclePage = () => {
   return (

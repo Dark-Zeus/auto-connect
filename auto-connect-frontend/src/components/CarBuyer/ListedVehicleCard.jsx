@@ -15,7 +15,7 @@ import {
   LocalGasStation 
 } from '@mui/icons-material';
 
-import toyotaImage from '../assets/images/toyota-v8.jpg';
+import toyotaImage from '../../assets/images/toyota-v8.jpg';
 
 const ListedVehicleCard = ({ vehicle = null }) => {
   // Use props or fallback to sample data
