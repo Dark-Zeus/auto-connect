@@ -29,9 +29,9 @@ function IconButton({ content, title, iconb, icona, w, h, size, bg, c, is, ts, r
   h = h || size;
   return (
     <button title={title} style={{width: `${w}px`, height:`${h}px`}} className={`icon-btn btn-bg-${bg} btn-clr-${c} btn-right-margin-${rm} btn-left-margin-${lm} ${extraClass}`} onClick={onClick} disabled={disabled}>
-      {(iconb && content && <span className={`btn__icon btn__icon-${is}`}>{iconb || ""}</span>) || (iconb && <span className={`btn__icon btn__icon-${is}`}>{iconb || ""}</span>)}
+      {iconb && <span className={`btn__icon btn__icon-${is}`}>{iconb}</span>}
       {content && <span className={`btn__text btn__text-${ts}`}>{content}</span>}
-      {(icona && content && <span className={`btn__icon btn__icon-${is}`}>{icona || ""}</span>) || (icona && <span className={`btn__icon btn__icon-${is}`}>{icona || ""}</span>)}
+      {icona && <span className={`btn__icon btn__icon-${is}`}>{icona}</span>}
     </button>
   );
 }

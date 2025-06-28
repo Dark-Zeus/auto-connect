@@ -186,8 +186,8 @@
   width: 1rem;
   height: 1rem;
   margin-right: 10px;
-  border: 2px solid #ccc;
-  border-top: 2px solid #3e8e41;
+  border: 2px solid var(--color-300);
+  border-top: 2px solid var(--color-200);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   vertical-align: middle;
@@ -198,8 +198,8 @@
   width: 0.75rem;
   height: 0.75rem;
   margin-right: 10px;
-  border: 2px solid #ccc;
-  border-top: 2px solid #3e8e41;
+  border: 2px solid var(--color-300);
+  border-top: 2px solid var(--color-200);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   vertical-align: middle;

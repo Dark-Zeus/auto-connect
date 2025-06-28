@@ -51,12 +51,12 @@
     }
 
     .form{
-        background-color: #ffffffee;
+        background-color: var(--color-100);
         border-radius: 4px 4px 0px 0px;
     }
 
     .form-bottom-bar{
-        background-color: #ffffffee;
+        background-color: var(--color-100);
         width: 400px;
         margin-top: 0px;
         border-radius: 0px 0px 4px 4px;

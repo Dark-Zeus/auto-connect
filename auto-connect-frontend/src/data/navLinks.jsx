@@ -1,9 +1,16 @@
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 import {resolveExample} from "./paramResolvers/exampleResolver"
+import ServiceProvidersPage from "@pages/ServiceProvidersPage";
 
 function getNavLinks(userContext) {
   let nav = [];
 
+  nav.push({
+    title: "Service Providers",
+    icon: "manage_accounts",
+    page: <ServiceProvidersPage />,
+    path: ["/service-providers"],
+  });
   nav.push({
     title: "Example",
     icon: "help",

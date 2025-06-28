@@ -106,13 +106,13 @@ function Dashboard({ children }) {
                         <div style={{ flex: 1, overflow: "hidden" }}>
                             <BreadcrumbNavigator navLinks={allRoutes} />
                             <div className="scrollable">
-                                <Routes>
+                                {children ? children : <Routes>
                                     {allRoutes.map((route, index) => (
                                         route.path?.map((path, i) => (
                                             <Route key={`${path}-${i}`} path={path} element={route.page} />
                                         ))
                                     ))}
-                                </Routes>
+                                </Routes>}
                                 <br />
                                 <br />
                             </div>
@@ -122,13 +122,13 @@ function Dashboard({ children }) {
                         <>
                             <BreadcrumbNavigator navLinks={allRoutes} />
                             <div className="scrollable">
-                                <Routes>
+                                {children ? children : <Routes>
                                     {allRoutes.map((route, index) => (
                                         route.path?.map((path, i) => (
                                             <Route key={`${path}-${i}`} path={path} element={route.page} />
                                         ))
                                     ))}
-                                </Routes>
+                                </Routes>}
                                 <br />
                                 <br />
                                 <br />

@@ -7,6 +7,8 @@ import axios from '../utils/axios';
 
 import RightIconRectInput from "./atoms/RightIconRectInput";
 import IconButton from "./atoms/IconButton";
+import OverlayWindow from "./OverlayWindow";
+import RegisterServiceProviderForm from "@pages/RegisterServiceProvider";
 
 import { UserContext } from "../contexts/UserContext";
 
@@ -22,6 +24,7 @@ function RegisterForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("-");
     const [repPassword, setRepPassword] = useState("");
+    const [showServiceProviderDialog, setShowServiceProviderDialog] = useState(false);
 
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
@@ -217,10 +220,14 @@ function RegisterForm() {
                 <IconButton icon="google" onClick={googleAuth} iconb={<GoogleIcon />} w="max" extraClass="google-auth-btn btn-margin" content={"Continue with Google"} />
             </form>
             <div className="form-bottom-bar">
-                <div>T&C</div>
-                <div>Help</div>
+                <div className="register-link" onClick={() => setShowServiceProviderDialog(true)}><span>Register as a Service Provider</span><span className="register__icon">arrow_forward</span></div>
                 <div className="register-link"><Link to="/auth/login"><span>Login</span><span className="register__icon">arrow_forward</span></Link></div>
             </div>
+            {showServiceProviderDialog && (
+                <OverlayWindow closeWindowFunction={() => setShowServiceProviderDialog(false)}>
+                    <RegisterServiceProviderForm />
+                </OverlayWindow>
+            )}
         </>
     );
 }

@@ -225,7 +225,7 @@ input {
 .google-auth-btn {
   border: 1px solid var(--accent-color-1) !important;
   box-sizing: border-box;
-  color: #1f1f1f !important;
+  color: var(--color-400) !important;
   cursor: pointer;
   font-family: "Roboto", arial, sans-serif !important;
   font-size: 14px !important;
@@ -350,7 +350,7 @@ input {
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: var(--shadow-2-2);
-  border: 1px solid #7070703b;
+  border: 1px solid var(--color-300);
   padding: 15px;
   max-width: 400px;
   min-width: 400px;

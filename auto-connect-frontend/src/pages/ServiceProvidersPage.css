@@ -1,0 +1,26 @@
+.service-providers-page {
+  padding: 20px;
+}
+
+.dashboard {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.btn {
+  background-color: var(--color-400);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}

@@ -286,7 +286,7 @@
 }
 
 .btn-borderc-747775 {
-  border-color: #747775 !important;
+  border-color: var(--color-300) !important;
 }
 
 /* Margins */

@@ -7,6 +7,8 @@ import Dashboard from "@pages/Dashboard";
 import AuthPage from "@pages/AuthPage";
 import LoginForm from "@components/LoginForm";
 import { UserContext } from "@contexts/UserContext";
+import RegisterServiceProvider from "@pages/RegisterServiceProvider";
+import ServiceProvidersPage from "@pages/ServiceProvidersPage";
 
 import AdaptiveSubTable from "@components/atoms/AdaptiveSubTable";
 import Confirm from "@components/atoms/Confirm";
@@ -112,6 +114,8 @@ function App() {
             <Dashboard/>
           } />
           
+          <Route path="/service-providers" element={<Dashboard><ServiceProvidersPage /></Dashboard>} />
+          <Route path="/register-service-provider" element={<Dashboard><RegisterServiceProvider /></Dashboard>} />
           <Route path="/sub2" element={<Dashboard>
             <AdaptivePaginatableTable
               title={"Tenants"}
