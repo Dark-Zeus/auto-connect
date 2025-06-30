@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import IconButton from "@components/atoms/IconButton";
 
 import Dashboard from "@pages/Dashboard";
+import ServicePage from "@pages/Service_Centers";
+import UserPage from "@pages/User_Management";
 import AuthPage from "@pages/AuthPage";
 import LoginForm from "@components/LoginForm";
 import { UserContext } from "@contexts/UserContext";
@@ -121,6 +123,8 @@ function App() {
           <Route path="/*" element={
             <Dashboard/>
           } />
+          <Route path="/services" element={<ServicePage />} />
+          <Route path="/users" element={<UserPage />} />
           
           <Route path="/sub2" element={<Dashboard>
             <AdaptivePaginatableTable

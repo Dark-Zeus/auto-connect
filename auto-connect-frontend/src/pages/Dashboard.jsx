@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, Link } from "react-router-dom";
 import { UserContext } from "@contexts/UserContext";
 import { getNavLinks } from "@data/navLinks";
+
 import {
   PieChart,
   Pie,
@@ -16,8 +17,9 @@ import {
   LineChart,
   Line,
 } from "recharts";
+
 import {
-  Dashboard,
+  Dashboard as DashboardIcon,
   People,
   Settings,
   Logout,
@@ -25,6 +27,9 @@ import {
   Notifications,
   Search,
   Download,
+  PaymentsOutlined,
+  Update,
+  Garage,
 } from "@mui/icons-material";
 
 const dataTrafficLocation = [
@@ -57,7 +62,7 @@ const latestUpdates = [
   { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
 ];
 
-function DashboardPage() {
+function Dashboard() {
   const location = useLocation();
   let { userContext } = useContext(UserContext);
   userContext = { role: "admin" };
@@ -71,36 +76,38 @@ function DashboardPage() {
       <aside className="w-[280px] h-full bg-white shadow-lg p-6">
         <h2 className="text-4xl font-bold mb-10 text-blue-600">Auto Connect</h2>
         <nav>
-          <ul className="space-y-8 text-xl">
+          <ul className="space-y-8 text-2xl font-semibold">
             <li className="flex items-center gap-3">
-              <Dashboard fontSize="large" />
-              <a href="#" className="hover:text-blue-600">
-                Dashboard
-              </a>
+              <DashboardIcon style={{ fontSize: 36 }} />
+              <Link to="." className="hover:text-blue-600">Dashboard</Link>
             </li>
             <li className="flex items-center gap-3">
-              <People fontSize="large" />
-              <a href="#" className="hover:text-blue-600">
-                Product
-              </a>
+              <Garage style={{ fontSize: 36 }} />
+              <Link to="/services" className="hover:text-blue-600">Service Centers</Link>
             </li>
             <li className="flex items-center gap-3">
-              <Settings fontSize="large" />
-              <a href="#" className="hover:text-blue-600">
-                Customers
-              </a>
+              <People style={{ fontSize: 36 }} />
+              <Link to="/users" className="hover:text-blue-600">User Management</Link>
             </li>
             <li className="flex items-center gap-3">
-              <BarIcon fontSize="large" />
-              <a href="#" className="hover:text-blue-600">
-                Analytics
-              </a>
+              <Notifications style={{ fontSize: 36 }} />
+              <Link to="/notifications" className="hover:text-blue-600">Notifications</Link>
             </li>
             <li className="flex items-center gap-3">
-              <Logout fontSize="large" />
-              <a href="#" className="hover:text-blue-600">
-                Logout
-              </a>
+              <PaymentsOutlined style={{ fontSize: 36 }} />
+              <Link to="/transactions" className="hover:text-blue-600">Transactions</Link>
+            </li>
+            <li className="flex items-center gap-3">
+              <Update style={{ fontSize: 36 }} />
+              <Link to="/updates" className="hover:text-blue-600">Updates</Link>
+            </li>
+            <li className="flex items-center gap-3">
+              <BarIcon style={{ fontSize: 36 }} />
+              <Link to="/analytics" className="hover:text-blue-600">Analytics</Link>
+            </li>
+            <li className="flex items-center gap-3">
+              <Logout style={{ fontSize: 36 }} />
+              <Link to="/auth" className="hover:text-blue-600">Logout</Link>
             </li>
           </ul>
         </nav>
@@ -127,7 +134,7 @@ function DashboardPage() {
                 3
               </span>
             </button>
-            <span className="text-lg text-gray-700">Nur Laily</span>
+            <span className="text-lg text-gray-700">Rashmika Dilmin</span>
             <img
               src="https://i.pravatar.cc/60?img=12"
               alt="Admin"
@@ -138,70 +145,69 @@ function DashboardPage() {
 
         {/* Dashboard Grid */}
         <main className="p-8 flex-1 grid grid-cols-5 gap-8">
-        {/* Cards */}
-        <div className="col-span-3 grid grid-cols-2 gap-6">
-          {[
-           {
-            title: "New Users",
-            value: 123915,
-            progress: 12.3456,
-            icon: <People style={{ fontSize: 42 }} />,
-            color: "bg-blue-100",
-            iconBg: "bg-blue-600",
-          },
-          {
-            title: "Total Orders",
-            value: 61313,
-            progress: -8.1234,
-            icon: <BarIcon style={{ fontSize: 42 }} />,
-            color: "bg-green-100",
-            iconBg: "bg-green-600",
-          },
-          {
-            title: "New Product",
-            value: 71003,
-            progress: 5.6789,
-            icon: <Settings style={{ fontSize: 42 }} />,
-            color: "bg-purple-100",
-            iconBg: "bg-purple-600",
-          },
-          {
-            title: "Total Downloads",
-            value: 161888,
-            progress: 1.2345,
-            icon: <Download style={{ fontSize: 42 }} />,
-            color: "bg-orange-100",
-            iconBg: "bg-orange-600",
-          },
+          {/* Cards */}
+          <div className="col-span-3 grid grid-cols-2 gap-6">
+            {[
+              {
+                title: "New Users",
+                value: 123915,
+                progress: 12.3456,
+                icon: <People style={{ fontSize: 42 }} />,
+                color: "bg-blue-100",
+                iconBg: "bg-blue-600",
+              },
+              {
+                title: "Total Orders",
+                value: 61313,
+                progress: -8.1234,
+                icon: <BarIcon style={{ fontSize: 42 }} />,
+                color: "bg-green-100",
+                iconBg: "bg-green-600",
+              },
+              {
+                title: "New Product",
+                value: 71003,
+                progress: 5.6789,
+                icon: <Settings style={{ fontSize: 42 }} />,
+                color: "bg-purple-100",
+                iconBg: "bg-purple-600",
+              },
+              {
+                title: "Total Downloads",
+                value: 161888,
+                progress: 1.2345,
+                icon: <Download style={{ fontSize: 42 }} />,
+                color: "bg-orange-100",
+                iconBg: "bg-orange-600",
+              },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className={`p-6 rounded-2xl shadow-md ${card.color} transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between relative`}
+                style={{ minHeight: "140px" }}
+              >
+                {/* Icon top-left */}
+                <div className={`absolute top-4 left-4 p-2 rounded-full text-white ${card.iconBg}`}>
+                  {card.icon}
+                </div>
 
-          ].map((card, i) => (
-            <div
-              key={i}
-              className={`p-6 rounded-2xl shadow-md ${card.color} transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between relative`}
-              style={{ minHeight: "140px" }}
-            >
-              {/* Icon top-left */}
-              <div className={`absolute top-4 left-4 p-2 rounded-full text-white ${card.iconBg}`}>
-                {card.icon}
-              </div>
+                {/* Progress top-right */}
+                <div className="absolute top-4 right-4 text-sm font-semibold text-gray-700">
+                  {card.progress >= 0 ? (
+                    <span className="text-green-600">+{card.progress.toFixed(4)}%</span>
+                  ) : (
+                    <span className="text-red-600">{card.progress.toFixed(4)}%</span>
+                  )}
+                </div>
 
-              {/* Progress top-right */}
-              <div className="absolute top-4 right-4 text-sm font-semibold text-gray-700">
-                {card.progress >= 0 ? (
-                  <span className="text-green-600">+{card.progress.toFixed(4)}%</span>
-                ) : (
-                  <span className="text-red-600">{card.progress.toFixed(4)}%</span>
-                )}
+                {/* Title and value bottom-left */}
+                <div className="mt-auto pl-2">
+                  <h4 className="text-md font-semibold">{card.title}</h4>
+                  <p className="text-3xl font-bold">{card.value.toLocaleString()}</p>
+                </div>
               </div>
-
-              {/* Title and value bottom-left */}
-              <div className="mt-auto pl-2">
-                <h4 className="text-md font-semibold">{card.title}</h4>
-                <p className="text-3xl font-bold">{card.value.toLocaleString()}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
           {/* Pie Chart */}
           <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
@@ -313,4 +319,4 @@ function DashboardPage() {
   );
 }
 
-export default DashboardPage;
+export default Dashboard;
