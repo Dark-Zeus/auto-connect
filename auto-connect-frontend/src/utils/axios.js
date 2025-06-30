@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const instance = axios.create({
-  baseURL: `${import.meta.env.VITE_REACT_APP_BACKEND_API_URL}/api/v1`,
+  baseURL: `${import.meta.env.VITE_REACT_APP_BACKEND_API_URL}`,
   // other custom settings
 });
 
