@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { UserContext } from "@contexts/UserContext";
 import {
@@ -11,60 +11,57 @@ import {
   BarChart as BarIcon,
   Logout,
   Search,
+  SystemSecurityUpdateSharp,
+  Menu,
 } from "@mui/icons-material";
 
 function DashboardPage() {
   let { userContext } = useContext(UserContext);
   userContext = { role: "admin" };
 
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
   return (
     <div className="w-screen h-screen flex bg-gray-100 text-gray-800 text-base">
       {/* Sidebar */}
-      <aside className="w-[280px] h-full bg-white shadow-lg p-6">
-        <h2 className="text-4xl font-bold mb-10 text-blue-600">Auto Connect</h2>
-        <nav>
-          <ul className="space-y-8 text-2xl font-semibold">
-            <li className="flex items-center gap-3">
-              <Dashboard style={{ fontSize: 36 }} />
-              <Link to="." className="hover:text-blue-600">Dashboard</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <Garage style={{ fontSize: 36 }} />
-              <Link to="/services" className="hover:text-blue-600">Service Centers</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <People style={{ fontSize: 36 }} />
-              <Link to="/users" className="hover:text-blue-600">User Management</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <Notifications style={{ fontSize: 36 }} />
-              <Link to="/notifications" className="hover:text-blue-600">Notifications</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <PaymentsOutlined style={{ fontSize: 36 }} />
-              <Link to="/transactions" className="hover:text-blue-600">Transactions</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <Update style={{ fontSize: 36 }} />
-              <Link to="/updates" className="hover:text-blue-600">Updates</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <BarIcon style={{ fontSize: 36 }} />
-              <Link to="/analytics" className="hover:text-blue-600">Analytics</Link>
-            </li>
-            <li className="flex items-center gap-3">
-              <Logout style={{ fontSize: 36 }} />
-              <Link to="/auth" className="hover:text-blue-600">Logout</Link>
-            </li>
-          </ul>
-        </nav>
+      <aside
+        className={`${
+          sidebarOpen ? "w-96 p-6" : "w-0 p-0"
+        } h-full bg-white shadow-lg overflow-hidden transition-all duration-300`}
+      >
+        {sidebarOpen && (
+          <div className="flex flex-col">
+            <h2 className="text-4xl font-bold mb-10 text-blue-600">
+              Auto Connect
+            </h2>
+            <nav>
+              <ul className="space-y-8 text-2xl font-semibold">
+                <SidebarItem to="/" icon={<Dashboard style={{ fontSize: 36 }} />} text="Dashboard" />
+                <SidebarItem to="/services" icon={<Garage style={{ fontSize: 36 }} />} text="Service Centers" />
+                <SidebarItem to="/users" icon={<People style={{ fontSize: 36 }} />} text="User Management" />
+                <SidebarItem to="/notifications" icon={<Notifications style={{ fontSize: 36 }} />} text="Notifications" />
+                <SidebarItem to="/transactions" icon={<PaymentsOutlined style={{ fontSize: 36 }} />} text="Transactions" />
+                <SidebarItem to="/updates" icon={<Update style={{ fontSize: 36 }} />} text="Updates" />
+                <SidebarItem to="/analytics" icon={<BarIcon style={{ fontSize: 36 }} />} text="Analytics" />
+                <SidebarItem to="/systemdata" icon={<SystemSecurityUpdateSharp style={{ fontSize: 36 }} />} text="System Data" />
+                <SidebarItem to="/auth" icon={<Logout style={{ fontSize: 36 }} />} text="Logout" />
+              </ul>
+            </nav>
+          </div>
+        )}
       </aside>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-auto">
         {/* Top Navbar */}
-        <header className="bg-white shadow p-6 flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+        <header className="bg-gray-50 shadow p-6 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <button onClick={toggleSidebar} className="p-2 rounded hover:bg-gray-200">
+              <Menu fontSize="large" />
+            </button>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+          </div>
           <div className="flex items-center gap-6">
             <div className="relative text-gray-600 focus-within:text-gray-900">
               <input
@@ -90,17 +87,23 @@ function DashboardPage() {
           </div>
         </header>
 
-        {/* Nested page content renders here */}
+        {/* Nested Content */}
         <main className="p-8 flex-1 overflow-auto">
-            <Outlet />
-            <div className="text-2xl font-semibold text-center text-green-600 mt-10">
-                This is the Dashboard layout — sidebar and navbar work!
-            </div>
-            
-            </main>
-
+          <Outlet />
+        </main>
       </div>
     </div>
+  );
+}
+
+function SidebarItem({ to, icon, text }) {
+  return (
+    <li className="flex items-center gap-3">
+      {icon}
+      <Link to={to} className="hover:text-blue-600 !text-black">
+        {text}
+      </Link>
+    </li>
   );
 }
 

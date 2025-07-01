@@ -16,6 +16,8 @@ import AdaptiveTable from "@components/atoms/AdaptiveTable";
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 import SignInPage from "@pages/SignInPage";
 import RegisterForm from "@components/RegisterForm";
+import DashboardPage from "@pages/DashboardPage";
+import DashboardHome from "@pages/DashboardHome";
 
 
 
@@ -121,10 +123,14 @@ function App() {
           } />
 
           <Route path="/*" element={
-            <Dashboard/>
-          } />
-          <Route path="/services" element={<ServicePage />} />
-          <Route path="/users" element={<UserPage />} />
+            <DashboardPage/>
+          } >
+            <Route index element={<DashboardHome />} />
+            <Route path="services" element={<ServicePage />} />
+            <Route path="users" element={<UserPage />} />
+          </Route>
+          
+          
           
           <Route path="/sub2" element={<Dashboard>
             <AdaptivePaginatableTable

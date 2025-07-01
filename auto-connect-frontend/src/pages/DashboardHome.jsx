@@ -12,6 +12,7 @@ import {
   Legend,
   LineChart,
   Line,
+  Sector,
 } from "recharts";
 import {
   People,
@@ -50,83 +51,145 @@ const latestUpdates = [
   { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
 ];
 
+const renderActiveShape = (props) => {
+  const RADIAN = Math.PI / 180;
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+    value,
+  } = props;
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={outerRadius + 6}
+        outerRadius={outerRadius + 10}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <text x={cx} y={cy} dy={8} textAnchor="middle" fill="#333">
+        {payload.name}
+      </text>
+      <text x={cx} y={cy + 20} dy={8} textAnchor="middle" fill="#999">
+        {value} visits ({(percent * 100).toFixed(0)}%)
+      </text>
+    </g>
+  );
+};
+
 function DashboardHome() {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const cardData = [
+    {
+      title: "New Users",
+      value: 123915,
+      progress: 12.3456,
+      icon: <People fontSize="inherit" />,
+      color: "bg-blue-100",
+      iconBg: "bg-blue-600",
+    },
+    {
+      title: "Total Orders",
+      value: 61313,
+      progress: -8.1234,
+      icon: <BarIcon fontSize="inherit" />,
+      color: "bg-green-100",
+      iconBg: "bg-green-600",
+    },
+    {
+      title: "New Product",
+      value: 71003,
+      progress: 5.6789,
+      icon: <Settings fontSize="inherit" />,
+      color: "bg-purple-100",
+      iconBg: "bg-purple-600",
+    },
+    {
+      title: "Total Downloads",
+      value: 161888,
+      progress: 1.2345,
+      icon: <Download fontSize="inherit" />,
+      color: "bg-orange-100",
+      iconBg: "bg-orange-600",
+    },
+  ];
 
   return (
     <div className="grid grid-cols-5 gap-8">
       {/* Cards */}
       <div className="col-span-3 grid grid-cols-2 gap-6">
-        {[
-          {
-            title: "New Users",
-            value: 123915,
-            progress: 12.3456,
-            icon: <People style={{ fontSize: 42 }} />,
-            color: "bg-blue-100",
-            iconBg: "bg-blue-600",
-          },
-          {
-            title: "Total Orders",
-            value: 61313,
-            progress: -8.1234,
-            icon: <BarIcon style={{ fontSize: 42 }} />,
-            color: "bg-green-100",
-            iconBg: "bg-green-600",
-          },
-          {
-            title: "New Product",
-            value: 71003,
-            progress: 5.6789,
-            icon: <Settings style={{ fontSize: 42 }} />,
-            color: "bg-purple-100",
-            iconBg: "bg-purple-600",
-          },
-          {
-            title: "Total Downloads",
-            value: 161888,
-            progress: 1.2345,
-            icon: <Download style={{ fontSize: 42 }} />,
-            color: "bg-orange-100",
-            iconBg: "bg-orange-600",
-          },
-        ].map((card, i) => (
+        {cardData.map((card, i) => (
           <div
             key={i}
-            className={`p-6 rounded-2xl shadow-md ${card.color} transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between relative`}
+            className={`relative p-6 rounded-2xl shadow-md ${card.color} transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between`}
             style={{ minHeight: "140px" }}
           >
-            {/* Icon top-left */}
-            <div className={`absolute top-4 left-4 p-2 rounded-full text-white ${card.iconBg}`}>
+            <div
+              className={`absolute top-4 left-4 p-2 rounded-full text-white ${card.iconBg}`}
+              style={{ width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}
+            >
               {card.icon}
             </div>
-
-            {/* Progress top-right */}
-            <div className="absolute top-4 right-4 text-sm font-semibold text-gray-700">
+            <div className="absolute top-4 right-4 text-sm font-semibold">
               {card.progress >= 0 ? (
-                <span className="text-green-600">+{card.progress.toFixed(4)}%</span>
+                <span className="text-green-600">+{card.progress.toFixed(2)}%</span>
               ) : (
-                <span className="text-red-600">{card.progress.toFixed(4)}%</span>
+                <span className="text-red-600">{card.progress.toFixed(2)}%</span>
               )}
             </div>
-
-            {/* Title and value bottom-left */}
-            <div className="mt-auto pl-2">
-              <h4 className="text-md font-semibold">{card.title}</h4>
+            <div className="mt-auto pl-4">
+              <h4 className="text-lg font-semibold">{card.title}</h4>
               <p className="text-3xl font-bold">{card.value.toLocaleString()}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Pie Chart */}
+      {/* Traffic by Location Pie Chart */}
       <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
         <h3 className="text-2xl font-bold mb-4">Traffic by Location</h3>
-        <ResponsiveContainer width="100%" height={180}>
+        <ResponsiveContainer width="100%" height={200}>
           <PieChart>
-            <Pie data={dataTrafficLocation} dataKey="value" nameKey="name" outerRadius={80} label>
+            <Pie
+              activeIndex={activeIndex}
+              activeShape={renderActiveShape}
+              data={dataTrafficLocation}
+              cx="50%"
+              cy="50%"
+              innerRadius={50}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+              onMouseEnter={(_, index) => setActiveIndex(index)}
+              animationDuration={400}
+            >
               {dataTrafficLocation.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                  cursor="pointer"
+                />
               ))}
             </Pie>
           </PieChart>
