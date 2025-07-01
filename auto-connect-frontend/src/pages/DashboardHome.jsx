@@ -105,7 +105,7 @@ function DashboardHome() {
       title: "New Users",
       value: 123915,
       progress: 12.3456,
-      icon: <People fontSize="inherit" />,
+      icon: <People style={{ fontSize: 40 }} />,
       color: "bg-blue-100",
       iconBg: "bg-blue-600",
     },
@@ -113,7 +113,7 @@ function DashboardHome() {
       title: "Total Orders",
       value: 61313,
       progress: -8.1234,
-      icon: <BarIcon fontSize="inherit" />,
+      icon: <BarIcon style={{ fontSize: 40 }} />,
       color: "bg-green-100",
       iconBg: "bg-green-600",
     },
@@ -121,7 +121,7 @@ function DashboardHome() {
       title: "New Product",
       value: 71003,
       progress: 5.6789,
-      icon: <Settings fontSize="inherit" />,
+      icon: <Settings style={{ fontSize: 40 }} />,
       color: "bg-purple-100",
       iconBg: "bg-purple-600",
     },
@@ -129,7 +129,7 @@ function DashboardHome() {
       title: "Total Downloads",
       value: 161888,
       progress: 1.2345,
-      icon: <Download fontSize="inherit" />,
+      icon: <Download style={{ fontSize: 40 }} />,
       color: "bg-orange-100",
       iconBg: "bg-orange-600",
     },
@@ -147,7 +147,7 @@ function DashboardHome() {
           >
             <div
               className={`absolute top-4 left-4 p-2 rounded-full text-white ${card.iconBg}`}
-              style={{ width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}
+              style={{ width: 50, height: 50, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}
             >
               {card.icon}
             </div>
