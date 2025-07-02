@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import IconButton from "@components/atoms/IconButton";
 
 import Dashboard from "@pages/Dashboard";
-import ServicePage from "@pages/Service_Centers";
-import UserPage from "@pages/User_Management";
+import ServicePage from "@pages/Admin/Service_Centers";
+import UserPage from "@pages/Admin/User_Management";
 import AuthPage from "@pages/AuthPage";
 import LoginForm from "@components/LoginForm";
 import { UserContext } from "@contexts/UserContext";
@@ -16,8 +16,8 @@ import AdaptiveTable from "@components/atoms/AdaptiveTable";
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 import SignInPage from "@pages/SignInPage";
 import RegisterForm from "@components/RegisterForm";
-import DashboardPage from "@pages/DashboardPage";
-import DashboardHome from "@pages/DashboardHome";
+import DashboardPage from "@pages/Admin/DashboardPage";
+import DashboardHome from "@pages/Admin/DashboardHome";
 
 
 
