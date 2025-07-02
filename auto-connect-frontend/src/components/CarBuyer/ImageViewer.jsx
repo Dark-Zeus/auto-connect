@@ -72,7 +72,7 @@ const ImageViewer = ({ vehicle }) => {
 
   return (
     <>
-      <div className="tw:w-full tw:max-w-6xl tw:mx-auto tw:p-4">
+      <div className="tw:w-full tw:max-w-4xl tw:mx-auto tw:p-4">
         <div className="tw:relative tw:bg-gradient-to-br tw:from-white tw:to-gray-200 tw:rounded-2xl tw:overflow-hidden tw:shadow-2xl">
           
           {/* Main Image Container */}
