@@ -1,14 +1,11 @@
-import { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import axios from '../utils/axios';
 
 import RightIconRectInput from "./atoms/RightIconRectInput";
 import IconButton from "./atoms/IconButton";
-import OverlayWindow from "./OverlayWindow";
-import RegisterServiceProviderForm from "@pages/RegisterServiceProvider";
 
 import { UserContext } from "../contexts/UserContext";
 
@@ -24,7 +21,6 @@ function RegisterForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("-");
     const [repPassword, setRepPassword] = useState("");
-    const [showServiceProviderDialog, setShowServiceProviderDialog] = useState(false);
 
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
@@ -39,147 +35,230 @@ function RegisterForm() {
         const googleAuthUrl = process.env.REACT_APP_BACKEND_URL + "/auth/oauth/googleoauth";
         window.open(googleAuthUrl, "_blank", "width=500,height=500");
     }
+  };
 
-    useEffect(() => {
-        const handleMessage = (event) => {
-            if (event.origin !== process.env.REACT_APP_BACKEND_URL) return;
-            const data = JSON.parse(event.data);
-            const jwt = data.accessToken;
+  // Password strength calculation
+  useEffect(() => {
+    const calculatePasswordStrength = (password) => {
+      let strength = 0;
+      if (password.length >= 8) strength += 25;
+      if (/[a-z]/.test(password)) strength += 15;
+      if (/[A-Z]/.test(password)) strength += 15;
+      if (/[0-9]/.test(password)) strength += 15;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 30;
+      return Math.min(strength, 100);
+    };
 
-            localStorage.setItem('jwtToken', jwt);
-            setUserContext(data.user);
-            sessionStorage.setItem('user', JSON.stringify(data.user));
+    setPasswordStrength(calculatePasswordStrength(formData.password));
+  }, [formData.password]);
 
-            toast.success("Logged In Successfully");
-            if (data.emailSent) {
-                toast.info("An email with a temporary password to access your account has been sent to your email address. Please check your email.")
-            }
+  const getPasswordStrengthColor = () => {
+    if (passwordStrength < 30) return "#e74c3c";
+    if (passwordStrength < 60) return "#f39c12";
+    if (passwordStrength < 80) return "#f1c40f";
+    return "#27ae60";
+  };
 
-            navigate(`/user/profile/${data.user._id}`);
-        };
+  const getPasswordStrengthText = () => {
+    if (passwordStrength < 30) return "Weak";
+    if (passwordStrength < 60) return "Fair";
+    if (passwordStrength < 80) return "Good";
+    return "Strong";
+  };
 
-        window.addEventListener('message', handleMessage);
+  const validateForm = () => {
+    const newErrors = {};
 
-        return () => {
-            window.removeEventListener('message', handleMessage);
-        };
-    }, []);
-
-    //Form Submit
-
-    const register = (event) => {
-        event.preventDefault();
-
-        if (emailError || passwordError) {
-            toast.error(
-                <span>
-                    {emailError}{emailError && <br />}
-                    {passwordError}{passwordError && <br />}
-                    {repPasswordError}
-                </span>
-            )
-            return
-        }
-
-        axios.post('/auth/register', {
-            email: email,
-            password: password,
-            repPassword: repPassword
-        }).then((res) => {
-            console.log(res);
-            if (res.data?.status == "success") {
-                toast.success(res.data?.message);
-                navigate(`/auth/verify/${res.data.user._id}`, { state: { state: "success", message: "Registration Successfull" } });
-            }
-        }).catch((err) => {
-            console.log(err);
-            showError(err);
-        });
+    // Step 0: Basic Info
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
     }
 
-    const showError = (err) => {
-        console.log(err);
-        if (err?.response?.data.message) {
-            toast.error(err.response?.data.message);
-        } else if (err?.message) {
-            toast.error(err.message);
-        } else {
-            toast.error(err);
-        }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
     }
 
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = "Please enter a valid email address";
+      }
+    }
 
-    /* Check Email */
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else {
+      const phoneRegex = /^[0-9+\-\s()]+$/;
+      if (!phoneRegex.test(formData.phone)) {
+        newErrors.phone = "Please enter a valid phone number";
+      }
+    }
 
-    useEffect(() => {
-        let pattern = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
-        let val = email.match(pattern);
+    if (!formData.role) {
+      newErrors.role = "Please select a user role";
+    }
 
-        if (val) {
-            setEmailError(null);
-            return;
-        }
+    // Step 1: Address
+    if (!formData.street.trim()) {
+      newErrors.street = "Street address is required";
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = "City is required";
+    }
+    if (!formData.district.trim()) {
+      newErrors.district = "District is required";
+    }
+    if (!formData.province.trim()) {
+      newErrors.province = "Province is required";
+    }
+    if (!formData.postalCode.trim()) {
+      newErrors.postalCode = "Postal code is required";
+    }
 
-        setEmailError("Enter a Valid Email");
+    // Step 2: Role-specific validation
+    if (requiresBusinessInfo) {
+      if (!formData.businessName.trim()) {
+        newErrors.businessName = "Business name is required";
+      }
+      if (!formData.licenseNumber.trim()) {
+        newErrors.licenseNumber = "License number is required";
+      }
+      if (!formData.businessRegistrationNumber.trim()) {
+        newErrors.businessRegistrationNumber =
+          "Business registration number is required";
+      }
+      if (!formData.taxIdentificationNumber.trim()) {
+        newErrors.taxIdentificationNumber =
+          "Tax identification number is required";
+      }
+    }
 
-    }, [email]);
+    if (requiresPoliceInfo) {
+      if (!formData.badgeNumber.trim()) {
+        newErrors.badgeNumber = "Badge number is required";
+      }
+      if (!formData.department.trim()) {
+        newErrors.department = "Department is required";
+      }
+      if (!formData.rank.trim()) {
+        newErrors.rank = "Rank is required";
+      }
+    }
 
+    // Step 3: Security
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (passwordStrength < 60) {
+      newErrors.password =
+        "Password is too weak. Please choose a stronger password";
+    }
 
-    /* Check Password */
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
 
-    useEffect(() => {
-        let pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-        let val = pattern.test(password);
+    if (!acceptTerms) {
+      newErrors.terms = "You must accept the terms and conditions";
+    }
 
-        let errors = [];
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-        if (val) {
-            setPasswordError(null)
-            return
-        } else {
-            //let missing = [];
-            // Check for lowercase letter
-            if (!/[a-z]/.test(password)) {
-                errors.push("At least 1 lowercase letter");
-                //  missing.push("At least 1 lowercase letter");
-            }
+  const handleNext = () => {
+    // Validate current step before proceeding
+    const stepValidations = {
+      0: ["firstName", "lastName", "email", "phone", "role"],
+      1: ["street", "city", "district", "province", "postalCode"],
+      2: requiresBusinessInfo
+        ? [
+            "businessName",
+            "licenseNumber",
+            "businessRegistrationNumber",
+            "taxIdentificationNumber",
+          ]
+        : requiresPoliceInfo
+        ? ["badgeNumber", "department", "rank"]
+        : [],
+      3: ["password", "confirmPassword"],
+    };
 
-            // Check for uppercase letter
-            if (!/[A-Z]/.test(password)) {
-                errors.push("At least 1 uppercase letter");
-                //missing.push("At least 1 uppercase letter");
-            }
+    const fieldsToValidate = stepValidations[currentStep] || [];
+    const stepErrors = {};
 
-            // Check for digit
-            if (!/[0-9]/.test(password)) {
-                errors.push("At least 1 digit");
-                //missing.push("At least 1 digit");
-            }
+    fieldsToValidate.forEach((field) => {
+      if (!formData[field] || !formData[field].toString().trim()) {
+        stepErrors[field] = `This field is required`;
+      }
+    });
 
-            // Check for special character
-            if (!/[!@#\$%\^&\*]/.test(password)) {
-                errors.push("At least 1 special character");
-                //missing.push("At least 1 special character");
-            }
+    // Additional validations for current step
+    if (currentStep === 0) {
+      if (
+        formData.email &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+      ) {
+        stepErrors.email = "Please enter a valid email address";
+      }
+      if (formData.phone && !/^[0-9+\-\s()]+$/.test(formData.phone)) {
+        stepErrors.phone = "Please enter a valid phone number";
+      }
+    }
 
-            // Check for minimum length
-            if (password.length < 8) {
-                errors.push("Minimum length of 8 characters");
-                //missing.push("Minimum length of 8 characters");
-            }
-        }
+    if (currentStep === 3) {
+      if (passwordStrength < 60) {
+        stepErrors.password = "Password is too weak";
+      }
+      if (formData.password !== formData.confirmPassword) {
+        stepErrors.confirmPassword = "Passwords do not match";
+      }
+      if (!acceptTerms) {
+        stepErrors.terms = "You must accept the terms and conditions";
+      }
+    }
 
-        setPasswordError(errors[errors.length - 1])
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
+      toast.error("Please fix the errors before proceeding");
+      return;
+    }
 
-    }, [password])
+    setErrors({});
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
 
-    /* Check Repeat Password */
+  const handleBack = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
 
-    useEffect(() => {
-        if (repPassword != password) {
-            setRepPasswordError("Passwords do not match");
-            return;
-        }
+  const addService = () => {
+    const newService = prompt("Enter service name:");
+    if (newService && newService.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        servicesOffered: [...prev.servicesOffered, newService.trim()],
+      }));
+    }
+  };
+
+  const removeService = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      servicesOffered: prev.servicesOffered.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      toast.error("Please fix the errors below");
+      return;
+    }
 
         setRepPasswordError(null);
     }, [repPassword, password]);
@@ -220,14 +299,10 @@ function RegisterForm() {
                 <IconButton icon="google" onClick={googleAuth} iconb={<GoogleIcon />} w="max" extraClass="google-auth-btn btn-margin" content={"Continue with Google"} />
             </form>
             <div className="form-bottom-bar">
-                <div className="register-link" onClick={() => setShowServiceProviderDialog(true)}><span>Register as a Service Provider</span><span className="register__icon">arrow_forward</span></div>
+                <div>T&C</div>
+                <div>Help</div>
                 <div className="register-link"><Link to="/auth/login"><span>Login</span><span className="register__icon">arrow_forward</span></Link></div>
             </div>
-            {showServiceProviderDialog && (
-                <OverlayWindow closeWindowFunction={() => setShowServiceProviderDialog(false)}>
-                    <RegisterServiceProviderForm />
-                </OverlayWindow>
-            )}
         </>
     );
 }

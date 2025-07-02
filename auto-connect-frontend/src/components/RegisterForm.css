@@ -13,9 +13,10 @@
     --shadow-strong: rgba(74, 98, 138, 0.3);
     --error-color: #e74c3c;
     --success-color: #27ae60;
+    --warning-color: #f39c12;
   }
   
-  .login-form-container {
+  .register-form-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -26,7 +27,7 @@
     overflow: hidden;
   }
   
-  .login-form-container::before {
+  .register-form-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -37,9 +38,9 @@
     pointer-events: none;
   }
   
-  .login-form-paper {
+  .register-form-paper {
     width: 100%;
-    max-width: 440px;
+    max-width: 600px;
     background: var(--white) !important;
     border-radius: 24px !important;
     box-shadow: 0 20px 60px var(--shadow-medium) !important;
@@ -49,7 +50,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  .login-form-header {
+  .register-form-header {
     text-align: center;
     margin-bottom: 2.5rem;
   }
@@ -71,10 +72,158 @@
     font-weight: 400 !important;
   }
   
-  .login-form {
+  .register-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+  }
+  
+  /* Stepper Styling */
+  .form-stepper {
+    margin: 2rem 0 !important;
+  }
+  
+  .form-stepper .MuiStepLabel-root .MuiStepLabel-label {
+    color: var(--gray-medium) !important;
+    font-weight: 500 !important;
+  }
+  
+  .form-stepper .MuiStepLabel-root.Mui-active .MuiStepLabel-label {
+    color: var(--primary-blue) !important;
+    font-weight: 600 !important;
+  }
+  
+  .form-stepper .MuiStepLabel-root.Mui-completed .MuiStepLabel-label {
+    color: var(--primary-dark) !important;
+  }
+  
+  .form-stepper .MuiStepIcon-root {
+    color: var(--gray-medium) !important;
+  }
+  
+  .form-stepper .MuiStepIcon-root.Mui-active {
+    color: var(--primary-blue) !important;
+  }
+  
+  .form-stepper .MuiStepIcon-root.Mui-completed {
+    color: var(--primary-dark) !important;
+  }
+  
+  /* Step Content */
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .step-title {
+    color: var(--text-dark) !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+    text-align: center;
+  }
+  
+  /* Address and Business Row Layouts */
+  .address-row,
+  .business-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .address-input,
+  .business-input {
+    width: 100% !important;
+  }
+  
+  /* Services Section */
+  .services-section {
+    background: var(--gray-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  
+  .services-title {
+    color: var(--text-dark) !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .services-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    min-height: 2rem;
+  }
+  
+  .service-chip {
+    background: var(--primary-blue) !important;
+    color: var(--white) !important;
+    font-weight: 500 !important;
+  }
+  
+  .add-service-btn {
+    border-color: var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
+    border-radius: 25px !important;
+    font-weight: 500 !important;
+  }
+  
+  .add-service-btn:hover {
+    background: var(--primary-blue) !important;
+    color: var(--white) !important;
+  }
+  
+  /* No Additional Info */
+  .no-additional-info {
+    text-align: center;
+    padding: 2rem;
+    background: var(--gray-light);
+    border-radius: 12px;
+  }
+  
+  /* Step Navigation */
+  .step-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--primary-light);
+  }
+  
+  .nav-spacer {
+    flex: 1;
+  }
+  
+  .nav-button {
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 25px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+  }
+  
+  .back-button {
+    border-color: var(--gray-medium) !important;
+    color: var(--gray-medium) !important;
+  }
+  
+  .back-button:hover {
+    background: var(--gray-medium) !important;
+    color: var(--white) !important;
+  }
+  
+  .next-button {
+    background: linear-gradient(45deg, var(--primary-blue), var(--primary-dark)) !important;
+    color: var(--white) !important;
+  }
+  
+  .next-button:hover {
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-blue)) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px var(--shadow-medium) !important;
   }
   
   /* Input Styling */
@@ -144,30 +293,127 @@
     color: var(--error-color) !important;
   }
   
-  /* Forgot Password */
-  .forgot-password-container {
-    display: flex;
-    justify-content: flex-end;
+  /* Password Strength */
+  .password-strength-container {
+    background: var(--gray-light);
+    border-radius: 12px;
+    padding: 1rem;
     margin-top: -0.5rem;
   }
   
-  .forgot-password-link {
+  .password-strength-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .strength-label {
+    color: var(--gray-medium) !important;
+    font-weight: 500 !important;
+  }
+  
+  .strength-chip {
+    font-size: 0.75rem !important;
+    height: 20px !important;
+    font-weight: 600 !important;
+  }
+  
+  .strength-bar {
+    border-radius: 4px !important;
+    height: 6px !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .password-requirements {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .password-requirement {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .requirement-icon {
+    font-size: 1rem !important;
+  }
+  
+  .requirement-icon.success {
+    color: var(--success-color) !important;
+  }
+  
+  .requirement-icon.error {
+    color: var(--error-color) !important;
+  }
+  
+  .requirement-text {
+    font-size: 0.75rem !important;
+  }
+  
+  .requirement-text.success {
+    color: var(--success-color) !important;
+  }
+  
+  .requirement-text.error {
+    color: var(--gray-medium) !important;
+  }
+  
+  /* Terms and Conditions */
+  .terms-control {
+    margin: 0 !important;
+    align-items: flex-start !important;
+  }
+  
+  .terms-checkbox {
+    color: var(--primary-blue) !important;
+    padding: 0.25rem !important;
+    margin-right: 0.5rem !important;
+  }
+  
+  .terms-checkbox.Mui-checked {
+    color: var(--primary-blue) !important;
+  }
+  
+  .terms-text {
+    color: var(--gray-medium) !important;
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .terms-link {
     color: var(--primary-blue) !important;
     text-decoration: none !important;
-    font-size: 0.875rem !important;
     font-weight: 500 !important;
-    transition: all 0.3s ease !important;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease !important;
   }
   
-  .forgot-password-link:hover {
+  .terms-link:hover {
     color: var(--primary-dark) !important;
-    border-bottom-color: var(--primary-dark);
+    text-decoration: underline !important;
   }
   
-  /* Login Button */
-  .login-button {
+  .error-text {
+    color: var(--error-color) !important;
+    font-size: 0.75rem !important;
+    margin-top: 0.25rem !important;
+    margin-left: 0 !important;
+  }
+  
+  /* Name Fields */
+  .name-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .name-input {
+    width: 100% !important;
+  }
+  .register-button {
     background: linear-gradient(45deg, var(--primary-blue), var(--primary-dark)) !important;
     color: var(--white) !important;
     border: none !important;
@@ -181,17 +427,17 @@
     box-shadow: 0 4px 20px var(--shadow-light) !important;
   }
   
-  .login-button:hover {
+  .register-button:hover {
     background: linear-gradient(45deg, var(--primary-dark), var(--primary-blue)) !important;
     transform: translateY(-2px);
     box-shadow: 0 8px 30px var(--shadow-medium) !important;
   }
   
-  .login-button:active {
+  .register-button:active {
     transform: translateY(0);
   }
   
-  .login-button:disabled {
+  .register-button:disabled {
     background: var(--gray-medium) !important;
     color: var(--white) !important;
     transform: none !important;
@@ -271,7 +517,7 @@
     font-size: 0.9rem !important;
   }
   
-  .register-link {
+  .login-link {
     color: var(--primary-blue) !important;
     text-decoration: none !important;
     font-weight: 600 !important;
@@ -283,7 +529,7 @@
     margin-left: 0.25rem;
   }
   
-  .register-link:hover {
+  .login-link:hover {
     color: var(--primary-dark) !important;
     border-bottom-color: var(--primary-dark);
   }
@@ -293,8 +539,8 @@
     transition: transform 0.3s ease !important;
   }
   
-  .register-link:hover .arrow-icon {
-    transform: translateX(2px);
+  .login-link:hover .arrow-icon {
+    transform: translateX(-2px);
   }
   
   /* Bottom Links */
@@ -321,17 +567,30 @@
   
   /* Responsive Design */
   @media (max-width: 768px) {
-    .login-form-container {
+    .register-form-container {
       padding: 1rem;
     }
     
-    .login-form-paper {
+    .register-form-paper {
       padding: 2rem 1.5rem !important;
       max-width: 100%;
     }
     
     .form-title {
       font-size: 1.875rem !important;
+    }
+    
+    .name-fields {
+      grid-template-columns: 1fr;
+    }
+    
+    .address-row,
+    .business-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .password-requirements {
+      grid-template-columns: 1fr;
     }
     
     .form-bottom-links {
@@ -341,7 +600,7 @@
   }
   
   @media (max-width: 480px) {
-    .login-form-paper {
+    .register-form-paper {
       padding: 1.5rem 1rem !important;
       border-radius: 16px !important;
     }
@@ -350,8 +609,12 @@
       font-size: 1.625rem !important;
     }
     
-    .login-form {
+    .register-form {
       gap: 1.25rem;
+    }
+    
+    .password-strength-container {
+      padding: 0.75rem;
     }
   }
   
@@ -367,6 +630,6 @@
     }
   }
   
-  .login-form-paper {
+  .register-form-paper {
     animation: slideIn 0.6s ease-out;
   }

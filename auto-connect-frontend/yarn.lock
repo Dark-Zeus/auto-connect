@@ -1564,9 +1564,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.14.0":
-  version: 11.14.0
-  resolution: "@emotion/styled@npm:11.14.0"
+"@emotion/styled@npm:^11.14.1":
+  version: 11.14.1
+  resolution: "@emotion/styled@npm:11.14.1"
   dependencies:
     "@babel/runtime": "npm:^7.18.3"
     "@emotion/babel-plugin": "npm:^11.13.5"
@@ -1580,7 +1580,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/20aa5c488e4edecf63659212fc5ba1ccff2d3a66593fc8461de7cd5fe9192a741db357ffcd270a455bd61898d7f37cd5c84b4fd2b7974dade712badf7860ca9c
+  checksum: 10c0/2bbf8451df49c967e41fbcf8111a7f6dafe6757f0cc113f2f6e287206c45ac1d54dc8a95a483b7c0cee8614b8a8d08155bded6453d6721de1f8cc8d5b9216963
   languageName: node
   linkType: hard
 
@@ -3180,7 +3180,7 @@ __metadata:
   resolution: "auto-connect-frontend@workspace:."
   dependencies:
     "@emotion/react": "npm:^11.14.0"
-    "@emotion/styled": "npm:^11.14.0"
+    "@emotion/styled": "npm:^11.14.1"
     "@mui/icons-material": "npm:^7.1.2"
     "@mui/material": "npm:^7.1.2"
     "@reduxjs/toolkit": "npm:^2.8.2"
@@ -3191,7 +3191,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.5.2"
     "@vitejs/plugin-react": "npm:^4.5.2"
     autoprefixer: "npm:^10.4.21"
-    axios: "npm:^1.7.9"
+    axios: "npm:^1.10.0"
     eslint: "npm:8.1.0"
     eslint-config-react-app: "npm:^7.0.1"
     html2canvas: "npm:^1.4.1"
@@ -3201,8 +3201,8 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-redux: "npm:^9.2.0"
     react-router: "npm:^7.1.1"
-    react-router-dom: "npm:^7.1.1"
-    react-toastify: "npm:^11.0.3"
+    react-router-dom: "npm:^7.6.2"
+    react-toastify: "npm:^11.0.5"
     recharts: "npm:^2.15.3"
     tailwindcss: "npm:^4.1.10"
     vite: "npm:^6.3.5"
@@ -3244,7 +3244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.9":
+"axios@npm:^1.10.0":
   version: 1.10.0
   resolution: "axios@npm:1.10.0"
   dependencies:
@@ -6480,7 +6480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.1.1":
+"react-router-dom@npm:^7.6.2":
   version: 7.6.2
   resolution: "react-router-dom@npm:7.6.2"
   dependencies:
@@ -6522,7 +6522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-toastify@npm:^11.0.3":
+"react-toastify@npm:^11.0.5":
   version: 11.0.5
   resolution: "react-toastify@npm:11.0.5"
   dependencies:
