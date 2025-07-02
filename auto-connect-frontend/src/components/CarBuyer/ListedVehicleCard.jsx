@@ -61,13 +61,12 @@ const ListedVehicleCard = ({ vehicle = null }) => {
 
   return (
     <Card 
-      className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 hover:tw:shadow-2xl hover:tw:translate-y-[-4px]"
-      style={{ 
+      className="tw:bg-white tw:shadow-lg tw:transition-all tw:mb-1.5"
+      sx={{ 
         width: '50vw', 
         height: '15vh',
         minWidth: 500,
         minHeight: 200,
-        
         borderRadius: '12px',
         overflow: 'hidden',
         display: 'flex',
@@ -75,7 +74,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         '&:hover': {
           boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-          transform: 'translateY(-4px)'
+          transform: 'translateY(-3px)'
         }
       }}
     >
