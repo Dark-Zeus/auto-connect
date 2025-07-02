@@ -111,7 +111,7 @@ const VehicleDetails = ({ vehicle }) => {
   ];
 
   return (
-    <div className="tw:max-w-4xl tw:mx-auto tw:p-4 tw:bg-white">
+    <div className="tw:max-w-4xl tw:mx-auto tw:p-4 tw:bg-white tw:rounded-lg tw:shadow-md tw:border tw:border-gray-200">
       {/* Main Price and Contact Section */}
       <Card className="tw:mb-6 tw:shadow-lg tw:border-0 tw:bg-gradient-to-br tw:from-blue-50 tw:to-purple-50">
         <CardContent className="tw:p-6">
