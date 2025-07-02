@@ -84,10 +84,10 @@ function ServiceCenters() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-10">
-        <h2 className="text-2xl font-semibold">Service Centers</h2>
+        <div /> {/* Empty div to push the button to the right */}
         <button
           onClick={() => alert("Redirect to New Service Center Form")}
-          className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition" 
         >
           + New Service Center
         </button>

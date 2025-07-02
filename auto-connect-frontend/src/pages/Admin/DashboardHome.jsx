@@ -30,10 +30,10 @@ const dataTrafficLocation = [
 ];
 
 const dataTrafficDevice = [
-  { device: "Vehicle1", users: 300 },
-  { device: "Mobile", users: 500 },
-  { device: "Desktop", users: 300 },
-  { device: "Tablet", users: 100 },
+  { device: "June", users: 300 },
+  { device: "May", users: 500 },
+  { device: "April", users: 300 },
+  { device: "March", users: 100 },
 ];
 
 const COLORS = ["#8884d8", "#8dd1e1", "#82ca9d", "#ffc658", "#d0ed57"];
@@ -173,8 +173,8 @@ function DashboardHome() {
 
       {/* Traffic by Location Pie Chart */}
       <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
-        <h3 className="text-2xl font-bold mb-4">Traffic by Location</h3>
-        <ResponsiveContainer width="100%" height={200}>
+        <h3 className="text-2xl font-bold mb-4">Service Centers</h3>
+        <ResponsiveContainer width="100%" height={215}>
           <PieChart>
             <Pie
               activeIndex={activeIndex}
@@ -182,8 +182,8 @@ function DashboardHome() {
               data={dataTrafficLocation}
               cx="50%"
               cy="50%"
-              innerRadius={50}
-              outerRadius={80}
+              innerRadius={55}
+              outerRadius={95}
               fill="#8884d8"
               dataKey="value"
               onMouseEnter={(_, index) => setActiveIndex(index)}
@@ -237,34 +237,33 @@ function DashboardHome() {
       </div>
 
       {/* Bar Chart */}
-{/* Bar Chart */}
-<div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
-  <h3 className="text-2xl font-bold mb-4">Traffic by Device</h3>
-  <ResponsiveContainer width="100%" height={260}>
-    <BarChart data={dataTrafficDevice}>
-      <XAxis dataKey="device" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="users" radius={[4, 4, 4, 4]} barSize={40}>
-        {dataTrafficDevice.map((entry, index) => (
-          <Cell key={index} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
-  <div className="flex flex-col mt-4 space-y-2 text-sm">
-    {dataTrafficDevice.map((entry, index) => (
-      <div key={index} className="flex items-center gap-2">
-        <span
-          className="inline-block w-4 h-4 rounded-full"
-          style={{ backgroundColor: COLORS[index % COLORS.length] }}
-        ></span>
-        <span>{entry.device}</span>
+      <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
+        <h3 className="text-2xl font-bold mb-4">Monthly Income</h3>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={dataTrafficDevice}>
+            <XAxis dataKey="device" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="users" radius={[4, 4, 4, 4]} barSize={40}>
+              {dataTrafficDevice.map((entry, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex flex-col mt-4 space-y-2 text-sm">
+          {dataTrafficDevice.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <span
+                className="inline-block w-4 h-4 rounded-full"
+                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              ></span>
+              <span>{entry.device}</span> 
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
 
 
       {/* Latest Updates Table */}

@@ -4,6 +4,7 @@
 # Ignore the main app file
 src/app.jsx
 
+src/css/tailwind.css
 ### dotenv ###
 .env
 

@@ -1,6 +1,9 @@
 import { useContext, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { UserContext } from "@contexts/UserContext";
+import NotificationPopup from "../../components/Admin_Components/NotificationPopupBox";
+import ProfilePopupBox from "../../components/Admin_Components/ProfilePopupBox";
+
 import {
   Dashboard,
   People,
@@ -15,14 +18,28 @@ import {
   Menu,
 } from "@mui/icons-material";
 
-
-
 function DashboardPage() {
   let { userContext } = useContext(UserContext);
   userContext = { role: "admin" };
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+  const location = useLocation();
+
+  const pageTitles = {
+    "/": "Dashboard",
+    "/services": "Service Centers",
+    "/users": "User Management",
+    "/notifications": "Notifications",
+    "/transactions": "Transactions",
+    "/updates": "Updates",
+    "/analytics": "Analytics",
+    "/systemdata": "System Data",
+    "/auth": "Logout",
+  };
+
+  const currentTitle = pageTitles[location.pathname] || "Dashboard";
 
   return (
     <div className="w-screen h-screen flex bg-gray-100 text-gray-800 text-base">
@@ -75,7 +92,7 @@ function DashboardPage() {
             >
               <Menu fontSize="large" />
             </button>
-            <h1 className="text-3xl font-bold select-none">Dashboard</h1>
+            <h1 className="text-3xl font-bold select-none">{currentTitle}</h1>
           </div>
           <div className="flex items-center gap-6">
             <div className="relative text-gray-600 focus-within:text-gray-900">
@@ -88,19 +105,8 @@ function DashboardPage() {
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fontSize="small" />
             </div>
-            <button className="relative p-2 rounded-full hover:bg-gray-200" aria-label="Notifications">
-              <Notifications fontSize="large" />
-              <span className="absolute top-1 right-1 h-4 w-4 flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-semibold">
-                3
-              </span>
-            </button>
-            <span className="text-lg text-gray-700 select-none">Rashmika Dilmin</span>
-            <img
-              src="https://i.pravatar.cc/60?img=12"
-              alt="Admin"
-              className="w-14 h-14 rounded-full border"
-              loading="lazy"
-            />
+            <NotificationPopup />
+            <ProfilePopupBox />
           </div>
         </header>
 
@@ -134,6 +140,5 @@ function SidebarItem({ to, icon, text, className = "" }) {
     </li>
   );
 }
-
 
 export default DashboardPage;
