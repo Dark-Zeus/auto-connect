@@ -22,15 +22,15 @@ import {
 } from "@mui/icons-material";
 
 const dataTrafficLocation = [
-  { name: "USA", value: 400 },
-  { name: "UK", value: 300 },
-  { name: "India", value: 300 },
-  { name: "Germany", value: 200 },
-  { name: "Others", value: 100 },
+  { name: "AutoFix", value: 400 },
+  { name: "QuickServe", value: 300 },
+  { name: "SpeedyAuto", value: 300 },
+  { name: "Center1", value: 200 },
+  { name: "Center2", value: 100 },
 ];
 
 const dataTrafficDevice = [
-  { device: "Mobile", users: 300 },
+  { device: "Vehicle1", users: 300 },
   { device: "Mobile", users: 500 },
   { device: "Desktop", users: 300 },
   { device: "Tablet", users: 100 },
@@ -49,6 +49,11 @@ const latestUpdates = [
   { serviceCenter: "QuickServe", date: "2025-06-13", time: "01:00 PM", district: "Matara", vehicleNumber: "WP MN 2345", type: "Maintenance" },
   { serviceCenter: "SpeedyAuto", date: "2025-06-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OP 6789", type: "Inspection" },
   { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
+
 ];
 
 const renderActiveShape = (props) => {
@@ -232,25 +237,35 @@ function DashboardHome() {
       </div>
 
       {/* Bar Chart */}
-      <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
-        <h3 className="text-2xl font-bold mb-4">Traffic by Device</h3>
-        <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={dataTrafficDevice}>
-            <XAxis dataKey="device" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="users" fill="#82ca9d" barSize={40} />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="flex flex-col mt-4 space-y-2 text-sm">
-          {dataTrafficDevice.map((entry, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <span className="inline-block w-4 h-4 rounded-full bg-green-400"></span>
-              <span>{entry.device}</span>
-            </div>
-          ))}
-        </div>
+{/* Bar Chart */}
+<div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
+  <h3 className="text-2xl font-bold mb-4">Traffic by Device</h3>
+  <ResponsiveContainer width="100%" height={260}>
+    <BarChart data={dataTrafficDevice}>
+      <XAxis dataKey="device" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Bar dataKey="users" radius={[4, 4, 4, 4]} barSize={40}>
+        {dataTrafficDevice.map((entry, index) => (
+          <Cell key={index} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Bar>
+    </BarChart>
+  </ResponsiveContainer>
+  <div className="flex flex-col mt-4 space-y-2 text-sm">
+    {dataTrafficDevice.map((entry, index) => (
+      <div key={index} className="flex items-center gap-2">
+        <span
+          className="inline-block w-4 h-4 rounded-full"
+          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+        ></span>
+        <span>{entry.device}</span>
       </div>
+    ))}
+  </div>
+</div>
+
 
       {/* Latest Updates Table */}
       <div className="col-span-5 bg-white rounded-2xl shadow-md p-6 overflow-x-auto">

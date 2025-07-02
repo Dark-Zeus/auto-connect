@@ -29,7 +29,7 @@ function DashboardPage() {
       {/* Sidebar */}
       <aside
         className={`
-          ${sidebarOpen ? "w-90 p-6" : "w-0 p-0"}
+          ${sidebarOpen ? "w-80 p-6" : "w-0 p-0"}
           h-full 
           bg-gradient-to-b from-blue-100 to-white 
           shadow-xl 

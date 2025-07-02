@@ -18,7 +18,11 @@ import SignInPage from "@pages/SignInPage";
 import RegisterForm from "@components/RegisterForm";
 import DashboardPage from "@pages/Admin/DashboardPage";
 import DashboardHome from "@pages/Admin/DashboardHome";
-
+import Notifications from "@pages/Admin/Notifications";
+import Transactions from "@pages/Admin/Transactions";
+import Updates from "@pages/Admin/Updates";
+import Analytics from "@pages/Admin/Analytics";
+import Systemdata from "@pages/Admin/Systemdata";
 
 
 //Pages
@@ -128,6 +132,11 @@ function App() {
             <Route index element={<DashboardHome />} />
             <Route path="services" element={<ServicePage />} />
             <Route path="users" element={<UserPage />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="updates" element={<Updates />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="systemdata" element={<Systemdata />} />
           </Route>
           
           
