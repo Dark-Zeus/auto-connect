@@ -3,6 +3,7 @@ import VehicleDetails from "@components/CarBuyer/VehicleDetails";
 import SecurityTips from "@components/CarBuyer/SecurityTips";
 import VehicleDescriptionBox from "@components/CarBuyer/VehicleDescriptionBox";
 import VehicleHeader from "@components/CarBuyer/VehicleHeader";
+import SimilarAds from "@components/CarBuyer/SimilarAds";
 import React from "react";
 
 const vehicleData = {
@@ -50,6 +51,7 @@ const VehicleViewPage = () => {
             <VehicleDetails />
             </div>
         </div>
+        <SimilarAds />
     </div>
   );
 };
