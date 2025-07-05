@@ -111,14 +111,57 @@ const VehicleDetails = ({ vehicle }) => {
   ];
 
   return (
-    <div className="tw:max-w-4xl tw:mx-auto tw:p-4 tw:bg-white tw:rounded-lg tw:shadow-md tw:border tw:border-gray-200">
+    <div className="tw:w-full tw:p-2 sm:tw:p-4 tw:space-y-4">
       {/* Main Price and Contact Section */}
-      <Card className="tw:mb-6 tw:shadow-lg tw:border-0 tw:bg-gradient-to-br tw:from-blue-50 tw:to-purple-50">
-        <CardContent className="tw:p-6">
-          <div className="tw:flex tw:items-center tw:gap-6">
+      <Card className="tw:shadow-lg tw:border-0 tw:bg-white tw:rounded-lg">
+        <CardContent className="tw:p-3 sm:tw:p-6">
+          {/* Mobile Layout - Stack vertically */}
+          <div className="tw:block md:tw:hidden tw:space-y-4">
+            {/* Price Section */}
+            <div className="tw:text-center">
+              <Typography variant="h4" className="tw:font-bold tw:text-purple-600 tw:mb-2">
+                {vehicleData.price ? formatPrice(vehicleData.price) : 'Negotiable'}
+              </Typography>
+            </div>
+
+            {/* Contact Buttons - Stack vertically on mobile */}
+            <div className="tw:space-y-3">
+              {/* Phone Contact */}
+              <Button
+                onClick={handleShowMobile}
+                className="tw:flex tw:items-center tw:gap-3 tw:p-3 tw:bg-gray-50 tw:text-gray-700 tw:border tw:border-gray-200 tw:rounded-lg tw:shadow-sm hover:tw:shadow-md tw:transition-all tw:w-full"
+                style={{ textTransform: 'none' }}
+              >
+                <MobileIcon />
+                <div className="tw:text-left tw:flex-1">
+                  <Typography variant="body1" className="tw:font-bold tw:text-gray-900">
+                    {showMobile ? (vehicleData.mobile || '0767120123') : '07XXXXXXXX'}
+                  </Typography>
+                  <Typography variant="caption" className="tw:text-gray-600">
+                    Click to View Phone Number
+                  </Typography>
+                </div>
+              </Button>
+
+              {/* Email Inquiry */}
+              <Button
+                href={vehicleData.inquiryUrl || "https://www.patpat.lk/Inquiry/1486540"}
+                className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
+                style={{ textTransform: 'none', color: 'white'}}
+              >
+                <Email />
+                <Typography variant="body1" className="tw:font-medium">
+                  Inquire Now
+                </Typography>
+              </Button>
+            </div>
+          </div>
+
+          {/* Desktop Layout - Side by side */}
+          <div className="tw:hidden md:tw:flex tw:items-center tw:gap-6">
             {/* Price Section */}
             <div className="tw:flex-1">
-              <Typography variant="h3" className="tw:font-bold tw:text-purple-900 tw:mb-1">
+              <Typography variant="h3" className="tw:font-bold tw:text-purple-600 tw:mb-1">
                 {vehicleData.price ? formatPrice(vehicleData.price) : 'Negotiable'}
               </Typography>
             </div>
@@ -132,7 +175,7 @@ const VehicleDetails = ({ vehicle }) => {
               <div className="tw:flex-1 tw:max-w-xs">
                 <Button
                   onClick={handleShowMobile}
-                  className="tw:flex tw:items-center tw:gap-3 tw:p-3 tw:bg-white tw:text-gray-700 tw:border tw:border-gray-200 tw:rounded-lg tw:shadow-sm hover:tw:shadow-md tw:transition-all tw:w-full"
+                  className="tw:flex tw:items-center tw:gap-3 tw:p-3 tw:bg-gray-50 tw:text-gray-700 tw:border tw:border-gray-200 tw:rounded-lg tw:shadow-sm hover:tw:shadow-md tw:transition-all tw:w-full"
                   style={{ textTransform: 'none' }}
                 >
                   <MobileIcon />
@@ -151,7 +194,7 @@ const VehicleDetails = ({ vehicle }) => {
               <div className="tw:flex-1">
                 <Button
                   href={vehicleData.inquiryUrl || "https://www.patpat.lk/Inquiry/1486540"}
-                  className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-4 tw:bg-gradient-to-r tw:from-blue-600 tw:to-purple-600 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
+                  className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-4 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
                   style={{ textTransform: 'none', color: 'white'}}
                 >
                   <Email />
@@ -164,11 +207,11 @@ const VehicleDetails = ({ vehicle }) => {
           </div>
             
           {/* WhatsApp Section */}
-          <div className="tw:mt-4 tw:p-4 tw:bg-gradient-to-r tw:from-green-50 tw:to-emerald-50 tw:rounded-lg">
+          <div className="tw:mt-4 tw:p-3 sm:tw:p-4 tw:bg-gradient-to-r tw:from-green-50 tw:to-emerald-50 tw:rounded-lg">
             <Button
                 href={`https://api.whatsapp.com/send?phone=94${vehicleData.mobile?.replace(/^0/, '') || '767120123'}`}
                 target="_blank"
-                className="tw:flex tw:items-center tw:justify-center tw:gap-3 tw:p-3 tw:bg-green-600 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
+                className="tw:flex tw:items-center tw:justify-center tw:gap-3 tw:p-3 tw:bg-green-500 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
                 style={{ textTransform: 'none'}}
             >
                 <img src={WhatsAppSVG} alt="WhatsApp" className="tw:w-6 tw:h-6" />
@@ -179,13 +222,13 @@ const VehicleDetails = ({ vehicle }) => {
           </div>
 
           {/* Views Section */}
-          <div className="tw:mt-4 tw:p-4 tw:bg-gradient-to-r tw:from-blue-200 tw:to-purple-200 tw:rounded-lg">
+          <div className="tw:mt-4 tw:p-3 sm:tw:p-4 tw:bg-gradient-to-r tw:from-slate-100 tw:to-blue-50 tw:rounded-lg">
             <div className="tw:flex tw:items-center tw:justify-center tw:gap-3 tw:text-gray-800">
-                <Visibility className="tw:w-12 tw:h-12 tw:fill-current" style={{ color: '#000000' }} />
+                <Visibility className="tw:w-8 tw:h-8 sm:tw:w-10 sm:tw:h-10 tw:fill-current" style={{ color: '#475569' }} />
                 <Typography 
-                variant="h5" 
-                className="tw:font-black tw:text-gray-900"
-                style={{ fontSize: '2rem', fontWeight: 500 }}
+                variant="h6" 
+                className="tw:font-bold tw:text-slate-600"
+                style={{ fontSize: '1.25rem', fontWeight: 600 }}
                 >
                 {animatedViews.toLocaleString()} views
                 </Typography>
@@ -195,23 +238,23 @@ const VehicleDetails = ({ vehicle }) => {
       </Card>
 
       {/* Vehicle Details Table */}
-      <Card className="tw:mb-6 tw:shadow-lg tw:border-0">
+      <Card className="tw:shadow-lg tw:border-0 tw:bg-white tw:rounded-lg">
         <CardContent className="tw:p-0">
           <Table>
             <TableBody>
               {vehicleDetailsData.map((item, index) => (
                 <TableRow 
                   key={index}
-                  className={`${index % 2 === 0 ? 'tw:bg-gray-50' : 'tw:bg-white'} hover:tw:bg-blue-50 tw:transition-colors`}
+                  className={`${index % 2 === 0 ? 'tw:bg-slate-50' : 'tw:bg-white'} hover:tw:bg-blue-50 tw:transition-colors`}
                 >
                   <TableCell 
                     component="th" 
                     scope="row" 
-                    className="tw:font-bold tw:text-gray-700 tw:py-4 tw:px-6 tw:border-r tw:border-gray-200"
+                    className="tw:font-semibold tw:text-slate-700 tw:py-3 tw:px-3 sm:tw:py-4 sm:tw:px-6 tw:border-r tw:border-gray-200 tw:text-sm sm:tw:text-base"
                   >
                     {item.label}
                   </TableCell>
-                  <TableCell className="tw:text-gray-900 tw:py-4 tw:px-6">
+                  <TableCell className="tw:text-slate-900 tw:py-3 tw:px-3 sm:tw:py-4 sm:tw:px-6 tw:font-medium tw:text-sm sm:tw:text-base">
                     {item.value}
                   </TableCell>
                 </TableRow>
@@ -222,20 +265,20 @@ const VehicleDetails = ({ vehicle }) => {
       </Card>
 
       {/* Share Section */}
-      <Card className="tw:shadow-lg tw:border-0 tw:bg-gradient-to-br tw:from-indigo-50 tw:to-purple-50">
-        <CardContent className="tw:p-6 tw:text-center">
-          <Typography variant="h6" className="tw:mb-4 tw:text-gray-700 tw:font-bold">
+      <Card className="tw:shadow-lg tw:border-0 tw:bg-gradient-to-br tw:from-slate-50 tw:to-blue-50 tw:rounded-lg">
+        <CardContent className="tw:p-4 sm:tw:p-6 tw:text-center">
+          <Typography variant="h6" className="tw:mb-4 tw:text-slate-700 tw:font-bold tw:text-sm sm:tw:text-base">
             Suggest this advertisement to a friend on
           </Typography>
           
-          <div className="tw:flex tw:items-center tw:justify-center tw:gap-4 tw:flex-wrap">
+          <div className="tw:flex tw:items-center tw:justify-center tw:gap-2 sm:tw:gap-4 tw:flex-wrap">
             <Tooltip title="Facebook">
               <IconButton 
                 href={vehicleData.facebookShareUrl || "https://www.facebook.com/sharer.php?u=https://patpat.lk/vehicle/car/Fiat/Linea/2011/fiat-linea/1384302"}
                 target="_blank"
-                className="tw:bg-blue-600 tw:text-white hover:tw:bg-blue-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all"
+                className="tw:bg-blue-600 tw:text-white hover:tw:bg-blue-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-10 tw:h-10 sm:tw:w-12 sm:tw:h-12"
               >
-                <Facebook />
+                <Facebook className="tw:w-5 tw:h-5 sm:tw:w-6 sm:tw:h-6" />
               </IconButton>
             </Tooltip>
 
@@ -244,9 +287,9 @@ const VehicleDetails = ({ vehicle }) => {
             <Tooltip title="Messenger">
               <IconButton 
                 href={vehicleData.messengerUrl || "fb-messenger://share?link=https://patpat.lk/vehicle/car/Fiat/Linea/2011/fiat-linea/1384302"}
-                className="tw:bg-blue-500 tw:text-white hover:tw:bg-blue-600 tw:shadow-md hover:tw:shadow-lg tw:transition-all"
+                className="tw:bg-blue-500 tw:text-white hover:tw:bg-blue-600 tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-10 tw:h-10 sm:tw:w-12 sm:tw:h-12"
               >
-                <Message />
+                <Message className="tw:w-5 tw:h-5 sm:tw:w-6 sm:tw:h-6" />
               </IconButton>
             </Tooltip>
 
@@ -256,9 +299,9 @@ const VehicleDetails = ({ vehicle }) => {
               <IconButton 
                 href={vehicleData.whatsappShareUrl || "https://api.whatsapp.com/send?phone=940768795255"}
                 target="_blank"
-                className="tw:bg-green-600 tw:text-white hover:tw:bg-green-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all"
+                className="tw:bg-green-600 tw:text-white hover:tw:bg-green-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-10 tw:h-10 sm:tw:w-12 sm:tw:h-12"
               >
-                <WhatsApp />
+                <WhatsApp className="tw:w-5 tw:h-5 sm:tw:w-6 sm:tw:h-6" />
               </IconButton>
             </Tooltip>
 
@@ -268,9 +311,9 @@ const VehicleDetails = ({ vehicle }) => {
               <IconButton 
                 href={vehicleData.smsShareUrl || "sms:?body=https://www.patpat.lk/vehicle/car/Fiat/Linea/2011/fiat-linea/1384302"}
                 target="_blank"
-                className="tw:bg-purple-600 tw:text-white hover:tw:bg-purple-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all"
+                className="tw:bg-purple-600 tw:text-white hover:tw:bg-purple-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-10 tw:h-10 sm:tw:w-12 sm:tw:h-12"
               >
-                <Sms />
+                <Sms className="tw:w-5 tw:h-5 sm:tw:w-6 sm:tw:h-6" />
               </IconButton>
             </Tooltip>
           </div>
