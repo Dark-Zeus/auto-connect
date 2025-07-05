@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ListedVehicleCard from "@components/CarBuyer/ListedVehicleCard";
 import SearchVehicleFilter from "@components/CarBuyer/SearchVehicleFilter";
 import Pagination from "@components/CarBuyer/Pagination"; // your pagination component
+import MarketplaceNavigation from "@components/CarSeller/MarketplaceNavigation";
 
 const ListedVehiclesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +25,7 @@ const ListedVehiclesPage = () => {
 
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4 tw:overflow-auto">
+      <MarketplaceNavigation />
       <div className="tw:w-5/6 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-2 tw:items-start">
         {/* Sidebar Filter */}
         <div className="tw:w-1/3">
