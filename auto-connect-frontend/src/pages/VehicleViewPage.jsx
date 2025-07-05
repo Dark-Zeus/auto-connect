@@ -31,8 +31,8 @@ const vehicleData = {
 const VehicleViewPage = () => {
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4 tw:overflow-auto">
-        <div className="tw:w-full sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row">
-            <div className="tw:w-full sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-col">
+        <div className="tw:w-4/5 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-1 tw:items-start">
+            <div className="tw:w-2/3 tw:flex tw:flex-col">
                 <VehicleHeader
                     make={vehicleData.make}
                     model={vehicleData.model}
@@ -46,7 +46,9 @@ const VehicleViewPage = () => {
                 <VehicleDescriptionBox />  
                 <SecurityTips />
             </div>
+            <div className="tw:w-1/3">
             <VehicleDetails />
+            </div>
         </div>
     </div>
   );
