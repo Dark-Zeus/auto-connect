@@ -24,16 +24,21 @@ const ListedVehiclesPage = () => {
 
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4 tw:overflow-auto">
-      <div className="tw:w-full sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row">
-        <SearchVehicleFilter />
-        <div className="tw-w-full sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-col">
+      <div className="tw:w-5/6 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-2 tw:items-start">
+        {/* Sidebar Filter */}
+        <div className="tw:w-1/3">
+          <SearchVehicleFilter />
+        </div>
+
+        {/* Cards + Pagination */}
+        <div className="tw:w-2/3 tw:flex tw:flex-col">
           {currentCards}
 
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
-            className="tw-mt-8"
+            className="tw:mt-8"
           />
         </div>
       </div>
