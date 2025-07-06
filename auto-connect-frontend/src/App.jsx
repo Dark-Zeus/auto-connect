@@ -27,6 +27,11 @@ import DashboardPage from "@pages/Admin/DashboardPage";
 import DashboardHome from "@pages/Admin/DashboardHome";
 import ServicePage from "@pages/Admin/ServiceCenters";
 import UserPage from "@pages/Admin/UserManagement";
+import Notifications from "@pages/Admin/Notifications";
+import Transactions from "@pages/Admin/Transactions";
+import Updates from "@pages/Admin/Updates";
+import Analytics from "@pages/Admin/Analytics";
+import SystemData from "@pages/Admin/SystemData";
 
 //Pages
 function App() {
@@ -68,6 +73,11 @@ function App() {
             <Route index element={<DashboardHome />} />
             <Route path="services" element={<ServicePage />} />
             <Route path="users" element={<UserPage />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="updates" element={<Updates />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="systemdata" element={<SystemData />} />
           </Route>
           
           
