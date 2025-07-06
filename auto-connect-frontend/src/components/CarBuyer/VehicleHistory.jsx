@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, AlertTriangle, Car, FileText, Shield, MapPin, Wrench } from 'lucide-react';
+import { CheckCircle, AlertTriangle, Car, FileText, Shield, MapPin, Wrench, LeafyGreen, Siren, Notebook } from 'lucide-react';
 
 const VehicleHistory = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -27,8 +27,12 @@ const VehicleHistory = () => {
       yom: "2016",
       manufacturer: "Honda",
       model: "Civic",
-      registrationPlate: "ABC-1234",
-      countryOfAssembly: "Canada",
+      fuel: "Petrol",
+      engineCapacity: "1500 CC",
+      transmission: "Automatic",
+      color: "Pearl White",
+      registrationPlate: "CAC-1234",
+      countryOfOrigin: "Japan",
       lastReportedOdometer: "54,129 KM"
     },
     summary: {
@@ -36,7 +40,8 @@ const VehicleHistory = () => {
       lastRegistered: { location: "Ontario", status: "Normal" },
       serviceRecords: { found: true, count: 6 },
       openRecall: { found: true, count: 1 },
-      stolen: { found: false }
+      stolen: { found: false },
+      emissionTests: { found: true, count: 2 }
     },
     accidents: [
       {
@@ -61,7 +66,7 @@ const VehicleHistory = () => {
         type: "Police Reported Accident",
         description: "Accident reported: minor damage. Vehicle involved in a sideswipe collision. Involving left front impact with another motor vehicle",
         estimate: "Left Front Side",
-        estimateDate: "2017 Dec 4",
+        estimateDate: "1 Dec 2017",
         estimateAmount: "$4,592.84",
         claim: "Collision",
         claimAmount: "$5,324.00"
@@ -104,6 +109,22 @@ const VehicleHistory = () => {
         source: "Service Facility - Pickering, Ontario, Canada",
         details: "Electrical system checked"
       }
+    ],
+    emissionTests: [
+      {
+        date: "2018 Jun 15",
+        certificateNo: "CL23-1702073",
+        testType: "Initial",
+        result: "Pass",
+        validTill: "2019 Jun 14"
+      },
+      {
+        date: "2019 Jun 10",
+        certificateNo: "CL23-1903054",
+        testType: "Renewal",
+        result: "Pass",
+        validTill: "2020 Jun 9"
+      }
     ]
   };
 
@@ -134,7 +155,7 @@ const VehicleHistory = () => {
       <div className="tw:bg-white tw:shadow-lg tw:border-b tw:border-gray-100 tw:sticky tw:top-0 tw:z-10">
         <div className="tw:max-w-7xl tw:mx-auto tw:px-6 tw:py-6">
           <div className="tw:flex tw:items-center tw:gap-3">
-            <Car className="tw:w-8 tw:h-8 tw:text-blue-600" />
+            <Notebook className="tw:w-8 tw:h-8 tw:text-blue-600" />
             <h1 className="tw:text-3xl tw:font-extrabold tw:text-gray-900 tw:tracking-tight">Vehicle History Report</h1>
           </div>
         </div>
@@ -153,10 +174,14 @@ const VehicleHistory = () => {
             <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-8">
               <div className="tw:space-y-6">
                 <div>
-                  <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Year | Manufacturer | Model</p>
+                  <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Year | Manufacturer | Model | Fuel Type | Capacity</p>
                   <p className="tw:text-xl tw:font-semibold tw:text-gray-900">
-                    {vehicleData.info.yom} {vehicleData.info.manufacturer} {vehicleData.info.model}
+                    {vehicleData.info.yom} {vehicleData.info.manufacturer} {vehicleData.info.model} {vehicleData.info.fuel} {vehicleData.info.engineCapacity}
                   </p>
+                </div>
+                <div>
+                  <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Color</p>
+                  <p className="tw:text-xl tw:font-semibold tw:text-gray-900">{vehicleData.info.color}</p>
                 </div>
                 <div>
                   <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Registration Plate</p>
@@ -166,8 +191,8 @@ const VehicleHistory = () => {
               
               <div className="tw:space-y-6">
                 <div>
-                  <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Country of Assembly</p>
-                  <p className="tw:text-xl tw:font-semibold tw:text-gray-900">{vehicleData.info.countryOfAssembly}</p>
+                  <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Country of Origin</p>
+                  <p className="tw:text-xl tw:font-semibold tw:text-gray-900">{vehicleData.info.countryOfOrigin}</p>
                 </div>
                 <div>
                   <p className="tw:text-sm tw:text-gray-500 tw:mb-2 tw:font-medium">Last Reported Odometer</p>
@@ -194,7 +219,7 @@ const VehicleHistory = () => {
           <SummaryCard 
             icon={MapPin}
             title="Last Registered In:"
-            subtitle="Ontario (Normal)"
+            subtitle="Southern Province (Normal)"
           />
           <SummaryCard 
             icon={FileText}
@@ -208,20 +233,28 @@ const VehicleHistory = () => {
             isAlert={true}
           />
           <SummaryCard 
-            icon={Shield}
+            icon={Siren}
             title="Not Actively Declared Stolen"
             subtitle="Clean theft record"
           />
-        </div>
+          <SummaryCard 
+            icon={LeafyGreen}
+            title="Emission Test Passed"
+            subtitle="2 tests passed"
+          />
+          <SummaryCard 
+            icon={Shield}
+            title="Insurance Coverage"
+            subtitle="Insurance coverage is active and valid"
+          />
+        </div>        
 
-        {/* Detailed Sections */}
-        
         {/* Stolen Vehicle Check */}
         <div id="stolen-check" data-section className="tw:bg-white tw:rounded-3xl tw:p-8 tw:shadow-2xl tw:border tw:border-gray-100 tw:mb-12 tw:relative tw:overflow-hidden tw:group">
           <div className="tw:absolute tw:inset-0 tw:bg-gradient-to-r tw:from-green-50 tw:to-transparent tw:opacity-0 tw:group-hover:tw:opacity-100 tw:transition-opacity tw:duration-700" />
           <div className="tw:relative">
             <div className="tw:flex tw:items-center tw:mb-6">
-              <Shield className="tw:w-10 tw:h-10 tw:text-blue-600 tw:mr-4 tw:transition-transform tw:duration-500 tw:group-hover:tw:scale-110" />
+              <Siren className="tw:w-10 tw:h-10 tw:text-blue-600 tw:mr-4 tw:transition-transform tw:duration-500 tw:group-hover:tw:scale-110" />
               <h2 className="tw:text-3xl tw:font-bold tw:text-gray-900 tw:tracking-tight">Stolen Vehicle Check</h2>
             </div>
             
@@ -247,7 +280,7 @@ const VehicleHistory = () => {
               <div className="tw:flex tw:items-center">
                 <CheckCircle className="tw:w-6 tw:h-6 tw:text-green-600 tw:mr-3" />
                 <p className="tw:text-green-800 tw:font-semibold tw:text-lg">
-                  This vehicle has been registered in the province of <strong>Ontario</strong> in <strong>Canada</strong> with <strong>Normal</strong> branding.
+                  This vehicle has been registered in <strong>Southern</strong> province of <strong>Sri Lanka</strong> with <strong>Normal</strong> branding.
                 </p>
               </div>
             </div>
@@ -255,6 +288,26 @@ const VehicleHistory = () => {
             <p className="tw:text-sm tw:text-gray-600 tw:font-medium">
               <strong>We checked for:</strong> Inspection Required, Normal, Non-repairable, Rebuilt, Salvage and Stolen.
             </p>
+          </div>
+        </div>
+
+        {/* Insurance */}
+        <div id="insurance" data-section className="tw:bg-white tw:rounded-3xl tw:p-8 tw:shadow-2xl tw:border tw:border-gray-100 tw:mb-12 tw:relative tw:overflow-hidden tw:group">
+          <div className="tw:absolute tw:inset-0 tw:bg-gradient-to-r tw:from-blue-50 tw:to-transparent tw:opacity-0 tw:group-hover:tw:opacity-100 tw:transition-opacity tw:duration-700" />
+          <div className="tw:relative">
+            <div className="tw:flex tw:items-center tw:mb-6">
+              <Shield className="tw:w-10 tw:h-10 tw:text-blue-600 tw:mr-4 tw:transition-transform tw:duration-500 tw:group-hover:tw:scale-110" />
+              <h2 className="tw:text-3xl tw:font-bold tw:text-gray-900 tw:tracking-tight">Insurance</h2>
+            </div>
+            
+            <div className="tw:bg-green-100 tw:border tw:border-green-200 tw:rounded-xl tw:p-6 tw:mb-6 tw:transition-transform tw:duration-500 tw:group-hover:tw:scale-[1.02]">
+              <div className="tw:flex tw:items-center">
+                <CheckCircle className="tw:w-6 tw:h-6 tw:text-green-600 tw:mr-3" />
+                <p className="tw:text-green-800 tw:font-semibold tw:text-lg">
+                  This vehicle has a valid <strong>full</strong> insurance coverage until <strong>2025-12-31</strong> with <strong>ABC Insurance</strong>.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -296,6 +349,44 @@ const VehicleHistory = () => {
                           ))}
                         </ul>
                       </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Emission Test Records */}
+        <div id="emission-tests" data-section className="tw:bg-white tw:rounded-3xl tw:p-8 tw:shadow-2xl tw:border tw:border-gray-100 tw:mb-12 tw:relative tw:overflow-hidden tw:group">
+          <div className="tw:absolute tw:inset-0 tw:bg-gradient-to-r tw:from-green-50 tw:to-transparent tw:opacity-0 tw:group-hover:tw:opacity-100 tw:transition-opacity tw:duration-700" />
+          <div className="tw:relative">
+            <div className="tw:flex tw:items-center tw:mb-6">
+              <LeafyGreen className="tw:w-10 tw:h-10 tw:text-blue-600 tw:mr-4 tw:transition-transform tw:duration-500 tw:group-hover:tw:scale-110" />
+              <h2 className="tw:text-3xl tw:font-bold tw:text-gray-900 tw:tracking-tight">Emission Test Records</h2>
+            </div>
+            
+            <div className="tw:overflow-x-auto">
+              <table className="tw:w-full">
+                <thead>
+                  <tr className="tw:border-b tw:border-gray-200 tw:bg-gray-50">
+                    <th className="tw:text-left tw:py-4 tw:px-6 tw:font-semibold tw:text-gray-700 tw:text-sm">Date</th>
+                    <th className="tw:text-left tw:py-4 tw:px-6 tw:font-semibold tw:text-gray-700 tw:text-sm">Certificate No</th>
+                    <th className="tw:text-left tw:py-4 tw:px-6 tw:font-semibold tw:text-gray-700 tw:text-sm">Test Type</th>
+                    <th className="tw:text-left tw:py-4 tw:px-6 tw:font-semibold tw:text-gray-700 tw:text-sm">Result</th>
+                    <th className="tw:text-left tw:py-4 tw:px-6 tw:font-semibold tw:text-gray-700 tw:text-sm">Valid Till</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vehicleData.emissionTests.map((test, index) => (
+                    <tr key={index} className="tw:border-b tw:border-gray-100 tw:hover:tw:bg-blue-50 tw:transition-colors tw:duration-300">
+                      <td className="tw:py-4 tw:px-6 tw:font-medium tw:text-gray-900">{test.date}</td>
+                      <td className="tw:py-4 tw:px-6 tw:text-gray-600">{test.certificateNo}</td>
+                      <td className="tw:py-4 tw:px-6 tw:text-gray-600">{test.testType}</td>
+                      <td className={`tw:py-4 tw:px-6 tw:font-semibold ${test.result === 'Pass' ? 'tw:text-green-600' : 'tw:text-red-600'}`}>
+                        {test.result}
+                      </td>
+                      <td className="tw:py-4 tw:px-6 tw:text-gray-600">{test.validTill}</td>
                     </tr>
                   ))}
                 </tbody>
