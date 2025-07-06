@@ -1,31 +1,31 @@
 import UserCategoryCard from "@components/AdminComponents/UserCategoryCard";
-import { DirectionsCar, Business, PersonAddAlt1, AddBox } from "@mui/icons-material";
+import vehicleImg from "@assets/images/vehicleowner1.jpg";
+import insuranceImg from "@assets/images/insurense1.jpg";
+import { PersonAddAlt1 } from "@mui/icons-material"; // Icon for "Requests"
+import requestImg from "@assets/images/requests.jpg"; // Placeholder for request image
 
 function UserManagementPage() {
   return (
-    <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:p-10">
-      <h2 className="tw:text-3xl tw:font-bold tw:text-blue-800 tw:mb-8">User Categories</h2>
+    <div className="tw:min-h-screen tw:px-10 tw:py-14">
+      <h2 className="tw:text-3xl tw:font-bold tw:text-blue-800 tw:mb-12">
+        User Categories
+      </h2>
 
-      <div className="tw:flex tw:flex-wrap tw:gap-6">
+      <div className="tw:mt-20 tw:flex tw:flex-wrap tw:justify-center tw:gap-x-15 tw:gap-y-12">
         <UserCategoryCard
           label="Vehicle Owners"
           to="/users/vehicle-owners"
-          icon={<DirectionsCar fontSize="inherit" />}
+          image={vehicleImg}
         />
         <UserCategoryCard
           label="Insurance Companies"
           to="/users/insurance-companies"
-          icon={<Business fontSize="inherit" />}
+          image={insuranceImg}
         />
         <UserCategoryCard
           label="Requests"
           to="/users/requests"
-          icon={<PersonAddAlt1 fontSize="inherit" />}
-        />
-        <UserCategoryCard
-          label="Add Another"
-          to="/users/add-category"
-          icon={<AddBox fontSize="inherit" />}
+          image={requestImg}
         />
       </div>
     </div>
