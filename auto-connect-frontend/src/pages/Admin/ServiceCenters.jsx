@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ServiceCenterCard from "../../components/Admin_Components/ServiceCenterCard";
-import ServiceCenterFilterBox from "../../components/Admin_Components/ServiceCenterFilterBox";
+import ServiceCenterCard from "../../components/AdminComponents/ServiceCenterCard";
+import ServiceCenterFilterBox from "../../components/AdminComponents/ServiceCenterFilterBox";
 import center1 from "../../assets/images/service_center1.jpg";
 import center2 from "../../assets/images/service_center2.jpg";
 import center3 from "../../assets/images/service_center3.jpg";

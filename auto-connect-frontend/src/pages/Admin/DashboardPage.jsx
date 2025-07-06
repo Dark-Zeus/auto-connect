@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { UserContext } from "@contexts/UserContext";
-import NotificationPopup from "../../components/Admin_Components/NotificationPopupBox";
-import ProfilePopupBox from "../../components/Admin_Components/ProfilePopupBox";
+import NotificationPopup from "../../components/AdminComponents/NotificationPopupBox";
+import ProfilePopupBox from "../../components/AdminComponents/ProfilePopupBox";
 
 import {
   Dashboard,

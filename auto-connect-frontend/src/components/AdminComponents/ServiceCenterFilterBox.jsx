@@ -25,7 +25,7 @@ function ServiceCenterFilterBox({
   onReset
 }) {
   return (
-    <div className="bg-white shadow-sm border p-4 rounded-xl mb-6 w-full max-w-[1000px] min-h-[80px] mx-auto">
+    <div className="tw:bg-white tw:shadow-sm tw:border tw:p-4 tw:rounded-xl tw:mb-6 tw:w-full tw:max-w-[1000px] tw:min-h-[80px] tw:mx-auto">
       <div className="tw:flex tw:flex-wrap tw:gap-4 tw:justify-between">
         {/* Search */}
         <input

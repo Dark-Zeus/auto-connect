@@ -25,8 +25,8 @@ import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable
 //import VehicleViewPage from "@pages/VehicleViewPage";
 import DashboardPage from "@pages/Admin/DashboardPage";
 import DashboardHome from "@pages/Admin/DashboardHome";
-import ServicePage from "@pages/Admin/Service_Centers";
-import UserPage from "@pages/Admin/User_Management";
+import ServicePage from "@pages/Admin/ServiceCenters";
+import UserPage from "@pages/Admin/UserManagement";
 
 //Pages
 function App() {
