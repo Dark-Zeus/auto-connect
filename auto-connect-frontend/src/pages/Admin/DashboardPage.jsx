@@ -44,41 +44,93 @@ function DashboardPage() {
   return (
     <div className="tw:w-screen tw:h-screen tw:flex tw:bg-gray-100 tw:text-gray-800 tw:text-base">
       {/* Sidebar */}
-      <aside
-        className={`
-          ${sidebarOpen ? "tw:w-80 tw:p-6" : "tw:w-0 tw:p-0"}
-          tw:h-full
-          tw:bg-gradient-to-b tw:from-blue-100 tw:to-white
-          tw:shadow-xl
-          tw:overflow-hidden
-          tw:transition-all tw:duration-500 tw:ease-in-out
-          tw:flex tw:flex-col
-        `}
-      >
-        {sidebarOpen && (
-          <>
-            <h2 className="tw:text-3xl tw:font-bold tw:mb-10 tw:text-blue-700 tw:tracking-wide tw:select-none">
-              Auto Connect
-            </h2>
-            <nav className="tw:flex-1">
-              <ul className="tw:space-y-4 tw:text-2xl tw:font-semibold">
-                <SidebarItem to="/" className="!tw:text-black" icon={<Dashboard style={{ fontSize: 35 }} />} text="Dashboard" />
-                <SidebarItem to="/services" className="!tw:text-black" icon={<Garage style={{ fontSize: 35 }} />} text="Service Centers" />
-                <SidebarItem to="/users" className="!tw:text-black" icon={<People style={{ fontSize: 35 }} />} text="User Management" />
-                <SidebarItem to="/notifications" className="!tw:text-black" icon={<Notifications style={{ fontSize: 35 }} />} text="Notifications" />
-                <SidebarItem to="/transactions" className="!tw:text-black" icon={<PaymentsOutlined style={{ fontSize: 35 }} />} text="Transactions" />
-                <SidebarItem to="/updates" className="!tw:text-black" icon={<Update style={{ fontSize: 35 }} />} text="Updates" />
-                <SidebarItem to="/analytics" className="!tw:text-black" icon={<BarIcon style={{ fontSize: 35 }} />} text="Analytics" />
-                <SidebarItem to="/systemdata" className="!tw:text-black" icon={<SystemSecurityUpdateSharp style={{ fontSize: 35 }} />} text="System Data" />
-                <SidebarItem to="/auth" className="!tw:text-black" icon={<Logout style={{ fontSize: 35 }} />} text="Logout" />
-              </ul>
-            </nav>
-            <footer className="tw:mt-auto tw:pt-6 tw:text-sm tw:text-gray-500 tw:border-t tw:border-gray-300 tw:select-none">
-              © 2025 Auto Connect
-            </footer>
-          </>
-        )}
-      </aside>
+    <aside
+      className={`
+        ${sidebarOpen ? "tw:w-80 tw:p-6" : "tw:w-0 tw:p-0"}
+        tw:h-full
+        tw:bg-gradient-to-b tw:from-blue-100 tw:to-blue-50
+        tw:shadow-2xl
+        tw:overflow-hidden
+        tw:transition-all tw:duration-500 tw:ease-in-out
+        tw:flex tw:flex-col
+        tw:rounded-r-3xl
+      `}
+    >
+      {sidebarOpen && (
+        <>
+          <h2 className="tw:text-3xl tw:font-extrabold tw:mb-8 tw:text-blue-800 tw:tracking-wider tw:select-none tw:border-b tw:border-blue-300 tw:pb-10">
+            Auto Connect
+          </h2>
+
+          <nav className="tw:flex-1">
+            <ul className="tw:space-y-3 tw:text-xl tw:font-medium tw:text-gray-800">
+              <SidebarItem
+                to="/"
+                icon={<Dashboard style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="Dashboard"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/services"
+                icon={<Garage style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="Service Centers"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/users"
+                icon={<People style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="User Management"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/notifications"
+                icon={<Notifications style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="Notifications"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/transactions"
+                icon={<PaymentsOutlined style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="Transactions"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/updates"
+                icon={<Update style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="Updates"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/analytics"
+                icon={<BarIcon style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="Analytics"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+              <SidebarItem
+                to="/systemdata"
+                icon={<SystemSecurityUpdateSharp style={{ fontSize: 35 }} className="tw:text-black" />}
+                text="System Data"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+              />
+            </ul>
+          </nav>
+
+          <footer className="tw:mt-auto tw:pt-6 tw:text-sm tw:text-gray-600 tw:border-t tw:border-gray-300 tw:select-none tw:text-center">
+            <ul className="tw:mb-4">
+              <SidebarItem
+                to="/auth"
+                icon={<Logout style={{ fontSize: 35 }} className="tw:text-red-600" />}
+                text="Logout"
+                className="tw:!text-red-600 tw:text-xl hover:tw:text-red-800 hover:tw:bg-red-800 hover:tw:shadow-inner"
+              />
+            </ul>
+          </footer>
+        </>
+      )}
+    </aside>
+
+
+
 
       {/* Main Content Area */}
       <div className="tw:flex-1 tw:flex tw:flex-col tw:h-full tw:overflow-auto">
@@ -100,10 +152,10 @@ function DashboardPage() {
                 type="search"
                 name="search"
                 placeholder="Search..."
-                className="tw:py-2 tw:pl-10 tw:pr-4 tw:rounded-lg tw:border tw:border-gray-300 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500"
+                className="tw:py-2 tw:pl-14 tw:pr-4 tw:rounded-lg tw:border tw:border-gray-300 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500"
                 aria-label="Search"
               />
-              <Search className="tw:absolute tw:left-3 tw:top-1/2 -tw:translate-y-1/2 tw:text-gray-400" fontSize="small" />
+              <Search className="tw:absolute tw:top-[-10px] tw:left-[5px] tw:translate-y-1/2 tw:text-gray-400" fontSize="large" />
             </div>
             <NotificationPopup />
             <ProfilePopupBox />
@@ -128,17 +180,18 @@ function SidebarItem({ to, icon, text, className = "" }) {
       <Link
         to={to}
         className={`
-          tw:flex tw:items-center tw:gap-3 tw:px-4 tw:py-2 tw:rounded-lg tw:transition-all tw:duration-300
-          ${isActive ? "tw:bg-blue-500 tw:text-white" : "hover:tw:bg-blue-400 hover:tw:text-white"}
-          tw:select-none
+          tw:flex tw:items-center tw:gap-6 tw:px-3 tw:py-2 tw:rounded-xl
+          tw:transition-all tw:duration-200
+          ${isActive ? "tw:bg-blue-300 tw:text-blue-900" : "tw:text-gray-800"}
           ${className}
+          focus:tw:outline-none focus-visible:tw:ring-2 focus-visible:tw:ring-blue-500
+          active:tw:bg-blue-300 active:tw:text-blue-900
         `}
       >
-        <span className="tw:text-xl">{icon}</span>
-        <span className="tw:text-lg tw:font-medium">{text}</span>
+        {icon}
+        <span className="tw:text-2lg">{text}</span>
       </Link>
     </li>
   );
 }
-
 export default DashboardPage;
