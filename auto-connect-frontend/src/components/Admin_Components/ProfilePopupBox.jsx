@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 
-export default function ProfilePopupBox({ userName = "Rashmika Dilmin", avatarUrl = "https://i.pravatar.cc/60?img=12" }) {
+export default function ProfilePopupBox({
+  userName = "Rashmika Dilmin",
+  avatarUrl = "https://i.pravatar.cc/60?img=12",
+}) {
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
 
@@ -16,48 +19,50 @@ export default function ProfilePopupBox({ userName = "Rashmika Dilmin", avatarUr
   }, []);
 
   return (
-    <div className="relative" ref={popupRef}>
+    <div className="tw:relative" ref={popupRef}>
       {/* Profile Button */}
       <button
         onClick={() => setShowPopup((prev) => !prev)}
-        className="flex items-center gap-2 rounded-full hover:bg-gray-200 p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="tw:flex tw:items-center tw:gap-2 tw:rounded-full tw:hover:bg-gray-200 tw:p-1 tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
         aria-label="User Profile"
       >
         <img
           src={avatarUrl}
           alt={`${userName} avatar`}
-          className="w-12 h-12 rounded-full border"
+          className="tw:w-12 tw:h-12 tw:rounded-full tw:border"
           loading="lazy"
         />
-        <span className="hidden md:block font-medium text-gray-700 select-none">{userName}</span>
+        <span className="tw:hidden md:tw:block tw:font-medium tw:text-gray-700 tw:select-none">
+          {userName}
+        </span>
       </button>
 
       {/* Popup Box */}
       {showPopup && (
-        <div className="absolute right-0 mt-2 w-100 h-180 bg-white border border-gray-200 shadow-lg rounded-lg z-50">
-          <div className="p-4 flex flex-col gap-3">
-            <div className="flex items-center gap-3">
+        <div className="tw:absolute tw:right-0 tw:mt-2 tw:w-100 tw:h-180 tw:bg-white tw:border tw:border-gray-200 tw:shadow-lg tw:rounded-lg tw:z-50">
+          <div className="tw:p-4 tw:flex tw:flex-col tw:gap-3">
+            <div className="tw:flex tw:items-center tw:gap-3">
               <img
                 src={avatarUrl}
                 alt={`${userName} avatar`}
-                className="w-12 h-12 rounded-full border"
+                className="tw:w-12 tw:h-12 tw:rounded-full tw:border"
                 loading="lazy"
               />
               <div>
-                <p className="font-semibold text-gray-900">{userName}</p>
-                <p className="text-sm text-gray-500">Administrator</p>
+                <p className="tw:font-semibold tw:text-gray-900">{userName}</p>
+                <p className="tw:text-sm tw:text-gray-500">Administrator</p>
               </div>
             </div>
             <hr />
             <button
               onClick={() => alert("View Profile clicked")}
-              className="text-left text-gray-700 hover:bg-gray-100 rounded px-3 py-2 transition"
+              className="tw:text-left tw:text-gray-700 tw:hover:bg-gray-100 tw:rounded tw:px-3 tw:py-2 tw:transition"
             >
               View Profile
             </button>
             <button
               onClick={() => alert("Logout clicked")}
-              className="text-left text-red-600 hover:bg-red-100 rounded px-3 py-2 transition"
+              className="tw:text-left tw:text-red-600 tw:hover:bg-red-100 tw:rounded tw:px-3 tw:py-2 tw:transition"
             >
               Logout
             </button>

@@ -49,11 +49,6 @@ const latestUpdates = [
   { serviceCenter: "QuickServe", date: "2025-06-13", time: "01:00 PM", district: "Matara", vehicleNumber: "WP MN 2345", type: "Maintenance" },
   { serviceCenter: "SpeedyAuto", date: "2025-06-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OP 6789", type: "Inspection" },
   { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
-  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
-  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
-  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
-  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
-
 ];
 
 const renderActiveShape = (props) => {
@@ -111,69 +106,69 @@ function DashboardHome() {
       value: 123915,
       progress: 12.3456,
       icon: <People style={{ fontSize: 40 }} />,
-      color: "bg-blue-100",
-      iconBg: "bg-blue-600",
+      color: "tw:bg-blue-100",
+      iconBg: "tw:bg-blue-600",
     },
     {
       title: "Total Orders",
       value: 61313,
       progress: -8.1234,
       icon: <BarIcon style={{ fontSize: 40 }} />,
-      color: "bg-green-100",
-      iconBg: "bg-green-600",
+      color: "tw:bg-green-100",
+      iconBg: "tw:bg-green-600",
     },
     {
       title: "New Product",
       value: 71003,
       progress: 5.6789,
       icon: <Settings style={{ fontSize: 40 }} />,
-      color: "bg-purple-100",
-      iconBg: "bg-purple-600",
+      color: "tw:bg-purple-100",
+      iconBg: "tw:bg-purple-600",
     },
     {
       title: "Total Downloads",
       value: 161888,
       progress: 1.2345,
       icon: <Download style={{ fontSize: 40 }} />,
-      color: "bg-orange-100",
-      iconBg: "bg-orange-600",
+      color: "tw:bg-orange-100",
+      iconBg: "tw:bg-orange-600",
     },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-8">
+    <div className="tw:grid tw:grid-cols-5 tw:gap-8">
       {/* Cards */}
-      <div className="col-span-3 grid grid-cols-2 gap-6">
+      <div className="tw:col-span-3 tw:grid tw:grid-cols-2 tw:gap-6">
         {cardData.map((card, i) => (
           <div
             key={i}
-            className={`relative p-6 rounded-2xl shadow-md ${card.color} transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between`}
+            className={`tw:relative tw:p-6 tw:rounded-2xl tw:shadow-md ${card.color} tw:transition-transform tw:transform hover:tw:-translate-y-1 hover:tw:shadow-xl tw:flex tw:flex-col tw:justify-between`}
             style={{ minHeight: "140px" }}
           >
             <div
-              className={`absolute top-4 left-4 p-2 rounded-full text-white ${card.iconBg}`}
+              className={`tw:absolute tw:top-4 tw:left-4 tw:p-2 tw:rounded-full tw:text-white ${card.iconBg}`}
               style={{ width: 50, height: 50, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}
             >
               {card.icon}
             </div>
-            <div className="absolute top-4 right-4 text-sm font-semibold">
+            <div className="tw:absolute tw:top-4 tw:right-4 tw:text-sm tw:font-semibold">
               {card.progress >= 0 ? (
-                <span className="text-green-600">+{card.progress.toFixed(2)}%</span>
+                <span className="tw:text-green-600">+{card.progress.toFixed(2)}%</span>
               ) : (
-                <span className="text-red-600">{card.progress.toFixed(2)}%</span>
+                <span className="tw:text-red-600">{card.progress.toFixed(2)}%</span>
               )}
             </div>
-            <div className="mt-auto pl-4">
-              <h4 className="text-lg font-semibold">{card.title}</h4>
-              <p className="text-3xl font-bold">{card.value.toLocaleString()}</p>
+            <div className="tw:mt-auto tw:pl-4">
+              <h4 className="tw:text-lg tw:font-semibold">{card.title}</h4>
+              <p className="tw:text-3xl tw:font-bold">{card.value.toLocaleString()}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Traffic by Location Pie Chart */}
-      <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
-        <h3 className="text-2xl font-bold mb-4">Service Centers</h3>
+      <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
+        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Service Centers</h3>
         <ResponsiveContainer width="100%" height={215}>
           <PieChart>
             <Pie
@@ -199,11 +194,11 @@ function DashboardHome() {
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        <div className="flex flex-col mt-4 space-y-2 text-sm">
+        <div className="tw:flex tw:flex-col tw:mt-4 tw:space-y-2 tw:text-sm">
           {dataTrafficLocation.map((entry, index) => (
-            <div key={index} className="flex items-center gap-2">
+            <div key={index} className="tw:flex tw:items-center tw:gap-2">
               <span
-                className="inline-block w-4 h-4 rounded-full"
+                className="tw:inline-block tw:w-4 tw:h-4 tw:rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               ></span>
               <span>{entry.name}</span>
@@ -213,8 +208,8 @@ function DashboardHome() {
       </div>
 
       {/* Line Chart */}
-      <div className="col-span-3 bg-white p-6 rounded-2xl shadow-md">
-        <h3 className="text-2xl font-bold mb-4">Traffic by Users (Last 7 Days)</h3>
+      <div className="tw:col-span-3 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md">
+        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Traffic by Users (Last 7 Days)</h3>
         <ResponsiveContainer width="100%" height={340}>
           <LineChart
             data={[
@@ -237,8 +232,8 @@ function DashboardHome() {
       </div>
 
       {/* Bar Chart */}
-      <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md flex flex-col">
-        <h3 className="text-2xl font-bold mb-4">Monthly Income</h3>
+      <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
+        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Monthly Income</h3>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={dataTrafficDevice}>
             <XAxis dataKey="device" />
@@ -252,32 +247,31 @@ function DashboardHome() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        <div className="flex flex-col mt-4 space-y-2 text-sm">
+        <div className="tw:flex tw:flex-col tw:mt-4 tw:space-y-2 tw:text-sm">
           {dataTrafficDevice.map((entry, index) => (
-            <div key={index} className="flex items-center gap-2">
+            <div key={index} className="tw:flex tw:items-center tw:gap-2">
               <span
-                className="inline-block w-4 h-4 rounded-full"
+                className="tw:inline-block tw:w-4 tw:h-4 tw:rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               ></span>
-              <span>{entry.device}</span> 
+              <span>{entry.device}</span>
             </div>
           ))}
         </div>
       </div>
 
-
       {/* Latest Updates Table */}
-      <div className="col-span-5 bg-white rounded-2xl shadow-md p-6 overflow-x-auto">
-        <h3 className="text-2xl font-bold mb-4">Latest Updates</h3>
-        <table className="w-full border-collapse">
-          <thead className="bg-blue-50">
+      <div className="tw:col-span-5 tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
+        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Latest Updates</h3>
+        <table className="tw:w-full tw:border-collapse">
+          <thead className="tw:bg-blue-50">
             <tr>
-              <th className="text-left py-3 px-6 border-b border-blue-100">Service Center</th>
-              <th className="text-left py-3 px-6 border-b border-blue-100">Date</th>
-              <th className="text-left py-3 px-6 border-b border-blue-100">Time</th>
-              <th className="text-left py-3 px-6 border-b border-blue-100">District</th>
-              <th className="text-left py-3 px-6 border-b border-blue-100">Vehicle Number</th>
-              <th className="text-left py-3 px-6 border-b border-blue-100">Type</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Service Center</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Date</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Time</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">District</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Vehicle Number</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Type</th>
             </tr>
           </thead>
           <tbody>
@@ -285,16 +279,20 @@ function DashboardHome() {
               <tr
                 key={idx}
                 onClick={() => setSelectedIndex(idx)}
-                className={`cursor-pointer transition-colors duration-300 ${
-                  selectedIndex === idx ? "bg-blue-200" : idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } hover:bg-blue-100`}
+                className={`tw:cursor-pointer tw:transition-colors tw:duration-300 ${
+                  selectedIndex === idx
+                    ? "tw:bg-blue-200"
+                    : idx % 2 === 0
+                    ? "tw:bg-white"
+                    : "tw:bg-gray-50"
+                } hover:tw:bg-blue-100`}
               >
-                <td className="py-4 px-6 border-b border-blue-100">{row.serviceCenter}</td>
-                <td className="py-4 px-6 border-b border-blue-100">{row.date}</td>
-                <td className="py-4 px-6 border-b border-blue-100">{row.time}</td>
-                <td className="py-4 px-6 border-b border-blue-100">{row.district}</td>
-                <td className="py-4 px-6 border-b border-blue-100">{row.vehicleNumber}</td>
-                <td className="py-4 px-6 border-b border-blue-100">{row.type}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.serviceCenter}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.date}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.time}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.district}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.vehicleNumber}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.type}</td>
               </tr>
             ))}
           </tbody>

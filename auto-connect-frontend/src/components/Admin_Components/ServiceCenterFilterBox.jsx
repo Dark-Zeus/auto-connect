@@ -26,21 +26,21 @@ function ServiceCenterFilterBox({
 }) {
   return (
     <div className="bg-white shadow-sm border p-4 rounded-xl mb-6 w-full max-w-[1000px] min-h-[80px] mx-auto">
-      <div className="flex flex-wrap gap-4 justify-between">
+      <div className="tw:flex tw:flex-wrap tw:gap-4 tw:justify-between">
         {/* Search */}
         <input
           type="text"
           placeholder="Search by name..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="flex-1 min-w-[200px] border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="tw:flex-1 tw:min-w-[200px] tw:border tw:px-3 tw:py-2 tw:rounded-lg tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-400"
         />
 
         {/* Filter by District */}
         <select
           value={selectedDistrict}
           onChange={(e) => onDistrictChange(e.target.value)}
-          className="min-w-[180px] border px-3 py-2 rounded-lg"
+          className="tw:min-w-[180px] tw:border tw:px-3 tw:py-2 tw:rounded-lg"
         >
           <option value="">All Districts</option>
           {sriLankaDistricts.map((district) => (
@@ -54,7 +54,7 @@ function ServiceCenterFilterBox({
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value)}
-          className="min-w-[180px] border px-3 py-2 rounded-lg"
+          className="tw:min-w-[180px] tw:border tw:px-3 tw:py-2 tw:rounded-lg"
         >
           <option value="">Sort By</option>
           {sortOptions.map((opt) => (
@@ -67,7 +67,7 @@ function ServiceCenterFilterBox({
         {/* Reset Button */}
         <button
           onClick={onReset}
-          className="text-sm text-red-600 hover:underline mt-2"
+          className="tw:text-sm tw:text-red-600 tw:hover:underline tw:mt-2"
         >
           Reset Filters
         </button>

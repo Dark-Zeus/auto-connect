@@ -9,44 +9,56 @@ function ServiceCenterCard({ name, description, icon, district, rating, onView }
     const fullStars = Math.floor(rating);
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
-        stars.push(<StarIcon key={i} fontSize="small" className="text-yellow-500" />);
+        stars.push(
+          <StarIcon
+            key={i}
+            fontSize="small"
+            className="tw:text-yellow-500"
+          />
+        );
       } else {
-        stars.push(<StarBorderIcon key={i} fontSize="small" className="text-yellow-500" />);
+        stars.push(
+          <StarBorderIcon
+            key={i}
+            fontSize="small"
+            className="tw:text-yellow-500"
+          />
+        );
       }
     }
     return stars;
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-4 flex flex-col w-full max-w-[320px] h-[220px] border hover:shadow-lg transition-all duration-300 justify-between">
+    <div className="tw:bg-white tw:shadow-md tw:rounded-xl tw:p-4 tw:flex tw:flex-col tw:w-full tw:max-w-[320px] tw:h-[220px] tw:border tw:hover:shadow-lg tw:transition-all tw:duration-300 tw:justify-between">
       
       {/* Top Section: Image and Name */}
-      <div className="flex justify-between items-start gap-4">
+      <div className="tw:flex tw:justify-between tw:items-start tw:gap-4">
         <img
           src={icon}
           alt={name}
-          className="w-30 h-30 object-cover rounded-md"
+          className="tw:w-30 tw:h-30 tw:object-cover tw:rounded-md"
         />
-        <h3 className="text-lg font-semibold text-gray-800 mt-1 pr-1">{name}</h3>
+        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mt-1 tw:pr-1">{name}</h3>
       </div>
 
       {/* Middle Section: Description */}
-      <p className="text-sm text-gray-600 mt-4 px-1">{description}</p>
+      <p className="tw:text-sm tw:text-gray-600 tw:mt-4 tw:px-1">{description}</p>
 
       {/* Bottom Section */}
-      <div className="flex justify-between items-center mt-4 px-1 text-sm">
+      <div className="tw:flex tw:justify-between tw:items-center tw:mt-4 tw:px-1 tw:text-sm">
         <div>
-          <p className="text-gray-600 font-medium">
-            District: <span className="font-normal">{district}</span>
+          <p className="tw:text-gray-600 tw:font-medium">
+            District: <span className="tw:font-normal">{district}</span>
           </p>
           <button
             onClick={onView}
-            className="text-blue-600 hover:underline mt-1"
+            className="tw:text-blue-600 tw:hover:underline tw:mt-1"
           >
             View Details
           </button>
         </div>
-        <div className="flex items-center gap-1">{renderStars()}</div>
+        <div className="tw:flex tw:items-center tw:gap-1">{renderStars()}</div>
       </div>
     </div>
   );

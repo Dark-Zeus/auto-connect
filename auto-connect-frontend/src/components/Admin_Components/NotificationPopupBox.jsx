@@ -21,16 +21,16 @@ export default function NotificationPopup() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="relative">
+    <div className="tw:relative">
       {/* Notification Button */}
       <button
-        className="relative p-2 rounded-full hover:bg-gray-200"
+        className="tw:relative tw:p-2 tw:rounded-full tw:hover:bg-gray-200"
         aria-label="Notifications"
         onClick={togglePopup}
       >
         <Notifications fontSize="large" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 h-4 w-4 flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-semibold">
+          <span className="tw:absolute tw:top-1 tw:right-1 tw:h-4 tw:w-4 tw:flex tw:items-center tw:justify-center tw:rounded-full tw:bg-red-600 tw:text-white tw:text-xs tw:font-semibold">
             {unreadCount}
           </span>
         )}
@@ -38,14 +38,14 @@ export default function NotificationPopup() {
 
       {/* Popup Box */}
       {showPopup && (
-        <div className="absolute right-0 mt-2 w-[350px] h-[400px] bg-white border border-gray-200 shadow-lg rounded-lg z-50">
-          <div className="relative p-4 h-full">
-            <div className="flex justify-between items-center mb-7">
-              <h4 className="text-xl font-bold text-gray-800">Notifications</h4>
+        <div className="tw:absolute tw:right-0 tw:mt-2 tw:w-[350px] tw:h-[400px] tw:bg-white tw:border tw:border-gray-200 tw:shadow-lg tw:rounded-lg tw:z-50">
+          <div className="tw:relative tw:p-4 tw:h-full">
+            <div className="tw:flex tw:justify-between tw:items-center tw:mb-7">
+              <h4 className="tw:text-xl tw:font-bold tw:text-gray-800">Notifications</h4>
               {notifications.length > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="tw:text-sm tw:text-blue-600 tw:hover:underline"
                 >
                   Mark as Read
                 </button>
@@ -53,16 +53,16 @@ export default function NotificationPopup() {
             </div>
 
             {notifications.length === 0 ? (
-              <p className="text-base text-gray-500">No notifications</p>
+              <p className="tw:text-base tw:text-gray-500">No notifications</p>
             ) : (
-              <ul className="overflow-y-auto h-[300px] space-y-3 pr-1 mt-4">
+              <ul className="tw:overflow-y-auto tw:h-[300px] tw:space-y-3 tw:pr-1 tw:mt-4">
                 {notifications.map((n) => (
                   <li
                     key={n.id}
-                    className={`p-4 rounded-2xl text-base break-words ${
+                    className={`tw:p-4 tw:rounded-2xl tw:text-base tw:break-words ${
                       n.read
-                        ? "bg-gray-100 text-gray-600"
-                        : "bg-blue-100 text-blue-800 font-medium"
+                        ? "tw:bg-gray-100 tw:text-gray-600"
+                        : "tw:bg-blue-100 tw:text-blue-800 tw:font-medium"
                     }`}
                   >
                     {n.message}

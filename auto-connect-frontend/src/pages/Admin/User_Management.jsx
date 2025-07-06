@@ -23,26 +23,26 @@ function UserPage() {
   };
 
   return (
-    <div className="p-8">
-      <h2 className="text-3xl font-bold mb-6">User Management</h2>
-      <table className="min-w-full border border-gray-300 rounded-md overflow-hidden">
-        <thead className="bg-gray-100">
+    <div className="tw:p-8">
+      <h2 className="tw:text-3xl tw:font-bold tw:mb-6">User Management</h2>
+      <table className="tw:min-w-full tw:border tw:border-gray-300 tw:rounded-md tw:overflow-hidden">
+        <thead className="tw:bg-gray-100">
           <tr>
-            <th className="py-3 px-6 border-b text-left">ID</th>
-            <th className="py-3 px-6 border-b text-left">Name</th>
-            <th className="py-3 px-6 border-b text-left">Email</th>
-            <th className="py-3 px-6 border-b text-left">Role</th>
-            <th className="py-3 px-6 border-b text-center">Actions</th>
+            <th className="tw:py-3 tw:px-6 tw:border-b tw:text-left">ID</th>
+            <th className="tw:py-3 tw:px-6 tw:border-b tw:text-left">Name</th>
+            <th className="tw:py-3 tw:px-6 tw:border-b tw:text-left">Email</th>
+            <th className="tw:py-3 tw:px-6 tw:border-b tw:text-left">Role</th>
+            <th className="tw:py-3 tw:px-6 tw:border-b tw:text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.map(({ id, name, email, role }) => (
-            <tr key={id} className="hover:bg-gray-50 transition-colors">
-              <td className="py-3 px-6 border-b">{id}</td>
-              <td className="py-3 px-6 border-b">{name}</td>
-              <td className="py-3 px-6 border-b">{email}</td>
-              <td className="py-3 px-6 border-b">{role}</td>
-              <td className="py-3 px-6 border-b text-center flex justify-center gap-2">
+            <tr key={id} className="tw:hover:bg-gray-50 tw:transition-colors">
+              <td className="tw:py-3 tw:px-6 tw:border-b">{id}</td>
+              <td className="tw:py-3 tw:px-6 tw:border-b">{name}</td>
+              <td className="tw:py-3 tw:px-6 tw:border-b">{email}</td>
+              <td className="tw:py-3 tw:px-6 tw:border-b">{role}</td>
+              <td className="tw:py-3 tw:px-6 tw:border-b tw:text-center tw:flex tw:justify-center tw:gap-2">
                 <IconButton color="primary" size="small" onClick={() => handleEdit(id)}>
                   <Edit fontSize="small" />
                 </IconButton>
@@ -54,7 +54,7 @@ function UserPage() {
           ))}
           {users.length === 0 && (
             <tr>
-              <td colSpan={5} className="py-6 text-center text-gray-500">
+              <td colSpan={5} className="tw:py-6 tw:text-center tw:text-gray-500">
                 No users found.
               </td>
             </tr>

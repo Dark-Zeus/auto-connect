@@ -82,12 +82,12 @@ function ServiceCenters() {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-10">
+    <div className="tw:p-6">
+      <div className="tw:flex tw:items-center tw:justify-between tw:mb-10">
         <div /> {/* Empty div to push the button to the right */}
         <button
           onClick={() => alert("Redirect to New Service Center Form")}
-          className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition" 
+          className="tw:bg-blue-600 tw:text-white tw:px-4 tw:py-3 tw:rounded-lg hover:tw:bg-blue-700 tw:transition"
         >
           + New Service Center
         </button>
@@ -103,7 +103,7 @@ function ServiceCenters() {
         onReset={handleReset}
       />
 
-      <div className="flex flex-wrap gap-6 justify-center">
+      <div className="tw:flex tw:flex-wrap tw:gap-6 tw:justify-center">
         {filteredCenters.map((center, index) => (
           <ServiceCenterCard
             key={index}

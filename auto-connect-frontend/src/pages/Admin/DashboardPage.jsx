@@ -42,38 +42,38 @@ function DashboardPage() {
   const currentTitle = pageTitles[location.pathname] || "Dashboard";
 
   return (
-    <div className="w-screen h-screen flex bg-gray-100 text-gray-800 text-base">
+    <div className="tw:w-screen tw:h-screen tw:flex tw:bg-gray-100 tw:text-gray-800 tw:text-base">
       {/* Sidebar */}
       <aside
         className={`
-          ${sidebarOpen ? "w-80 p-6" : "w-0 p-0"}
-          h-full 
-          bg-gradient-to-b from-blue-100 to-white 
-          shadow-xl 
-          overflow-hidden 
-          transition-all duration-500 ease-in-out
-          flex flex-col
+          ${sidebarOpen ? "tw:w-80 tw:p-6" : "tw:w-0 tw:p-0"}
+          tw:h-full
+          tw:bg-gradient-to-b tw:from-blue-100 tw:to-white
+          tw:shadow-xl
+          tw:overflow-hidden
+          tw:transition-all tw:duration-500 tw:ease-in-out
+          tw:flex tw:flex-col
         `}
       >
         {sidebarOpen && (
           <>
-            <h2 className="text-3xl font-bold mb-10 text-blue-700 tracking-wide select-none">
+            <h2 className="tw:text-3xl tw:font-bold tw:mb-10 tw:text-blue-700 tw:tracking-wide tw:select-none">
               Auto Connect
             </h2>
-            <nav className="flex-1">
-              <ul className="space-y-4 text-2xl font-semibold">
-                <SidebarItem to="/" className="!text-black" icon={<Dashboard style={{ fontSize: 35 }} />} text="Dashboard" />
-                <SidebarItem to="/services" className="!text-black" icon={<Garage style={{ fontSize: 35 }} />} text="Service Centers" />
-                <SidebarItem to="/users" className="!text-black" icon={<People style={{ fontSize: 35 }} />} text="User Management" />
-                <SidebarItem to="/notifications" className="!text-black" icon={<Notifications style={{ fontSize: 35 }} />} text="Notifications" />
-                <SidebarItem to="/transactions" className="!text-black" icon={<PaymentsOutlined style={{ fontSize: 35 }} />} text="Transactions" />
-                <SidebarItem to="/updates" className="!text-black" icon={<Update style={{ fontSize: 35 }} />} text="Updates" />
-                <SidebarItem to="/analytics" className="!text-black" icon={<BarIcon style={{ fontSize: 35 }} />} text="Analytics" />
-                <SidebarItem to="/systemdata" className="!text-black" icon={<SystemSecurityUpdateSharp style={{ fontSize: 35 }} />} text="System Data" />
-                <SidebarItem to="/auth" className="!text-black" icon={<Logout style={{ fontSize: 35 }} />} text="Logout" />
+            <nav className="tw:flex-1">
+              <ul className="tw:space-y-4 tw:text-2xl tw:font-semibold">
+                <SidebarItem to="/" className="!tw:text-black" icon={<Dashboard style={{ fontSize: 35 }} />} text="Dashboard" />
+                <SidebarItem to="/services" className="!tw:text-black" icon={<Garage style={{ fontSize: 35 }} />} text="Service Centers" />
+                <SidebarItem to="/users" className="!tw:text-black" icon={<People style={{ fontSize: 35 }} />} text="User Management" />
+                <SidebarItem to="/notifications" className="!tw:text-black" icon={<Notifications style={{ fontSize: 35 }} />} text="Notifications" />
+                <SidebarItem to="/transactions" className="!tw:text-black" icon={<PaymentsOutlined style={{ fontSize: 35 }} />} text="Transactions" />
+                <SidebarItem to="/updates" className="!tw:text-black" icon={<Update style={{ fontSize: 35 }} />} text="Updates" />
+                <SidebarItem to="/analytics" className="!tw:text-black" icon={<BarIcon style={{ fontSize: 35 }} />} text="Analytics" />
+                <SidebarItem to="/systemdata" className="!tw:text-black" icon={<SystemSecurityUpdateSharp style={{ fontSize: 35 }} />} text="System Data" />
+                <SidebarItem to="/auth" className="!tw:text-black" icon={<Logout style={{ fontSize: 35 }} />} text="Logout" />
               </ul>
             </nav>
-            <footer className="mt-auto pt-6 text-sm text-gray-500 border-t border-gray-300 select-none">
+            <footer className="tw:mt-auto tw:pt-6 tw:text-sm tw:text-gray-500 tw:border-t tw:border-gray-300 tw:select-none">
               © 2025 Auto Connect
             </footer>
           </>
@@ -81,29 +81,29 @@ function DashboardPage() {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full overflow-auto">
+      <div className="tw:flex-1 tw:flex tw:flex-col tw:h-full tw:overflow-auto">
         {/* Top Navbar */}
-        <header className="bg-gray-50 shadow p-6 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+        <header className="tw:bg-gray-50 tw:shadow tw:p-6 tw:flex tw:justify-between tw:items-center">
+          <div className="tw:flex tw:items-center tw:gap-4">
             <button
               onClick={toggleSidebar}
-              className="p-2 rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="tw:p-2 tw:rounded hover:tw:bg-gray-200 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500"
               aria-label="Toggle Sidebar"
             >
               <Menu fontSize="large" />
             </button>
-            <h1 className="text-3xl font-bold select-none">{currentTitle}</h1>
+            <h1 className="tw:text-3xl tw:font-bold tw:select-none">{currentTitle}</h1>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="relative text-gray-600 focus-within:text-gray-900">
+          <div className="tw:flex tw:items-center tw:gap-6">
+            <div className="tw:relative tw:text-gray-600 focus-within:tw:text-gray-900">
               <input
                 type="search"
                 name="search"
                 placeholder="Search..."
-                className="py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="tw:py-2 tw:pl-10 tw:pr-4 tw:rounded-lg tw:border tw:border-gray-300 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500"
                 aria-label="Search"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fontSize="small" />
+              <Search className="tw:absolute tw:left-3 tw:top-1/2 -tw:translate-y-1/2 tw:text-gray-400" fontSize="small" />
             </div>
             <NotificationPopup />
             <ProfilePopupBox />
@@ -111,7 +111,7 @@ function DashboardPage() {
         </header>
 
         {/* Nested Content */}
-        <main className="p-8 flex-1 overflow-auto">
+        <main className="tw:p-8 tw:flex-1 tw:overflow-auto">
           <Outlet />
         </main>
       </div>
@@ -128,14 +128,14 @@ function SidebarItem({ to, icon, text, className = "" }) {
       <Link
         to={to}
         className={`
-          flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 
-          ${isActive ? "bg-blue-500 text-white" : "hover:bg-blue-400 hover:text-white"}
-          select-none
+          tw:flex tw:items-center tw:gap-3 tw:px-4 tw:py-2 tw:rounded-lg tw:transition-all tw:duration-300
+          ${isActive ? "tw:bg-blue-500 tw:text-white" : "hover:tw:bg-blue-400 hover:tw:text-white"}
+          tw:select-none
           ${className}
         `}
       >
-        <span className="text-xl">{icon}</span>
-        <span className="text-lg font-medium">{text}</span>
+        <span className="tw:text-xl">{icon}</span>
+        <span className="tw:text-lg tw:font-medium">{text}</span>
       </Link>
     </li>
   );
