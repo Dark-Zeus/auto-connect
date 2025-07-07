@@ -3,7 +3,6 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 function ServiceCenterCard({ name, description, icon, district, rating, onView }) {
-  // Generate stars based on rating
   const renderStars = () => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -30,7 +29,7 @@ function ServiceCenterCard({ name, description, icon, district, rating, onView }
   };
 
   return (
-    <div className="tw:bg-white tw:shadow-md tw:rounded-xl tw:p-4 tw:flex tw:flex-col tw:w-full tw:max-w-[320px] tw:h-[220px] tw:border tw:hover:shadow-lg tw:transition-all tw:duration-300 tw:justify-between">
+    <div className="tw:w-full tw:max-w-[320px] tw:h-[220px] tw:bg-white tw:border tw:border-gray-300 tw:rounded-2xl tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:p-4 tw:flex tw:flex-col tw:justify-between">
       
       {/* Top Section: Image and Name */}
       <div className="tw:flex tw:justify-between tw:items-start tw:gap-4">
@@ -39,17 +38,17 @@ function ServiceCenterCard({ name, description, icon, district, rating, onView }
           alt={name}
           className="tw:w-30 tw:h-30 tw:object-cover tw:rounded-md"
         />
-        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mt-1 tw:pr-1">{name}</h3>
+        <h3 className="tw:text-lg tw:font-semibold tw:!text-blue-800 tw:mt-1 tw:pr-1">{name}</h3>
       </div>
 
       {/* Middle Section: Description */}
-      <p className="tw:text-sm tw:text-gray-600 tw:mt-4 tw:px-1">{description}</p>
+      <p className="tw:text-sm tw:text-gray-700 tw:mt-4 tw:px-1">{description}</p>
 
       {/* Bottom Section */}
       <div className="tw:flex tw:justify-between tw:items-center tw:mt-4 tw:px-1 tw:text-sm">
         <div>
-          <p className="tw:text-gray-600 tw:font-medium">
-            District: <span className="tw:font-normal">{district}</span>
+          <p className="tw:text-blue-800 tw:font-medium">
+            District: <span className="tw:font-normal tw:text-gray-900">{district}</span>
           </p>
           <button
             onClick={onView}
