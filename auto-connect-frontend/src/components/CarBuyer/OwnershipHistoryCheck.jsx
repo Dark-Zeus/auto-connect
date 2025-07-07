@@ -22,7 +22,7 @@ const OwnershipHistoryCheck = () => {
   ];
 
   return (
-    <div className="tw:relative tw:w-full tw:mx-auto tw:p-2  tw:space-y-4">
+    <div className="tw:w-full tw:max-w-4xl tw:mx-auto tw:p-4">
       {/* Main Component */}
       <div 
         className="tw:bg-white tw:border tw:border-gray-200 tw:rounded-xl tw:p-6 tw:cursor-pointer tw:shadow-sm hover:tw:shadow-md tw:transition-shadow tw:duration-300"
@@ -159,7 +159,7 @@ const OwnershipHistoryCheck = () => {
 
                 <div className="tw:mt-6">
                   <p className="tw:text-base tw:text-gray-600 tw:font-medium">
-                    About this vehicle check: The 5 basic checks were performed when the advert was placed and therefore some information may be out of date. The seller may have conducted their own full check. AutoConnect Sri Lanka will not be liable for any inaccuracies or for any loss you suffer if you rely on it.
+                    About this vehicle check: The 5 basic checks were performed when the advert was placed and therefore some information may be out of date. The seller may have conducted their own full check. AutoConnect Sri Lanka will not be liable for any inaccuracies or for any loss you suffer if you rely on it
                   </p>
                 </div>
               </div>
