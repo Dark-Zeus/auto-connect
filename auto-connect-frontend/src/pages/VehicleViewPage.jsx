@@ -6,6 +6,7 @@ import VehicleHeader from "@components/CarBuyer/VehicleHeader";
 import SimilarAds from "@components/CarBuyer/SimilarAds";
 import MarketplaceNavigation from "@components/CarSeller/MarketplaceNavigation";
 import React from "react";
+import OwnershipHistoryCheck from "@components/CarBuyer/OwnershipHistoryCheck";
 
 const vehicleData = {
   name: 'lomitha',
@@ -49,8 +50,9 @@ const VehicleViewPage = () => {
                 <VehicleDescriptionBox />  
                 <SecurityTips />
             </div>
-            <div className="tw:w-1/3">
+            <div className="tw:w-1/3 tw:flex tw:flex-col">
             <VehicleDetails />
+            <OwnershipHistoryCheck />
             </div>
         </div>
         <SimilarAds />
