@@ -104,7 +104,7 @@ const VehicleAdPromotion = () => {
     const promo = promotionOptions[selectedPromotion];
 
     return (
-      <div className="tw:fixed tw:inset-0 tw:bg-black tw:bg-opacity-50 tw:flex tw:items-center tw:justify-center tw:z-50 tw:p-4">
+      <div className="tw:fixed tw:inset-0 tw:bg-black/50 tw:flex tw:items-center tw:justify-center tw:z-50 tw:p-4">
         <div className="tw:bg-white tw:rounded-2xl tw:shadow-2xl tw:max-w-md tw:w-full tw:max-h-[90vh] tw:overflow-y-auto">
           <div className="tw:p-6">
             <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
@@ -116,7 +116,7 @@ const VehicleAdPromotion = () => {
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="tw:text-gray-400 hover:tw:text-gray-600 tw:transition-colors"
+                className="tw:text-gray-400 tw:hover:text-gray-700 tw:hover:cursor-pointer tw:transition-colors"
               >
                 <X className="tw:w-6 tw:h-6" />
               </button>

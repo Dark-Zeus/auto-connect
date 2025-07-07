@@ -43,7 +43,7 @@ const OwnershipHistoryCheck = () => {
 
       {/* Popup Overlay */}
       {isPopupOpen && (
-        <div className="tw:fixed tw:inset-0 tw:bg-black tw:bg-opacity-50 tw:z-50 tw:flex tw:items-center tw:justify-end  tw:duration-300">
+        <div className="tw:fixed tw:inset-0 tw:bg-black/50  tw:z-50 tw:flex tw:items-center tw:justify-end  tw:duration-300">
           <div className="tw:bg-white tw:w-full tw:max-w-1/2 tw:h-full tw:overflow-y-auto tw:shadow-2xl tw:rounded-l-xl tw:transform tw:transition-transform tw:duration-300 tw:animate-slide-in-right">
             {/* Header */}
             <div className="tw:flex tw:items-center tw:p-6 tw:border-b tw:border-gray-200 tw:bg-gray-50">
@@ -51,7 +51,7 @@ const OwnershipHistoryCheck = () => {
                 onClick={togglePopup}
                 className="tw:mr-4 tw:p-2 tw:rounded-full hover:tw:bg-gray-200 tw:transition-colors"
               >
-                <ArrowLeft className="tw:w-6 tw:h-6 tw:text-blue-600" />
+                <ArrowLeft className="tw:w-6 tw:h-6 tw:text-blue-600 tw:hover:text-blue-800 tw:hover:cursor-pointer" />
               </button>
               <h2 className="tw:text-2xl tw:font-semibold tw:text-gray-800">
                 Ownership and History
