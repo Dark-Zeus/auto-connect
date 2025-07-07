@@ -47,12 +47,12 @@ const VehicleViewPage = () => {
                     city={vehicleData.city}
                 />
                 <ImageViewer />
-                <VehicleDescriptionBox />  
+                <VehicleDescriptionBox /> 
+                <OwnershipHistoryCheck /> 
                 <SecurityTips />
             </div>
             <div className="tw:w-1/3 tw:flex tw:flex-col">
             <VehicleDetails />
-            <OwnershipHistoryCheck />
             </div>
         </div>
         <SimilarAds />
