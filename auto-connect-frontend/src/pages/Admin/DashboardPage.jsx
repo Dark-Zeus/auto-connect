@@ -56,12 +56,12 @@ function DashboardPage() {
         tw:overflow-hidden
         tw:transition-all tw:duration-500 tw:ease-in-out
         tw:flex tw:flex-col
-        tw:rounded-r-3xl
+        tw:rounded-r-xl
       `}
     >
       {sidebarOpen && (
         <>
-          <h2 className="tw:text-3xl tw:font-extrabold tw:mb-8 tw:text-blue-800 tw:tracking-wider tw:select-none tw:border-b tw:border-blue-300 tw:pb-10">
+          <h2 className="tw:text-3xl tw:font-extrabold tw:mb-8 tw:!text-blue-800 tw:tracking-wider tw:select-none tw:border-b tw:border-blue-300 tw:pb-10">
             Auto Connect
           </h2>
 

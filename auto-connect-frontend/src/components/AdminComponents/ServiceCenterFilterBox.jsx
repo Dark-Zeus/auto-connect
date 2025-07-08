@@ -26,7 +26,7 @@ function ServiceCenterFilterBox({
 }) {
   return (
     <div className="tw:max-w-333 tw:mx-auto">
-      <div className="tw:mb-8 tw:p-6 tw:bg-white tw:border tw:border-gray-300 tw:rounded-2xl tw:shadow-md">
+      <div className="tw:mb-8 tw:p-6 tw:bg-white tw:border tw:border-gray-300 tw:rounded-xl tw:shadow-md">
         {/* Filters Row - single row */}
         <div className="tw:flex tw:justify-center tw:gap-6 tw:flex-nowrap tw:w-full">
           {/* Search - 50% width */}
@@ -83,12 +83,12 @@ function ServiceCenterFilterBox({
         </div>
 
         {/* Reset button bottom left */}
-        <div className="tw:flex tw:justify-start tw:mt-6">
+        <div className="tw-mt-4 tw-flex tw-justify-end">
           <button
             onClick={onReset}
-            className="tw:text-sm tw:text-red-600 hover:tw:underline tw:font-semibold"
+            className="tw:mt-6 tw:bg-blue-100 tw:text-blue-800 tw:px-5 tw:py-2 tw:rounded-lg tw:font-semibold hover:tw:bg-blue-200 tw:transition"
           >
-            Reset Filters
+            Reset
           </button>
         </div>
       </div>
