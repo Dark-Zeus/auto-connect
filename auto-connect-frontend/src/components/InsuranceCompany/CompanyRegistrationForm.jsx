@@ -141,7 +141,7 @@ export default function CompanyRegistrationForm() {
               value={formData.establishedDate}
               onChange={handleChange}
               required
-              className="tw:w-full tw:px-4 tw:py-2 tw:border tw:border-[#B9E5E8] tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-[#7AB2D3]"
+              className="tw:w-full tw:px-4 tw:py-2 tw:border tw:border-[#B9E5E8] tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-[#7AB2D3] tw:text-black"
             />
           </div>
         </div>
