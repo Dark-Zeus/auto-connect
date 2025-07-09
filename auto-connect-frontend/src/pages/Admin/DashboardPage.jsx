@@ -66,7 +66,7 @@ function DashboardPage() {
           </h2>
 
           <nav className="tw:flex-1">
-            <ul className="tw:space-y-3 tw:text-xl tw:font-medium tw:text-gray-800">
+            <ul className="tw:space-y-3 tw:text-lg tw:font-medium tw:text-gray-800">
               <SidebarItem
                 to="/"
                 icon={<Dashboard style={{ fontSize: 35 }} className="tw:text-black" />}

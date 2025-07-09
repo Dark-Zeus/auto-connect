@@ -50,12 +50,12 @@ function ServiceCenterCard({ name, description, icon, district, rating, onView }
           <p className="tw:text-blue-800 tw:font-medium">
             District: <span className="tw:font-normal tw:text-gray-900">{district}</span>
           </p>
-          <button
-            onClick={onView}
-            className="tw:text-blue-600 tw:hover:underline tw:mt-1"
-          >
-            View Details
-          </button>
+        <button
+          onClick={() => onView({ name, description, icon, district, rating })}
+          className="tw:text-blue-600 tw:hover:underline tw:mt-1"
+        >
+          View Details
+        </button>
         </div>
         <div className="tw:flex tw:items-center tw:gap-1">{renderStars()}</div>
       </div>
