@@ -808,7 +808,7 @@ const LandingPage = () => {
                 <div className="footer-contact">
                   <div className="contact-item">
                     <Mail className="w-5 h-5 contact-icon" />
-                    <span>platform@iautoconnect.lk</span>
+                    <span>platform@autoconnect.lk</span>
                   </div>
                   <div className="contact-item">
                     <Phone className="w-5 h-5 contact-icon" />
