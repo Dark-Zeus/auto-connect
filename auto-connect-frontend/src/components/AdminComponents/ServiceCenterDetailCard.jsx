@@ -34,54 +34,93 @@ function ServiceCenterDetailCard({ data, onClose }) {
             <img
               src={icon}
               alt={businessInfo?.businessName}
-              className="tw:w-40 tw:h-40 tw:object-cover tw:rounded-lg tw:border tw:border-blue-200"
+              className="tw:w-50 tw:h-50 tw:object-cover tw:rounded-lg tw:border tw:border-blue-200"
             />
           )}
         </div>
 
         <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
           {/* Personal Info Box */}
-          <div className="tw:bg-blue-50 tw:w-150 tw:p-6 tw:rounded-xl tw:border tw:border-blue-200 tw:shadow-sm">
-            <h3 className="tw:text-lg tw:font-semibold tw:text-blue-700 tw:mb-4">Personal Info</h3>
-            <div className="tw:space-y-2 tw:text-gray-700">
-              <p><span className="tw:font-medium">Name:</span> {firstName} {lastName}</p>
-              <p><span className="tw:font-medium">Email:</span> {email}</p>
-              <p><span className="tw:font-medium">Phone:</span> {phone}</p>
+            <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-white tw:p-6 tw:rounded-2xl tw:border tw:border-blue-200 tw:shadow-lg tw:transition-all tw:duration-300 tw:hover:tw:shadow-xl">
+            <h3 className="tw:text-xl tw:font-bold tw:text-blue-800 tw:mb-5 tw:border-b tw:pb-2 tw:border-blue-200">
+                👤 Personal Info
+            </h3>
+                <div className="tw:space-y-3 tw:text-blue-900 tw:text-[13px]">
+                    <div className="tw:flex tw:items-center">
+                    <span className="tw:w-20 tw:font-medium">Name:</span>
+                    <span className="tw:font-semibold">{firstName} {lastName}</span>
+                    </div>
+                    <div className="tw:flex tw:items-center">
+                    <span className="tw:w-20 tw:font-medium">Email:</span>
+                    <span className="tw:text-blue-700 tw:underline">{email}</span>
+                    </div>
+                    <div className="tw:flex tw:items-center">
+                    <span className="tw:w-20 tw:font-medium">Phone:</span>
+                    <span className="tw:font-semibold">{phone}</span>
+                    </div>
+                </div>
             </div>
-          </div>
 
           {/* Address Box */}
-          <div className="tw:bg-blue-50 tw:w-80 tw:p-6 tw:rounded-xl tw:border tw:border-blue-200 tw:shadow-sm">
-            <h3 className="tw:text-lg tw:font-semibold tw:text-blue-700 tw:mb-4">Address</h3>
-            <div className="tw:space-y-2 tw:text-gray-700">
-              <p><span className="tw:font-medium">Street:</span> {address?.street}</p>
-              <p><span className="tw:font-medium">City:</span> {address?.city}</p>
-              <p><span className="tw:font-medium">District:</span> {address?.district}</p>
-              <p><span className="tw:font-medium">Province:</span> {address?.province}</p>
-              <p><span className="tw:font-medium">Postal Code:</span> {address?.postalCode}</p>
+            <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-white tw:w-100 tw:p-6 tw:rounded-2xl tw:border tw:border-blue-200 tw:shadow-lg tw:transition-all tw:duration-300 hover:tw:shadow-xl">
+            <h3 className="tw:text-xl tw:font-bold tw:text-blue-800 tw:mb-5 tw:border-b tw:pb-2 tw:border-blue-200">
+                📍 Address
+            </h3>
+                <div className="tw:space-y-3 tw:text-blue-900 tw:text-[13px]">
+                    <div className="tw:flex">
+                    <span className="tw:w-25 tw:font-medium">Street:</span>
+                    <span>{address?.street}</span>
+                    </div>
+                    <div className="tw:flex">
+                    <span className="tw:w-25 tw:font-medium">City:</span>
+                    <span>{address?.city}</span>
+                    </div>
+                    <div className="tw:flex">
+                    <span className="tw:w-25 tw:font-medium">District:</span>
+                    <span>{address?.district}</span>
+                    </div>
+                    <div className="tw:flex">
+                    <span className="tw:w-25 tw:font-medium">Province:</span>
+                    <span>{address?.province}</span>
+                    </div>
+                    <div className="tw:flex">
+                    <span className="tw:w-25 tw:font-medium">Postal Code:</span>
+                    <span>{address?.postalCode}</span>
+                    </div>
+                </div>
             </div>
-          </div>
 
           {/* Business Info Box */}
-          <div className="tw:col-span-2 tw:bg-blue-50 tw:p-6 tw:rounded-xl tw:border tw:border-blue-200 tw:shadow-sm">
-            <h3 className="tw:text-lg tw:font-semibold tw:text-blue-700 tw:mb-4">Business Info</h3>
-            <div className="tw:space-y-2 tw:text-gray-700">
-              <p><span className="tw:font-medium">License Number:</span> {businessInfo?.licenseNumber}</p>
-              <p><span className="tw:font-medium">Registration Number:</span> {businessInfo?.businessRegistrationNumber}</p>
-              <p><span className="tw:font-medium">Tax ID:</span> {businessInfo?.taxIdentificationNumber}</p>
-
-              {businessInfo?.servicesOffered?.length > 0 && (
-                <div className="tw:mt-3">
-                  <p className="tw:font-medium">Services Offered:</p>
-                  <ul className="tw:list-disc tw:ml-6 tw:mt-1">
-                    {businessInfo.servicesOffered.map((service, idx) => (
-                      <li key={idx}>{service}</li>
-                    ))}
-                  </ul>
+            <div className="tw:col-span-2 tw:bg-gradient-to-br tw:from-blue-50 tw:to-white tw:p-6 tw:rounded-2xl tw:border tw:border-blue-200 tw:shadow-lg tw:transition-all tw:duration-300 hover:tw:shadow-xl">
+            <h3 className="tw:text-xl tw:font-bold tw:text-blue-800 tw:mb-5 tw:border-b tw:pb-2 tw:border-blue-200">
+                🏢 Business Info
+            </h3>
+            <div className="tw:space-y-4 tw:text-blue-900 tw:text-[13px]">
+                <div className="tw:flex tw:gap-2">
+                <span className="tw:w-44 tw:font-medium">License Number:</span>
+                <span>{businessInfo?.licenseNumber}</span>
                 </div>
-              )}
+                <div className="tw:flex tw:gap-2">
+                <span className="tw:w-44 tw:font-medium">Registration Number:</span>
+                <span>{businessInfo?.businessRegistrationNumber}</span>
+                </div>
+                <div className="tw:flex tw:gap-2">
+                <span className="tw:w-44 tw:font-medium">Tax ID:</span>
+                <span>{businessInfo?.taxIdentificationNumber}</span>
+                </div>
+
+                {businessInfo?.servicesOffered?.length > 0 && (
+                <div className="tw:mt-6">
+                    <p className="tw:font-semibold tw:mb-5 tw:!text-xl">🛠️ Services Offered:</p>
+                    <ul className="tw:grid tw:grid-cols-2 md:tw:grid-cols-3 tw:gap-x-6 tw:list-disc tw:list-inside">
+                    {businessInfo.servicesOffered.map((service, idx) => (
+                        <li key={idx}>{service}</li>
+                    ))}
+                    </ul>
+                </div>
+                )}
             </div>
-          </div>
+            </div>
         </div>
 
         {/* Footer */}
