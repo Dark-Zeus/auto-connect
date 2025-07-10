@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Car, FileText, CreditCard, ChevronDown, Coins, HelpingHand, BookCheck } from 'lucide-react';
+import { Home, Car, FileText, CreditCard, ChevronDown, Coins, HelpingHand, BookCheck, BookMarkedIcon } from 'lucide-react';
 
 const MarketplaceNavigation = () => {
   const [activeItem, setActiveItem] = useState('Home');
@@ -35,6 +35,13 @@ const MarketplaceNavigation = () => {
       badge: 1
     },
     {
+      id: 'saved',
+      label: 'Saved Ads',
+      icon: BookMarkedIcon,
+      href: '/saved',
+      badge: null
+    },
+    {
       id: 'checkreports',
       label: 'Check Vehicle Reports',
       icon: BookCheck,
@@ -45,17 +52,10 @@ const MarketplaceNavigation = () => {
       id: 'subscription',
       label: 'Subscription',
       icon: CreditCard,
-      href: '/subscription',
+      href: '@pages/SubscriptionsPage',
       badge: null
       //isNew: true
-    },
-    {
-      id: 'contribute',
-      label: 'Contribute',
-      icon: HelpingHand,
-      href: '/contribute',
-      badge: null
-    }
+    },    
   ];
 
   const handleItemClick = (itemLabel) => {
