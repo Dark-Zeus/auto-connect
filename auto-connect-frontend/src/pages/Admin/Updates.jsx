@@ -7,7 +7,6 @@ const updates = [
     time: "10:30 AM",
     district: "Colombo",
     vehicleNumber: "CAX-1234",
-    type: "Engine Tune-up",
   },
   {
     serviceCenter: "AutoCare Lanka",
@@ -15,7 +14,6 @@ const updates = [
     time: "2:00 PM",
     district: "Gampaha",
     vehicleNumber: "BKC-4567",
-    type: "Oil Change",
   },
   {
     serviceCenter: "Speedy Repairs",
@@ -23,7 +21,6 @@ const updates = [
     time: "9:15 AM",
     district: "Kandy",
     vehicleNumber: "KDL-9876",
-    type: "Brake Replacement",
   },
   {
     serviceCenter: "Highway Auto",
@@ -31,7 +28,6 @@ const updates = [
     time: "11:45 AM",
     district: "Matara",
     vehicleNumber: "MAT-1122",
-    type: "AC Repair",
   },
   {
     serviceCenter: "DriveTech Garage",
@@ -39,7 +35,6 @@ const updates = [
     time: "1:30 PM",
     district: "Negombo",
     vehicleNumber: "NEG-5566",
-    type: "Battery Replacement",
   },
   {
     serviceCenter: "QuickFix Workshop",
@@ -47,7 +42,6 @@ const updates = [
     time: "4:20 PM",
     district: "Kurunegala",
     vehicleNumber: "KUR-0099",
-    type: "Full Service",
   },
   {
     serviceCenter: "AutoXpress",
@@ -55,7 +49,6 @@ const updates = [
     time: "10:00 AM",
     district: "Galle",
     vehicleNumber: "GAL-2233",
-    type: "Wheel Alignment",
   },
   {
     serviceCenter: "MotorMate",
@@ -63,7 +56,6 @@ const updates = [
     time: "3:10 PM",
     district: "Ratnapura",
     vehicleNumber: "RAT-3344",
-    type: "Tire Replacement",
   },
   {
     serviceCenter: "RoadStar Service",
@@ -71,7 +63,6 @@ const updates = [
     time: "12:00 PM",
     district: "Badulla",
     vehicleNumber: "BAD-7788",
-    type: "Suspension Check",
   },
   {
     serviceCenter: "Elite AutoZone",
@@ -79,7 +70,6 @@ const updates = [
     time: "5:00 PM",
     district: "Anuradhapura",
     vehicleNumber: "ANU-8899",
-    type: "Transmission Repair",
   },
   // ...
       {
@@ -88,7 +78,6 @@ const updates = [
     time: "10:30 AM",
     district: "Colombo",
     vehicleNumber: "CAX-1234",
-    type: "Engine Tune-up",
   },
   {
     serviceCenter: "AutoCare Lanka",
@@ -96,7 +85,6 @@ const updates = [
     time: "2:00 PM",
     district: "Gampaha",
     vehicleNumber: "BKC-4567",
-    type: "Oil Change",
   },
   {
     serviceCenter: "Speedy Repairs",
@@ -104,7 +92,6 @@ const updates = [
     time: "9:15 AM",
     district: "Kandy",
     vehicleNumber: "KDL-9876",
-    type: "Brake Replacement",
   },
   {
     serviceCenter: "Highway Auto",
@@ -112,7 +99,6 @@ const updates = [
     time: "11:45 AM",
     district: "Matara",
     vehicleNumber: "MAT-1122",
-    type: "AC Repair",
   },
   {
     serviceCenter: "DriveTech Garage",
@@ -120,7 +106,6 @@ const updates = [
     time: "1:30 PM",
     district: "Negombo",
     vehicleNumber: "NEG-5566",
-    type: "Battery Replacement",
   },
   {
     serviceCenter: "QuickFix Workshop",
@@ -128,7 +113,6 @@ const updates = [
     time: "4:20 PM",
     district: "Kurunegala",
     vehicleNumber: "KUR-0099",
-    type: "Full Service",
   },
   {
     serviceCenter: "AutoXpress",
@@ -136,7 +120,6 @@ const updates = [
     time: "10:00 AM",
     district: "Galle",
     vehicleNumber: "GAL-2233",
-    type: "Wheel Alignment",
   },
   {
     serviceCenter: "MotorMate",
@@ -144,7 +127,6 @@ const updates = [
     time: "3:10 PM",
     district: "Ratnapura",
     vehicleNumber: "RAT-3344",
-    type: "Tire Replacement",
   },
   {
     serviceCenter: "RoadStar Service",
@@ -152,7 +134,6 @@ const updates = [
     time: "12:00 PM",
     district: "Badulla",
     vehicleNumber: "BAD-7788",
-    type: "Suspension Check",
   },
   {
     serviceCenter: "Elite AutoZone",
@@ -160,7 +141,6 @@ const updates = [
     time: "5:00 PM",
     district: "Anuradhapura",
     vehicleNumber: "ANU-8899",
-    type: "Transmission Repair",
   },
 ];
 const Updates = () => {

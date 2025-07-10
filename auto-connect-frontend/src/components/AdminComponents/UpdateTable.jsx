@@ -18,44 +18,42 @@ const LatestUpdatesTable = ({ latestUpdates }) => {
       <h3 className="tw:text-2xl tw:font-bold tw:mb-4 tw:text-blue-800">Latest Service Updates</h3>
       <table className="tw:w-full tw:border-collapse tw:text-sm md:tw:text-base">
         <thead className="tw:bg-blue-50 tw:text-blue-700">
-          <tr>
+            <tr>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Service Center</th>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Date</th>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Time</th>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">District</th>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Vehicle No.</th>
-            <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Type</th>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Status</th>
-          </tr>
+            </tr>
         </thead>
         <tbody>
-          {currentRows.map((row, idx) => (
+            {currentRows.map((row, idx) => (
             <tr
-              key={idx}
-              onClick={() => setSelectedIndex(startIndex + idx)}
-              className={`tw:cursor-pointer tw:transition-colors tw:duration-300 ${
+                key={idx}
+                onClick={() => setSelectedIndex(startIndex + idx)}
+                className={`tw:cursor-pointer tw:transition-colors tw:duration-300 ${
                 selectedIndex === startIndex + idx
-                  ? "tw:bg-blue-200"
-                  : (startIndex + idx) % 2 === 0
-                  ? "tw:bg-white"
-                  : "tw:bg-gray-50"
-              } hover:tw:bg-blue-100`}
+                    ? "tw:bg-blue-200"
+                    : (startIndex + idx) % 2 === 0
+                    ? "tw:bg-white"
+                    : "tw:bg-gray-50"
+                } hover:tw:bg-blue-100`}
             >
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.serviceCenter}</td>
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.date}</td>
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.time}</td>
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.district}</td>
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.vehicleNumber}</td>
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.type}</td>
-              <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">
+                <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.serviceCenter}</td>
+                <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.date}</td>
+                <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.time}</td>
+                <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.district}</td>
+                <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">{row.vehicleNumber}</td>
+                <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">
                 <span className="tw:inline-flex tw:items-center tw:gap-1 tw:text-red-600 tw:font-medium">
-                  🔒 Paid Report
+                    🔒 Paid Report
                 </span>
-              </td>
+                </td>
             </tr>
-          ))}
+            ))}
         </tbody>
-      </table>
+        </table>
 
       {/* Pagination Controls */}
       <div className="tw:flex tw:justify-center tw:items-center tw:gap-3 tw:mt-10">
