@@ -11,7 +11,9 @@ import {
   Box, 
   Divider,
   IconButton,
-  Tooltip
+  Tooltip,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { 
   Phone, 
@@ -20,9 +22,15 @@ import {
   Message, 
   Sms,
   Visibility,
-  WhatsApp
+  WhatsApp,
+  Report,
+  Bookmark,
+  BookmarkBorder,
+  Flag,
+  Save
 } from '@mui/icons-material';
 import WhatsAppSVG from '../../assets/images/whatsapp.svg';
+import ReportAd from '@components/CarBuyer/ReportAd';
 
 // Import SVG icons (these would be your actual imports)
 const MobileIcon = () => (
@@ -57,6 +65,11 @@ const VehicleDetails = ({ vehicle }) => {
 
   const [showMobile, setShowMobile] = useState(false);
   const [views] = useState(parseInt(vehicleData.views) || 0);
+  const [isSaved, setIsSaved] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-LK', {
@@ -74,6 +87,35 @@ const VehicleDetails = ({ vehicle }) => {
 
   const handleShowMobile = () => {
     setShowMobile(!showMobile);
+  };
+
+  const handleSaveAd = () => {
+    setIsSaved(!isSaved);
+    setSnackbarMessage(isSaved ? 'Advertisement removed from saved items' : 'Advertisement saved successfully');
+    setSnackbarSeverity('success');
+    setSnackbarOpen(true);
+  };
+
+  const handleReportAd = () => {
+    setReportDialogOpen(true);
+  };
+
+  const handleReportSubmit = (reportData) => {
+    // Handle the report submission - send to backend, etc.
+    console.log('Report submitted:', reportData);
+    
+    // Show success message
+    setSnackbarMessage('Report submitted successfully. We will review it shortly.');
+    setSnackbarSeverity('success');
+    setSnackbarOpen(true);
+  };
+
+  const handleReportClose = () => {
+    setReportDialogOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const [animatedViews, setAnimatedViews] = useState(0);
@@ -113,7 +155,7 @@ const VehicleDetails = ({ vehicle }) => {
   return (
     <div className="tw:w-full tw:p-2 sm:tw:p-4 tw:space-y-4">
       {/* Main Price and Contact Section */}
-      <Card className="tw:shadow-lg tw:border-0 tw:bg-white tw:rounded-lg">
+      <div className="tw:shadow-sm tw:border-gray-200 tw:rounded-xl tw:border tw:bg-white">
         <CardContent className="tw:p-3 sm:tw:p-6">
           {/* Mobile Layout - Stack vertically */}
           <div className="tw:block md:tw:hidden tw:space-y-4">
@@ -146,7 +188,7 @@ const VehicleDetails = ({ vehicle }) => {
               {/* Email Inquiry */}
               <Button
                 href={vehicleData.inquiryUrl || "https://www.patpat.lk/Inquiry/1486540"}
-                className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
+                className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md tw:hover:bg-blue-800 tw:transition-all tw:w-full"
                 style={{ textTransform: 'none', color: 'white'}}
               >
                 <Email />
@@ -235,10 +277,10 @@ const VehicleDetails = ({ vehicle }) => {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </div>
 
       {/* Vehicle Details Table */}
-      <Card className="tw:shadow-lg tw:border-0 tw:bg-white tw:rounded-lg">
+      <div className="tw:shadow-sm tw:border tw:border-gray-200 tw:rounded-xl tw:bg-white">
         <CardContent className="tw:p-0">
           <Table>
             <TableBody>
@@ -262,10 +304,10 @@ const VehicleDetails = ({ vehicle }) => {
             </TableBody>
           </Table>
         </CardContent>
-      </Card>
+      </div>
 
       {/* Share Section */}
-      <Card className="tw:shadow-lg tw:border-0 tw:bg-gradient-to-br tw:from-slate-50 tw:to-blue-50 tw:rounded-lg">
+      <div className="tw:shadow-sm tw:border tw:border-gray-200 tw:rounded-xl tw:bg-white">
         <CardContent className="tw:p-4 sm:tw:p-6 tw:text-center">
           <Typography variant="h6" className="tw:mb-4 tw:text-slate-700 tw:font-bold tw:text-sm sm:tw:text-base">
             Suggest this advertisement to a friend on
@@ -304,21 +346,73 @@ const VehicleDetails = ({ vehicle }) => {
                 <WhatsApp className="tw:w-5 tw:h-5 sm:tw:w-6 sm:tw:h-6" />
               </IconButton>
             </Tooltip>
-
-            <div className="tw:w-px tw:h-6 tw:bg-gray-300"></div>
-
-            <Tooltip title="SMS">
-              <IconButton 
-                href={vehicleData.smsShareUrl || "sms:?body=https://www.patpat.lk/vehicle/car/Fiat/Linea/2011/fiat-linea/1384302"}
-                target="_blank"
-                className="tw:bg-purple-600 tw:text-white hover:tw:bg-purple-700 tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-10 tw:h-10 sm:tw:w-12 sm:tw:h-12"
-              >
-                <Sms className="tw:w-5 tw:h-5 sm:tw:w-6 sm:tw:h-6" />
-              </IconButton>
-            </Tooltip>
+           
           </div>
         </CardContent>
-      </Card>
+      </div>
+
+      {/* Report and Save Section */}
+      <div className="tw:shadow-sm tw:border tw:border-gray-200 tw:rounded-xl tw:bg-white">
+        <CardContent className="tw:p-4 sm:tw:p-6">
+          <div className="tw:flex tw:flex-col sm:tw:flex-row tw:gap-4 tw:items-center tw:justify-center">
+            {/* Save Advertisement Button */}
+            <Button
+              onClick={handleSaveAd}
+              className={`tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full sm:tw:w-auto ${
+                isSaved 
+                  ? 'tw:bg-amber-500 tw:text-white hover:tw:bg-amber-600' 
+                  : 'tw:bg-white tw:text-amber-600 tw:border tw:border-amber-400 hover:tw:bg-amber-50'
+              }`}
+              style={{ textTransform: 'none' }}
+            >
+              {isSaved ? <Bookmark className="tw:w-5 tw:h-5" /> : <BookmarkBorder className="tw:w-5 tw:h-5" />}
+              <Typography variant="body1" className="tw:font-medium">
+                {isSaved ? 'Saved' : 'Save Advertisement'}
+              </Typography>
+            </Button>
+
+            {/* Vertical Divider for Desktop */}
+            <div className="tw:hidden sm:tw:block tw:w-px tw:h-12 tw:bg-gray-300"></div>
+
+            {/* Report Advertisement Button */}
+            <Button
+              onClick={handleReportAd}
+              className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-white tw:text-red-600 tw:border tw:border-red-400 tw:rounded-lg tw:shadow-md hover:tw:bg-red-50 hover:tw:shadow-lg tw:transition-all tw:w-full sm:tw:w-auto"
+              style={{ textTransform: 'none' }}
+            >
+              <Flag className="tw:w-5 tw:h-5" />
+              <Typography variant="body1" className="tw:font-medium">
+                Report Advertisement
+              </Typography>
+            </Button>
+          </div>
+        </CardContent>
+      </div>
+
+      {/* Report Dialog */}
+      <ReportAd
+        open={reportDialogOpen}
+        onClose={handleReportClose}
+        onSubmit={handleReportSubmit}
+        vehicleData={vehicleData}
+      />
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          className="tw:w-full"
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
