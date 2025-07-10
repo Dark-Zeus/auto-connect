@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import WhatsAppSVG from '../../assets/images/whatsapp.svg';
 import ReportAd from '@components/CarBuyer/ReportAd';
+import Inquire from '@components/CarBuyer/Inquire';
 
 // Import SVG icons (these would be your actual imports)
 const MobileIcon = () => (
@@ -70,6 +71,7 @@ const VehicleDetails = ({ vehicle }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [inquireDialogOpen, setInquireDialogOpen] = useState(false);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-LK', {
@@ -119,6 +121,21 @@ const VehicleDetails = ({ vehicle }) => {
   };
 
   const [animatedViews, setAnimatedViews] = useState(0);
+
+  const handleInquireSubmitSuccess = (formData) => {
+    // Show success message
+    setSnackbarMessage(`Your inquiry was successfully sent to the seller. Check your email for updates.`);
+    setSnackbarSeverity('success');
+    setSnackbarOpen(true);
+  };
+
+    const handleInquireOpen = () => {
+    setInquireDialogOpen(true); // Open Inquire dialog
+  };
+
+  const handleInquireClose = () => {
+    setInquireDialogOpen(false); // Close Inquire dialog
+  };
 
   React.useEffect(() => {
     const duration = 2000; // 2 seconds
@@ -187,7 +204,7 @@ const VehicleDetails = ({ vehicle }) => {
 
               {/* Email Inquiry */}
               <Button
-                href={vehicleData.inquiryUrl || "https://www.patpat.lk/Inquiry/1486540"}
+                onClick={handleInquireOpen} // Trigger Inquire component
                 className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md tw:hover:bg-blue-800 tw:transition-all tw:w-full"
                 style={{ textTransform: 'none', color: 'white'}}
               >
@@ -196,55 +213,6 @@ const VehicleDetails = ({ vehicle }) => {
                   Inquire Now
                 </Typography>
               </Button>
-            </div>
-          </div>
-
-          {/* Desktop Layout - Side by side */}
-          <div className="tw:hidden md:tw:flex tw:items-center tw:gap-6">
-            {/* Price Section */}
-            <div className="tw:flex-1">
-              <Typography variant="h3" className="tw:font-bold tw:text-purple-600 tw:mb-1">
-                {vehicleData.price ? formatPrice(vehicleData.price) : 'Negotiable'}
-              </Typography>
-            </div>
-
-            {/* Vertical Divider */}
-            <div className="tw:w-px tw:h-24 tw:bg-gradient-to-b tw:from-blue-400 tw:to-purple-400"></div>
-
-            {/* Contact Section */}
-            <div className="tw:flex tw:gap-4">
-              {/* Phone Contact */}
-              <div className="tw:flex-1 tw:max-w-xs">
-                <Button
-                  onClick={handleShowMobile}
-                  className="tw:flex tw:items-center tw:gap-3 tw:p-3 tw:bg-gray-50 tw:text-gray-700 tw:border tw:border-gray-200 tw:rounded-lg tw:shadow-sm hover:tw:shadow-md tw:transition-all tw:w-full"
-                  style={{ textTransform: 'none' }}
-                >
-                  <MobileIcon />
-                  <div className="tw:text-left">
-                    <Typography variant="h6" className="tw:font-bold tw:text-gray-900">
-                      {showMobile ? (vehicleData.mobile || '0767120123') : '07XXXXXXXX'}
-                    </Typography>
-                    <Typography variant="caption" className="tw:text-gray-600">
-                      Click to View Phone Number
-                    </Typography>
-                  </div>
-                </Button>
-              </div>
-
-              {/* Email Inquiry */}
-              <div className="tw:flex-1">
-                <Button
-                  href={vehicleData.inquiryUrl || "https://www.patpat.lk/Inquiry/1486540"}
-                  className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-4 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:w-full"
-                  style={{ textTransform: 'none', color: 'white'}}
-                >
-                  <Email />
-                  <Typography variant="body1" className="tw:font-medium">
-                    Inquire Now
-                  </Typography>
-                </Button>
-              </div>
             </div>
           </div>
             
@@ -388,6 +356,14 @@ const VehicleDetails = ({ vehicle }) => {
           </div>
         </CardContent>
       </div>
+
+      {/* Inquire Dialog */}
+      <Inquire 
+        open={inquireDialogOpen}
+        onClose={handleInquireClose}
+        vehicleData={vehicleData}
+        onSubmitSuccess={handleInquireSubmitSuccess}
+      />
 
       {/* Report Dialog */}
       <ReportAd
