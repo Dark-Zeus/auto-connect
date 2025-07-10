@@ -1,16 +1,171 @@
 import React from 'react';
-
+import LatestUpdatesTable from '@components/AdminComponents/UpdateTable';
+const updates = [
+    {
+    serviceCenter: "CityFix Motors",
+    date: "2025-07-09",
+    time: "10:30 AM",
+    district: "Colombo",
+    vehicleNumber: "CAX-1234",
+    type: "Engine Tune-up",
+  },
+  {
+    serviceCenter: "AutoCare Lanka",
+    date: "2025-07-08",
+    time: "2:00 PM",
+    district: "Gampaha",
+    vehicleNumber: "BKC-4567",
+    type: "Oil Change",
+  },
+  {
+    serviceCenter: "Speedy Repairs",
+    date: "2025-07-07",
+    time: "9:15 AM",
+    district: "Kandy",
+    vehicleNumber: "KDL-9876",
+    type: "Brake Replacement",
+  },
+  {
+    serviceCenter: "Highway Auto",
+    date: "2025-07-07",
+    time: "11:45 AM",
+    district: "Matara",
+    vehicleNumber: "MAT-1122",
+    type: "AC Repair",
+  },
+  {
+    serviceCenter: "DriveTech Garage",
+    date: "2025-07-06",
+    time: "1:30 PM",
+    district: "Negombo",
+    vehicleNumber: "NEG-5566",
+    type: "Battery Replacement",
+  },
+  {
+    serviceCenter: "QuickFix Workshop",
+    date: "2025-07-05",
+    time: "4:20 PM",
+    district: "Kurunegala",
+    vehicleNumber: "KUR-0099",
+    type: "Full Service",
+  },
+  {
+    serviceCenter: "AutoXpress",
+    date: "2025-07-05",
+    time: "10:00 AM",
+    district: "Galle",
+    vehicleNumber: "GAL-2233",
+    type: "Wheel Alignment",
+  },
+  {
+    serviceCenter: "MotorMate",
+    date: "2025-07-04",
+    time: "3:10 PM",
+    district: "Ratnapura",
+    vehicleNumber: "RAT-3344",
+    type: "Tire Replacement",
+  },
+  {
+    serviceCenter: "RoadStar Service",
+    date: "2025-07-03",
+    time: "12:00 PM",
+    district: "Badulla",
+    vehicleNumber: "BAD-7788",
+    type: "Suspension Check",
+  },
+  {
+    serviceCenter: "Elite AutoZone",
+    date: "2025-07-02",
+    time: "5:00 PM",
+    district: "Anuradhapura",
+    vehicleNumber: "ANU-8899",
+    type: "Transmission Repair",
+  },
+  // ...
+      {
+    serviceCenter: "CityFix Motors",
+    date: "2025-07-09",
+    time: "10:30 AM",
+    district: "Colombo",
+    vehicleNumber: "CAX-1234",
+    type: "Engine Tune-up",
+  },
+  {
+    serviceCenter: "AutoCare Lanka",
+    date: "2025-07-08",
+    time: "2:00 PM",
+    district: "Gampaha",
+    vehicleNumber: "BKC-4567",
+    type: "Oil Change",
+  },
+  {
+    serviceCenter: "Speedy Repairs",
+    date: "2025-07-07",
+    time: "9:15 AM",
+    district: "Kandy",
+    vehicleNumber: "KDL-9876",
+    type: "Brake Replacement",
+  },
+  {
+    serviceCenter: "Highway Auto",
+    date: "2025-07-07",
+    time: "11:45 AM",
+    district: "Matara",
+    vehicleNumber: "MAT-1122",
+    type: "AC Repair",
+  },
+  {
+    serviceCenter: "DriveTech Garage",
+    date: "2025-07-06",
+    time: "1:30 PM",
+    district: "Negombo",
+    vehicleNumber: "NEG-5566",
+    type: "Battery Replacement",
+  },
+  {
+    serviceCenter: "QuickFix Workshop",
+    date: "2025-07-05",
+    time: "4:20 PM",
+    district: "Kurunegala",
+    vehicleNumber: "KUR-0099",
+    type: "Full Service",
+  },
+  {
+    serviceCenter: "AutoXpress",
+    date: "2025-07-05",
+    time: "10:00 AM",
+    district: "Galle",
+    vehicleNumber: "GAL-2233",
+    type: "Wheel Alignment",
+  },
+  {
+    serviceCenter: "MotorMate",
+    date: "2025-07-04",
+    time: "3:10 PM",
+    district: "Ratnapura",
+    vehicleNumber: "RAT-3344",
+    type: "Tire Replacement",
+  },
+  {
+    serviceCenter: "RoadStar Service",
+    date: "2025-07-03",
+    time: "12:00 PM",
+    district: "Badulla",
+    vehicleNumber: "BAD-7788",
+    type: "Suspension Check",
+  },
+  {
+    serviceCenter: "Elite AutoZone",
+    date: "2025-07-02",
+    time: "5:00 PM",
+    district: "Anuradhapura",
+    vehicleNumber: "ANU-8899",
+    type: "Transmission Repair",
+  },
+];
 const Updates = () => {
   return (
-    <div className="tw:p-6">
-      <h1 className="tw:text-2xl tw:font-semibold tw:mb-4">System Updates</h1>
-      <p className="tw:mb-2">Latest patches and feature updates.</p>
-      <ul className="tw:list-disc tw:pl-5">
-        <li>v2.3.0 - Improved dashboard performance</li>
-        <li>v2.2.0 - Added export features for reports</li>
-        <li>v2.1.5 - Bug fixes and UI enhancements</li>
-      </ul>
-    </div>
+    <LatestUpdatesTable latestUpdates={updates} />
   );
 };
 
