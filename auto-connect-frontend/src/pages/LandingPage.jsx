@@ -24,6 +24,25 @@ import {
   TrendingUp,
   ArrowDownRight,
   Sparkles,
+  Cloud,
+  Brain,
+  Lock,
+  Plug,
+  Code,
+  UserPlus,
+  Calendar,
+  Wrench,
+  FileCheck,
+  ThumbsUp,
+  Server,
+  Activity,
+  Search,
+  CreditCard,
+  Settings,
+  Crown,
+  Check,
+  ArrowUp,
+  Building,
 } from "lucide-react";
 import {
   useScrollAnimation,
@@ -42,11 +61,13 @@ const LandingPage = () => {
   const [featuresRef, featuresVisible] = useScrollAnimation();
   const [statsRef, statsVisible] = useScrollAnimation();
   const [workflowRef, workflowVisible] = useScrollAnimation();
+  const [pricingRef, pricingVisible] = useScrollAnimation();
   const [testimonialsRef, testimonialsVisible] = useScrollAnimation();
   const [ctaRef, ctaVisible] = useScrollAnimation();
   const [featuresGridRef, featuresGridVisible] = useStaggeredAnimation();
   const [statsGridRef, statsGridVisible] = useStaggeredAnimation();
   const [workflowStepsRef, workflowStepsVisible] = useStaggeredAnimation();
+  const [pricingGridRef, pricingGridVisible] = useStaggeredAnimation();
   const [testimonialsGridRef, testimonialsGridVisible] =
     useStaggeredAnimation();
 
@@ -59,65 +80,167 @@ const LandingPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const features = [
+  // Platform technical capabilities - WHAT WE BUILT
+  const platformFeatures = [
     {
-      icon: <Database className="w-8 h-8" />,
-      title: "Digital Vehicle Registry",
+      icon: <Cloud className="w-8 h-8" />,
+      title: "Cloud Infrastructure",
       description:
-        "Comprehensive vehicle registration system with immutable maintenance history, secure document management, and automated compliance reminders for complete lifecycle tracking.",
-      highlight: "Complete History Management",
-      benefits: ["Immutable Records", "Document Storage", "Compliance Alerts"],
-      color: "from-blue-500 to-blue-600",
-      iconBg: "bg-blue-100",
-      iconColor: "text-blue-600",
+        "Enterprise-grade cloud architecture built on AWS with 99.9% uptime SLA, auto-scaling capabilities, and multi-region deployment for optimal performance and reliability across Sri Lanka.",
+      highlight: "99.9% Uptime SLA",
+      benefits: ["Auto-scaling", "Multi-region", "Load Balancing"],
+      color: "sky-blue",
     },
     {
-      icon: <Gavel className="w-8 h-8" />,
-      title: "Competitive Trading Platform",
+      icon: <Brain className="w-8 h-8" />,
+      title: "AI & Analytics Engine",
       description:
-        "Transparent vehicle marketplace featuring competitive bidding, complete history disclosure, secure escrow transactions, and market intelligence for optimal valuations.",
-      highlight: "Transparent Bidding System",
-      benefits: [
-        "Competitive Bidding",
-        "History Transparency",
-        "Secure Transactions",
+        "Advanced machine learning algorithms powered by TensorFlow for predictive maintenance, fraud detection, market analysis, and intelligent recommendations with real-time processing.",
+      highlight: "ML-Powered Analytics",
+      benefits: ["Predictive Analytics", "Fraud Detection", "Smart Insights"],
+      color: "navy-blue",
+    },
+    {
+      icon: <Plug className="w-8 h-8" />,
+      title: "Integration Hub",
+      description:
+        "RESTful APIs with GraphQL support, comprehensive webhook system, payment gateway integrations, and seamless third-party connectivity for extensible platform architecture.",
+      highlight: "API-First Architecture",
+      benefits: ["REST & GraphQL", "Webhook System", "Payment Gateways"],
+      color: "aqua-mist",
+    },
+    {
+      icon: <Lock className="w-8 h-8" />,
+      title: "Security Framework",
+      description:
+        "Military-grade 256-bit encryption, OAuth 2.0 authentication, role-based access control, comprehensive audit trails, and ISO 27001 compliance ensuring data privacy.",
+      highlight: "ISO 27001 Compliant",
+      benefits: ["256-bit Encryption", "OAuth 2.0", "Audit Trails"],
+      color: "navy-blue",
+    },
+    {
+      icon: <Code className="w-8 h-8" />,
+      title: "Technology Stack",
+      description:
+        "Modern tech stack with React, Node.js, PostgreSQL, Redis caching, Docker containers, and blockchain integration ensuring scalability, maintainability, and innovation.",
+      highlight: "Blockchain-Secured",
+      benefits: ["React & Node.js", "Docker Ready", "Blockchain Records"],
+      color: "sky-blue",
+    },
+  ];
+
+  // User workflow steps - HOW USERS EXPERIENCE IT
+  const userWorkflowSteps = [
+    {
+      number: "1",
+      title: "Vehicle Registration Journey",
+      description:
+        "Vehicle owners begin by uploading documents, completing identity verification, and creating comprehensive digital vehicle profiles with ownership history and specifications.",
+      icon: <UserPlus className="w-6 h-6" />,
+      color: "aqua-mist",
+      features: ["Document Upload", "ID Verification", "Digital Profile"],
+      stats: "2 min signup",
+    },
+    {
+      number: "2",
+      title: "Service Discovery & Booking",
+      description:
+        "Users browse verified service providers, compare ratings and pricing, check real-time availability, and book appointments through our intuitive booking interface.",
+      icon: <Search className="w-6 h-6" />,
+      color: "aqua-mist",
+      features: ["Provider Search", "Price Comparison", "Instant Booking"],
+      stats: "200+ providers",
+    },
+    {
+      number: "3",
+      title: "Service Appointment & Tracking",
+      description:
+        "Real-time service tracking, direct communication with providers, progress updates, and quality monitoring through integrated service management dashboard.",
+      icon: <Activity className="w-6 h-6" />,
+      color: "aqua-mist",
+      features: ["Live Tracking", "Direct Chat", "Quality Control"],
+      stats: "Real-time updates",
+    },
+    {
+      number: "4",
+      title: "Payment & Documentation",
+      description:
+        "Secure payment processing, digital receipt generation, automatic vehicle history updates, and comprehensive service record maintenance with blockchain verification.",
+      icon: <CreditCard className="w-6 h-6" />,
+      color: "aqua-mist",
+      features: ["Secure Payment", "Digital Receipts", "History Updates"],
+      stats: "Instant processing",
+    },
+    {
+      number: "5",
+      title: "Feedback & Continuous Improvement",
+      description:
+        "Rate service experience, provide detailed feedback, receive personalized maintenance recommendations, and benefit from AI-driven service optimization.",
+      icon: <ThumbsUp className="w-6 h-6" />,
+      color: "aqua-mist",
+      features: ["Rating System", "AI Recommendations", "Service History"],
+      stats: "4.9/5 satisfaction",
+    },
+  ];
+
+  // Pricing plans
+  const pricingPlans = [
+    {
+      name: "Basic",
+      price: "Free",
+      period: "forever",
+      description: "Perfect for individual vehicle owners getting started",
+      features: [
+        "Vehicle registration",
+        "Basic service booking",
+        "Limited history access",
+        "Standard support",
+        "Basic marketplace access",
       ],
-      color: "from-green-500 to-green-600",
-      iconBg: "bg-green-100",
-      iconColor: "text-green-600",
+      buttonText: "Get Started",
+      popular: false,
+      icon: <Car className="w-6 h-6" />,
+      color: "navy-blue",
     },
     {
-      icon: <Users className="w-8 h-8" />,
-      title: "Service Marketplace",
-      description:
-        "Direct appointment booking with verified service providers, real-time service tracking, integrated payment processing, and comprehensive provider rating system.",
-      highlight: "Verified Professional Network",
-      benefits: ["Direct Booking", "Real-time Tracking", "Verified Providers"],
-      color: "from-purple-500 to-purple-600",
-      iconBg: "bg-purple-100",
-      iconColor: "text-purple-600",
+      name: "Premium",
+      price: "₹1,999",
+      period: "per month",
+      description: "Complete vehicle passport with premium features",
+      features: [
+        "Full vehicle passport access",
+        "Complete bidding capabilities",
+        "Comprehensive vehicle history",
+        "Priority service booking",
+        "Advanced analytics dashboard",
+        "Insurance integration",
+        "24/7 premium support",
+        "Maintenance predictions",
+      ],
+      buttonText: "Go Premium",
+      popular: true,
+      icon: <Crown className="w-6 h-6" />,
+      color: "navy-blue",
     },
     {
-      icon: <Shield className="w-8 h-8" />,
-      title: "Insurance Integration",
-      description:
-        "Automated insurance claim processing, digital accident reporting, AI-powered damage assessment, and seamless repair authorization workflows with real-time updates.",
-      highlight: "Streamlined Claims Processing",
-      benefits: ["Auto Claims", "Digital Reporting", "AI Assessment"],
-      color: "from-orange-500 to-orange-600",
-      iconBg: "bg-orange-100",
-      iconColor: "text-orange-600",
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: "Business Intelligence",
-      description:
-        "Advanced analytics dashboard with predictive maintenance algorithms, market insights, fraud detection systems, and comprehensive performance monitoring for all stakeholders.",
-      highlight: "AI-Powered Analytics",
-      benefits: ["Predictive Analytics", "Fraud Detection", "Market Insights"],
-      color: "from-teal-500 to-teal-600",
-      iconBg: "bg-teal-100",
-      iconColor: "text-teal-600",
+      name: "Enterprise",
+      price: "₹9,999",
+      period: "per month",
+      description: "For fleet owners and automotive businesses",
+      features: [
+        "Everything in Premium",
+        "Multi-vehicle management",
+        "Fleet analytics & reporting",
+        "Custom API integrations",
+        "Dedicated account manager",
+        "White-label solutions",
+        "Custom workflow automation",
+        "Enterprise-grade security",
+      ],
+      buttonText: "Contact Sales",
+      popular: false,
+      icon: <Building className="w-6 h-6" />,
+      color: "navy-blue",
     },
   ];
 
@@ -144,78 +267,6 @@ const LandingPage = () => {
     },
   ];
 
-  const workflowSteps = [
-    {
-      number: "1",
-      title: "Vehicle Registration & History",
-      description:
-        "Create comprehensive digital vehicle profiles with complete maintenance history tracking, document management, and automated compliance reminders.",
-      icon: <Database className="w-8 h-8" />,
-      color: "from-blue-500 to-blue-600",
-      bgColor: "bg-blue-50",
-      iconBg: "bg-blue-100",
-      iconColor: "text-blue-600",
-      features: ["Digital Profiles", "History Tracking", "Compliance Alerts"],
-      stats: "25K+ Vehicles",
-    },
-    {
-      number: "2",
-      title: "Trading Platform & Bidding",
-      description:
-        "List vehicles on our transparent marketplace with competitive bidding system, complete history disclosure, and secure ownership transfer workflows.",
-      icon: <Gavel className="w-8 h-8" />,
-      color: "from-green-500 to-green-600",
-      bgColor: "bg-green-50",
-      iconBg: "bg-green-100",
-      iconColor: "text-green-600",
-      features: [
-        "Competitive Bidding",
-        "Transparent Process",
-        "Secure Transfer",
-      ],
-      stats: "₹2.5B+ Value",
-    },
-    {
-      number: "3",
-      title: "Service Marketplace",
-      description:
-        "Connect directly with verified service providers, book appointments, track service completion, and automatically update vehicle history records.",
-      icon: <Users className="w-8 h-8" />,
-      color: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-50",
-      iconBg: "bg-purple-100",
-      iconColor: "text-purple-600",
-      features: ["Direct Booking", "Verified Providers", "Real-time Tracking"],
-      stats: "1.2K+ Providers",
-    },
-    {
-      number: "4",
-      title: "Insurance & Claims",
-      description:
-        "Streamlined insurance claim processing with automated workflows, digital accident reporting, damage assessment, and real-time claim tracking.",
-      icon: <Shield className="w-8 h-8" />,
-      color: "from-orange-500 to-orange-600",
-      bgColor: "bg-orange-50",
-      iconBg: "bg-orange-100",
-      iconColor: "text-orange-600",
-      features: ["Auto Claims", "Digital Reporting", "Real-time Tracking"],
-      stats: "98% Success Rate",
-    },
-    {
-      number: "5",
-      title: "Analytics & Intelligence",
-      description:
-        "Access comprehensive dashboards, predictive maintenance recommendations, market insights, and fraud detection for optimal decision making.",
-      icon: <BarChart3 className="w-8 h-8" />,
-      color: "from-teal-500 to-teal-600",
-      bgColor: "bg-teal-50",
-      iconBg: "bg-teal-100",
-      iconColor: "text-teal-600",
-      features: ["Predictive Analytics", "Market Insights", "Fraud Detection"],
-      stats: "Real-time Data",
-    },
-  ];
-
   const testimonials = [
     {
       name: "Rajesh Fernando",
@@ -238,7 +289,7 @@ const LandingPage = () => {
       avatar: "SS",
       company: "Silva Auto Services",
       image:
-        "https://images.unsplash.com/photo-1494790108755-2616b60f67d4?w=400&h=400&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1614285919630-33bd6954d2c4?w=400&h=400&fit=crop&crop=face",
       location: "Kandy, Sri Lanka",
     },
     {
@@ -271,7 +322,12 @@ const LandingPage = () => {
             {/* Logo */}
             <div className="logo">
               <div className="logo-icon">
-                <Car className="w-6 h-6 text-white" />
+                <img
+                  src="../../public/logo.png"
+                  alt="AutoConnect Logo"
+                  className="w-8 h-8" // Adjust size as needed
+                  style={{ filter: "brightness(0) invert(1)" }} // Makes logo white
+                />
               </div>
               <span className="logo-text">
                 Auto<span className="logo-accent">Connect</span>
@@ -284,6 +340,7 @@ const LandingPage = () => {
                 "Home",
                 "Platform",
                 "Services",
+                "Pricing",
                 "Success Stories",
                 "Contact",
               ].map((item, index) => (
@@ -322,6 +379,7 @@ const LandingPage = () => {
                 "Home",
                 "Platform",
                 "Services",
+                "Pricing",
                 "Success Stories",
                 "Contact",
               ].map((item) => (
@@ -345,10 +403,10 @@ const LandingPage = () => {
         {/* Hero Section - Now imported as a separate component */}
         <HeroSection />
 
-        {/* Enhanced Features Section */}
+        {/* Platform Technical Capabilities Section - WHAT WE BUILT */}
         <section
           id="platform"
-          className={`features-section animate-on-scroll ${
+          className={`platform-section animate-on-scroll ${
             featuresVisible ? "animate-fade-up" : ""
           }`}
           ref={featuresRef}
@@ -356,85 +414,87 @@ const LandingPage = () => {
           <div className="section-container">
             {/* Section Header */}
             <div className="section-header">
+              <div className="platform-badge">
+                <Server className="w-4 h-4" />
+                <span>Technical Infrastructure</span>
+              </div>
               <h2 className="section-title">
-                <span>Comprehensive </span>
-                <span className="title-gradient">Platform Features</span>
+                <span>Platform </span>
+                <span className="title-gradient">Capabilities</span>
               </h2>
               <p className="section-description">
-                Five integrated modules working together to revolutionize
-                vehicle lifecycle management across Sri Lanka's automotive
-                ecosystem
+                Built on enterprise-grade technology infrastructure with
+                advanced security, AI-powered analytics, and scalable cloud
+                architecture designed for mission-critical automotive
+                operations.
               </p>
             </div>
 
-            {/* Enhanced Features Grid */}
+            {/* Platform Features Grid */}
             <div
-              className={`enhanced-features-grid stagger-children ${
+              className={`platform-features-grid stagger-children ${
                 featuresGridVisible ? "animate" : ""
               }`}
               ref={featuresGridRef}
             >
-              {features.map((feature, index) => (
-                <div key={index} className="enhanced-feature-card hover-lift">
+              {platformFeatures.map((feature, index) => (
+                <div key={index} className="platform-feature-card hover-lift">
+                  {/* Technical Badge */}
+                  <div className="tech-badge">
+                    <Zap className="w-3 h-3" />
+                    <span>Enterprise</span>
+                  </div>
+
                   {/* Enhanced Icon */}
-                  <div className="enhanced-feature-icon">
-                    <div className={`enhanced-icon-wrapper ${feature.iconBg}`}>
-                      <div className={feature.iconColor}>{feature.icon}</div>
+                  <div className="platform-feature-icon">
+                    <div
+                      className={`platform-icon-wrapper platform-icon-${feature.color}`}
+                    >
+                      {feature.icon}
                     </div>
-                    <div className="feature-pulse"></div>
                   </div>
 
                   {/* Content */}
-                  <div className="enhanced-feature-content">
-                    <div className="feature-highlight">{feature.highlight}</div>
-                    <h3 className="enhanced-feature-title">{feature.title}</h3>
-                    <p className="enhanced-feature-description">
+                  <div className="platform-feature-content">
+                    <div className="text-sm font-semibold platform-highlight mb-2">
+                      {feature.highlight}
+                    </div>
+                    <h3 className="platform-feature-title">{feature.title}</h3>
+                    <p className="platform-feature-description">
                       {feature.description}
                     </p>
 
-                    {/* Enhanced Benefits */}
-                    <div className="enhanced-feature-benefits">
+                    {/* Technical Benefits */}
+                    <div className="tech-benefits">
                       {feature.benefits.map((benefit, idx) => (
-                        <span key={idx} className="enhanced-benefit-tag">
+                        <span key={idx} className="tech-benefit-tag">
                           <CheckCircle className="w-3 h-3" />
                           {benefit}
                         </span>
                       ))}
-                    </div>
-
-                    {/* Progress Indicator */}
-                    <div className="feature-progress">
-                      <div className="progress-bar">
-                        <div
-                          className={`progress-fill bg-gradient-to-r ${feature.color}`}
-                        ></div>
-                      </div>
-                      <span className="progress-text">
-                        Advanced Integration
-                      </span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Feature Stats */}
-            <div className="features-stats">
-              <div className="stat-item">
-                <Clock className="w-5 h-5 text-blue-500" />
-                <span>24/7 Uptime</span>
+            {/* Platform Stats */}
+            <div className="platform-stats">
+              <div className="platform-stat-item">
+                <Cloud className="w-5 h-5 platform-stat-icon" />
+                <span>99.9% Uptime SLA</span>
               </div>
-              <div className="stat-item">
-                <Award className="w-5 h-5 text-green-500" />
-                <span>ISO Certified</span>
+              <div className="platform-stat-item">
+                <Lock className="w-5 h-5 platform-stat-icon" />
+                <span>256-bit Encryption</span>
               </div>
-              <div className="stat-item">
-                <Zap className="w-5 h-5 text-yellow-500" />
-                <span>Real-time Processing</span>
+              <div className="platform-stat-item">
+                <Brain className="w-5 h-5 platform-stat-icon" />
+                <span>AI-Powered Analytics</span>
               </div>
-              <div className="stat-item">
-                <TrendingUp className="w-5 h-5 text-purple-500" />
-                <span>97% Success Rate</span>
+              <div className="platform-stat-item">
+                <Code className="w-5 h-5 platform-stat-icon" />
+                <span>RESTful APIs</span>
               </div>
             </div>
           </div>
@@ -479,119 +539,207 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Enhanced Workflow Section */}
+        {/* Services User Workflow Section - HOW USERS EXPERIENCE IT */}
         <section
           id="services"
-          className={`enhanced-workflow-section animate-on-scroll ${
+          className={`services-workflow-section animate-on-scroll ${
             workflowVisible ? "animate-fade-up" : ""
           }`}
           ref={workflowRef}
         >
           <div className="section-container">
             <div className="section-header">
+              <div className="services-badge">
+                <Users className="w-4 h-4" />
+                <span>User Experience</span>
+              </div>
               <h2 className="section-title">
-                <span>Our Platform's </span>
-                <span className="title-gradient">Core Ecosystem</span>
+                <span>How It </span>
+                <span className="title-gradient">Works</span>
               </h2>
               <p className="section-description">
-                Five integrated modules working together to revolutionize
-                vehicle lifecycle management from registration to analytics
-                across Sri Lanka's automotive ecosystem.
+                Step-by-step user journey from registration to service
+                completion. Experience our intuitive workflow designed for
+                vehicle owners, service providers, and all automotive
+                stakeholders.
               </p>
             </div>
 
             <div
-              className={`enhanced-workflow-grid stagger-children ${
+              className={`user-workflow-timeline stagger-children ${
                 workflowStepsVisible ? "animate" : ""
               }`}
               ref={workflowStepsRef}
             >
-              {workflowSteps.map((step, index) => (
-                <div key={index} className="enhanced-workflow-card hover-lift">
-                  {/* Card Header */}
-                  <div className="workflow-card-header">
-                    <div
-                      className={`workflow-step-number bg-gradient-to-r ${step.color}`}
-                    >
-                      {step.number}
+              {userWorkflowSteps.map((step, index) => (
+                <div key={index} className="workflow-timeline-item">
+                  <div className="timeline-connector">
+                    <div className={`timeline-dot timeline-dot-${step.color}`}>
+                      <span className="timeline-number">{step.number}</span>
                     </div>
-                    <div className="workflow-stats-badge">
-                      <Sparkles className="w-4 h-4" />
-                      <span>{step.stats}</span>
-                    </div>
+                    {index < userWorkflowSteps.length - 1 && (
+                      <div className="timeline-line"></div>
+                    )}
                   </div>
 
-                  {/* Enhanced Icon Section */}
-                  <div className="workflow-icon-section">
-                    <div className={`workflow-icon-wrapper ${step.iconBg}`}>
-                      <div className={step.iconColor}>{step.icon}</div>
+                  <div
+                    className={`workflow-content-card workflow-card-${step.color} hover-lift`}
+                  >
+                    <div className="workflow-card-header">
+                      <div
+                        className={`workflow-icon workflow-icon-${step.color}`}
+                      >
+                        {step.icon}
+                      </div>
+                      <div className="workflow-stats">
+                        <Clock className="w-4 h-4" />
+                        <span>{step.stats}</span>
+                      </div>
                     </div>
-                    <div className="workflow-icon-glow"></div>
-                  </div>
 
-                  {/* Content Section */}
-                  <div className="workflow-content-section">
-                    <h3 className="workflow-step-title">{step.title}</h3>
-                    <p className="workflow-step-description">
-                      {step.description}
-                    </p>
+                    <div className="workflow-card-body">
+                      <h3 className="workflow-step-title">{step.title}</h3>
+                      <p className="workflow-step-description">
+                        {step.description}
+                      </p>
 
-                    {/* Features List */}
-                    <div className="workflow-features-list">
-                      {step.features.map((feature, idx) => (
-                        <div key={idx} className="workflow-feature-item">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span>{feature}</span>
-                        </div>
-                      ))}
+                      <div className="workflow-features">
+                        {step.features.map((feature, idx) => (
+                          <div key={idx} className="workflow-feature">
+                            <CheckCircle className="w-4 h-4 workflow-check" />
+                            <span>{feature}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-
-                  {/* Action Section */}
-                  <div className="workflow-action-section">
-                    <button
-                      className={`workflow-action-button bg-gradient-to-r ${step.color}`}
-                    >
-                      <span>Learn More</span>
-                      <ArrowDownRight className="w-4 h-4 group-hover:translate-x-1 group-hover:translate-y-1 transition-transform" />
-                    </button>
-                  </div>
-
-                  {/* Background Decoration */}
-                  <div className={`workflow-card-bg ${step.bgColor}`}></div>
                 </div>
               ))}
             </div>
 
-            {/* Workflow Stats */}
-            <div className="workflow-bottom-stats">
-              <div className="workflow-stat-item">
-                <div className="stat-icon bg-blue-100 text-blue-600">
-                  <Database className="w-6 h-6" />
+            {/* User Experience Stats */}
+            <div className="user-experience-stats">
+              <div className="ux-stat-item">
+                <div className="stat-icon ux-stat-icon-mint">
+                  <UserPlus className="w-6 h-6" />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-number">100%</div>
-                  <div className="stat-label">Integration Success</div>
+                  <div className="stat-number">2 min</div>
+                  <div className="stat-label">Average Signup</div>
                 </div>
               </div>
-              <div className="workflow-stat-item">
-                <div className="stat-icon bg-green-100 text-green-600">
-                  <Shield className="w-6 h-6" />
+              <div className="ux-stat-item">
+                <div className="stat-icon ux-stat-icon-aqua">
+                  <Calendar className="w-6 h-6" />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-number">99.9%</div>
-                  <div className="stat-label">Security Uptime</div>
+                  <div className="stat-number">95%</div>
+                  <div className="stat-label">Booking Success</div>
                 </div>
               </div>
-              <div className="workflow-stat-item">
-                <div className="stat-icon bg-purple-100 text-purple-600">
-                  <Zap className="w-6 h-6" />
+              <div className="ux-stat-item">
+                <div className="stat-icon ux-stat-icon-sky">
+                  <ThumbsUp className="w-6 h-6" />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-number">24/7</div>
-                  <div className="stat-label">Support Available</div>
+                  <div className="stat-number">4.9/5</div>
+                  <div className="stat-label">User Satisfaction</div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section
+          id="pricing"
+          className={`pricing-section animate-on-scroll ${
+            pricingVisible ? "animate-fade-up" : ""
+          }`}
+          ref={pricingRef}
+        >
+          <div className="section-container">
+            <div className="section-header">
+              <div className="pricing-badge">
+                <Crown className="w-4 h-4" />
+                <span>Pricing Plans</span>
+              </div>
+              <h2 className="section-title">
+                <span>Choose Your </span>
+                <span className="title-gradient">Plan</span>
+              </h2>
+              <p className="section-description">
+                Unlock premium features including complete vehicle passport
+                access, advanced bidding capabilities, and comprehensive vehicle
+                history for enhanced marketplace experience.
+              </p>
+            </div>
+
+            <div
+              className={`pricing-grid stagger-children ${
+                pricingGridVisible ? "animate" : ""
+              }`}
+              ref={pricingGridRef}
+            >
+              {pricingPlans.map((plan, index) => (
+                <div
+                  key={index}
+                  className={`pricing-card pricing-card-${plan.color} ${
+                    plan.popular ? "pricing-card-popular" : ""
+                  } hover-lift`}
+                >
+                  {plan.popular && (
+                    <div
+                      className="popular-badge"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.8rem",
+                      }}
+                    >
+                      <Star className="w-4 h-4" />
+                      <span>Most Popular</span>
+                    </div>
+                  )}
+
+                  <div className="pricing-card-header">
+                    <div className={`pricing-icon pricing-icon-${plan.color}`}>
+                      {plan.icon}
+                    </div>
+                    <h3 className="pricing-plan-name">{plan.name}</h3>
+                    <div className="pricing-amount">
+                      <span className="price">{plan.price}</span>
+                      <span className="period">/{plan.period}</span>
+                    </div>
+                    <p className="pricing-description">{plan.description}</p>
+                  </div>
+
+                  <div className="pricing-features">
+                    {plan.features.map((feature, idx) => (
+                      <div key={idx} className="pricing-feature">
+                        <Check className="w-4 h-4 pricing-check" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    className={`pricing-button pricing-button-${plan.color} ${
+                      plan.popular ? "pricing-button-popular" : ""
+                    }`}
+                  >
+                    {plan.buttonText}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="pricing-note">
+              <Shield className="w-5 h-5" />
+              <span>
+                All plans include SSL security, 24/7 monitoring, and data backup
+              </span>
             </div>
           </div>
         </section>
@@ -759,10 +907,14 @@ const LandingPage = () => {
               <div className="footer-brand">
                 <div className="footer-logo">
                   <div className="footer-logo-icon">
-                    <Car className="w-6 h-6 text-white" />
+                    <img
+                      src="../../public/logo.png"
+                      alt="AutoConnect Logo"
+                      className="w-6 h-6"
+                    />
                   </div>
                   <span className="footer-logo-text">
-                    iAuto<span className="logo-accent">Connect</span>
+                    Auto<span className="logo-accent">Connect</span>
                   </span>
                 </div>
                 <p className="footer-description">
