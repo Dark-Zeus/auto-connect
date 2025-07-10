@@ -246,22 +246,22 @@ const LandingPage = () => {
 
   const stats = [
     {
-      number: "25,000+",
+      number: "500+",
       label: "Registered Vehicles",
       subtext: "Complete digital profiles",
     },
     {
-      number: "1,200+",
+      number: "200+",
       label: "Verified Service Providers",
       subtext: "Across Sri Lanka",
     },
     {
-      number: "150,000+",
+      number: "100+",
       label: "Services Completed",
       subtext: "With full transparency",
     },
     {
-      number: "₹2.5B+",
+      number: "2.5B+",
       label: "Transaction Value",
       subtext: "Facilitated securely",
     },
@@ -323,7 +323,7 @@ const LandingPage = () => {
             <div className="logo">
               <div className="logo-icon">
                 <img
-                  src="../../public/logo.png"
+                  src="/logo.png"
                   alt="AutoConnect Logo"
                   className="w-8 h-8" // Adjust size as needed
                   style={{ filter: "brightness(0) invert(1)" }} // Makes logo white
@@ -908,7 +908,7 @@ const LandingPage = () => {
                 <div className="footer-logo">
                   <div className="footer-logo-icon">
                     <img
-                      src="../../public/logo.png"
+                      src="/logo.png"
                       alt="AutoConnect Logo"
                       className="w-6 h-6"
                     />
