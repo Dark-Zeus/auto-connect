@@ -16,6 +16,7 @@ import {
 } from '@mui/icons-material';
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const ListedVehicleCard = ({ vehicle = null }) => {
   // Use props or fallback to sample data
@@ -54,9 +55,11 @@ const ListedVehicleCard = ({ vehicle = null }) => {
     });
   };
 
+  const navigate = useNavigate();
+
   const handleHeaderClick = () => {
     // Default ref for navigation - will be replaced with actual routing
-    console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
+    navigate('/vehicleview');
   };
 
   return (
