@@ -132,7 +132,7 @@ const SubscriptionPlans = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="tw:w-full tw:bg-gradient-to-r tw:from-blue-500 tw:to-purple-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:transition-all tw:duration-300"
+        className="tw:w-full tw:bg-gradient-to-r tw:from-blue-500 tw:to-purple-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer tw:transition-all tw:duration-300"
       >
         Select Plan
       </motion.button>
@@ -175,19 +175,21 @@ const SubscriptionPlans = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="tw:flex tw:justify-center tw:mb-8"
         >
-          <div className="tw:bg-white tw:p-2 tw:rounded-full tw:shadow-lg tw:border">
+          <div className="tw:bg-white tw:p-2 tw:rounded-full tw:shadow-lg tw:border-blue-600">
             {['plus', 'premium'].map((plan) => (
-              <button
+              <motion.button
                 key={plan}
                 onClick={() => setSelectedPlan(plan)}
-                className={`tw:px-8 tw:py-3 tw:rounded-full tw:font-semibold tw:transition-all tw:duration-300 tw:capitalize ${
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`tw:px-8 tw:py-3 tw:rounded-full tw:font-semibold tw:transition-all tw:duration-300 tw:capitalize tw:hover:cursor-pointer ${
                   selectedPlan === plan
                     ? 'tw:bg-gradient-to-r tw:from-blue-500 tw:to-purple-600 tw:text-white tw:shadow-lg'
-                    : 'tw:text-gray-600 tw:hover:text-gray-800'
+                    : 'tw:bg-gray-100 tw:text-gray-600 tw:hover:text-gray-800'
                 }`}
               >
                 {plan}
-              </button>
+              </motion.button>
             ))}
           </div>
         </motion.div>
