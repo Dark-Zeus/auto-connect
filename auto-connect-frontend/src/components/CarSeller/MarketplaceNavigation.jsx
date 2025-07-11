@@ -12,7 +12,7 @@ const MarketplaceNavigation = () => {
       id: 'home',
       label: 'Home',
       icon: Home,
-      href: '/',
+      href: '/marketplacehome',
       badge: null
     },
     {
