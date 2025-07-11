@@ -7,7 +7,7 @@ const VehicleHistoryPage = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-gray-50 tw:to-blue-50">
+    <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-gray-50 tw:to-blue-50 tw:rounded-xl">
       {/* Hero Section */}
       <div className="tw:relative tw:overflow-hidden">
         {/* Background decorative elements */}
