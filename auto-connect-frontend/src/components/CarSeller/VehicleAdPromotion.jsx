@@ -138,7 +138,7 @@ const VehicleAdPromotion = () => {
               <h4 className="tw:font-semibold tw:text-gray-800 tw:mb-4">Choose Duration</h4>
               <div className="tw:space-y-3">
                 {['3', '7', '15'].map((days) => (
-                  <label key={days} className="tw:flex tw:items-center tw:justify-between tw:p-3 tw:border tw:rounded-lg tw:cursor-pointer hover:tw:bg-gray-50 tw:transition-colors">
+                  <label key={days} className="tw:flex tw:items-center tw:justify-between tw:p-3 tw:border-1 tw:border-blue-600 tw:rounded-lg tw:cursor-pointer tw:hover:bg-gray-200 tw:transition-colors">
                     <div className="tw:flex tw:items-center tw:gap-3">
                       <input
                         type="radio"
@@ -216,7 +216,7 @@ const VehicleAdPromotion = () => {
 
             <button
               onClick={handleContinue}
-              className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold hover:tw:bg-blue-700 tw:transition-colors"
+              className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-colors"
             >
               Continue
             </button>
