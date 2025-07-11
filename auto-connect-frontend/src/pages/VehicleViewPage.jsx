@@ -35,7 +35,7 @@ const VehicleViewPage = () => {
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4 tw:overflow-auto">
         <MarketplaceNavigation />
-        <div className="tw:w-4/5 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-1 tw:items-start">
+        <div className="tw:w-4/5 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-1 tw:items-start tw:bg-gray-50 tw:py-8 tw:rounded-xl">
             <div className="tw:w-2/3 tw:flex tw:flex-col">
                 <VehicleHeader
                     make={vehicleData.make}
@@ -55,7 +55,9 @@ const VehicleViewPage = () => {
             <VehicleDetails />
             </div>
         </div>
-        <SimilarAds />
+        <div className="tw:w-4/5 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:mt-8  tw:bg-gray-50 tw:rounded-xl">
+          <SimilarAds />
+        </div>
     </div>
   );
 };
