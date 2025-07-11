@@ -17,10 +17,12 @@ import {
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
 import Confirm from '../atoms/Confirm';
+import { useNavigate } from 'react-router-dom';
 
 const ListedVehicleCard = ({ vehicle = null }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmProps, setConfirmProps] = useState({});
+  const navigate = useNavigate();
 
   const vehicleData = vehicle || {
     id: 1,
@@ -70,6 +72,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         onOK: () => setConfirmOpen(false),
         onCancel: () => setConfirmOpen(false)
       });
+      setConfirmOpen(true);
     } else if (type === 'edit') {
       setConfirmProps({
         title: 'Edit Vehicle',
@@ -77,21 +80,15 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         onOK: () => setConfirmOpen(false),
         onCancel: () => setConfirmOpen(false)
       });
+      setConfirmOpen(true);
     } else if (type === 'promote') {
-      setConfirmProps({
-        title: 'Promote Vehicle',
-        message: 'Do you want to promote this vehicle listing?',
-        onOK: () => setConfirmOpen(false),
-        onCancel: () => setConfirmOpen(false)
-      });
-    }
-    setConfirmOpen(true);
+      navigate('/vehicle-ad-promotion');}
   };
 
   return (
     <>
       <Card 
-        className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 hover:tw:shadow-2xl hover:tw:translate-y-[-4px]"
+        className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 tw:mb-1.5"
         style={{ 
           width: '50vw', 
           height: '15vh',
@@ -232,6 +229,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   onMouseEnter={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #b91c1c, #991b1b)';
                     e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.cursor = 'pointer';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
@@ -251,6 +249,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   onMouseEnter={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)';
                     e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.cursor = 'pointer';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
@@ -270,6 +269,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   onMouseEnter={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #047857, #065f46)';
                     e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.cursor = 'pointer';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
