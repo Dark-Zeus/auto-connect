@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, Check, Info, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const OwnershipHistoryCheck = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const navigate = useNavigate();
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -100,7 +102,7 @@ const OwnershipHistoryCheck = () => {
                 <h4 className="tw:font-semibold tw:text-gray-800 tw:text-lg tw:mb-4">Basic History Check</h4>
                 <div className="tw:mb-4">
                   <span className="tw:text-base tw:text-gray-600">Status: </span>
-                  <span className="tw:text-green-600 tw:font-medium tw:text-base">5 checks passed</span>
+                  <span className="tw:text-green-600 tw:font-medium tw:text-base">3 checks passed</span>
                 </div>
                 
                 <div className="tw:space-y-4">
@@ -152,7 +154,7 @@ const OwnershipHistoryCheck = () => {
                     For peace of mind, you can purchase a Vehicle Check with
                     additional checks including accidents recorded, service/repair history, emission tests, previous keepers, mileage, color. Terms and conditions apply.
                   </p>
-                  <button className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:text-base tw:font-semibold tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-colors tw:mt-2">
+                  <button className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:text-base tw:font-semibold tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-colors tw:mt-2" onClick={() => navigate('/vehiclehistory')}>
                     Buy a Full Vehicle Check
                   </button>
                 </div>
