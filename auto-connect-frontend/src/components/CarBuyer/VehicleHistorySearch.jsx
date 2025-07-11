@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { CheckCircle, AlertTriangle, Car, FileText, Shield, MapPin, Wrench, ArrowRight, Star } from 'lucide-react';
 import elephantImage from '../../assets/images/AutoConnectMascot.png';
+import { useNavigate } from 'react-router-dom';
 
 const VehicleHistoryPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-gray-50 tw:to-blue-50 tw:rounded-xl">
@@ -44,6 +46,7 @@ const VehicleHistoryPage = () => {
                   </div>
                   <button 
                     className="tw:bg-blue-600 tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:flex tw:items-center tw:justify-center tw:gap-2 tw:group"
+                    onClick={() => navigate('/vehiclehistory')}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                   >
@@ -171,7 +174,7 @@ const VehicleHistoryPage = () => {
       {/* CTA Section */}
       <div className="tw:bg-gray-50 tw:py-16">
         <div className="tw:max-w-4xl tw:mx-auto tw:px-4 tw:text-center">
-          <button className="tw:bg-blue-600 tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:mb-8">
+          <button className="tw:bg-blue-600 tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:mb-8" onClick={() => navigate('/vehiclehistory')}>
             View Sample Report
           </button>
           
