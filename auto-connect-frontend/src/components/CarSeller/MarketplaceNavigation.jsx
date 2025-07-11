@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Home, Car, FileText, CreditCard, ChevronDown, Coins, HelpingHand, BookCheck, BookMarkedIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const MarketplaceNavigation = () => {
   const [activeItem, setActiveItem] = useState('Home');
   const [hoveredItem, setHoveredItem] = useState(null);
+  const navigate = useNavigate();
 
   const navigationItems = [
     {
@@ -14,10 +16,10 @@ const MarketplaceNavigation = () => {
       badge: null
     },
     {
-      id: 'buy-vehicles',
+      id: 'buyvehicles',
       label: 'Buy Vehicles',
       icon: Coins,
-      href: '/buy-vehicles',
+      href: '/buyvehicles',
       badge: null
     },
     {
@@ -28,10 +30,10 @@ const MarketplaceNavigation = () => {
       badge: null
     },
     {
-      id: 'my-ads',
+      id: 'myads',
       label: 'My Ads',
       icon: FileText,
-      href: '/my-ads',
+      href: '/myads',
       badge: 1
     },
     {
@@ -52,14 +54,17 @@ const MarketplaceNavigation = () => {
       id: 'subscription',
       label: 'Subscription',
       icon: CreditCard,
-      href: '@pages/SubscriptionsPage',
+      href: '/subscriptions',
       badge: null
       //isNew: true
     },    
   ];
 
-  const handleItemClick = (itemLabel) => {
+  const handleItemClick = (itemLabel, href) => {
     setActiveItem(itemLabel);
+    if (href) {
+      navigate(href);
+    }
   };
 
   return (
@@ -74,7 +79,7 @@ const MarketplaceNavigation = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => handleItemClick(item.label)}
+                onClick={() => handleItemClick(item.label, item.href)}
                 onMouseEnter={() => setHoveredItem(item.id)}
                 onMouseLeave={() => setHoveredItem(null)}
                 className={`tw:relative tw:flex tw:items-center tw:space-x-2 tw:px-3 tw:py-2 tw:text-sm tw:font-medium tw:rounded-md tw:transition-all tw:hover:cursor-pointer
