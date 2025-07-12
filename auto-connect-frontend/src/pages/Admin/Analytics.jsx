@@ -1,17 +1,24 @@
 import React from 'react';
+import MonthlyReport from '@components/AdminComponents/Analytics/MonthlyReport';
+import UserRegistrationChart from '@components/AdminComponents/Analytics/UserProgressChart';
+import RevenueTrendChart from '@components/AdminComponents/Analytics/RevenueChart';
+import VehicleSalesChart from '@components/AdminComponents/Analytics/VehicleSaleChart';
 
 const Analytics = () => {
-  return (
-    <div className="tw:p-6">
-      <h1 className="tw:text-2xl tw:font-semibold tw:mb-4">Analytics Dashboard</h1>
-      <p className="tw:mb-2">Track usage trends, performance, and user activity.</p>
-      <div className="tw:mt-4">
-        <p><strong>Total Users:</strong> 1,234</p>
-        <p><strong>Active Sessions:</strong> 87</p>
-        <p><strong>Monthly Growth:</strong> 12%</p>
-      </div>
+return (
+  <div className="tw:mt-8 tw:grid tw:grid-cols-2 tw:gap-6">
+    {/* Left column: Monthly Report */}
+    <MonthlyReport />
+
+    {/* Right column: User Chart + Revenue Chart stacked */}
+    <div className="tw:space-y-6">
+      <UserRegistrationChart />
+      <RevenueTrendChart />
+      <VehicleSalesChart />
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Analytics;
