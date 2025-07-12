@@ -1,5 +1,7 @@
 import React from 'react';
 import LatestUpdatesTable from '@components/AdminComponents/UpdateTable';
+import ServiceCenterUpdatePieChart from '@components/AdminComponents/ServiceCentersReportChart';
+
 const updates = [
     {
     serviceCenter: "CityFix Motors",
@@ -144,9 +146,20 @@ const updates = [
   },
 ];
 const Updates = () => {
-  return (
-    <LatestUpdatesTable latestUpdates={updates} />
-  );
-};
+return (
+  <div className="tw:flex tw:gap-6 tw:p-8">
+    {/* Table - 75% width */}
+    <div className="tw:w-3/4">
+      <LatestUpdatesTable latestUpdates={updates} />
+    </div>
+
+    {/* Pie Chart - 25% width */}
+    <div className="tw:w-1/4">
+      <ServiceCenterUpdatePieChart />
+    </div>
+  </div>
+);
+
+}
 
 export default Updates;

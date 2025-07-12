@@ -3,6 +3,7 @@ import vehicleImg from "@assets/images/vehicleowner1.jpg";
 import insuranceImg from "@assets/images/insurense1.jpg";
 import { PersonAddAlt1 } from "@mui/icons-material"; // Icon for "Requests"
 import requestImg from "@assets/images/requests.jpg"; // Placeholder for request image
+import { Outlet } from "react-router-dom";
 
 function UserManagementPage() {
   return (
@@ -28,6 +29,7 @@ function UserManagementPage() {
           image={requestImg}
         />
       </div>
+       <Outlet />
     </div>
   );
 }

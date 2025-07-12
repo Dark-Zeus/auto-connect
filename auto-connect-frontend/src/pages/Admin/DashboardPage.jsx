@@ -3,6 +3,9 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { UserContext } from "@contexts/UserContext";
 import NotificationPopup from "../../components/AdminComponents/NotificationPopupBox";
 import ProfilePopupBox from "../../components/AdminComponents/ProfilePopupBox";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import BusinessIcon from "@mui/icons-material/Business";
+import ContactPageIcon from "@mui/icons-material/ContactPage";
 
 import {
   Dashboard,
@@ -31,6 +34,7 @@ function DashboardPage() {
     "/": "Dashboard",
     "/services": "Service Centers",
     "/users": "User Management",
+        "/users/menu": "Menu",
         "/users/vehicle-owners": "Vehicle Owners",
         "/users/insurance-companies": "Insurance Companies",
         "/users/requests": "User Requests",
@@ -79,11 +83,27 @@ function DashboardPage() {
                 text="Service Centers"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
-              <SidebarItem
-                to="/users"
+              <SidebarDropdown
                 icon={<People style={{ fontSize: 35 }} className="tw:text-black" />}
                 text="User Management"
-                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+                basePath="/users"
+                items={[
+                  {
+                    to: "/users/vehicleowners",
+                    label: "Vehicle Owners",
+                    icon: <DirectionsCarIcon className="tw:text-gray-500" fontSize="small" />,
+                  },
+                  {
+                    to: "/users/insurancecompanies",
+                    label: "Insurance Companies",
+                    icon: <BusinessIcon className="tw:text-gray-500" fontSize="small" />,
+                  },
+                  {
+                    to: "/users/requests",
+                    label: "User Requests",
+                    icon: <ContactPageIcon className="tw:text-gray-500" fontSize="small" />,
+                  },
+                ]}
               />
               <SidebarItem
                 to="/notifications"
@@ -197,4 +217,52 @@ function SidebarItem({ to, icon, text, className = "" }) {
     </li>
   );
 }
+
+function SidebarDropdown({ icon, text, basePath, items }) {
+  const location = useLocation();
+  const isParentActive = location.pathname.startsWith(basePath);
+  const [open, setOpen] = useState(isParentActive);
+
+  return (
+    <li>
+      <button
+        onClick={() => setOpen(!open)}
+        className={`
+          tw:flex tw:items-center tw:gap-6 tw:px-3 tw:py-2 tw:rounded-xl
+          tw:w-full tw:text-left
+          ${isParentActive ? "tw:bg-blue-300 tw:text-blue-900" : "tw:text-gray-800"}
+          hover:tw:bg-blue-200 hover:tw:text-blue-800 hover:tw:shadow-inner
+          focus:tw:outline-none focus-visible:tw:ring-2 focus-visible:tw:ring-blue-500
+        `}
+      >
+        {icon}
+        <span className="tw:text-2lg">{text}</span>
+      </button>
+      {open && (
+        <ul className="tw:pl-14 tw:pt-2 tw:space-y-2">
+        {items.map((item) => {
+          const isActive = location.pathname === item.to;
+          return (
+            <li key={item.to}>
+              <Link
+                to={item.to}
+                className={`
+                  tw:flex tw:items-center tw:gap-3 tw:px-2 tw:py-1 tw:rounded tw:transition-colors
+                  ${isActive ? "tw:!text-blue-900 tw:!font-semibold tw:!bg-blue-200" : "tw:!text-gray-800"}
+                  hover:tw:!text-blue-800 hover:tw:!bg-blue-50
+                `}
+              >
+                {/* Render the icon if present */}
+                {item.icon && <span className="tw:w-4">{item.icon}</span>}
+                <span>{item.label}</span>
+              </Link>
+            </li>
+          );
+        })}
+        </ul>
+      )}
+    </li>
+  );
+}
+
 export default DashboardPage;

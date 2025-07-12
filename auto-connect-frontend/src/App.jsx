@@ -32,6 +32,9 @@ import Transactions from "@pages/Admin/Transactions";
 import Updates from "@pages/Admin/Updates";
 import Analytics from "@pages/Admin/Analytics";
 import SystemData from "@pages/Admin/SystemData";
+// import VehicleOwnersPage from "@pages/Admin/VehicleOwners";
+// import InsuranceCompaniesPage from "@pages/Admin/InsurenceCompanies";
+// import UserRequestsPage from "@pages/Admin/UserRequests";
 
 //Pages
 function App() {
@@ -69,7 +72,7 @@ function App() {
             <Route path="" element={<AuthPage><LoginForm /></AuthPage>} />
           </Route>
 
-           <Route path="/*" element={<DashboardPage/> } >
+          <Route path="/" element={<DashboardPage/> } >
             <Route index element={<DashboardHome />} />
             <Route path="services" element={<ServicePage />} />
             <Route path="users" element={<UserPage />} />
