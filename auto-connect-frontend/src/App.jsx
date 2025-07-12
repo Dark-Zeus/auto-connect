@@ -26,7 +26,15 @@ import ServiceListingsPage from "@pages/ServiceProvider/ServiceListingsPage";
 import AddServicePage from "@pages/ServiceProvider/AddServicePage";
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import ManageSlotsPage from "@pages/ServiceProvider/ManageSlotsPage";
+
+
+// NEW REVIEW IMPORTS
+import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
+import UserReviewsPage from "@pages/User/UserReviewsPage";
+import ReviewDisplayComponent from "@components/Reviews/ReviewDisplayComponent";
+import UserReviewForm from "@components/User/UserReviewForm";
 // ==================== END DEVELOPMENT IMPORTS ====================
+
 
 // Create Material-UI theme with our color scheme
 const theme = createTheme({
@@ -524,6 +532,31 @@ function App() {
                             icon: "📅",
                             desc: "Time management",
                           },
+                          // NEW REVIEW ITEMS
+                          {
+                            path: "/dev/service-provider-reviews",
+                            title: "SP Reviews",
+                            icon: "⭐",
+                            desc: "Provider review dashboard",
+                          },
+                          {
+                            path: "/dev/user-reviews",
+                            title: "User Reviews",
+                            icon: "📝",
+                            desc: "User review interface",
+                          },
+                          {
+                            path: "/dev/review-display",
+                            title: "Review Display",
+                            icon: "📊",
+                            desc: "Review display component",
+                          },
+                          {
+                            path: "/dev/user-review-form",
+                            title: "Review Form",
+                            icon: "✍️",
+                            desc: "Review submission form",
+                          },
                         ].map((item, index) => (
                           <a
                             key={index}
@@ -591,6 +624,59 @@ function App() {
                       </div>
                     </div>
                   </div>
+                }
+              />
+              {/* Review Development Routes */}
+              <Route
+                path="/dev/service-provider-reviews"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="⭐ Service Provider Reviews"
+                      subtitle="View and manage customer reviews for your services"
+                    >
+                      <ServiceProviderReviews />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/user-reviews"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="📝 User Reviews Page"
+                      subtitle="User interface for viewing and writing reviews"
+                    >
+                      <UserReviewsPage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/review-display"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="📊 Review Display Component"
+                      subtitle="Component for displaying reviews with ratings and feedback"
+                    >
+                      <ReviewDisplayComponent />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/user-review-form"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="✍️ User Review Form"
+                      subtitle="Form component for users to submit reviews"
+                    >
+                      <UserReviewForm />
+                    </DevLayout>
+                  </MockServiceProviderContext>
                 }
               />
               {/* ==================== END DEVELOPMENT ROUTES ==================== */}
