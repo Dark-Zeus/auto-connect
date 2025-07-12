@@ -1,4 +1,4 @@
-// src/components/ServiceProvider/SlotManager.jsx
+// src/components/ServiceProvider/SlotManager.jsx - Redesigned for Visual Consistency
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Calendar,
@@ -11,8 +11,12 @@ import {
   Grid,
   List,
   Loader,
+  Eye,
+  EyeOff,
+  Target,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import "./SlotManager.css";
 
 const SlotManager = ({
   selectedDate,
@@ -24,7 +28,7 @@ const SlotManager = ({
   const [timeSlots, setTimeSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState("grid");
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
@@ -52,7 +56,6 @@ const SlotManager = ({
     const breakStart = daySchedule.breakStart;
     const breakEnd = daySchedule.breakEnd;
 
-    // Convert time strings to minutes from midnight
     const timeToMinutes = (timeStr) => {
       if (!timeStr) return null;
       const [hours, minutes] = timeStr.split(":").map(Number);
@@ -76,7 +79,6 @@ const SlotManager = ({
     let slotIndex = 0;
 
     while (currentMinutes + defaultDuration <= endMinutes) {
-      // Skip break time
       if (
         breakStartMinutes &&
         breakEndMinutes &&
@@ -96,7 +98,7 @@ const SlotManager = ({
         startTime: slotStart,
         endTime: slotEnd,
         duration: defaultDuration,
-        status: "available", // available, booked, blocked
+        status: "available",
         isAvailable: true,
         customerInfo: null,
         serviceType: null,
@@ -127,7 +129,6 @@ const SlotManager = ({
       if (response.ok) {
         const data = await response.json();
         if (data.slots && data.slots.length > 0) {
-          // Merge generated slots with existing data
           setTimeSlots((prevSlots) => {
             return prevSlots.map((slot) => {
               const existingSlot = data.slots.find(
@@ -140,6 +141,7 @@ const SlotManager = ({
       }
     } catch (error) {
       console.error("Error fetching existing slots:", error);
+      toast.error("Failed to load existing slots");
     } finally {
       setLoading(false);
     }
@@ -186,7 +188,11 @@ const SlotManager = ({
         toast.success(
           `Slot ${
             newStatus === "blocked" ? "blocked" : "unblocked"
-          } successfully`
+          } successfully`,
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
         );
       } else {
         toast.error("Failed to update slot status");
@@ -228,7 +234,10 @@ const SlotManager = ({
         setTimeSlots(updatedSlots);
         updateStats(updatedSlots);
         setSelectedSlots([]);
-        toast.success(`${selectedSlots.length} slots ${action}ed successfully`);
+        toast.success(`${selectedSlots.length} slots ${action}ed successfully`, {
+          position: "top-right",
+          autoClose: 3000,
+        });
       } else {
         toast.error(`Failed to ${action} slots`);
       }
@@ -289,7 +298,10 @@ const SlotManager = ({
       });
 
       if (response.ok) {
-        toast.success("Time slots regenerated successfully!");
+        toast.success("Time slots regenerated successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
         await fetchExistingSlots();
       } else {
         const errorData = await response.json();
@@ -303,194 +315,162 @@ const SlotManager = ({
     }
   };
 
-  const getSlotStatusColor = (status) => {
+  const getSlotStatusIcon = (status) => {
     switch (status) {
       case "available":
-        return "tw:bg-green-50 tw:border-green-200 tw:text-green-800";
+        return <CheckCircle className="slot-manager-slot-icon available" />;
       case "booked":
-        return "tw:bg-blue-50 tw:border-blue-200 tw:text-blue-800";
+        return <User className="slot-manager-slot-icon booked" />;
       case "blocked":
-        return "tw:bg-red-50 tw:border-red-200 tw:text-red-800";
+        return <XCircle className="slot-manager-slot-icon blocked" />;
       default:
-        return "tw:bg-gray-50 tw:border-gray-200 tw:text-gray-800";
-    }
-  };
-
-  const getSlotIcon = (status) => {
-    switch (status) {
-      case "available":
-        return <CheckCircle className="tw:h-4 tw:w-4 tw:text-green-600" />;
-      case "booked":
-        return <User className="tw:h-4 tw:w-4 tw:text-blue-600" />;
-      case "blocked":
-        return <XCircle className="tw:h-4 tw:w-4 tw:text-red-600" />;
-      default:
-        return <Clock className="tw:h-4 tw:w-4 tw:text-gray-600" />;
+        return <Clock className="slot-manager-slot-icon" />;
     }
   };
 
   const isPastDate = new Date(selectedDate) < new Date().setHours(0, 0, 0, 0);
   const isToday = selectedDate === new Date().toISOString().split("T")[0];
 
+  const getDateBannerClass = () => {
+    if (isPastDate) return "past";
+    if (isToday) return "today";
+    return "future";
+  };
+
+  const getDateBannerContent = () => {
+    const dateObj = new Date(selectedDate);
+    const formattedDate = dateObj.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    let title, description;
+    if (isPastDate) {
+      title = "Past Date";
+      description = "Time slots for past dates are read-only";
+    } else if (isToday) {
+      title = "Today";
+      description = "Current day - slots can be managed in real-time";
+    } else {
+      title = "Future Date";
+      description = "All slot management options available";
+    }
+
+    return { title: `${title} - ${formattedDate}`, description };
+  };
+
   return (
-    <div className="tw:space-y-6">
-      {/* Date Selection and Controls */}
-      <div className="tw:flex tw:flex-col lg:tw:flex-row tw:justify-between tw:items-start lg:tw:items-center tw:space-y-4 lg:tw:space-y-0 tw:bg-gray-50 tw:p-4 tw:rounded-lg">
-        <div className="tw:flex tw:flex-col sm:tw:flex-row tw:items-start sm:tw:items-center tw:space-y-3 sm:tw:space-y-0 sm:tw:space-x-4">
-          <div>
-            <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-1">
-              Select Date
-            </label>
+    <div className="slot-manager slot-manager-fade-in">
+      {/* Controls Section */}
+      <div className="slot-manager-controls">
+        <div className="slot-manager-controls-left">
+          <div className="slot-manager-date-field">
+            <label className="slot-manager-date-label">Select Date</label>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              className="tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:bg-white"
+              className="slot-manager-date-input"
             />
           </div>
 
-          <div className="tw:flex tw:items-center tw:space-x-2">
-            <span className="tw:text-sm tw:text-gray-600">View:</span>
+          <div className="slot-manager-view-toggle">
+            <span className="slot-manager-view-label">View:</span>
             <button
               onClick={() => setViewMode("grid")}
-              className={`tw:p-2 tw:rounded-md tw:transition-colors ${
-                viewMode === "grid"
-                  ? "tw:bg-blue-600 tw:text-white"
-                  : "tw:bg-white tw:text-gray-700 tw:border tw:border-gray-300 hover:tw:bg-gray-50"
+              className={`slot-manager-view-button ${
+                viewMode === "grid" ? "active" : ""
               }`}
               title="Grid View"
             >
-              <Grid className="tw:h-4 tw:w-4" />
+              <Grid />
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`tw:p-2 tw:rounded-md tw:transition-colors ${
-                viewMode === "list"
-                  ? "tw:bg-blue-600 tw:text-white"
-                  : "tw:bg-white tw:text-gray-700 tw:border tw:border-gray-300 hover:tw:bg-gray-50"
+              className={`slot-manager-view-button ${
+                viewMode === "list" ? "active" : ""
               }`}
               title="List View"
             >
-              <List className="tw:h-4 tw:w-4" />
+              <List />
             </button>
           </div>
 
           <button
             onClick={regenerateSlots}
             disabled={isGenerating || isPastDate}
-            className="tw:bg-purple-600 tw:text-white tw:px-3 tw:py-2 tw:rounded-md tw:text-sm tw:font-medium tw:hover:tw:bg-purple-700 tw:transition-colors tw:flex tw:items-center tw:space-x-1 disabled:tw:opacity-50 disabled:tw:cursor-not-allowed"
+            className="slot-manager-regenerate-button"
             title="Regenerate slots based on current working hours"
           >
-            <RotateCcw
-              className={`tw:h-4 tw:w-4 ${
-                isGenerating ? "tw:animate-spin" : ""
-              }`}
-            />
+            <RotateCcw className={isGenerating ? "spinning" : ""} />
             <span>{isGenerating ? "Generating..." : "Regenerate"}</span>
           </button>
         </div>
 
         {/* Bulk Actions */}
-        <div className="tw:flex tw:flex-wrap tw:items-center tw:space-x-2 tw:space-y-2 sm:tw:space-y-0">
+        <div className="slot-manager-controls-right">
           {selectedSlots.length > 0 && (
-            <div className="tw:flex tw:items-center tw:space-x-2 tw:bg-white tw:px-3 tw:py-2 tw:rounded-lg tw:border">
-              <span className="tw:text-sm tw:text-gray-600 tw:font-medium">
+            <div className="slot-manager-selection-info">
+              <span className="slot-manager-selection-count">
                 {selectedSlots.length} selected
               </span>
               <button
                 onClick={() => bulkToggleSlots("block")}
                 disabled={loading}
-                className="tw:bg-red-600 tw:text-white tw:px-3 tw:py-1 tw:rounded tw:text-sm hover:tw:bg-red-700 tw:transition-colors disabled:tw:opacity-50"
+                className="slot-manager-bulk-button block"
               >
-                Block
+                <EyeOff /> Block
               </button>
               <button
                 onClick={() => bulkToggleSlots("unblock")}
                 disabled={loading}
-                className="tw:bg-green-600 tw:text-white tw:px-3 tw:py-1 tw:rounded tw:text-sm hover:tw:bg-green-700 tw:transition-colors disabled:tw:opacity-50"
+                className="slot-manager-bulk-button unblock"
               >
-                Unblock
+                <Eye /> Unblock
               </button>
               <button
                 onClick={clearSelection}
-                className="tw:bg-gray-600 tw:text-white tw:px-3 tw:py-1 tw:rounded tw:text-sm hover:tw:bg-gray-700 tw:transition-colors"
+                className="slot-manager-bulk-button clear"
               >
                 Clear
               </button>
             </div>
           )}
 
-          <div className="tw:flex tw:space-x-2">
+          <div className="slot-manager-selection-actions">
             <button
               onClick={selectAllAvailableSlots}
-              className="tw:bg-blue-600 tw:text-white tw:px-3 tw:py-2 tw:rounded tw:text-sm hover:tw:bg-blue-700 tw:transition-colors"
+              className="slot-manager-selection-button"
             >
-              Select Available
+              <Target /> Select Available
             </button>
             <button
               onClick={selectAllBlockedSlots}
-              className="tw:bg-orange-600 tw:text-white tw:px-3 tw:py-2 tw:rounded tw:text-sm hover:tw:bg-orange-700 tw:transition-colors"
+              className="slot-manager-selection-button orange"
             >
-              Select Blocked
+              <Target /> Select Blocked
             </button>
           </div>
         </div>
       </div>
 
       {/* Date Info Banner */}
-      <div
-        className={`tw:p-4 tw:rounded-lg tw:border-l-4 ${
-          isPastDate
-            ? "tw:bg-red-50 tw:border-red-400"
-            : isToday
-            ? "tw:bg-blue-50 tw:border-blue-400"
-            : "tw:bg-green-50 tw:border-green-400"
-        }`}
-      >
-        <div className="tw:flex tw:items-center tw:justify-between">
-          <div>
-            <h3
-              className={`tw:font-medium ${
-                isPastDate
-                  ? "tw:text-red-800"
-                  : isToday
-                  ? "tw:text-blue-800"
-                  : "tw:text-green-800"
-              }`}
-            >
-              {isPastDate ? "Past Date" : isToday ? "Today" : "Future Date"} -{" "}
-              {new Date(selectedDate).toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </h3>
-            <p
-              className={`tw:text-sm ${
-                isPastDate
-                  ? "tw:text-red-600"
-                  : isToday
-                  ? "tw:text-blue-600"
-                  : "tw:text-green-600"
-              }`}
-            >
-              {isPastDate
-                ? "Time slots for past dates are read-only"
-                : isToday
-                ? "Current day - slots can be managed in real-time"
-                : "Future date - all slot management options available"}
-            </p>
+      <div className={`slot-manager-date-banner ${getDateBannerClass()}`}>
+        <div className="slot-manager-date-banner-content">
+          <div className="slot-manager-date-banner-info">
+            <h3>{getDateBannerContent().title}</h3>
+            <p>{getDateBannerContent().description}</p>
           </div>
           {timeSlots.length > 0 && (
-            <div className="tw:text-right">
-              <div className="tw:text-sm tw:text-gray-600">
+            <div className="slot-manager-date-banner-stats">
+              <div className="slot-manager-date-banner-stats-total">
                 Total Slots: {timeSlots.length}
               </div>
-              <div className="tw:text-xs tw:text-gray-500">
-                {timeSlots[0]?.startTime} -{" "}
-                {timeSlots[timeSlots.length - 1]?.endTime}
+              <div className="slot-manager-date-banner-stats-time">
+                {timeSlots[0]?.startTime} - {timeSlots[timeSlots.length - 1]?.endTime}
               </div>
             </div>
           )}
@@ -499,39 +479,37 @@ const SlotManager = ({
 
       {/* Loading State */}
       {loading && (
-        <div className="tw:flex tw:justify-center tw:items-center tw:py-8">
-          <div className="tw:flex tw:flex-col tw:items-center tw:space-y-3">
-            <Loader className="tw:h-8 tw:w-8 tw:text-blue-600 tw:animate-spin" />
-            <div className="tw:text-gray-600">Loading time slots...</div>
+        <div className="slot-manager-loading">
+          <div className="slot-manager-loading-content">
+            <Loader className="slot-manager-loading-spinner" />
+            <div className="slot-manager-loading-text">Loading time slots...</div>
           </div>
         </div>
       )}
 
       {/* No Slots Available */}
       {!loading && timeSlots.length === 0 && (
-        <div className="tw:text-center tw:py-12 tw:bg-gray-50 tw:rounded-lg">
-          <AlertCircle className="tw:h-16 tw:w-16 tw:text-gray-400 tw:mx-auto tw:mb-4" />
-          <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mb-2">
-            No time slots available
-          </h3>
-          <p className="tw:text-gray-600 tw:mb-4">
+        <div className="slot-manager-empty">
+          <AlertCircle className="slot-manager-empty-icon" />
+          <h3>No time slots available</h3>
+          <p>
             {isPastDate
               ? "Cannot manage slots for past dates"
               : "The business appears to be closed on this day, or working hours need to be configured"}
           </p>
           {!isPastDate && (
-            <div className="tw:space-x-4">
+            <div className="slot-manager-empty-actions">
               <button
                 onClick={() =>
                   onDateChange(new Date().toISOString().split("T")[0])
                 }
-                className="tw:text-blue-600 hover:tw:text-blue-800 tw:font-medium"
+                className="slot-manager-empty-button"
               >
                 Go to Today
               </button>
               <button
                 onClick={regenerateSlots}
-                className="tw:bg-blue-600 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg hover:tw:bg-blue-700 tw:transition-colors"
+                className="slot-manager-empty-button primary"
               >
                 Generate Slots
               </button>
@@ -544,21 +522,15 @@ const SlotManager = ({
       {!loading && timeSlots.length > 0 && (
         <>
           {viewMode === "grid" ? (
-            <div className="tw:grid tw:grid-cols-2 sm:tw:grid-cols-3 md:tw:grid-cols-4 lg:tw:grid-cols-5 xl:tw:grid-cols-6 tw:gap-3">
+            <div className="slot-manager-slots-grid">
               {timeSlots.map((slot) => (
                 <div
                   key={slot.id}
-                  className={`tw:relative tw:p-3 tw:border-2 tw:rounded-lg tw:cursor-pointer tw:transition-all tw:duration-200 ${getSlotStatusColor(
-                    slot.status
-                  )} ${
-                    selectedSlots.includes(slot.id)
-                      ? "tw:ring-2 tw:ring-blue-500 tw:ring-offset-1"
-                      : ""
+                  className={`slot-manager-slot-card ${slot.status} ${
+                    selectedSlots.includes(slot.id) ? "selected" : ""
                   } ${
-                    slot.status === "booked" || isPastDate
-                      ? "tw:cursor-not-allowed tw:opacity-75"
-                      : "hover:tw:shadow-md hover:tw:scale-105"
-                  }`}
+                    slot.status === "booked" || isPastDate ? "disabled" : ""
+                  } animate-in`}
                   onClick={() => {
                     if (slot.status !== "booked" && !isPastDate) {
                       handleSlotSelection(slot.id);
@@ -571,43 +543,45 @@ const SlotManager = ({
                       type="checkbox"
                       checked={selectedSlots.includes(slot.id)}
                       onChange={() => handleSlotSelection(slot.id)}
-                      className="tw:absolute tw:top-1 tw:right-1 tw:h-3 tw:w-3"
+                      className="slot-manager-slot-checkbox"
                       onClick={(e) => e.stopPropagation()}
                     />
                   )}
 
-                  <div className="tw:flex tw:items-center tw:space-x-2 tw:mb-2">
-                    {getSlotIcon(slot.status)}
-                    <div className="tw:text-sm tw:font-medium">
+                  <div className="slot-manager-slot-header">
+                    {getSlotStatusIcon(slot.status)}
+                    <div className="slot-manager-slot-time">
                       {slot.startTime}
                     </div>
                   </div>
 
-                  <div className="tw:text-xs tw:text-gray-600 tw:mb-1">
+                  <div className="slot-manager-slot-end-time">
                     {slot.endTime}
                   </div>
 
-                  <div className="tw:text-xs tw:font-semibold tw:capitalize tw:mb-1">
+                  <div className="slot-manager-slot-status">
                     {slot.status}
                   </div>
 
-                  {slot.customerInfo && (
-                    <div className="tw:text-xs tw:text-gray-600 tw:truncate tw:mb-1">
-                      👤 {slot.customerInfo.name}
-                    </div>
-                  )}
+                  <div className="slot-manager-slot-details">
+                    {slot.customerInfo && (
+                      <div className="slot-manager-slot-customer">
+                        👤 {slot.customerInfo.name}
+                      </div>
+                    )}
 
-                  {slot.serviceType && (
-                    <div className="tw:text-xs tw:text-gray-600 tw:truncate tw:mb-1">
-                      🔧 {slot.serviceType}
-                    </div>
-                  )}
+                    {slot.serviceType && (
+                      <div className="slot-manager-slot-service">
+                        🔧 {slot.serviceType}
+                      </div>
+                    )}
 
-                  {slot.notes && (
-                    <div className="tw:text-xs tw:text-gray-500 tw:truncate">
-                      📝 {slot.notes}
-                    </div>
-                  )}
+                    {slot.notes && (
+                      <div className="slot-manager-slot-notes">
+                        📝 {slot.notes}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Action Button */}
                   {slot.status !== "booked" && !isPastDate && (
@@ -616,7 +590,7 @@ const SlotManager = ({
                         e.stopPropagation();
                         toggleSlotStatus(slot.id);
                       }}
-                      className="tw:absolute tw:bottom-1 tw:left-1 tw:text-xs tw:bg-white tw:bg-opacity-80 tw:px-2 tw:py-1 tw:rounded tw:hover:tw:bg-opacity-100 tw:transition-opacity tw:shadow-sm"
+                      className="slot-manager-slot-action"
                     >
                       {slot.status === "available" ? "Block" : "Unblock"}
                     </button>
@@ -625,61 +599,55 @@ const SlotManager = ({
               ))}
             </div>
           ) : (
-            <div className="tw:space-y-2">
+            <div className="slot-manager-slots-list">
               {timeSlots.map((slot) => (
                 <div
                   key={slot.id}
-                  className={`tw:flex tw:items-center tw:justify-between tw:p-4 tw:border tw:rounded-lg tw:transition-colors ${getSlotStatusColor(
-                    slot.status
-                  )} ${
-                    selectedSlots.includes(slot.id)
-                      ? "tw:ring-2 tw:ring-blue-500"
-                      : ""
+                  className={`slot-manager-slot-row ${slot.status} ${
+                    selectedSlots.includes(slot.id) ? "selected" : ""
                   } ${
-                    slot.status === "booked" || isPastDate
-                      ? "tw:opacity-75"
-                      : "hover:tw:shadow-sm"
+                    slot.status === "booked" || isPastDate ? "disabled" : ""
                   }`}
                 >
-                  <div className="tw:flex tw:items-center tw:space-x-4">
+                  <div className="slot-manager-slot-row-left">
                     {slot.status !== "booked" && !isPastDate && (
                       <input
                         type="checkbox"
                         checked={selectedSlots.includes(slot.id)}
                         onChange={() => handleSlotSelection(slot.id)}
-                        className="tw:h-4 tw:w-4"
+                        className="slot-manager-slot-row-checkbox"
                       />
                     )}
 
-                    {getSlotIcon(slot.status)}
+                    {getSlotStatusIcon(slot.status)}
 
-                    <div>
-                      <div className="tw:font-medium tw:text-gray-900">
+                    <div className="slot-manager-slot-row-info">
+                      <div className="slot-manager-slot-row-time">
                         {slot.startTime} - {slot.endTime}
                       </div>
-                      <div className="tw:text-sm tw:text-gray-600">
+                      <div className="slot-manager-slot-row-duration">
                         Duration: {slot.duration} minutes
                       </div>
                     </div>
                   </div>
 
-                  <div className="tw:flex tw:items-center tw:space-x-4">
-                    <div className="tw:text-right tw:flex-1">
-                      <div className="tw:text-sm tw:font-semibold tw:capitalize tw:mb-1">
+                  <div className="slot-manager-slot-row-right">
+                    <div className="slot-manager-slot-row-details">
+                      <div className={`slot-manager-slot-row-status ${slot.status}`}>
                         {slot.status}
                       </div>
                       {slot.customerInfo && (
-                        <div className="tw:text-xs tw:text-gray-600 tw:mb-1">
+                        <div className="slot-manager-slot-row-meta">
                           Customer: {slot.customerInfo.name}
                         </div>
                       )}
                       {slot.serviceType && (
-                        <div className="tw:text-xs tw:text-gray-600 tw:mb-1">
+                        <div className="slot-manager-slot-row-meta">
                           Service: {slot.serviceType}
                         </div>
                       )}
                       {slot.notes && (
-                        <div className="tw:text-xs tw:text-gray-500">
+                        <div className="slot-manager-slot-row-meta">
                           Notes: {slot.notes}
                         </div>
                       )}
@@ -688,13 +656,19 @@ const SlotManager = ({
                     {slot.status !== "booked" && !isPastDate && (
                       <button
                         onClick={() => toggleSlotStatus(slot.id)}
-                        className={`tw:px-3 tw:py-1 tw:rounded tw:text-sm tw:font-medium tw:transition-colors ${
-                          slot.status === "available"
-                            ? "tw:bg-red-600 tw:text-white hover:tw:bg-red-700"
-                            : "tw:bg-green-600 tw:text-white hover:tw:bg-green-700"
+                        className={`slot-manager-slot-row-button ${
+                          slot.status === "available" ? "block" : "unblock"
                         }`}
                       >
-                        {slot.status === "available" ? "Block" : "Unblock"}
+                        {slot.status === "available" ? (
+                          <>
+                            <EyeOff /> Block
+                          </>
+                        ) : (
+                          <>
+                            <Eye /> Unblock
+                          </>
+                        )}
                       </button>
                     )}
                   </div>
@@ -707,55 +681,61 @@ const SlotManager = ({
 
       {/* Legend */}
       {timeSlots.length > 0 && (
-        <div className="tw:bg-white tw:border tw:border-gray-200 tw:rounded-lg tw:p-4">
-          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-3">
-            Legend
-          </h4>
-          <div className="tw:flex tw:flex-wrap tw:items-center tw:justify-center tw:space-x-6 tw:text-sm">
-            <div className="tw:flex tw:items-center tw:space-x-2">
-              <CheckCircle className="tw:h-4 tw:w-4 tw:text-green-600" />
-              <span className="tw:text-gray-700">
-                Available (
-                {timeSlots.filter((s) => s.status === "available").length})
+        <div className="slot-manager-legend">
+          <h4>📊 Slot Status Legend</h4>
+          <div className="slot-manager-legend-items">
+            <div className="slot-manager-legend-item">
+              <CheckCircle className="slot-manager-legend-icon available" />
+              <span className="slot-manager-legend-text">
+                Available
+                <span className="slot-manager-legend-count">
+                  ({timeSlots.filter((s) => s.status === "available").length})
+                </span>
               </span>
             </div>
-            <div className="tw:flex tw:items-center tw:space-x-2">
-              <User className="tw:h-4 tw:w-4 tw:text-blue-600" />
-              <span className="tw:text-gray-700">
-                Booked ({timeSlots.filter((s) => s.status === "booked").length})
+            <div className="slot-manager-legend-item">
+              <User className="slot-manager-legend-icon booked" />
+              <span className="slot-manager-legend-text">
+                Booked
+                <span className="slot-manager-legend-count">
+                  ({timeSlots.filter((s) => s.status === "booked").length})
+                </span>
               </span>
             </div>
-            <div className="tw:flex tw:items-center tw:space-x-2">
-              <XCircle className="tw:h-4 tw:w-4 tw:text-red-600" />
-              <span className="tw:text-gray-700">
-                Blocked (
-                {timeSlots.filter((s) => s.status === "blocked").length})
+            <div className="slot-manager-legend-item">
+              <XCircle className="slot-manager-legend-icon blocked" />
+              <span className="slot-manager-legend-text">
+                Blocked
+                <span className="slot-manager-legend-count">
+                  ({timeSlots.filter((s) => s.status === "blocked").length})
+                </span>
               </span>
             </div>
-            <div className="tw:text-gray-500 tw:text-xs">
+            <div className="slot-manager-legend-total">
               Total: {timeSlots.length} slots
             </div>
           </div>
         </div>
       )}
 
-      {/* Help Text */}
+      {/* Help Panel */}
       {timeSlots.length > 0 && !isPastDate && (
-        <div className="tw:bg-blue-50 tw:border tw:border-blue-200 tw:rounded-lg tw:p-4">
-          <div className="tw:flex tw:items-start tw:space-x-3">
-            <AlertCircle className="tw:h-5 tw:w-5 tw:text-blue-600 tw:mt-0.5 tw:flex-shrink-0" />
-            <div>
-              <h4 className="tw:text-sm tw:font-semibold tw:text-blue-800 tw:mb-2">
-                Quick Tips
-              </h4>
-              <ul className="tw:text-sm tw:text-blue-700 tw:space-y-1">
-                <li>• Click on slots to select them for bulk operations</li>
-                <li>• Block slots during lunch breaks or when unavailable</li>
-                <li>• Use "Regenerate" if you've changed working hours</li>
-                <li>• Booked slots cannot be modified (shown in blue)</li>
+        <div className="slot-manager-help">
+          <div className="slot-manager-help-content">
+            <AlertCircle className="slot-manager-help-icon" />
+            <div className="slot-manager-help-text">
+              <h4>💡 Quick Tips for Slot Management</h4>
+              <ul className="slot-manager-help-list">
+                <li>Click on slots to select them for bulk operations</li>
+                <li>Block slots during lunch breaks or when unavailable</li>
+                <li>Use "Regenerate" if you've changed working hours</li>
+                <li>Booked slots cannot be modified (shown in blue)</li>
+                <li>Use bulk actions to manage multiple slots efficiently</li>
                 {isToday && (
-                  <li>• Past time slots for today are automatically blocked</li>
+                  <li className="today">Past time slots for today are automatically blocked</li>
                 )}
+                <li>Grid view for quick overview, List view for detailed information</li>
+                <li>Changes are saved automatically when you modify slots</li>
               </ul>
             </div>
           </div>
@@ -766,3 +746,4 @@ const SlotManager = ({
 };
 
 export default SlotManager;
+                          

@@ -1,4 +1,4 @@
-// src/pages/ServiceProvider/ManageSlotsPage.jsx
+// src/pages/ServiceProvider/ManageSlotsPage.jsx - Redesigned for Visual Consistency
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,10 +9,13 @@ import {
   AlertCircle,
   CheckCircle,
   Info,
+  Settings,
+  Zap,
 } from "lucide-react";
 import { UserContext } from "@contexts/UserContext";
 import { toast } from "react-toastify";
 import SlotManager from "@components/ServiceProvider/SlotManager";
+import "./ManageSlotsPage.css";
 
 const ManageSlotsPage = () => {
   const navigate = useNavigate();
@@ -73,10 +76,10 @@ const ManageSlotsPage = () => {
     },
   });
   const [slotSettings, setSlotSettings] = useState({
-    defaultDuration: 60, // minutes
-    bufferTime: 15, // minutes between slots
-    maxAdvanceBooking: 30, // days
-    minAdvanceBooking: 1, // hours
+    defaultDuration: 60,
+    bufferTime: 15,
+    maxAdvanceBooking: 30,
+    minAdvanceBooking: 1,
   });
   const [stats, setStats] = useState({
     totalSlots: 0,
@@ -186,7 +189,14 @@ const ManageSlotsPage = () => {
       });
 
       if (response.ok) {
-        toast.success("Working hours saved successfully!");
+        toast.success("Working hours saved successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to save working hours");
@@ -212,7 +222,14 @@ const ManageSlotsPage = () => {
       });
 
       if (response.ok) {
-        toast.success("Slot settings saved successfully!");
+        toast.success("Slot settings saved successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to save slot settings");
@@ -248,7 +265,14 @@ const ManageSlotsPage = () => {
       });
 
       if (response.ok) {
-        toast.success("Weekly slots generated successfully!");
+        toast.success("Weekly slots generated successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         fetchSlotStats();
       } else {
         const errorData = await response.json();
@@ -278,380 +302,387 @@ const ManageSlotsPage = () => {
     !["service_center", "repair_center"].includes(userContext.role)
   ) {
     return (
-      <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:flex tw:items-center tw:justify-center">
-        <div className="tw:bg-white tw:rounded-lg tw:shadow-lg tw:p-8 tw:text-center tw:max-w-md">
-          <div className="tw:text-red-500 tw:text-6xl tw:mb-4">🚫</div>
-          <h1 className="tw:text-2xl tw:font-bold tw:text-gray-800 tw:mb-2">
-            Access Denied
-          </h1>
-          <p className="tw:text-gray-600 tw:mb-4">
-            You don't have permission to manage time slots. This feature is only
-            available for service centers and repair centers.
-          </p>
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-2 tw:rounded-lg hover:tw:bg-blue-700 tw:transition-colors"
-          >
-            Go to Dashboard
-          </button>
+      <div className="manage-slots-page">
+        <div className="manage-slots-access-denied">
+          <div className="manage-slots-access-denied-card">
+            <div className="manage-slots-access-denied-icon">🚫</div>
+            <h1>Access Denied</h1>
+            <p>
+              You don't have permission to manage time slots. This feature is
+              only available for service centers and repair centers.
+            </p>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="manage-slots-access-denied-button"
+            >
+              Go to Dashboard
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50">
-      <div className="tw:container tw:mx-auto tw:px-4 tw:py-8">
+    <div className="manage-slots-page manage-slots-fade-in">
+      <div className="manage-slots-container">
         {/* Header */}
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-8">
-          <div className="tw:flex tw:items-center tw:space-x-4">
+        <div className="manage-slots-header">
+          <div className="manage-slots-header-left">
             <button
               onClick={() => navigate("/dashboard/service-provider/services")}
-              className="tw:flex tw:items-center tw:space-x-2 tw:text-gray-600 hover:tw:text-gray-800 tw:transition-colors tw:group"
+              className="manage-slots-back-button"
             >
-              <ArrowLeft className="tw:h-5 tw:w-5 group-hover:tw:-translate-x-1 tw:transition-transform" />
+              <ArrowLeft />
               <span>Back to Services</span>
             </button>
           </div>
 
-          <div className="tw:flex tw:items-center tw:space-x-4">
+          <div className="manage-slots-header-actions">
             <button
               onClick={generateSlotsForWeek}
               disabled={loading}
-              className="tw:bg-green-600 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg hover:tw:bg-green-700 tw:transition-colors tw:text-sm disabled:tw:opacity-50 disabled:tw:cursor-not-allowed"
+              className="manage-slots-generate-button"
             >
-              Generate Weekly Slots
+              <Zap />
+              <span>{loading ? "Generating..." : "Generate Weekly Slots"}</span>
             </button>
           </div>
         </div>
 
-        {/* Page Title */}
-        <div className="tw:bg-white tw:rounded-lg tw:shadow-md tw:p-6 tw:mb-8">
-          <div className="tw:flex tw:items-center tw:space-x-3 tw:mb-4">
-            <div className="tw:bg-blue-600 tw:p-3 tw:rounded-lg">
-              <Calendar className="tw:h-6 tw:w-6 tw:text-white" />
-            </div>
-            <div>
-              <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">
-                Time Slot Management
-              </h1>
-              <p className="tw:text-gray-600">
-                Configure your working hours and manage appointment availability
-              </p>
+        {/* Main Content Card */}
+        <div className="manage-slots-main-card">
+          {/* Title Header */}
+          <div className="manage-slots-title-header">
+            <div className="manage-slots-title-content">
+              <div className="manage-slots-title-icon">
+                <Calendar />
+              </div>
+              <div className="manage-slots-title-text">
+                <h1>Time Slot Management</h1>
+                <p>
+                  Configure your working hours and manage appointment
+                  availability
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="tw:grid tw:grid-cols-2 md:tw:grid-cols-4 tw:gap-4">
-            <div className="tw:bg-blue-50 tw:p-4 tw:rounded-lg tw:text-center">
-              <div className="tw:text-2xl tw:font-bold tw:text-blue-600">
-                {stats.totalSlots}
+          {/* Stats Section */}
+          <div className="manage-slots-stats-section">
+            <div className="manage-slots-stats-grid">
+              <div className="manage-slots-stat-card blue">
+                <div className="manage-slots-stat-number">
+                  {stats.totalSlots}
+                </div>
+                <div className="manage-slots-stat-label">Total Slots</div>
               </div>
-              <div className="tw:text-sm tw:text-blue-700">Total Slots</div>
-            </div>
-            <div className="tw:bg-green-50 tw:p-4 tw:rounded-lg tw:text-center">
-              <div className="tw:text-2xl tw:font-bold tw:text-green-600">
-                {stats.availableSlots}
+              <div className="manage-slots-stat-card green">
+                <div className="manage-slots-stat-number">
+                  {stats.availableSlots}
+                </div>
+                <div className="manage-slots-stat-label">Available</div>
               </div>
-              <div className="tw:text-sm tw:text-green-700">Available</div>
-            </div>
-            <div className="tw:bg-orange-50 tw:p-4 tw:rounded-lg tw:text-center">
-              <div className="tw:text-2xl tw:font-bold tw:text-orange-600">
-                {stats.bookedSlots}
+              <div className="manage-slots-stat-card orange">
+                <div className="manage-slots-stat-number">
+                  {stats.bookedSlots}
+                </div>
+                <div className="manage-slots-stat-label">Booked</div>
               </div>
-              <div className="tw:text-sm tw:text-orange-700">Booked</div>
-            </div>
-            <div className="tw:bg-red-50 tw:p-4 tw:rounded-lg tw:text-center">
-              <div className="tw:text-2xl tw:font-bold tw:text-red-600">
-                {stats.blockedSlots}
+              <div className="manage-slots-stat-card red">
+                <div className="manage-slots-stat-number">
+                  {stats.blockedSlots}
+                </div>
+                <div className="manage-slots-stat-label">Blocked</div>
               </div>
-              <div className="tw:text-sm tw:text-red-700">Blocked</div>
             </div>
           </div>
-        </div>
 
-        <div className="tw:grid tw:grid-cols-1 xl:tw:grid-cols-3 tw:gap-8">
-          {/* Working Hours Configuration */}
-          <div className="xl:tw:col-span-1">
-            <div className="tw:bg-white tw:rounded-lg tw:shadow-lg tw:overflow-hidden tw:mb-8">
-              <div className="tw:px-6 tw:py-4 tw:bg-blue-600 tw:text-white">
-                <h2 className="tw:text-xl tw:font-bold tw:flex tw:items-center tw:space-x-2">
-                  <Clock className="tw:h-5 tw:w-5" />
-                  <span>Working Hours</span>
-                </h2>
-              </div>
+          {/* Main Grid */}
+          <div className="manage-slots-main-grid">
+            {/* Sidebar - Working Hours & Settings */}
+            <div className="manage-slots-sidebar">
+              {/* Working Hours Configuration */}
+              <div className="manage-slots-section-card">
+                <div className="manage-slots-section-header blue">
+                  <h2>
+                    <Clock />
+                    <span>Working Hours</span>
+                  </h2>
+                </div>
 
-              <div className="tw:p-6 tw:space-y-6">
-                {daysOfWeek.map(({ key, label }) => (
-                  <div
-                    key={key}
-                    className="tw:border tw:border-gray-200 tw:rounded-lg tw:p-4"
-                  >
-                    <div className="tw:flex tw:items-center tw:justify-between tw:mb-3">
-                      <h3 className="tw:font-semibold tw:text-gray-800">
-                        {label}
-                      </h3>
-                      <label className="tw:flex tw:items-center tw:space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={workingHours[key].isOpen}
-                          onChange={(e) =>
-                            handleWorkingHoursChange(
-                              key,
-                              "isOpen",
-                              e.target.checked
-                            )
-                          }
-                          className="tw:h-4 tw:w-4 tw:text-blue-600 tw:focus:ring-blue-500 tw:border-gray-300 tw:rounded"
-                        />
-                        <span className="tw:text-sm tw:text-gray-600">
-                          Open
-                        </span>
-                      </label>
-                    </div>
-
-                    {workingHours[key].isOpen && (
-                      <div className="tw:grid tw:grid-cols-2 tw:gap-3">
-                        <div>
-                          <label className="tw:block tw:text-xs tw:font-medium tw:text-gray-700 tw:mb-1">
-                            Start Time
-                          </label>
-                          <input
-                            type="time"
-                            value={workingHours[key].startTime}
-                            onChange={(e) =>
-                              handleWorkingHoursChange(
-                                key,
-                                "startTime",
-                                e.target.value
-                              )
-                            }
-                            className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:text-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="tw:block tw:text-xs tw:font-medium tw:text-gray-700 tw:mb-1">
-                            End Time
-                          </label>
-                          <input
-                            type="time"
-                            value={workingHours[key].endTime}
-                            onChange={(e) =>
-                              handleWorkingHoursChange(
-                                key,
-                                "endTime",
-                                e.target.value
-                              )
-                            }
-                            className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:text-sm"
-                          />
+                <div className="manage-slots-section-content">
+                  <div className="manage-slots-day-config">
+                    {daysOfWeek.map(({ key, label }) => (
+                      <div key={key} className="manage-slots-day-item">
+                        <div className="manage-slots-day-header">
+                          <h3 className="manage-slots-day-title">{label}</h3>
+                          <div className="manage-slots-day-toggle">
+                            <input
+                              type="checkbox"
+                              id={`${key}-toggle`}
+                              checked={workingHours[key].isOpen}
+                              onChange={(e) =>
+                                handleWorkingHoursChange(
+                                  key,
+                                  "isOpen",
+                                  e.target.checked
+                                )
+                              }
+                            />
+                            <label htmlFor={`${key}-toggle`}>Open</label>
+                          </div>
                         </div>
 
-                        {key !== "sunday" && (
-                          <>
-                            <div>
-                              <label className="tw:block tw:text-xs tw:font-medium tw:text-gray-700 tw:mb-1">
-                                Break Start
+                        {workingHours[key].isOpen && (
+                          <div className="manage-slots-time-grid">
+                            <div className="manage-slots-time-field">
+                              <label className="manage-slots-time-label">
+                                Start Time
                               </label>
                               <input
                                 type="time"
-                                value={workingHours[key].breakStart}
+                                value={workingHours[key].startTime}
                                 onChange={(e) =>
                                   handleWorkingHoursChange(
                                     key,
-                                    "breakStart",
+                                    "startTime",
                                     e.target.value
                                   )
                                 }
-                                className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:text-sm"
+                                className="manage-slots-time-input"
                               />
                             </div>
-                            <div>
-                              <label className="tw:block tw:text-xs tw:font-medium tw:text-gray-700 tw:mb-1">
-                                Break End
+                            <div className="manage-slots-time-field">
+                              <label className="manage-slots-time-label">
+                                End Time
                               </label>
                               <input
                                 type="time"
-                                value={workingHours[key].breakEnd}
+                                value={workingHours[key].endTime}
                                 onChange={(e) =>
                                   handleWorkingHoursChange(
                                     key,
-                                    "breakEnd",
+                                    "endTime",
                                     e.target.value
                                   )
                                 }
-                                className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:text-sm"
+                                className="manage-slots-time-input"
                               />
                             </div>
-                          </>
+
+                            {key !== "sunday" && (
+                              <>
+                                <div className="manage-slots-time-field">
+                                  <label className="manage-slots-time-label">
+                                    Break Start
+                                  </label>
+                                  <input
+                                    type="time"
+                                    value={workingHours[key].breakStart}
+                                    onChange={(e) =>
+                                      handleWorkingHoursChange(
+                                        key,
+                                        "breakStart",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="manage-slots-time-input"
+                                  />
+                                </div>
+                                <div className="manage-slots-time-field">
+                                  <label className="manage-slots-time-label">
+                                    Break End
+                                  </label>
+                                  <input
+                                    type="time"
+                                    value={workingHours[key].breakEnd}
+                                    onChange={(e) =>
+                                      handleWorkingHoursChange(
+                                        key,
+                                        "breakEnd",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="manage-slots-time-input"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
 
-                <button
-                  onClick={saveWorkingHours}
-                  disabled={loading}
-                  className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg hover:tw:bg-blue-700 tw:transition-colors tw:flex tw:items-center tw:justify-center tw:space-x-2 disabled:tw:opacity-50"
-                >
-                  <Save className="tw:h-4 tw:w-4" />
-                  <span>{loading ? "Saving..." : "Save Working Hours"}</span>
-                </button>
+                  <button
+                    onClick={saveWorkingHours}
+                    disabled={loading}
+                    className="manage-slots-save-button"
+                  >
+                    <Save />
+                    <span>{loading ? "Saving..." : "Save Working Hours"}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Slot Settings */}
+              <div className="manage-slots-section-card">
+                <div className="manage-slots-section-header green">
+                  <h2>
+                    <Settings />
+                    <span>Slot Settings</span>
+                  </h2>
+                </div>
+
+                <div className="manage-slots-section-content">
+                  <div className="manage-slots-settings-form">
+                    <div className="manage-slots-setting-field">
+                      <label className="manage-slots-setting-label">
+                        Default Slot Duration (minutes)
+                      </label>
+                      <select
+                        value={slotSettings.defaultDuration}
+                        onChange={(e) =>
+                          handleSlotSettingsChange(
+                            "defaultDuration",
+                            parseInt(e.target.value)
+                          )
+                        }
+                        className="manage-slots-setting-select"
+                      >
+                        <option value={15}>15 minutes</option>
+                        <option value={30}>30 minutes</option>
+                        <option value={45}>45 minutes</option>
+                        <option value={60}>1 hour</option>
+                        <option value={90}>1.5 hours</option>
+                        <option value={120}>2 hours</option>
+                      </select>
+                    </div>
+
+                    <div className="manage-slots-setting-field">
+                      <label className="manage-slots-setting-label">
+                        Buffer Time Between Slots (minutes)
+                      </label>
+                      <select
+                        value={slotSettings.bufferTime}
+                        onChange={(e) =>
+                          handleSlotSettingsChange(
+                            "bufferTime",
+                            parseInt(e.target.value)
+                          )
+                        }
+                        className="manage-slots-setting-select"
+                      >
+                        <option value={0}>No buffer</option>
+                        <option value={10}>10 minutes</option>
+                        <option value={15}>15 minutes</option>
+                        <option value={30}>30 minutes</option>
+                      </select>
+                    </div>
+
+                    <div className="manage-slots-setting-field">
+                      <label className="manage-slots-setting-label">
+                        Maximum Advance Booking (days)
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="90"
+                        value={slotSettings.maxAdvanceBooking}
+                        onChange={(e) =>
+                          handleSlotSettingsChange(
+                            "maxAdvanceBooking",
+                            parseInt(e.target.value)
+                          )
+                        }
+                        className="manage-slots-setting-input"
+                      />
+                    </div>
+
+                    <div className="manage-slots-setting-field">
+                      <label className="manage-slots-setting-label">
+                        Minimum Advance Booking (hours)
+                      </label>
+                      <select
+                        value={slotSettings.minAdvanceBooking}
+                        onChange={(e) =>
+                          handleSlotSettingsChange(
+                            "minAdvanceBooking",
+                            parseInt(e.target.value)
+                          )
+                        }
+                        className="manage-slots-setting-select"
+                      >
+                        <option value={1}>1 hour</option>
+                        <option value={2}>2 hours</option>
+                        <option value={4}>4 hours</option>
+                        <option value={24}>24 hours</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={saveSlotSettings}
+                    disabled={loading}
+                    className="manage-slots-save-button"
+                  >
+                    <Save />
+                    <span>{loading ? "Saving..." : "Save Settings"}</span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Slot Settings */}
-            <div className="tw:bg-white tw:rounded-lg tw:shadow-lg tw:overflow-hidden">
-              <div className="tw:px-6 tw:py-4 tw:bg-green-600 tw:text-white">
-                <h2 className="tw:text-xl tw:font-bold">Slot Settings</h2>
-              </div>
-
-              <div className="tw:p-6 tw:space-y-4">
-                <div>
-                  <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-                    Default Slot Duration (minutes)
-                  </label>
-                  <select
-                    value={slotSettings.defaultDuration}
-                    onChange={(e) =>
-                      handleSlotSettingsChange(
-                        "defaultDuration",
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
-                  >
-                    <option value={15}>15 minutes</option>
-                    <option value={30}>30 minutes</option>
-                    <option value={45}>45 minutes</option>
-                    <option value={60}>1 hour</option>
-                    <option value={90}>1.5 hours</option>
-                    <option value={120}>2 hours</option>
-                  </select>
+            {/* Main Content - Daily Time Slots Management */}
+            <div className="manage-slots-main-content">
+              <div className="manage-slots-section-card">
+                <div className="manage-slots-section-header purple">
+                  <h2>
+                    <Calendar />
+                    <span>Daily Time Slots</span>
+                  </h2>
                 </div>
 
-                <div>
-                  <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-                    Buffer Time Between Slots (minutes)
-                  </label>
-                  <select
-                    value={slotSettings.bufferTime}
-                    onChange={(e) =>
-                      handleSlotSettingsChange(
-                        "bufferTime",
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
-                  >
-                    <option value={0}>No buffer</option>
-                    <option value={10}>10 minutes</option>
-                    <option value={15}>15 minutes</option>
-                    <option value={30}>30 minutes</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-                    Maximum Advance Booking (days)
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="90"
-                    value={slotSettings.maxAdvanceBooking}
-                    onChange={(e) =>
-                      handleSlotSettingsChange(
-                        "maxAdvanceBooking",
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+                <div className="manage-slots-section-content">
+                  <SlotManager
+                    selectedDate={selectedDate}
+                    onDateChange={setSelectedDate}
+                    workingHours={workingHours}
+                    slotSettings={slotSettings}
+                    onStatsUpdate={setStats}
                   />
                 </div>
-
-                <div>
-                  <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-                    Minimum Advance Booking (hours)
-                  </label>
-                  <select
-                    value={slotSettings.minAdvanceBooking}
-                    onChange={(e) =>
-                      handleSlotSettingsChange(
-                        "minAdvanceBooking",
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
-                  >
-                    <option value={1}>1 hour</option>
-                    <option value={2}>2 hours</option>
-                    <option value={4}>4 hours</option>
-                    <option value={24}>24 hours</option>
-                  </select>
-                </div>
-
-                <button
-                  onClick={saveSlotSettings}
-                  disabled={loading}
-                  className="tw:w-full tw:bg-green-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg hover:tw:bg-green-700 tw:transition-colors tw:flex tw:items-center tw:justify-center tw:space-x-2 disabled:tw:opacity-50"
-                >
-                  <Save className="tw:h-4 tw:w-4" />
-                  <span>{loading ? "Saving..." : "Save Settings"}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Daily Time Slots Management */}
-          <div className="xl:tw:col-span-2">
-            <div className="tw:bg-white tw:rounded-lg tw:shadow-lg tw:overflow-hidden">
-              <div className="tw:px-6 tw:py-4 tw:bg-purple-600 tw:text-white">
-                <h2 className="tw:text-xl tw:font-bold tw:flex tw:items-center tw:space-x-2">
-                  <Calendar className="tw:h-5 tw:w-5" />
-                  <span>Daily Time Slots</span>
-                </h2>
-              </div>
-
-              <div className="tw:p-6">
-                <SlotManager
-                  selectedDate={selectedDate}
-                  onDateChange={setSelectedDate}
-                  workingHours={workingHours}
-                  slotSettings={slotSettings}
-                  onStatsUpdate={setStats}
-                />
               </div>
             </div>
           </div>
         </div>
 
         {/* Information Panel */}
-        <div className="tw:mt-8 tw:bg-blue-50 tw:border tw:border-blue-200 tw:rounded-lg tw:p-6">
-          <div className="tw:flex tw:items-start tw:space-x-3">
-            <Info className="tw:h-6 tw:w-6 tw:text-blue-600 tw:mt-0.5 tw:flex-shrink-0" />
-            <div>
-              <h3 className="tw:text-lg tw:font-semibold tw:text-blue-800 tw:mb-2">
-                Time Slot Management Guidelines
-              </h3>
-              <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-4 tw:text-sm tw:text-blue-700">
-                <div>
-                  <h4 className="tw:font-semibold tw:mb-2">Working Hours:</h4>
-                  <ul className="tw:space-y-1 tw:list-disc tw:list-inside">
+        <div className="manage-slots-info-panel">
+          <div className="manage-slots-info-header">
+            <Info className="manage-slots-info-icon" />
+            <div className="manage-slots-info-content">
+              <h3>⏰ Time Slot Management Guidelines</h3>
+              <div className="manage-slots-info-grid">
+                <div className="manage-slots-info-section">
+                  <h4>Working Hours Best Practices:</h4>
+                  <ul className="manage-slots-info-list">
                     <li>Set realistic working hours for each day</li>
                     <li>Include break times to avoid overbooking</li>
                     <li>Consider travel time between appointments</li>
                     <li>Update hours for holidays and special occasions</li>
+                    <li>Maintain consistency for customer expectations</li>
                   </ul>
                 </div>
-                <div>
-                  <h4 className="tw:font-semibold tw:mb-2">Slot Management:</h4>
-                  <ul className="tw:space-y-1 tw:list-disc tw:list-inside">
+                <div className="manage-slots-info-section">
+                  <h4>Slot Management Tips:</h4>
+                  <ul className="manage-slots-info-list">
                     <li>Block slots for maintenance or personal time</li>
                     <li>Generate weekly slots to maintain consistency</li>
                     <li>Monitor booking patterns to optimize availability</li>
                     <li>Set appropriate buffer times between services</li>
+                    <li>Review and adjust settings based on demand</li>
                   </ul>
                 </div>
               </div>

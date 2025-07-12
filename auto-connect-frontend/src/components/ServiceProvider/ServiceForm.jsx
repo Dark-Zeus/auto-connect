@@ -1,14 +1,6 @@
-// src/components/ServiceProvider/ServiceForm.jsx - Final Professional Version
+// src/components/ServiceProvider/ServiceForm.jsx - Simplified Clean Version
 import React, { useState, useEffect } from "react";
-import {
-  Plus,
-  Trash2,
-  Save,
-  X,
-  CheckCircle,
-  AlertCircle,
-  Info,
-} from "lucide-react";
+import { Plus, Trash2, Save, X, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import "./ServiceForm.css";
 
@@ -117,13 +109,11 @@ const ServiceForm = ({
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Mark field as touched
     setTouched((prev) => ({
       ...prev,
       [name]: true,
     }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -132,7 +122,6 @@ const ServiceForm = ({
     }
   };
 
-  // Handle service type changes from ServiceTypeSelector
   const handleServiceTypeChange = (e) => {
     setServiceData((prev) => ({
       ...prev,
@@ -152,7 +141,6 @@ const ServiceForm = ({
     }
   };
 
-  // Handle price changes from PriceRangeInput
   const handleMinPriceChange = (e) => {
     setServiceData((prev) => ({
       ...prev,
@@ -222,7 +210,6 @@ const ServiceForm = ({
   const validateForm = () => {
     const newErrors = {};
 
-    // Required field validations
     if (!serviceData.serviceType.trim()) {
       newErrors.serviceType = "Service type is required";
     }
@@ -255,7 +242,6 @@ const ServiceForm = ({
       newErrors.duration = "Expected duration is required";
     }
 
-    // Validate array fields have at least one non-empty item
     const nonEmptyRequirements = serviceData.requirements.filter(
       (req) => req.trim() !== ""
     );
@@ -282,7 +268,6 @@ const ServiceForm = ({
       return;
     }
 
-    // Clean up array fields (remove empty strings)
     const cleanedData = {
       ...serviceData,
       requirements: serviceData.requirements.filter((req) => req.trim() !== ""),
@@ -311,11 +296,8 @@ const ServiceForm = ({
     <div className={`service-form ${loading ? "service-form-loading" : ""}`}>
       <form onSubmit={handleSubmit} className="service-form-content">
         {/* Basic Information Section */}
-        <div className="service-form-section service-form-fade-in">
-          <h3 className="service-form-section-title">
-            <Info className="service-form-section-icon" />
-            Basic Information
-          </h3>
+        <div className="service-form-section">
+          <h3 className="service-form-section-title">Basic Information</h3>
           <p className="service-form-section-description">
             Provide the fundamental details about your service offering
           </p>
@@ -325,55 +307,68 @@ const ServiceForm = ({
               <label className="service-form-label required">
                 Service Category
               </label>
-              <select
-                name="category"
-                value={serviceData.category}
-                onChange={handleInputChange}
-                className={`service-form-select ${getFieldStatus("category")}`}
-                aria-describedby={
-                  errors.category ? "category-error" : undefined
-                }
-              >
-                <option value="">Choose a service category</option>
-                {serviceCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+              <div className="service-form-select-wrapper">
+                <select
+                  name="category"
+                  value={serviceData.category}
+                  onChange={handleInputChange}
+                  className={`service-form-select ${getFieldStatus(
+                    "category"
+                  )}`}
+                  aria-describedby={
+                    errors.category ? "category-error" : undefined
+                  }
+                >
+                  <option value="">Choose a service category</option>
+                  {serviceCategories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </div>
               {errors.category && (
                 <div className="service-form-error" id="category-error">
-                  <AlertCircle className="service-form-error-icon" />
+                  <AlertCircle size={16} />
                   {errors.category}
                 </div>
               )}
               {getFieldStatus("category") === "success" && (
                 <div className="service-form-success">
-                  <CheckCircle className="service-form-success-icon" />
+                  <CheckCircle size={16} />
                   Category selected
                 </div>
               )}
             </div>
 
-            {/* Using ServiceTypeSelector atomic component */}
             <div className="service-form-group">
               <label className="service-form-label required">
                 Service Type
               </label>
-              <ServiceTypeSelector
-                value={serviceData.serviceType}
-                onChange={handleServiceTypeChange}
-                category={serviceData.category}
-                error={errors.serviceType}
-                placeholder="Enter or select service type"
-                showSearch={true}
-                allowCustom={true}
-                required={true}
-                className={getFieldStatus("serviceType")}
-              />
+              <div className="service-form-select-wrapper">
+                <ServiceTypeSelector
+                  value={serviceData.serviceType}
+                  onChange={handleServiceTypeChange}
+                  category={serviceData.category}
+                  error={errors.serviceType}
+                  placeholder="Enter or select service type"
+                  showSearch={true}
+                  allowCustom={true}
+                  required={true}
+                  className={`service-form-select ${getFieldStatus(
+                    "serviceType"
+                  )}`}
+                />
+              </div>
+              {errors.serviceType && (
+                <div className="service-form-error">
+                  <AlertCircle size={16} />
+                  {errors.serviceType}
+                </div>
+              )}
               {getFieldStatus("serviceType") === "success" && (
                 <div className="service-form-success">
-                  <CheckCircle className="service-form-success-icon" />
+                  <CheckCircle size={16} />
                   Service type specified
                 </div>
               )}
@@ -386,7 +381,6 @@ const ServiceForm = ({
               Service Description
             </label>
             <div className="service-form-description-helper">
-              <Info className="service-form-helper-icon" />
               <span>
                 Provide a detailed description that helps customers understand
                 exactly what your service includes
@@ -401,14 +395,11 @@ const ServiceForm = ({
               className={`service-form-textarea ${getFieldStatus(
                 "description"
               )}`}
-              aria-describedby={
-                errors.description ? "description-error" : undefined
-              }
               maxLength={500}
             />
             <div className="service-form-char-counter">
               {errors.description && (
-                <div className="service-form-error" id="description-error">
+                <div className="service-form-error">
                   <AlertCircle className="service-form-error-icon" />
                   {errors.description}
                 </div>
@@ -424,17 +415,16 @@ const ServiceForm = ({
               </div>
             )}
           </div>
-        </div><br />
+        </div>
 
         {/* Pricing and Duration Section */}
-        <div className="service-form-section service-form-fade-in">
+        <div className="service-form-section">
           <h3 className="service-form-section-title">Pricing & Duration</h3>
           <p className="service-form-section-description">
             Set competitive pricing and realistic time expectations for your
             service
           </p>
 
-          {/* Using PriceRangeInput atomic component */}
           <div className="service-form-price-container">
             <PriceRangeInput
               minPrice={serviceData.minPrice}
@@ -449,37 +439,37 @@ const ServiceForm = ({
             />
           </div>
 
-          {/* Duration and Price Note */}
           <div className="service-form-grid">
             <div className="service-form-group">
               <label className="service-form-label required">
                 Expected Duration
               </label>
-              <select
-                name="duration"
-                value={serviceData.duration}
-                onChange={handleInputChange}
-                className={`service-form-select ${getFieldStatus("duration")}`}
-                aria-describedby={
-                  errors.duration ? "duration-error" : undefined
-                }
-              >
-                <option value="">Select estimated duration</option>
-                {durationOptions.map((duration) => (
-                  <option key={duration} value={duration}>
-                    {duration}
-                  </option>
-                ))}
-              </select>
+              <div className="service-form-select-wrapper">
+                <select
+                  name="duration"
+                  value={serviceData.duration}
+                  onChange={handleInputChange}
+                  className={`service-form-select ${getFieldStatus(
+                    "duration"
+                  )}`}
+                >
+                  <option value="">Select estimated duration</option>
+                  {durationOptions.map((duration) => (
+                    <option key={duration} value={duration}>
+                      {duration}
+                    </option>
+                  ))}
+                </select>
+              </div>
               {errors.duration && (
-                <div className="service-form-error" id="duration-error">
-                  <AlertCircle className="service-form-error-icon" />
+                <div className="service-form-error">
+                  <AlertCircle size={16} />
                   {errors.duration}
                 </div>
               )}
               {getFieldStatus("duration") === "success" && (
                 <div className="service-form-success">
-                  <CheckCircle className="service-form-success-icon" />
+                  <CheckCircle size={16} />
                   Duration set
                 </div>
               )}
@@ -503,10 +493,10 @@ const ServiceForm = ({
               </div>
             </div>
           </div>
-        </div><br/>
+        </div>
 
         {/* Service Details Section */}
-        <div className="service-form-section service-form-fade-in">
+        <div className="service-form-section">
           <h3 className="service-form-section-title">Service Details</h3>
           <p className="service-form-section-description">
             Specify what customers need to bring and what's included in your
@@ -541,7 +531,6 @@ const ServiceForm = ({
                     onClick={() => removeArrayItem(index, "requirements")}
                     className="service-form-array-remove"
                     title="Remove requirement"
-                    aria-label="Remove this requirement"
                   >
                     <Trash2 />
                   </button>
@@ -592,7 +581,6 @@ const ServiceForm = ({
                     onClick={() => removeArrayItem(index, "includedItems")}
                     className="service-form-array-remove"
                     title="Remove included item"
-                    aria-label="Remove this included item"
                   >
                     <Trash2 />
                   </button>
@@ -643,7 +631,6 @@ const ServiceForm = ({
                     onClick={() => removeArrayItem(index, "excludedItems")}
                     className="service-form-array-remove"
                     title="Remove excluded item"
-                    aria-label="Remove this excluded item"
                   >
                     <Trash2 />
                   </button>
@@ -659,10 +646,10 @@ const ServiceForm = ({
               <span>Add Exclusion</span>
             </button>
           </div>
-        </div><br />
+        </div>
 
         {/* Additional Information Section */}
-        <div className="service-form-section service-form-fade-in">
+        <div className="service-form-section">
           <h3 className="service-form-section-title">Additional Information</h3>
           <p className="service-form-section-description">
             Add warranty details, tags, and special instructions to complete
@@ -672,19 +659,21 @@ const ServiceForm = ({
           <div className="service-form-grid">
             <div className="service-form-group">
               <label className="service-form-label">Warranty Period</label>
-              <select
-                name="warrantyPeriod"
-                value={serviceData.warrantyPeriod}
-                onChange={handleInputChange}
-                className="service-form-select"
-              >
-                <option value="">Select warranty period</option>
-                {warrantyOptions.map((warranty) => (
-                  <option key={warranty} value={warranty}>
-                    {warranty}
-                  </option>
-                ))}
-              </select>
+              <div className="service-form-select-wrapper">
+                <select
+                  name="warrantyPeriod"
+                  value={serviceData.warrantyPeriod}
+                  onChange={handleInputChange}
+                  className="service-form-select"
+                >
+                  <option value="">Select warranty period</option>
+                  {warrantyOptions.map((warranty) => (
+                    <option key={warranty} value={warranty}>
+                      {warranty}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="service-form-helper-text">
                 Offering a warranty builds customer trust and confidence
               </div>
@@ -706,7 +695,6 @@ const ServiceForm = ({
                 >
                   Make this service active immediately
                 </label>
-                {/* Using StatusBadge to show current status */}
                 <div className="service-form-status-container">
                   <StatusBadge
                     status={serviceData.isActive ? "active" : "inactive"}
@@ -748,7 +736,6 @@ const ServiceForm = ({
                     onClick={() => removeArrayItem(index, "tags")}
                     className="service-form-array-remove"
                     title="Remove tag"
-                    aria-label="Remove this tag"
                   >
                     <Trash2 />
                   </button>

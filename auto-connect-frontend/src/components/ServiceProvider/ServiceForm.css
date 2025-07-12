@@ -1,66 +1,52 @@
-/* ServiceForm.css - Redesigned with Enhanced UI/UX and Professional Standards */
-
-/* Import design system variables */
-@import url('../../css/tailwind.css');
+/* ServiceForm.css - Simplified and Clean Version */
 
 /* Form Container */
 .service-form {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
   font-family: "Inter", "Roboto", "Helvetica", "Arial", sans-serif;
   max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 /* Form Sections */
 .service-form-section {
   background: var(--white);
-  padding: 2.5rem;
-  border-radius: var(--border-radius-xl);
-  border: 2px solid var(--primary-light);
-  transition: all var(--transition-bounce);
-  box-shadow: 0 4px 20px var(--shadow-light);
-  position: relative;
-  overflow: visible;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
 }
 
 .service-form-section:focus-within {
   border-color: var(--primary-blue);
-  box-shadow: 0 8px 32px var(--shadow-medium);
-  background: var(--gradient-light);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(122, 178, 211, 0.15);
 }
 
 .service-form-section-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: var(--primary-dark);
-  margin-bottom: 2rem;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
   font-family: "Inter", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
   letter-spacing: -0.025em;
-  line-height: 1.3;
 }
 
-.service-form-section-title::before {
-  content: '';
-  width: 6px;
-  height: 2.5rem;
-  background: var(--gradient-secondary);
-  border-radius: 3px;
-  box-shadow: 0 2px 8px var(--shadow-medium);
-  flex-shrink: 0;
+.service-form-section-description {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 /* Grid Layouts */
 .service-form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
@@ -77,125 +63,137 @@
 .service-form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.service-form-group.mt-6 {
-  margin-top: 2rem;
-}
-
-.service-form-group.mb-6 {
-  margin-bottom: 2rem;
-}
-
-/* Labels - Professional Typography (Industry Standard) */
+/* Labels - Clean and Consistent */
 .service-form-label {
   display: block;
-  font-size: 0.875rem; /* 14px - Google/Apple/Stripe standard */
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-dark);
   font-family: "Inter", sans-serif;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.005em;
   line-height: 1.4;
-  text-transform: none;
 }
 
 .service-form-label.required::after {
   content: " *";
-  color: var(--error-color);
+  color: #ef4444;
   font-weight: 600;
-  font-size: 0.875rem;
 }
 
-/* Input Base Styles - Professional Sizing */
+/* Input Base Styles - Better Spacing */
 .service-form-input,
 .service-form-select,
 .service-form-textarea {
   width: 100%;
-  padding: 0.75rem 1rem; /* 12px 16px - Industry standard */
-  border: 2px solid var(--primary-light);
-  border-radius: var(--border-radius-md); /* 12px - Modern standard */
-  font-size: 1rem; /* 16px - Prevents zoom on iOS */
+  padding: 0.875rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 400;
   font-family: "Inter", sans-serif;
-  background: var(--gray-light);
+  background: #ffffff;
   color: var(--text-dark);
-  transition: all var(--transition-normal);
+  transition: all 0.2s ease;
   line-height: 1.5;
-  min-height: 2.75rem; /* 44px - Touch target standard */
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  min-height: 44px;
 }
 
-/* Input Focus States - Professional Standards */
+/* Consistent Placeholder Styling */
+.service-form-input::placeholder,
+.service-form-textarea::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+  font-style: normal;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* Focus States */
 .service-form-input:focus,
 .service-form-select:focus,
 .service-form-textarea:focus {
   outline: none;
   border-color: var(--primary-blue);
   box-shadow: 0 0 0 3px rgba(122, 178, 211, 0.1);
-  background: var(--white);
-  transform: translateY(-1px);
+  background: #ffffff;
 }
 
+/* Error States */
 .service-form-input.error,
 .service-form-select.error,
 .service-form-textarea.error {
-  border-color: var(--error-color);
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-  background: #fef2f2;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
+/* Success States */
 .service-form-input.success,
 .service-form-select.success,
 .service-form-textarea.success {
-  border-color: var(--success-color);
-  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-  background: #f0fdf4;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* Hover States for Better Interactivity */
+/* Hover States */
 .service-form-input:hover:not(:disabled):not(:focus),
 .service-form-select:hover:not(:disabled):not(:focus),
 .service-form-textarea:hover:not(:disabled):not(:focus) {
-  border-color: var(--primary-medium);
-  box-shadow: 0 2px 8px var(--shadow-light);
-  background: var(--white);
+  border-color: #9ca3af;
 }
 
-/* Textarea Specific Styles */
+/* Textarea Specific */
 .service-form-textarea {
   resize: vertical;
-  min-height: 120px;
-  max-height: 240px;
-  padding: 1rem;
+  min-height: 100px;
+  max-height: 200px;
   line-height: 1.6;
 }
 
-/* Select Specific Styles */
+/* Select Wrapper for Consistent Dropdown Styling */
+.service-form-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.service-form-select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #6b7280;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.service-form-select-wrapper:hover::after {
+  border-top-color: var(--primary-blue);
+}
+
+.service-form-select:focus + .service-form-select-wrapper::after,
+.service-form-select-wrapper:focus-within::after {
+  border-top-color: var(--primary-blue);
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Select Specific */
 .service-form-select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234A628A' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 1rem center;
+  background-image: none;
+  background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1.25em 1.25em;
-  padding-right: 3rem;
+  padding-right: 2.5rem;
   appearance: none;
   cursor: pointer;
-  font-weight: 400;
-}
-
-.service-form-select:focus {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%237AB2D3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-}
-
-/* Enhanced Placeholder Styles */
-.service-form-input::placeholder,
-.service-form-textarea::placeholder {
-  color: var(--gray-medium);
-  opacity: 0.7;
-  font-style: normal;
-  font-size: 0.875rem;
-  font-weight: 400;
 }
 
 /* Character Counter */
@@ -204,78 +202,61 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 0.5rem;
-  gap: 1rem;
 }
 
 .service-form-char-count {
   font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--primary-blue);
+  color: #6b7280;
   font-family: "Inter", sans-serif;
-  background: var(--primary-light);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid var(--primary-medium);
 }
 
-/* Error and Success Messages */
+/* Error and Success Messages - Simplified */
 .service-form-error {
-  color: var(--error-color);
+  color: #ef4444;
   font-size: 0.875rem;
   font-weight: 500;
   font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #fef2f2;
-  padding: 0.75rem 1rem;
-  border-radius: var(--border-radius-md);
-  border: 1px solid #fecaca;
   margin-top: 0.5rem;
 }
 
-.service-form-error::before {
-  content: '⚠';
-  font-size: 1rem;
-  color: var(--error-color);
+.service-form-error svg {
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
 }
 
 .service-form-success {
-  color: var(--success-color);
+  color: #10b981;
   font-size: 0.875rem;
   font-weight: 500;
   font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #f0fdf4;
-  padding: 0.75rem 1rem;
-  border-radius: var(--border-radius-md);
-  border: 1px solid #bbf7d0;
   margin-top: 0.5rem;
 }
 
-.service-form-success::before {
-  content: '✓';
-  font-size: 1rem;
-  color: var(--success-color);
+.service-form-success svg {
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
 }
 
-/* Array Input Groups */
+/* Array Input Groups - Better Spacing */
 .service-form-array-group {
   margin-bottom: 2rem;
-  background: var(--gradient-light);
+  background: #f8fafc;
   padding: 1.5rem;
-  border-radius: var(--border-radius-lg);
-  border: 2px solid var(--primary-light);
-  box-shadow: 0 2px 8px var(--shadow-light);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
 }
 
 .service-form-array-item {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 1rem;
   align-items: flex-start;
 }
@@ -285,27 +266,23 @@
 }
 
 .service-form-array-remove {
-  color: var(--white);
-  background: var(--error-color);
-  border: 2px solid var(--error-color);
+  color: #ffffff;
+  background: #ef4444;
+  border: none;
   cursor: pointer;
   padding: 0.75rem;
-  border-radius: var(--border-radius-md);
-  transition: all var(--transition-normal);
+  border-radius: 6px;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.75rem;
-  height: 2.75rem;
+  min-width: 44px;
+  height: 44px;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
 }
 
 .service-form-array-remove:hover {
   background: #dc2626;
-  border-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .service-form-array-remove svg {
@@ -316,27 +293,23 @@
 .service-form-array-add {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: var(--white);
-  background: var(--gradient-secondary);
-  border: 2px solid var(--primary-blue);
+  gap: 0.5rem;
+  color: var(--primary-blue);
+  background: transparent;
+  border: 1px solid var(--primary-blue);
   cursor: pointer;
   font-size: 0.875rem;
   font-family: "Inter", sans-serif;
   font-weight: 500;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--border-radius-md);
-  transition: all var(--transition-normal);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
   width: fit-content;
-  box-shadow: 0 2px 8px var(--shadow-medium);
-  min-height: 2.75rem;
 }
 
 .service-form-array-add:hover {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--shadow-strong);
+  background: var(--primary-blue);
+  color: #ffffff;
 }
 
 .service-form-array-add svg {
@@ -344,53 +317,32 @@
   height: 1rem;
 }
 
-/* Checkbox Group */
+/* Checkbox Group - Simplified */
 .service-form-checkbox-group {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding: 1.5rem;
-  background: var(--gradient-light);
-  border-radius: var(--border-radius-lg);
-  border: 2px solid var(--primary-light);
-  box-shadow: 0 2px 8px var(--shadow-light);
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
 }
 
 .service-form-checkbox {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--primary-blue);
-  border: 2px solid var(--primary-blue);
-  border-radius: var(--border-radius-sm);
-  background: var(--white);
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #ffffff;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  position: relative;
+  transition: all 0.2s ease;
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.service-form-checkbox:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(122, 178, 211, 0.2);
 }
 
 .service-form-checkbox:checked {
   background: var(--primary-blue);
   border-color: var(--primary-blue);
-  transform: scale(1.05);
-}
-
-.service-form-checkbox:checked::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--white);
-  font-size: 0.75rem;
-  font-weight: bold;
 }
 
 .service-form-checkbox-label {
@@ -399,43 +351,40 @@
   color: var(--text-dark);
   font-family: "Inter", sans-serif;
   cursor: pointer;
-  flex: 1;
   line-height: 1.5;
 }
 
-/* Status Badge Integration */
-.service-form-status-container {
+/* Helper Text */
+.service-form-helper-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+.service-form-description-helper {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.service-form-helper-icon {
+  width: 0.875rem;
+  height: 0.875rem;
   flex-shrink: 0;
 }
 
-/* Price Range Container */
-.service-form-price-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  grid-column: 1 / -1;
-}
-
-@media (min-width: 768px) {
-  .service-form-price-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Submit Buttons */
+/* Submit Buttons - Cleaner Design */
 .service-form-submit-section {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  padding: 2rem;
-  border-top: 2px solid var(--primary-light);
+  padding: 1.5rem 0;
+  border-top: 1px solid #e2e8f0;
   margin-top: 2rem;
-  background: var(--gradient-light);
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 .service-form-btn {
@@ -443,18 +392,16 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  border-radius: var(--border-radius-md);
+  border-radius: 6px;
   font-weight: 500;
   font-family: "Inter", sans-serif;
   cursor: pointer;
-  transition: all var(--transition-bounce);
+  transition: all 0.2s ease;
   border: none;
   font-size: 0.875rem;
-  text-decoration: none;
-  min-width: 120px;
+  min-width: 100px;
   justify-content: center;
-  box-shadow: 0 2px 8px var(--shadow-light);
-  min-height: 2.75rem;
+  min-height: 44px;
 }
 
 .service-form-btn svg {
@@ -463,36 +410,28 @@
 }
 
 .service-form-btn-cancel {
-  background: var(--white);
-  color: var(--text-dark);
-  border: 2px solid var(--gray-medium);
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
 }
 
 .service-form-btn-cancel:hover {
-  background: var(--gray-light);
-  border-color: var(--text-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--shadow-medium);
+  background: #f9fafb;
+  border-color: #9ca3af;
 }
 
 .service-form-btn-submit {
-  background: var(--gradient-secondary);
-  color: var(--white);
-  border: 2px solid var(--primary-blue);
+  background: var(--primary-blue);
+  color: #ffffff;
 }
 
 .service-form-btn-submit:hover:not(:disabled) {
   background: var(--primary-dark);
-  border-color: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--shadow-strong);
 }
 
 .service-form-btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 1px 2px var(--shadow-light);
 }
 
 /* Loading State */
@@ -508,12 +447,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--border-radius-md);
-  backdrop-filter: blur(4px);
+  border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-dark);
@@ -525,50 +463,27 @@
 .service-form-input:disabled,
 .service-form-select:disabled,
 .service-form-textarea:disabled {
-  background: var(--gray-light);
-  color: var(--gray-medium);
+  background: #f3f4f6;
+  color: #9ca3af;
   cursor: not-allowed;
-  border-color: var(--primary-light);
-  opacity: 0.7;
+  border-color: #e5e7eb;
 }
 
-/* Enhanced Option Styling */
-.service-form-select option {
-  padding: 0.75rem;
-  background: var(--white);
-  color: var(--text-dark);
-  font-family: "Inter", sans-serif;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.5;
+/* Price Range Container */
+.service-form-price-container {
+  grid-column: 1 / -1;
 }
 
-.service-form-select option:checked {
-  background: var(--primary-blue);
-  color: var(--white);
-}
-
-/* Section-Specific Color Coding */
-.service-form-section:nth-child(1) {
-  border-left: 4px solid var(--primary-blue);
-}
-
-.service-form-section:nth-child(2) {
-  border-left: 4px solid var(--primary-medium);
-}
-
-.service-form-section:nth-child(3) {
-  border-left: 4px solid var(--primary-dark);
-}
-
-.service-form-section:nth-child(4) {
-  border-left: 4px solid var(--success-color);
+/* Status Badge Integration */
+.service-form-status-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .service-form {
-    gap: 1.5rem;
     padding: 1rem;
   }
   
@@ -577,131 +492,62 @@
   }
   
   .service-form-section-title {
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .service-form-label {
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .service-form-input,
-  .service-form-select,
-  .service-form-textarea {
-    font-size: 1rem;
-    padding: 0.75rem;
-    min-height: 3rem;
-  }
-  
-  .service-form-textarea {
-    min-height: 100px;
-    padding: 0.75rem;
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
   }
   
   .service-form-grid {
-    gap: 1.5rem;
+    gap: 1rem;
   }
   
   .service-form-submit-section {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
+    padding: 1rem 0;
   }
   
   .service-form-btn {
     width: 100%;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.875rem;
-    min-height: 3rem;
   }
   
   .service-form-array-item {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
   
   .service-form-array-remove {
     align-self: flex-end;
     width: fit-content;
-    min-width: 2.5rem;
-    height: 2.5rem;
-  }
-  
-  .service-form-array-add {
-    padding: 0.75rem 1.25rem;
-    min-height: 2.5rem;
   }
   
   .service-form-checkbox-group {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  
-  .service-form-checkbox {
-    width: 1.125rem;
-    height: 1.125rem;
-  }
-  
-  .service-form-checkbox-label {
-    font-size: 0.875rem;
+    gap: 0.75rem;
   }
 }
 
 @media (max-width: 480px) {
+  .service-form {
+    padding: 0.75rem;
+  }
+  
   .service-form-section {
     padding: 1rem;
   }
   
   .service-form-section-title {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
   
   .service-form-input,
   .service-form-select,
   .service-form-textarea {
-    font-size: 1rem;
-    padding: 0.625rem;
-    min-height: 2.75rem;
-  }
-  
-  .service-form-input::placeholder,
-  .service-form-textarea::placeholder {
-    font-size: 0.875rem;
-  }
-  
-  .service-form-btn {
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-    min-height: 2.75rem;
-  }
-  
-  .service-form-array-add {
-    width: 100%;
-    justify-content: center;
+    padding: 0.75rem;
   }
 }
 
-/* Animation Classes */
-.service-form-fade-in {
-  animation: serviceFormFadeIn 0.5s ease-out;
-}
-
-@keyframes serviceFormFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Focus Ring for Better Accessibility */
+/* Focus Ring for Accessibility */
 .service-form input:focus-visible,
 .service-form select:focus-visible,
 .service-form textarea:focus-visible,
@@ -710,62 +556,13 @@
   outline-offset: 2px;
 }
 
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-  .service-form-input,
-  .service-form-select,
-  .service-form-textarea {
-    border-width: 3px;
-    font-weight: 600;
-  }
-  
-  .service-form-btn {
-    border-width: 3px;
-    font-weight: 700;
-  }
-  
-  .service-form-label {
-    font-weight: 700;
-  }
-  
-  .service-form-input::placeholder,
-  .service-form-textarea::placeholder {
-    opacity: 1;
-    font-weight: 500;
-  }
-}
-
-/* Reduced Motion */
+/* Reduce Motion for Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .service-form *,
   .service-form *::before,
   .service-form *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     transform: none !important;
-  }
-}
-
-/* Print Styles */
-@media print {
-  .service-form-array-add,
-  .service-form-array-remove,
-  .service-form-btn {
-    display: none;
-  }
-  
-  .service-form-section {
-    border: 2px solid #000;
-    box-shadow: none;
-    break-inside: avoid;
-    margin-bottom: 1rem;
-  }
-  
-  .service-form-input,
-  .service-form-select,
-  .service-form-textarea {
-    border: 1px solid #000;
-    box-shadow: none;
   }
 }
