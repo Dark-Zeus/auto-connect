@@ -1,6 +1,7 @@
 // src/components/atoms/PriceRangeInput.jsx
 import React, { useState, useEffect } from "react";
 import { DollarSign, TrendingUp, Calculator, AlertCircle } from "lucide-react";
+import "./PriceRangeInput.css";
 
 const PriceRangeInput = ({
   minPrice,
@@ -17,7 +18,6 @@ const PriceRangeInput = ({
   placeholder = { min: "Minimum price", max: "Maximum price" },
 }) => {
   const [suggestions, setSuggestions] = useState([]);
-  const [showCalculator, setShowCalculator] = useState(false);
 
   // Price suggestions based on category
   const categoryPricing = {
@@ -122,18 +122,16 @@ const PriceRangeInput = ({
   const rangeError = validateRange();
 
   return (
-    <div className={`tw:space-y-4 ${className}`}>
+    <div className={`price-range-input ${className}`}>
       {/* Price Range Inputs */}
-      <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-4">
+      <div className="price-range-grid">
         {/* Minimum Price */}
-        <div className="tw:space-y-2">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700">
-            Minimum Price ({currency}) *
+        <div className="price-input-group">
+          <label className="price-input-label required">
+            Minimum Price ({currency})
           </label>
-          <div className="tw:relative">
-            <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
-              <span className="tw:text-gray-500 tw:text-sm">{currency}</span>
-            </div>
+          <div className="price-input-container">
+            <span className="price-input-currency">{currency}</span>
             <input
               type="number"
               value={minPrice}
@@ -142,32 +140,24 @@ const PriceRangeInput = ({
               min="0"
               step={step}
               disabled={disabled}
-              className={`tw:w-full tw:pl-10 tw:pr-3 tw:py-2 tw:border tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:transition-colors ${
-                disabled
-                  ? "tw:bg-gray-100 tw:cursor-not-allowed"
-                  : errors.minPrice
-                  ? "tw:border-red-500 tw:ring-1 tw:ring-red-500"
-                  : "tw:border-gray-300 hover:tw:border-gray-400"
-              }`}
+              className={`price-input-field ${errors.minPrice ? "error" : ""}`}
             />
           </div>
           {errors.minPrice && (
-            <p className="tw:text-red-500 tw:text-sm tw:flex tw:items-center tw:space-x-1">
-              <AlertCircle className="tw:h-3 tw:w-3" />
+            <div className="price-input-error">
+              <AlertCircle />
               <span>{errors.minPrice}</span>
-            </p>
+            </div>
           )}
         </div>
 
         {/* Maximum Price */}
-        <div className="tw:space-y-2">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700">
-            Maximum Price ({currency}) *
+        <div className="price-input-group">
+          <label className="price-input-label required">
+            Maximum Price ({currency})
           </label>
-          <div className="tw:relative">
-            <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
-              <span className="tw:text-gray-500 tw:text-sm">{currency}</span>
-            </div>
+          <div className="price-input-container">
+            <span className="price-input-currency">{currency}</span>
             <input
               type="number"
               value={maxPrice}
@@ -176,88 +166,80 @@ const PriceRangeInput = ({
               min="0"
               step={step}
               disabled={disabled}
-              className={`tw:w-full tw:pl-10 tw:pr-3 tw:py-2 tw:border tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:transition-colors ${
-                disabled
-                  ? "tw:bg-gray-100 tw:cursor-not-allowed"
-                  : errors.maxPrice || rangeError
-                  ? "tw:border-red-500 tw:ring-1 tw:ring-red-500"
-                  : "tw:border-gray-300 hover:tw:border-gray-400"
+              className={`price-input-field ${
+                errors.maxPrice || rangeError ? "error" : ""
               }`}
             />
 
             {/* Quick Range Buttons */}
             {minPrice && !disabled && (
-              <div className="tw:absolute tw:inset-y-0 tw:right-0 tw:flex tw:items-center tw:pr-2">
-                <div className="tw:flex tw:space-x-1">
-                  <button
-                    type="button"
-                    onClick={() => handleQuickRange(1.5)}
-                    className="tw:text-xs tw:bg-blue-100 tw:text-blue-700 tw:px-2 tw:py-1 tw:rounded hover:tw:bg-blue-200 tw:transition-colors"
-                    title="Set max as 1.5x minimum"
-                  >
-                    1.5x
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickRange(2)}
-                    className="tw:text-xs tw:bg-green-100 tw:text-green-700 tw:px-2 tw:py-1 tw:rounded hover:tw:bg-green-200 tw:transition-colors"
-                    title="Set max as 2x minimum"
-                  >
-                    2x
-                  </button>
-                </div>
+              <div className="price-quick-range">
+                <button
+                  type="button"
+                  onClick={() => handleQuickRange(1.5)}
+                  className="price-quick-btn btn-1-5x"
+                  title="Set max as 1.5x minimum"
+                >
+                  1.5x
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickRange(2)}
+                  className="price-quick-btn btn-2x"
+                  title="Set max as 2x minimum"
+                >
+                  2x
+                </button>
               </div>
             )}
           </div>
           {errors.maxPrice && (
-            <p className="tw:text-red-500 tw:text-sm tw:flex tw:items-center tw:space-x-1">
-              <AlertCircle className="tw:h-3 tw:w-3" />
+            <div className="price-input-error">
+              <AlertCircle />
               <span>{errors.maxPrice}</span>
-            </p>
+            </div>
           )}
         </div>
       </div>
 
       {/* Range Error */}
       {rangeError && (
-        <div className="tw:bg-red-50 tw:border tw:border-red-200 tw:rounded-md tw:p-3">
-          <p className="tw:text-red-700 tw:text-sm tw:flex tw:items-center tw:space-x-2">
-            <AlertCircle className="tw:h-4 tw:w-4" />
+        <div className="price-range-error">
+          <div className="price-range-error-content">
+            <AlertCircle />
             <span>{rangeError}</span>
-          </p>
+          </div>
         </div>
       )}
 
       {/* Price Analytics */}
       {minPrice && maxPrice && !rangeError && (
-        <div className="tw:bg-blue-50 tw:border tw:border-blue-200 tw:rounded-lg tw:p-4">
-          <div className="tw:flex tw:items-center tw:space-x-2 tw:mb-3">
-            <TrendingUp className="tw:h-4 tw:w-4 tw:text-blue-600" />
-            <h4 className="tw:text-sm tw:font-medium tw:text-blue-800">
-              Price Analysis
-            </h4>
+        <div className="price-analytics price-range-fade-in">
+          <div className="price-analytics-header">
+            <TrendingUp />
+            <h4 className="price-analytics-title">Price Analysis</h4>
           </div>
 
-          <div className="tw:grid tw:grid-cols-2 md:tw:grid-cols-3 tw:gap-4 tw:text-sm">
-            <div className="tw:text-center">
-              <div className="tw:text-lg tw:font-bold tw:text-blue-700">
+          <div className="price-analytics-grid">
+            <div className="price-analytics-item">
+              <div className="price-analytics-value blue">
                 {currency} {formatNumber(avgPrice)}
               </div>
-              <div className="tw:text-blue-600">Average Price</div>
+              <div className="price-analytics-label blue">Average Price</div>
             </div>
 
-            <div className="tw:text-center">
-              <div className="tw:text-lg tw:font-bold tw:text-green-700">
+            <div className="price-analytics-item">
+              <div className="price-analytics-value green">
                 {currency} {formatNumber(priceRange)}
               </div>
-              <div className="tw:text-green-600">Price Range</div>
+              <div className="price-analytics-label green">Price Range</div>
             </div>
 
-            <div className="tw:text-center tw:col-span-2 md:tw:col-span-1">
-              <div className="tw:text-lg tw:font-bold tw:text-purple-700">
+            <div className="price-analytics-item">
+              <div className="price-analytics-value purple">
                 {Math.round((priceRange / avgPrice) * 100)}%
               </div>
-              <div className="tw:text-purple-600">Flexibility</div>
+              <div className="price-analytics-label purple">Flexibility</div>
             </div>
           </div>
         </div>
@@ -265,23 +247,23 @@ const PriceRangeInput = ({
 
       {/* Category-based Suggestions */}
       {showSuggestions && suggestions.length > 0 && !disabled && (
-        <div className="tw:space-y-3">
-          <div className="tw:flex tw:items-center tw:space-x-2">
-            <Calculator className="tw:h-4 tw:w-4 tw:text-gray-500" />
-            <h4 className="tw:text-sm tw:font-medium tw:text-gray-700">
+        <div className="price-suggestions">
+          <div className="price-suggestions-header">
+            <Calculator />
+            <h4 className="price-suggestions-title">
               Suggested Starting Prices for {category}
             </h4>
           </div>
 
-          <div className="tw:flex tw:flex-wrap tw:gap-2">
+          <div className="price-suggestions-grid">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="tw:bg-gray-100 tw:text-gray-700 tw:px-3 tw:py-2 tw:rounded-lg tw:text-sm tw:font-medium hover:tw:bg-gray-200 tw:transition-colors tw:flex tw:items-center tw:space-x-1"
+                className="price-suggestion-btn"
               >
-                <DollarSign className="tw:h-3 tw:w-3" />
+                <DollarSign />
                 <span>
                   {currency} {formatNumber(suggestion)}
                 </span>
@@ -289,7 +271,7 @@ const PriceRangeInput = ({
             ))}
           </div>
 
-          <p className="tw:text-xs tw:text-gray-500">
+          <p className="price-suggestions-note">
             Click on a suggestion to set it as minimum price with automatic
             range calculation
           </p>
@@ -298,24 +280,24 @@ const PriceRangeInput = ({
 
       {/* Market Comparison */}
       {category && categoryPricing[category] && (minPrice || maxPrice) && (
-        <div className="tw:bg-yellow-50 tw:border tw:border-yellow-200 tw:rounded-lg tw:p-4">
-          <h4 className="tw:text-sm tw:font-medium tw:text-yellow-800 tw:mb-2">
+        <div className="price-market-comparison">
+          <h4 className="price-market-title">
             Market Comparison for {category}
           </h4>
 
-          <div className="tw:grid tw:grid-cols-2 tw:gap-4 tw:text-sm">
-            <div>
-              <div className="tw:text-yellow-700">Market Range:</div>
-              <div className="tw:font-medium tw:text-yellow-800">
+          <div className="price-market-grid">
+            <div className="price-market-item">
+              <div className="price-market-label">Market Range:</div>
+              <div className="price-market-value">
                 {currency} {formatNumber(categoryPricing[category].min)} -{" "}
                 {currency} {formatNumber(categoryPricing[category].max)}
               </div>
             </div>
 
             {minPrice && maxPrice && (
-              <div>
-                <div className="tw:text-yellow-700">Your Position:</div>
-                <div className="tw:font-medium tw:text-yellow-800">
+              <div className="price-market-item">
+                <div className="price-market-label">Your Position:</div>
+                <div className="price-market-value">
                   {avgPrice <
                   (categoryPricing[category].min +
                     categoryPricing[category].max) /
@@ -330,15 +312,21 @@ const PriceRangeInput = ({
       )}
 
       {/* Tips */}
-      <div className="tw:bg-gray-50 tw:border tw:border-gray-200 tw:rounded-lg tw:p-3">
-        <h5 className="tw:text-xs tw:font-medium tw:text-gray-700 tw:mb-2">
-          💡 Pricing Tips:
-        </h5>
-        <ul className="tw:text-xs tw:text-gray-600 tw:space-y-1">
-          <li>• Consider material costs, labor time, and overhead</li>
-          <li>• Research competitor pricing in your area</li>
-          <li>• Factor in vehicle type differences (economy vs luxury)</li>
-          <li>• Leave room for discounts and promotions</li>
+      <div className="price-tips">
+        <h5 className="price-tips-title">💡 Pricing Tips:</h5>
+        <ul className="price-tips-list">
+          <li className="price-tips-item">
+            Consider material costs, labor time, and overhead
+          </li>
+          <li className="price-tips-item">
+            Research competitor pricing in your area
+          </li>
+          <li className="price-tips-item">
+            Factor in vehicle type differences (economy vs luxury)
+          </li>
+          <li className="price-tips-item">
+            Leave room for discounts and promotions
+          </li>
         </ul>
       </div>
     </div>

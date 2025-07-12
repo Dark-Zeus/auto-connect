@@ -1,7 +1,8 @@
-// src/components/ServiceProvider/ServiceForm.jsx (Updated with Atomic Components)
+// src/components/ServiceProvider/ServiceForm.jsx (Updated with CSS Classes)
 import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Save, X } from "lucide-react";
 import { toast } from "react-toastify";
+import "./ServiceForm.css";
 
 // Import our custom atomic components
 import ServiceTypeSelector from "@components/atoms/ServiceTypeSelector";
@@ -263,24 +264,22 @@ const ServiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="tw:space-y-8">
+    <form onSubmit={handleSubmit} className="service-form">
       {/* Basic Information Section */}
-      <div className="tw:bg-gray-50 tw:p-6 tw:rounded-lg">
-        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mb-4">
-          Basic Information
-        </h3>
+      <div className="service-form-section">
+        <h3 className="service-form-section-title">Basic Information</h3>
 
-        <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
-          <div>
-            <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-              Service Category *
+        <div className="service-form-grid">
+          <div className="service-form-group">
+            <label className="service-form-label required">
+              Service Category
             </label>
             <select
               name="category"
               value={serviceData.category}
               onChange={handleInputChange}
-              className={`tw:w-full tw:px-3 tw:py-2 tw:border tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:bg-white ${
-                errors.category ? "tw:border-red-500" : "tw:border-gray-300"
+              className={`service-form-select ${
+                errors.category ? "error" : ""
               }`}
             >
               <option value="">Select Category</option>
@@ -291,17 +290,13 @@ const ServiceForm = ({
               ))}
             </select>
             {errors.category && (
-              <p className="tw:text-red-500 tw:text-sm tw:mt-1">
-                {errors.category}
-              </p>
+              <p className="service-form-error">{errors.category}</p>
             )}
           </div>
 
           {/* Using ServiceTypeSelector atomic component */}
-          <div>
-            <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-              Service Type *
-            </label>
+          <div className="service-form-group">
+            <label className="service-form-label required">Service Type</label>
             <ServiceTypeSelector
               value={serviceData.serviceType}
               onChange={handleServiceTypeChange}
@@ -316,9 +311,9 @@ const ServiceForm = ({
         </div>
 
         {/* Description */}
-        <div className="tw:mt-6">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-            Service Description *
+        <div className="service-form-group service-form-grid-full mt-6">
+          <label className="service-form-label required">
+            Service Description
           </label>
           <textarea
             name="description"
@@ -326,15 +321,15 @@ const ServiceForm = ({
             onChange={handleInputChange}
             rows={4}
             placeholder="Provide a detailed description of the service, what it includes, and any important information customers should know..."
-            className={`tw:w-full tw:px-3 tw:py-2 tw:border tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:resize-none ${
-              errors.description ? "tw:border-red-500" : "tw:border-gray-300"
+            className={`service-form-textarea ${
+              errors.description ? "error" : ""
             }`}
           />
-          <div className="tw:flex tw:justify-between tw:items-center tw:mt-1">
+          <div className="service-form-char-counter">
             {errors.description && (
-              <p className="tw:text-red-500 tw:text-sm">{errors.description}</p>
+              <p className="service-form-error">{errors.description}</p>
             )}
-            <p className="tw:text-xs tw:text-gray-500 tw:ml-auto">
+            <p className="service-form-char-count">
               {serviceData.description.length}/500 characters
             </p>
           </div>
@@ -342,35 +337,35 @@ const ServiceForm = ({
       </div>
 
       {/* Pricing and Duration Section */}
-      <div className="tw:bg-gray-50 tw:p-6 tw:rounded-lg">
-        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mb-4">
-          Pricing & Duration
-        </h3>
+      <div className="service-form-section">
+        <h3 className="service-form-section-title">Pricing & Duration</h3>
 
         {/* Using PriceRangeInput atomic component */}
-        <PriceRangeInput
-          minPrice={serviceData.minPrice}
-          maxPrice={serviceData.maxPrice}
-          onMinChange={handleMinPriceChange}
-          onMaxChange={handleMaxPriceChange}
-          errors={errors}
-          category={serviceData.category}
-          showSuggestions={true}
-          step={50}
-        />
+        <div className="service-form-price-container">
+          <PriceRangeInput
+            minPrice={serviceData.minPrice}
+            maxPrice={serviceData.maxPrice}
+            onMinChange={handleMinPriceChange}
+            onMaxChange={handleMaxPriceChange}
+            errors={errors}
+            category={serviceData.category}
+            showSuggestions={true}
+            step={50}
+          />
+        </div>
 
         {/* Duration and Price Note */}
-        <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6 tw:mt-6">
-          <div>
-            <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-              Expected Duration *
+        <div className="service-form-grid mt-6">
+          <div className="service-form-group">
+            <label className="service-form-label required">
+              Expected Duration
             </label>
             <select
               name="duration"
               value={serviceData.duration}
               onChange={handleInputChange}
-              className={`tw:w-full tw:px-3 tw:py-2 tw:border tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:bg-white ${
-                errors.duration ? "tw:border-red-500" : "tw:border-gray-300"
+              className={`service-form-select ${
+                errors.duration ? "error" : ""
               }`}
             >
               <option value="">Select Duration</option>
@@ -381,41 +376,33 @@ const ServiceForm = ({
               ))}
             </select>
             {errors.duration && (
-              <p className="tw:text-red-500 tw:text-sm tw:mt-1">
-                {errors.duration}
-              </p>
+              <p className="service-form-error">{errors.duration}</p>
             )}
           </div>
 
-          <div>
-            <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-              Price Note (Optional)
-            </label>
+          <div className="service-form-group">
+            <label className="service-form-label">Price Note (Optional)</label>
             <input
               type="text"
               name="priceNote"
               value={serviceData.priceNote}
               onChange={handleInputChange}
               placeholder="e.g., Price varies based on vehicle type and oil grade"
-              className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+              className="service-form-input"
             />
           </div>
         </div>
       </div>
 
       {/* Service Details Section */}
-      <div className="tw:bg-gray-50 tw:p-6 tw:rounded-lg">
-        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mb-4">
-          Service Details
-        </h3>
+      <div className="service-form-section">
+        <h3 className="service-form-section-title">Service Details</h3>
 
         {/* Requirements */}
-        <div className="tw:mb-6">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-            Requirements *
-          </label>
+        <div className="service-form-array-group">
+          <label className="service-form-label required">Requirements</label>
           {serviceData.requirements.map((req, index) => (
-            <div key={index} className="tw:flex tw:space-x-2 tw:mb-2">
+            <div key={index} className="service-form-array-item">
               <input
                 type="text"
                 value={req}
@@ -423,16 +410,16 @@ const ServiceForm = ({
                   handleArrayChange(index, e.target.value, "requirements")
                 }
                 placeholder="e.g., Vehicle registration documents required"
-                className="tw:flex-1 tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+                className="service-form-input service-form-array-input"
               />
               {serviceData.requirements.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeArrayItem(index, "requirements")}
-                  className="tw:text-red-600 hover:tw:text-red-800 tw:p-2"
+                  className="service-form-array-remove"
                   title="Remove requirement"
                 >
-                  <Trash2 className="tw:h-4 tw:w-4" />
+                  <Trash2 />
                 </button>
               )}
             </div>
@@ -440,25 +427,21 @@ const ServiceForm = ({
           <button
             type="button"
             onClick={() => addArrayItem("requirements")}
-            className="tw:flex tw:items-center tw:space-x-1 tw:text-blue-600 hover:tw:text-blue-800 tw:text-sm"
+            className="service-form-array-add"
           >
-            <Plus className="tw:h-4 tw:w-4" />
+            <Plus />
             <span>Add Requirement</span>
           </button>
           {errors.requirements && (
-            <p className="tw:text-red-500 tw:text-sm tw:mt-1">
-              {errors.requirements}
-            </p>
+            <p className="service-form-error">{errors.requirements}</p>
           )}
         </div>
 
         {/* Included Items */}
-        <div className="tw:mb-6">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-            What's Included *
-          </label>
+        <div className="service-form-array-group">
+          <label className="service-form-label required">What's Included</label>
           {serviceData.includedItems.map((item, index) => (
-            <div key={index} className="tw:flex tw:space-x-2 tw:mb-2">
+            <div key={index} className="service-form-array-item">
               <input
                 type="text"
                 value={item}
@@ -466,16 +449,16 @@ const ServiceForm = ({
                   handleArrayChange(index, e.target.value, "includedItems")
                 }
                 placeholder="e.g., High-quality synthetic oil, new oil filter"
-                className="tw:flex-1 tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+                className="service-form-input service-form-array-input"
               />
               {serviceData.includedItems.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeArrayItem(index, "includedItems")}
-                  className="tw:text-red-600 hover:tw:text-red-800 tw:p-2"
+                  className="service-form-array-remove"
                   title="Remove included item"
                 >
-                  <Trash2 className="tw:h-4 tw:w-4" />
+                  <Trash2 />
                 </button>
               )}
             </div>
@@ -483,25 +466,23 @@ const ServiceForm = ({
           <button
             type="button"
             onClick={() => addArrayItem("includedItems")}
-            className="tw:flex tw:items-center tw:space-x-1 tw:text-blue-600 hover:tw:text-blue-800 tw:text-sm"
+            className="service-form-array-add"
           >
-            <Plus className="tw:h-4 tw:w-4" />
+            <Plus />
             <span>Add Included Item</span>
           </button>
           {errors.includedItems && (
-            <p className="tw:text-red-500 tw:text-sm tw:mt-1">
-              {errors.includedItems}
-            </p>
+            <p className="service-form-error">{errors.includedItems}</p>
           )}
         </div>
 
         {/* Excluded Items */}
-        <div className="tw:mb-6">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
+        <div className="service-form-array-group">
+          <label className="service-form-label">
             What's NOT Included (Optional)
           </label>
           {serviceData.excludedItems.map((item, index) => (
-            <div key={index} className="tw:flex tw:space-x-2 tw:mb-2">
+            <div key={index} className="service-form-array-item">
               <input
                 type="text"
                 value={item}
@@ -509,16 +490,16 @@ const ServiceForm = ({
                   handleArrayChange(index, e.target.value, "excludedItems")
                 }
                 placeholder="e.g., Additional parts if engine damage found"
-                className="tw:flex-1 tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+                className="service-form-input service-form-array-input"
               />
               {serviceData.excludedItems.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeArrayItem(index, "excludedItems")}
-                  className="tw:text-red-600 hover:tw:text-red-800 tw:p-2"
+                  className="service-form-array-remove"
                   title="Remove excluded item"
                 >
-                  <Trash2 className="tw:h-4 tw:w-4" />
+                  <Trash2 />
                 </button>
               )}
             </div>
@@ -526,30 +507,26 @@ const ServiceForm = ({
           <button
             type="button"
             onClick={() => addArrayItem("excludedItems")}
-            className="tw:flex tw:items-center tw:space-x-1 tw:text-blue-600 hover:tw:text-blue-800 tw:text-sm"
+            className="service-form-array-add"
           >
-            <Plus className="tw:h-4 tw:w-4" />
+            <Plus />
             <span>Add Excluded Item</span>
           </button>
         </div>
       </div>
 
       {/* Additional Information Section */}
-      <div className="tw:bg-gray-50 tw:p-6 tw:rounded-lg">
-        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800 tw:mb-4">
-          Additional Information
-        </h3>
+      <div className="service-form-section">
+        <h3 className="service-form-section-title">Additional Information</h3>
 
-        <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6 tw:mb-6">
-          <div>
-            <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-              Warranty Period
-            </label>
+        <div className="service-form-grid mb-6">
+          <div className="service-form-group">
+            <label className="service-form-label">Warranty Period</label>
             <select
               name="warrantyPeriod"
               value={serviceData.warrantyPeriod}
               onChange={handleInputChange}
-              className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:bg-white"
+              className="service-form-select"
             >
               <option value="">Select Warranty</option>
               {warrantyOptions.map((warranty) => (
@@ -560,32 +537,32 @@ const ServiceForm = ({
             </select>
           </div>
 
-          <div className="tw:flex tw:items-center tw:space-x-3 tw:mt-6">
+          <div className="service-form-checkbox-group">
             <input
               type="checkbox"
               name="isActive"
               checked={serviceData.isActive}
               onChange={handleInputChange}
-              className="tw:h-4 tw:w-4 tw:text-blue-600 tw:focus:ring-blue-500 tw:border-gray-300 tw:rounded"
+              className="service-form-checkbox"
             />
-            <label className="tw:text-sm tw:font-medium tw:text-gray-700">
+            <label className="service-form-checkbox-label">
               Make this service active immediately
             </label>
             {/* Using StatusBadge to show current status */}
-            <StatusBadge
-              status={serviceData.isActive ? "active" : "inactive"}
-              size="xs"
-            />
+            <div className="service-form-status-container">
+              <StatusBadge
+                status={serviceData.isActive ? "active" : "inactive"}
+                size="xs"
+              />
+            </div>
           </div>
-        </div>
+        </div><br/>
 
         {/* Tags */}
-        <div className="tw:mb-6">
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
-            Service Tags (Optional)
-          </label>
+        <div className="service-form-array-group">
+          <label className="service-form-label">Service Tags (Optional)</label>
           {serviceData.tags.map((tag, index) => (
-            <div key={index} className="tw:flex tw:space-x-2 tw:mb-2">
+            <div key={index} className="service-form-array-item">
               <input
                 type="text"
                 value={tag}
@@ -593,16 +570,16 @@ const ServiceForm = ({
                   handleArrayChange(index, e.target.value, "tags")
                 }
                 placeholder="e.g., quick-service, premium, eco-friendly"
-                className="tw:flex-1 tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+                className="service-form-input service-form-array-input"
               />
               {serviceData.tags.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeArrayItem(index, "tags")}
-                  className="tw:text-red-600 hover:tw:text-red-800 tw:p-2"
+                  className="service-form-array-remove"
                   title="Remove tag"
                 >
-                  <Trash2 className="tw:h-4 tw:w-4" />
+                  <Trash2 />
                 </button>
               )}
             </div>
@@ -610,16 +587,16 @@ const ServiceForm = ({
           <button
             type="button"
             onClick={() => addArrayItem("tags")}
-            className="tw:flex tw:items-center tw:space-x-1 tw:text-blue-600 hover:tw:text-blue-800 tw:text-sm"
+            className="service-form-array-add"
           >
-            <Plus className="tw:h-4 tw:w-4" />
+            <Plus />
             <span>Add Tag</span>
           </button>
         </div>
 
         {/* Special Instructions */}
-        <div>
-          <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-2">
+        <div className="service-form-group">
+          <label className="service-form-label">
             Special Instructions (Optional)
           </label>
           <textarea
@@ -628,27 +605,27 @@ const ServiceForm = ({
             onChange={handleInputChange}
             rows={3}
             placeholder="Any special instructions for customers or staff members..."
-            className="tw:w-full tw:px-3 tw:py-2 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:resize-none"
+            className="service-form-textarea"
           />
         </div>
       </div>
 
       {/* Submit Buttons */}
-      <div className="tw:flex tw:justify-end tw:space-x-4 tw:pt-6 tw:border-t tw:border-gray-200">
+      <div className="service-form-submit-section">
         <button
           type="button"
           onClick={onCancel}
-          className="tw:px-6 tw:py-3 tw:border tw:border-gray-300 tw:rounded-md tw:text-gray-700 hover:tw:bg-gray-50 tw:transition-colors tw:flex tw:items-center tw:space-x-2"
+          className="service-form-btn service-form-btn-cancel"
         >
-          <X className="tw:h-4 tw:w-4" />
+          <X />
           <span>Cancel</span>
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="tw:px-6 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-md hover:tw:bg-blue-700 tw:transition-colors tw:flex tw:items-center tw:space-x-2 disabled:tw:opacity-50 disabled:tw:cursor-not-allowed tw:shadow-lg"
+          className="service-form-btn service-form-btn-submit"
         >
-          <Save className="tw:h-4 tw:w-4" />
+          <Save />
           <span>
             {loading
               ? isEdit
