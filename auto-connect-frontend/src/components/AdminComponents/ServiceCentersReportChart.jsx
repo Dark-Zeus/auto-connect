@@ -78,7 +78,7 @@ function ServiceCenterUpdatePieChart() {
         {new Date().toLocaleString("default", { month: "long" })}
       </h2>
 
-      <ResponsiveContainer width="100%" height={320}>
+      <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
             activeIndex={activeIndex}

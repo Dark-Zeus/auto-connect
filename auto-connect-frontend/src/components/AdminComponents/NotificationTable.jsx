@@ -14,7 +14,7 @@ const initialNotifications = Array.from({ length: 34 }, (_, i) => ({
   source: sources[i % sources.length],
 }));
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 6;
 
 function NotificationTable() {
   const [notifications, setNotifications] = useState(initialNotifications);
@@ -157,16 +157,20 @@ function NotificationTable() {
     <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:from-white tw:to-blue-50">
       <div className="tw:grid tw:grid-cols-3 tw:gap-10">
         <div className="tw:col-span-2">
-          <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
-            <button
-              onClick={markAllAsRead}
-              className="tw:flex tw:items-center tw:gap-2 tw:bg-green-600 tw:text-white tw:font-semibold tw:text-lg tw:px-5 tw:py-2 tw:rounded-lg hover:tw:bg-green-700 tw:transition-all"
-            >
-              <DoneAll fontSize="small" />
-              <span>Mark All as Read</span>
-            </button>
+          {/* Received Notifications Box */}
+          <div className="tw:bg-white tw:rounded-2xl tw:shadow-lg tw:p-6 tw:border tw:border-blue-100">
+            <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
+              <h2 className="tw:text-2xl tw:font-bold tw:text-blue-800">Received Notifications</h2>
+              <button
+                onClick={markAllAsRead}
+                className="tw:flex tw:items-center tw:gap-2 tw:bg-green-600 tw:text-white tw:font-semibold tw:text-lg tw:px-5 tw:py-2 tw:rounded-lg hover:tw:bg-green-700 tw:transition-all"
+              >
+                <DoneAll fontSize="small" />
+                <span>Mark All as Read</span>
+              </button>
+            </div>
 
-            <div className="tw:flex tw:gap-6 tw:w-full tw:max-w-lg">
+            <div className="tw:flex tw:gap-6 tw:w-full tw:max-w-lg tw:mb-6">
               <div className="tw:w-1/2">
                 <label className="tw:block tw:mb-2 tw:text-blue-800 tw:font-semibold">Filter by Date</label>
                 <select
@@ -195,66 +199,66 @@ function NotificationTable() {
                 </select>
               </div>
             </div>
-          </div>
 
-          <div className="tw:grid tw:grid-cols-2 tw:gap-6">
-            {currentNotifications.map((n) => (
-              <div
-                key={n.id}
-                onClick={() => toggleExpand(n.id)}
-                className={`tw:cursor-pointer tw:rounded-xl tw:p-5 tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:border tw:border-gray-300 ${
-                  n.read ? "tw:bg-gray-100 tw:text-gray-700" : "tw:bg-blue-100 tw:text-blue-900"
-                }`}
-              >
-                <h3 className="tw:text-lg tw:font-semibold tw:mb-2">
-                  {n.message.length > 100 && expandedId !== n.id
-                    ? `${n.message.slice(0, 100)}...`
-                    : n.message}
-                </h3>
+            <div className="tw:grid tw:grid-cols-2 tw:gap-6">
+              {currentNotifications.map((n) => (
+                <div
+                  key={n.id}
+                  onClick={() => toggleExpand(n.id)}
+                  className={`tw:cursor-pointer tw:rounded-xl tw:p-5 tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:border tw:border-gray-300 ${
+                    n.read ? "tw:bg-gray-100 tw:text-gray-700" : "tw:bg-blue-100 tw:text-blue-900"
+                  }`}
+                >
+                  <h3 className="tw:text-lg tw:font-semibold tw:mb-2">
+                    {n.message.length > 100 && expandedId !== n.id
+                      ? `${n.message.slice(0, 100)}...`
+                      : n.message}
+                  </h3>
 
-                {n.message.length > 100 && (
-                  <p className="tw:text-sm tw:text-blue-700 tw:mb-2">
-                    {expandedId === n.id ? "Click to show less" : "Click to read more"}
-                  </p>
-                )}
+                  {n.message.length > 100 && (
+                    <p className="tw:text-sm tw:text-blue-700 tw:mb-2">
+                      {expandedId === n.id ? "Click to show less" : "Click to read more"}
+                    </p>
+                  )}
 
-                <div className="tw:mt-6 tw:text-sm tw:text-gray-600">
-                  <p>Date: {n.date}</p>
-                  <p>Time: {n.time}</p>
-                  <p>Source: {n.source}</p>
+                  <div className="tw:mt-6 tw:text-sm tw:text-gray-600">
+                    <p>Date: {n.date}</p>
+                    <p>Time: {n.time}</p>
+                    <p>Source: {n.source}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="tw:flex tw:justify-center tw:items-center tw:gap-4 tw:mt-10">
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="tw:px-4 tw:py-2 tw:bg-blue-200 tw:rounded-xl tw:font-semibold tw:text-blue-800 hover:tw:bg-blue-300 disabled:tw:opacity-50"
-            >
-              Prev
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
+            <div className="tw:flex tw:justify-center tw:items-center tw:gap-4 tw:mt-10">
               <button
-                key={i}
-                onClick={() => goToPage(i + 1)}
-                className={`tw:px-4 tw:py-2 tw:rounded-xl tw:font-bold ${
-                  currentPage === i + 1
-                    ? "tw:bg-blue-600 tw:text-white"
-                    : "tw:bg-gray-200 tw:text-gray-700 hover:tw:bg-blue-100"
-                }`}
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="tw:px-4 tw:py-2 tw:bg-blue-200 tw:rounded-xl tw:font-semibold tw:text-blue-800 hover:tw:bg-blue-300 disabled:tw:opacity-50"
               >
-                {i + 1}
+                Prev
               </button>
-            ))}
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="tw:px-4 tw:py-2 tw:bg-blue-200 tw:rounded-xl tw:font-semibold tw:text-blue-800 hover:tw:bg-blue-300 disabled:tw:opacity-50"
-            >
-              Next
-            </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToPage(i + 1)}
+                  className={`tw:px-4 tw:py-2 tw:rounded-xl tw:font-bold ${
+                    currentPage === i + 1
+                      ? "tw:bg-blue-600 tw:text-white"
+                      : "tw:bg-gray-200 tw:text-gray-700 hover:tw:bg-blue-100"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="tw:px-4 tw:py-2 tw:bg-blue-200 tw:rounded-xl tw:font-semibold tw:text-blue-800 hover:tw:bg-blue-300 disabled:tw:opacity-50"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
 

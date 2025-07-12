@@ -1,7 +1,8 @@
 import React from 'react';
 import LatestUpdatesTable from '@components/AdminComponents/UpdateTable';
 import ServiceCenterUpdatePieChart from '@components/AdminComponents/ServiceCentersReportChart';
-
+import ServiceCenterUsage from '@components/AdminComponents/ServiceCenterUsage';
+import ServiceCenterStatBox from '@components/AdminComponents/MonthlyUpdations';
 const updates = [
     {
     serviceCenter: "CityFix Motors",
@@ -147,18 +148,29 @@ const updates = [
 ];
 const Updates = () => {
 return (
-  <div className="tw:flex tw:gap-6 tw:p-8">
-    {/* Table - 75% width */}
-    <div className="tw:w-3/4">
-      <LatestUpdatesTable latestUpdates={updates} />
+  <div className="tw:p-8 tw:flex tw:flex-col tw:gap-6">
+    {/* Top row: table + pie chart with stat box */}
+    <div className="tw:flex tw:gap-6">
+      {/* Table - 75% width */}
+      <div className="tw:w-3/4">
+        <LatestUpdatesTable latestUpdates={updates} />
+      </div>
+
+      {/* Right column - Pie chart + stat box */}
+      <div className="tw:w-1/4 tw:flex tw:flex-col tw:gap-6">
+        <ServiceCenterUpdatePieChart />
+        <ServiceCenterStatBox totalUpdates={130} rateChange="+12%" />
+      </div>
     </div>
 
-    {/* Pie Chart - 25% width */}
-    <div className="tw:w-1/4">
-      <ServiceCenterUpdatePieChart />
+    {/* Bar/Line Chart full width below */}
+    <div>
+      <ServiceCenterUsage />
     </div>
   </div>
 );
+
+
 
 }
 
