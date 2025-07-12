@@ -32,9 +32,11 @@ import Transactions from "@pages/Admin/Transactions";
 import Updates from "@pages/Admin/Updates";
 import Analytics from "@pages/Admin/Analytics";
 import SystemData from "@pages/Admin/SystemData";
-// import VehicleOwnersPage from "@pages/Admin/VehicleOwners";
-// import InsuranceCompaniesPage from "@pages/Admin/InsurenceCompanies";
-// import UserRequestsPage from "@pages/Admin/UserRequests";
+//import ProfilePage from "@pages/Admin/Profile";
+import VehicleOwnersPage from "@pages/Admin/VehicleOwners";
+import InsuranceCompaniesPage from "@pages/Admin/InsurenceCompanies";
+import UserRequestsPage from "@pages/Admin/UserRequests";
+import UserLayout from "@pages/Admin/UserLayout";
 
 //Pages
 function App() {
@@ -75,13 +77,21 @@ function App() {
           <Route path="/" element={<DashboardPage/> } >
             <Route index element={<DashboardHome />} />
             <Route path="services" element={<ServicePage />} />
-            <Route path="users" element={<UserPage />} />
+            <Route path="users" element={<UserLayout />}>
+              <Route index element={<UserPage />} /> {/* /users */}
+              <Route path="vehicleowners" element={<VehicleOwnersPage />} />
+              <Route path="insurancecompanies" element={<InsuranceCompaniesPage />} />
+              <Route path="requests" element={<UserRequestsPage />} />
+            </Route>
             <Route path="notifications" element={<Notifications />} />
             <Route path="transactions" element={<Transactions />} />
             <Route path="updates" element={<Updates />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="systemdata" element={<SystemData />} />
           </Route>
+
+          
+  
           
           
 

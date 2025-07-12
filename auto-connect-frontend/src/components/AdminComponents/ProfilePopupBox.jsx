@@ -18,6 +18,10 @@ export default function ProfilePopupBox({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleViewProfile = () => {
+    navigate("/profile"); // Navigate to profile page
+  };
+
   return (
     <div className="tw:relative" ref={popupRef}>
       {/* Profile Button */}
@@ -55,7 +59,7 @@ export default function ProfilePopupBox({
             </div>
             <hr />
             <button
-              onClick={() => alert("View Profile clicked")}
+              onClick={handleViewProfile}
               className="tw:text-left tw:text-gray-700 tw:hover:bg-gray-100 tw:rounded tw:px-3 tw:py-2 tw:transition"
             >
               View Profile

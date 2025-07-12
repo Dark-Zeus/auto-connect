@@ -138,12 +138,12 @@ function DashboardPage() {
           </nav>
 
           <footer className="tw:mt-auto tw:pt-6 tw:text-sm tw:text-gray-600 tw:border-t tw:border-gray-300 tw:select-none tw:text-center">
-            <ul className="tw:mb-4">
+            <ul className="tw:mb-2">
               <SidebarItem
                 to="/auth"
                 icon={<Logout style={{ fontSize: 35 }} className="tw:text-red-600" />}
                 text="Logout"
-                className="tw:!text-red-600 tw:text-xl hover:tw:text-red-800 hover:tw:bg-red-800 hover:tw:shadow-inner"
+                className="tw:!text-red-600 tw:text-lg hover:tw:text-red-800 hover:tw:bg-red-800 hover:tw:shadow-inner"
               />
             </ul>
           </footer>
