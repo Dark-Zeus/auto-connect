@@ -1,361 +1,849 @@
-// src/components/User/UserReviewForm.jsx
-import React, { useState } from "react";
-import {
-  Star,
-  StarHalf,
-  Send,
-  X,
-  ThumbsUp,
-  ThumbsDown,
-  Clock,
-  DollarSign,
-  User,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
-import { toast } from "react-toastify";
-import "./UserReviewForm.css";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const UserReviewForm = ({
-  serviceData,
-  onSubmit,
-  onCancel,
-  loading = false,
-}) => {
-  const [reviewData, setReviewData] = useState({
-    overallRating: 0,
-    serviceQuality: 0,
-    timeliness: 0,
-    valueForMoney: 0,
-    communication: 0,
-    reviewText: "",
-    wouldRecommend: true,
-    serviceCategory: serviceData?.category || "",
-    anonymous: false,
-  });
+// Existing Components (preserve your imports)
+import IconButton from "@components/atoms/IconButton";
+import Dashboard from "@pages/Dashboard";
+import AuthPage from "@pages/AuthPage";
+import LoginForm from "@components/LoginForm";
+import { UserContext } from "@contexts/UserContext";
+import AdaptiveSubTable from "@components/atoms/AdaptiveSubTable";
+import Confirm from "@components/atoms/Confirm";
+import AdaptiveTable from "@components/atoms/AdaptiveTable";
+import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 
-  const [hoveredRating, setHoveredRating] = useState({});
-  const [errors, setErrors] = useState({});
+// New Components
+import LandingPage from "./pages/LandingPage";
+import RegisterForm from "./components/RegisterForm";
 
-  const ratingCategories = [
-    {
-      key: "overallRating",
-      label: "Overall Experience",
-      icon: <Star size={20} />,
-      description: "How would you rate your overall experience?",
+// Create Material-UI theme with our color scheme
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: "#DFF2EB",
+      main: "#7AB2D3",
+      dark: "#4A628A",
+      contrastText: "#ffffff",
     },
-    {
-      key: "serviceQuality",
-      label: "Service Quality",
-      icon: <CheckCircle size={20} />,
-      description: "Quality of work performed",
+    secondary: {
+      light: "#B9E5E8",
+      main: "#7AB2D3",
+      dark: "#4A628A",
+      contrastText: "#ffffff",
     },
-    {
-      key: "timeliness",
-      label: "Timeliness",
-      icon: <Clock size={20} />,
-      description: "Was the service completed on time?",
+    background: {
+      default: "#DFF2EB",
+      paper: "#ffffff",
     },
-    {
-      key: "valueForMoney",
-      label: "Value for Money",
-      icon: <DollarSign size={20} />,
-      description: "Was the service worth the price paid?",
+    text: {
+      primary: "#2c3e50",
+      secondary: "#6c757d",
     },
-    {
-      key: "communication",
-      label: "Communication",
-      icon: <User size={20} />,
-      description: "How was the communication with the provider?",
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontWeight: 700,
     },
-  ];
+    h2: {
+      fontWeight: 600,
+    },
+    h3: {
+      fontWeight: 600,
+    },
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 500,
+    },
+    h6: {
+      fontWeight: 500,
+    },
+    button: {
+      textTransform: "none",
+      fontWeight: 500,
+    },
+  },
+  shape: {
+    borderRadius: 12,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          padding: "8px 24px",
+          fontSize: "1rem",
+          fontWeight: 500,
+          textTransform: "none",
+          boxShadow: "0 2px 8px rgba(74, 98, 138, 0.15)",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          "&:hover": {
+            transform: "translateY(-1px)",
+            boxShadow: "0 4px 16px rgba(74, 98, 138, 0.25)",
+          },
+        },
+        contained: {
+          background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+          "&:hover": {
+            background: "linear-gradient(45deg, #4A628A, #7AB2D3)",
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 12,
+            "& fieldset": {
+              borderColor: "#B9E5E8",
+            },
+            "&:hover fieldset": {
+              borderColor: "#7AB2D3",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#4A628A",
+            },
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          boxShadow: "0 8px 32px rgba(74, 98, 138, 0.12)",
+        },
+      },
+    },
+  },
+});
 
-  const handleRatingChange = (category, rating) => {
-    setReviewData((prev) => ({
-      ...prev,
-      [category]: rating,
-    }));
+function App() {
+  const [userContext, setUserContext] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-    if (errors[category]) {
-      setErrors((prev) => ({
-        ...prev,
-        [category]: "",
-      }));
-    }
-  };
+  useEffect(() => {
+    // Preserve your existing logic but uncomment auth checking
+    const checkAuth = async () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setReviewData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (reviewData.overallRating === 0) {
-      newErrors.overallRating = "Please provide an overall rating";
-    }
-
-    if (reviewData.serviceQuality === 0) {
-      newErrors.serviceQuality = "Please rate the service quality";
-    }
-
-    if (reviewData.timeliness === 0) {
-      newErrors.timeliness = "Please rate the timeliness";
-    }
-
-    if (reviewData.valueForMoney === 0) {
-      newErrors.valueForMoney = "Please rate the value for money";
-    }
-
-    if (reviewData.communication === 0) {
-      newErrors.communication = "Please rate the communication";
-    }
-
-    if (!reviewData.reviewText.trim()) {
-      newErrors.reviewText = "Please write a review comment";
-    } else if (reviewData.reviewText.length < 20) {
-      newErrors.reviewText = "Review must be at least 20 characters long";
-    } else if (reviewData.reviewText.length > 1000) {
-      newErrors.reviewText = "Review cannot exceed 1000 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      toast.error("Please fix all validation errors before submitting");
-      return;
-    }
-
-    const submissionData = {
-      ...reviewData,
-      serviceId: serviceData.id,
-      serviceProviderId: serviceData.providerId,
-      submittedAt: new Date().toISOString(),
+        if (storedUser && token) {
+          setUserContext(JSON.parse(storedUser));
+        } else {
+          // Fallback to your existing default for testing
+          // setUserContext({ role: "administrator" });
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      } finally {
+        setIsCheckingAuth(false);
+      }
     };
 
-    onSubmit(submissionData);
+    checkAuth();
+  }, []);
+
+  // Preserve your existing handlers
+  const handleEdit = (row) => {
+    console.log("Edit action for row:", row);
+    // Implement edit logic here, e.g., open a modal with a form
   };
 
-  const renderStarRating = (category, currentRating) => {
-    const hovered = hoveredRating[category] || 0;
-    const displayRating = hovered || currentRating;
+  const handleDelete = (id) => {
+    console.log("Delete action for ID:", id);
+    // Implement delete logic here, e.g., show a confirmation dialog
+    Confirm({
+      title: "Confirm Deletion",
+      message: "Are you sure you want to delete this item?",
+      onConfirm: () => {
+        console.log("Item deleted");
+        // Perform deletion logic here
+      },
+      onCancel: () => {
+        console.log("Deletion cancelled");
+      },
+    });
+  };
 
-    return (
-      <div className="star-rating-container">
-        <div className="star-rating">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              className={`star-button ${star <= displayRating ? "active" : ""}`}
-              onMouseEnter={() =>
-                setHoveredRating((prev) => ({ ...prev, [category]: star }))
-              }
-              onMouseLeave={() =>
-                setHoveredRating((prev) => ({ ...prev, [category]: 0 }))
-              }
-              onClick={() => handleRatingChange(category, star)}
-            >
-              <Star
-                size={24}
-                fill={star <= displayRating ? "currentColor" : "none"}
-              />
-            </button>
-          ))}
+  const fetchData = async (page) => {
+    const data = [
+      { id: "user0001", name: "John Doe", email: "a@b.c" },
+      { id: "user0002", name: "Jane Doe", email: "b@c.d" },
+      { id: "user0003", name: "Alice Smith", email: "c@d.e" },
+      { id: "user0004", name: "Bob Johnson", email: "d@e.f" },
+      { id: "user0005", name: "Charlie Brown", email: "e@f.g" },
+      { id: "user0006", name: "David Wilson", email: "f@g.h" },
+      { id: "user0007", name: "Eve Davis", email: "g@h.i" },
+      { id: "user0008", name: "Frank Miller", email: "h@i.j" },
+      { id: "user0009", name: "Grace Lee", email: "i@j.k" },
+      { id: "user0010", name: "Hank Taylor", email: "j@k.l" },
+      { id: "user0011", name: "Ivy Anderson", email: "k@l.m" },
+      { id: "user0012", name: "Jack Thomas", email: "l@m.n" },
+      { id: "user0013", name: "Kathy Jackson", email: "m@n.o" },
+      { id: "user0014", name: "Leo White", email: "n@o.p" },
+      { id: "user0015", name: "Mia Harris", email: "o@p.q" },
+      { id: "user0016", name: "Noah Martin", email: "p@q.r" },
+      { id: "user0017", name: "Olivia Thompson", email: "q@r.s" },
+      { id: "user0018", name: "Paul Garcia", email: "r@s.t" },
+      { id: "user0019", name: "Quinn Martinez", email: "s@t.u" },
+      { id: "user0020", name: "Rita Robinson", email: "t@u.v" },
+    ];
+
+    // Simulate fetching data from an API with pagination
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const pageSize = 10; // Number of items per page
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedData = data.slice(startIndex, endIndex);
+        resolve({
+          data: paginatedData,
+          totalRecords: data.length,
+        });
+      }, 1000); // Reduced delay for better UX
+    });
+  };
+
+  // Protected Route Component
+  const ProtectedRoute = ({ children }) => {
+    if (isCheckingAuth) {
+      return (
+        <div
+          className="loading-screen"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            background:
+              "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 50%, #7AB2D3 100%)",
+            fontSize: "1.125rem",
+            color: "#4A628A",
+          }}
+        >
+          Loading...
         </div>
-        <span className="rating-text">
-          {displayRating > 0 && (
-            <>
-              {displayRating}/5
-              {displayRating === 1 && " - Poor"}
-              {displayRating === 2 && " - Fair"}
-              {displayRating === 3 && " - Good"}
-              {displayRating === 4 && " - Very Good"}
-              {displayRating === 5 && " - Excellent"}
-            </>
-          )}
-        </span>
-      </div>
-    );
+      );
+    }
+
+    if (!userContext) {
+      return <Navigate to="/auth/login" replace />;
+    }
+
+    return children;
+  };
+
+  // Public Route Component (redirect if already authenticated)
+  const PublicRoute = ({ children }) => {
+    if (isCheckingAuth) {
+      return (
+        <div
+          className="loading-screen"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            background:
+              "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 50%, #7AB2D3 100%)",
+            fontSize: "1.125rem",
+            color: "#4A628A",
+          }}
+        >
+          Loading...
+        </div>
+      );
+    }
+
+    if (userContext) {
+      return <Navigate to="/dashboard" replace />;
+    }
+
+    return children;
   };
 
   return (
-    <div className={`user-review-form ${loading ? "loading" : ""}`}>
-      <div className="review-form-header">
-        <div className="review-form-title-section">
-          <h2 className="review-form-title">Share Your Experience</h2>
-          <p className="review-form-subtitle">
-            Help others by sharing your experience with{" "}
-            {serviceData?.providerName}
-          </p>
-        </div><br/>
-        <button
-          type="button"
-          className="review-form-close"
-          onClick={onCancel}
-          disabled={loading}
-        >
-          <X size={24} />
-        </button>
-      </div><br/>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <UserContext.Provider value={{ userContext, setUserContext }}>
+        <BrowserRouter>
+          <div className="app">
+            <Routes>
+              {/* Landing Page */}
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <LandingPage />
+                  </PublicRoute>
+                }
+              />
 
-      {serviceData && (
-        <div className="service-info-card">
-          <div className="service-info-content">
-            <h3 className="service-info-title">{serviceData.serviceName}</h3>
-            <p className="service-info-provider">{serviceData.providerName}</p>
-            <p className="service-info-date">
-              Service Date:{" "}
-              {new Date(serviceData.serviceDate).toLocaleDateString()}
-            </p>
-          </div>
-        </div>
-      )}
+              {/* Authentication Routes */}
+              <Route
+                path="/auth/*"
+                element={
+                  <PublicRoute>
+                    <Routes>
+                      <Route
+                        path="/"
+                        element={<Navigate to="/auth/login" replace />}
+                      />
+                      <Route
+                        path=""
+                        element={
+                          <AuthPage>
+                            <LoginForm />
+                          </AuthPage>
+                        }
+                      />
+                      <Route
+                        path="/login"
+                        element={
+                          <AuthPage>
+                            <LoginForm />
+                          </AuthPage>
+                        }
+                      />
+                      <Route
+                        path="/register"
+                        element={
+                          <AuthPage>
+                            <RegisterForm />
+                          </AuthPage>
+                        }
+                      />
+                      <Route
+                        path="/forgot-password"
+                        element={
+                          <AuthPage>
+                            <div
+                              style={{ textAlign: "center", padding: "2rem" }}
+                            >
+                              <h2>Forgot Password</h2>
+                              <p>This feature is coming soon!</p>
+                            </div>
+                          </AuthPage>
+                        }
+                      />
+                      <Route
+                        path="/verify"
+                        element={
+                          <AuthPage>
+                            <div
+                              style={{ textAlign: "center", padding: "2rem" }}
+                            >
+                              <h2>Email Verification</h2>
+                              <p>
+                                Please check your email for verification
+                                instructions.
+                              </p>
+                            </div>
+                          </AuthPage>
+                        }
+                      />
+                    </Routes>
+                  </PublicRoute>
+                }
+              />
 
-      <form onSubmit={handleSubmit} className="review-form">
-        {/* Rating Sections */}
-        <div className="rating-sections">
-          {ratingCategories.map((category) => (
-            <div key={category.key} className="rating-section">
-              <div className="rating-header">
-                <div className="rating-label">
-                  {category.icon}
-                  <span>{category.label}</span>
-                </div>
-                <p className="rating-description">{category.description}</p>
-              </div>
+              {/* Protected Dashboard Routes - preserve all your existing routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-              {renderStarRating(category.key, reviewData[category.key])}
+              <Route
+                path="/sub2"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <AdaptivePaginatableTable
+                        title={"Tenants"}
+                        subtitle={"List of all tenants"}
+                        headers={[
+                          {
+                            colKey: "id",
+                            icon: "person",
+                            label: "ID",
+                            visible: true,
+                            container: (value) => (
+                              <span
+                                style={{
+                                  padding: "4px 12px",
+                                  borderRadius: "8px",
+                                  backgroundColor:
+                                    value === "user0001"
+                                      ? "#e0f7e9"
+                                      : "#fdecea",
+                                  color:
+                                    value === "user0001"
+                                      ? "#2e7d32"
+                                      : "#c62828",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {value}
+                              </span>
+                            ),
+                          },
+                          {
+                            colKey: "name",
+                            icon: "person",
+                            label: "Name",
+                            visible: true,
+                          },
+                          {
+                            colKey: "email",
+                            icon: "email",
+                            label: "Email",
+                            visible: true,
+                          },
+                          {
+                            colKey: "address",
+                            icon: "location_on",
+                            label: "Address",
+                            visible: true,
+                          },
+                          {
+                            colKey: "phone",
+                            icon: "phone",
+                            label: "Phone",
+                            visible: true,
+                          },
+                          {
+                            colKey: "status",
+                            icon: "check_circle",
+                            label: "Status",
+                          },
+                          {
+                            colKey: "created_at",
+                            icon: "calendar_today",
+                            label: "Created At",
+                          },
+                          {
+                            colKey: "updated_at",
+                            icon: "update",
+                            label: "Updated At",
+                          },
+                        ]}
+                        isSettingsBtn={true}
+                        isExportBtn={true}
+                        isAddBtn={true}
+                        isCollapsible={false}
+                        actions={{
+                          enable: true,
+                          actionHeaderLabel: "Actions",
+                          actionHeaderIcon: "settings",
+                          dataContainerClass: "horizontal-container flex-end",
+                          getActions: (row) => [
+                            <IconButton
+                              icona="edit"
+                              c="blue"
+                              size={30}
+                              onClick={() => handleEdit(row)}
+                            />,
+                            <IconButton
+                              icona="delete"
+                              c="red"
+                              size={30}
+                              onClick={() => handleDelete(row.id)}
+                            />,
+                          ],
+                        }}
+                        fetchData={fetchData}
+                        serverPageSize={10}
+                      />
 
-              {errors[category.key] && (
-                <div className="error-message">
-                  <AlertCircle size={16} />
-                  {errors[category.key]}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                      <AdaptiveTable
+                        title={"Tenants"}
+                        subtitle={"List of all tenants"}
+                        headers={[
+                          {
+                            colKey: "id",
+                            icon: "person",
+                            label: "ID",
+                            visible: true,
+                            container: (value) => (
+                              <span
+                                style={{
+                                  padding: "4px 12px",
+                                  borderRadius: "8px",
+                                  backgroundColor:
+                                    value === "user0001"
+                                      ? "#e0f7e9"
+                                      : "#fdecea",
+                                  color:
+                                    value === "user0001"
+                                      ? "#2e7d32"
+                                      : "#c62828",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {value}
+                              </span>
+                            ),
+                          },
+                          {
+                            colKey: "name",
+                            icon: "person",
+                            label: "Name",
+                            visible: true,
+                          },
+                          {
+                            colKey: "email",
+                            icon: "email",
+                            label: "Email",
+                            visible: true,
+                          },
+                          {
+                            colKey: "address",
+                            icon: "location_on",
+                            label: "Address",
+                            visible: true,
+                          },
+                          {
+                            colKey: "phone",
+                            icon: "phone",
+                            label: "Phone",
+                            visible: true,
+                          },
+                          {
+                            colKey: "status",
+                            icon: "check_circle",
+                            label: "Status",
+                          },
+                          {
+                            colKey: "created_at",
+                            icon: "calendar_today",
+                            label: "Created At",
+                          },
+                          {
+                            colKey: "updated_at",
+                            icon: "update",
+                            label: "Updated At",
+                          },
+                        ]}
+                        isSettingsBtn={true}
+                        isExportBtn={true}
+                        isAddBtn={true}
+                        isCollapsible={false}
+                        actions={{
+                          enable: true,
+                          actionHeaderLabel: "Actions",
+                          actionHeaderIcon: "settings",
+                          dataContainerClass: "horizontal-container flex-end",
+                          getActions: (row) => [
+                            <IconButton
+                              icona="edit"
+                              c="blue"
+                              size={30}
+                              onClick={() => handleEdit(row)}
+                            />,
+                            <IconButton
+                              icona="delete"
+                              c="red"
+                              size={30}
+                              onClick={() => handleDelete(row.id)}
+                            />,
+                          ],
+                        }}
+                        data={[
+                          {
+                            id: "user0001",
+                            name: "John Doe",
+                            email: "a@b.c",
+                            address: "123 Main St",
+                            phone: "123-456-7890",
+                            status: "Active",
+                            created_at: "2023-01-01",
+                            updated_at: "2023-01-02",
+                          },
+                          {
+                            id: "user0002",
+                            name: "Jane Doe",
+                            email: "b@c.d",
+                            address: "456 Elm St",
+                            phone: "234-567-8901",
+                            status: "Inactive",
+                            created_at: "2023-01-03",
+                            updated_at: "2023-01-04",
+                          },
+                          {
+                            id: "user0003",
+                            name: "Alice Smith",
+                            email: "c@d.e",
+                            address: "789 Oak St",
+                            phone: "345-678-9012",
+                            status: "Active",
+                            created_at: "2023-01-05",
+                            updated_at: "2023-01-06",
+                          },
+                          {
+                            id: "user0004",
+                            name: "Bob Johnson",
+                            email: "d@e.f",
+                            address: "321 Pine St",
+                            phone: "456-789-0123",
+                            status: "Inactive",
+                            created_at: "2023-01-07",
+                            updated_at: "2023-01-08",
+                          },
+                          {
+                            id: "user0005",
+                            name: "Charlie Brown",
+                            email: "e@f.g",
+                            address: "654 Maple St",
+                            phone: "567-890-1234",
+                            status: "Active",
+                            created_at: "2023-01-09",
+                            updated_at: "2023-01-10",
+                          },
+                          {
+                            id: "user0006",
+                            name: "David Wilson",
+                            email: "f@g.h",
+                            address: "987 Cedar St",
+                            phone: "678-901-2345",
+                            status: "Inactive",
+                            created_at: "2023-01-11",
+                            updated_at: "2023-01-12",
+                          },
+                          {
+                            id: "user0007",
+                            name: "Eve Davis",
+                            email: "g@h.i",
+                            address: "123 Birch St",
+                            phone: "789-012-3456",
+                            status: "Active",
+                            created_at: "2023-01-13",
+                            updated_at: "2023-01-14",
+                          },
+                          {
+                            id: "user0008",
+                            name: "Frank Miller",
+                            email: "h@i.j",
+                            address: "456 Spruce St",
+                            phone: "890-123-4567",
+                            status: "Inactive",
+                            created_at: "2023-01-15",
+                            updated_at: "2023-01-16",
+                          },
+                          {
+                            id: "user0009",
+                            name: "Grace Lee",
+                            email: "i@j.k",
+                            address: "789 Fir St",
+                            phone: "901-234-5678",
+                            status: "Active",
+                            created_at: "2023-01-17",
+                            updated_at: "2023-01-18",
+                          },
+                          {
+                            id: "user0010",
+                            name: "Hank Taylor",
+                            email: "j@k.l",
+                            address: "321 Willow St",
+                            phone: "012-345-6789",
+                            status: "Inactive",
+                            created_at: "2023-01-19",
+                            updated_at: "2023-01-20",
+                          },
+                        ]}
+                        serverPageSize={10}
+                      />
 
-        {/* Written Review */}
-        <div className="review-text-section">
-          <label className="review-text-label">
-            Share Your Experience
-            <span className="required">*</span>
-          </label>
-          <p className="review-text-description">
-            Tell others about your experience with this service provider
-          </p>
-          <textarea
-            name="reviewText"
-            value={reviewData.reviewText}
-            onChange={handleInputChange}
-            placeholder="What was your experience like? How was the service quality, communication, and overall satisfaction? Your detailed feedback helps other customers make informed decisions..."
-            className={`review-textarea ${errors.reviewText ? "error" : ""}`}
-            rows={5}
-            maxLength={1000}
-            disabled={loading}
-          />
-          <div className="review-text-footer">
-            {errors.reviewText && (
-              <div className="error-message">
-                <AlertCircle size={16} />
-                {errors.reviewText}
-              </div>
-            )}
-            <span className="character-count">
-              {reviewData.reviewText.length}/1000
-            </span>
-          </div>
-        </div>
+                      <AdaptiveSubTable
+                        title={"Tenants"}
+                        subtitle={"List of all tenants"}
+                        headers={[
+                          { colKey: "id", icon: "person", label: "ID" },
+                          { colKey: "name", icon: "person", label: "Name" },
+                          { colKey: "email", icon: "email", label: "Email" },
+                        ]}
+                        isSettingsBtn={true}
+                        isExportBtn={true}
+                        isAddBtn={true}
+                        isCollapsible={true}
+                        actions={{
+                          enable: true,
+                          actionHeaderLabel: "Actions",
+                          actionHeaderIcon: "settings",
+                          dataContainerClass: "horizontal-container flex-end",
+                          actions: [
+                            <IconButton icona="add" c="green" size={30} />,
+                            <IconButton icona="edit" c="blue" size={30} />,
+                            <IconButton icona="delete" c="red" size={30} />,
+                          ],
+                          subActions: [
+                            <IconButton icona="edit" c="blue" size={30} />,
+                            <IconButton icona="delete" c="red" size={30} />,
+                          ],
+                        }}
+                        data={[
+                          {
+                            id: "user0001",
+                            name: "John Doe",
+                            email: "ssai",
+                            subdata: [
+                              { id: "", name: "John Doe", email: "ssai" },
+                              { id: "", name: "John Doe1", email: "ssai" },
+                              { id: "", name: "John Doe2", email: "ssai" },
+                            ],
+                          },
+                          {
+                            id: "user0002",
+                            name: "Jane Doe",
+                            email: "asfaw",
+                            subdata: [
+                              { id: "", name: "John Doe", email: "ssai" },
+                              { id: "", name: "John Doe1", email: "ssai" },
+                              { id: "", name: "John Doe2", email: "ssai" },
+                            ],
+                          },
+                          { id: "user0001", name: "John Doe", email: "ssai" },
+                          {
+                            id: "user0002",
+                            name: "Jane Doe",
+                            email: "asfaw",
+                            subdata: [
+                              { id: "", name: "John Doe", email: "ssai" },
+                              { id: "", name: "John Doe1", email: "ssai" },
+                            ],
+                          },
+                          { id: "user0001", name: "John Doe", email: "ssai" },
+                          { id: "user0002", name: "Jane Doe", email: "asfaw" },
+                        ]}
+                      />
+                    </Dashboard>
+                  </ProtectedRoute>
+                }
+              />
 
-        {/* Recommendation */}
-        <div className="recommendation-section">
-          <label className="recommendation-label">
-            Would you recommend this service provider?
-          </label>
-          <div className="recommendation-buttons">
-            <button
-              type="button"
-              className={`recommendation-btn ${
-                reviewData.wouldRecommend ? "active" : ""
-              }`}
-              onClick={() =>
-                setReviewData((prev) => ({ ...prev, wouldRecommend: true }))
-              }
-              disabled={loading}
-            >
-              <ThumbsUp size={20} />
-              Yes, I recommend
-            </button>
-            <button
-              type="button"
-              className={`recommendation-btn ${
-                !reviewData.wouldRecommend ? "active" : ""
-              }`}
-              onClick={() =>
-                setReviewData((prev) => ({ ...prev, wouldRecommend: false }))
-              }
-              disabled={loading}
-            >
-              <ThumbsDown size={20} />
-              No, I don't recommend
-            </button>
-          </div>
-        </div>
+              <Route
+                path="/tab"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <AdaptiveSubTable
+                        title={"Tenants"}
+                        subtitle={"List of all tenants"}
+                        headers={[
+                          { colKey: "id", icon: "person", label: "ID" },
+                          { colKey: "name", icon: "person", label: "Name" },
+                          { colKey: "email", icon: "email", label: "Email" },
+                          { colKey: "id", icon: "person", label: "ID" },
+                          { colKey: "name", icon: "person", label: "Name" },
+                          { colKey: "email", icon: "email", label: "Email" },
+                          { colKey: "id", icon: "person", label: "ID" },
+                          { colKey: "name", icon: "person", label: "Name" },
+                          { colKey: "email", icon: "email", label: "Email" },
+                          { colKey: "id", icon: "person", label: "ID" },
+                          { colKey: "name", icon: "person", label: "Name" },
+                        ]}
+                        actions={{
+                          enable: true,
+                          actionHeaderLabel: "Actions",
+                          actionHeaderIcon: "settings",
+                          dataContainerClass: "horizontal-container flex-end",
+                          actions: [
+                            <IconButton icona="add" c="green" size={30} />,
+                            <IconButton icona="edit" c="blue" size={30} />,
+                            <IconButton icona="delete" c="red" size={30} />,
+                          ],
+                          subActions: [
+                            <IconButton icona="edit" c="blue" size={30} />,
+                            <IconButton icona="delete" c="red" size={30} />,
+                          ],
+                        }}
+                        data={[
+                          {
+                            id: "user0001",
+                            name: "John Doe",
+                            email: "ssai",
+                            subdata: [
+                              { id: "", name: "John Doe", email: "ssai" },
+                              { id: "", name: "John Doe1", email: "ssai" },
+                              { id: "", name: "John Doe2", email: "ssai" },
+                            ],
+                          },
+                          {
+                            id: "user0002",
+                            name: "Jane Doe",
+                            email: "asfaw",
+                            subdata: [
+                              { id: "", name: "John Doe", email: "ssai" },
+                              { id: "", name: "John Doe1", email: "ssai" },
+                              { id: "", name: "John Doe2", email: "ssai" },
+                            ],
+                          },
+                          { id: "user0001", name: "John Doe", email: "ssai" },
+                          {
+                            id: "user0002",
+                            name: "Jane Doe",
+                            email: "asfaw",
+                            subdata: [
+                              { id: "", name: "John Doe", email: "ssai" },
+                              { id: "", name: "John Doe1", email: "ssai" },
+                            ],
+                          },
+                          { id: "user0001", name: "John Doe", email: "ssai" },
+                          { id: "user0002", name: "Jane Doe", email: "asfaw" },
+                        ]}
+                      />
+                    </Dashboard>
+                  </ProtectedRoute>
+                }
+              />
 
-        {/* Privacy Option */}
-        <div className="privacy-section">
-          <label className="privacy-checkbox">
-            <input
-              type="checkbox"
-              name="anonymous"
-              checked={reviewData.anonymous}
-              onChange={handleInputChange}
-              disabled={loading}
+              {/* Fallback routes */}
+              <Route
+                path="/*"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+
+            {/* Toast Container for notifications */}
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              toastStyle={{
+                borderRadius: "12px",
+                boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
+              }}
             />
-            <span className="checkmark"></span>
-            Post this review anonymously
-          </label>
-          <p className="privacy-note">
-            Your review will be posted without your name if checked
-          </p>
-        </div>
-
-        {/* Submit Buttons */}
-        <div className="form-actions">
-          <button
-            type="button"
-            className="btn-cancel"
-            onClick={onCancel}
-            disabled={loading}
-          >
-            Cancel
-          </button>
-          <button type="submit" className="btn-submit" disabled={loading}>
-            <Send size={20} />
-            {loading ? "Submitting..." : "Submit Review"}
-          </button>
-        </div>
-      </form>
-    </div>
+          </div>
+        </BrowserRouter>
+      </UserContext.Provider>
+    </ThemeProvider>
   );
-};
+}
 
-export default UserReviewForm;
+export default App;
