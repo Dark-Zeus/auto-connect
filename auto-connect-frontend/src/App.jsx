@@ -5,7 +5,7 @@ import { CssBaseline } from "@mui/material";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Existing Components (preserve your imports)
+// Existing Components
 import IconButton from "@components/atoms/IconButton";
 import Dashboard from "@pages/Dashboard";
 import AuthPage from "@pages/AuthPage";
@@ -19,6 +19,25 @@ import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable
 // New Components
 import LandingPage from "./pages/LandingPage";
 import RegisterForm from "./components/RegisterForm";
+
+// ==================== DEVELOPMENT IMPORTS - REMOVE IN PRODUCTION ====================
+// Service Provider Pages
+import ServiceListingsPage from "@pages/ServiceProvider/ServiceListingsPage";
+import AddServicePage from "@pages/ServiceProvider/AddServicePage";
+import EditServicePage from "@pages/ServiceProvider/EditServicePage";
+import ManageSlotsPage from "@pages/ServiceProvider/ManageSlotsPage";
+
+// NEW REVIEW IMPORTS
+import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
+import UserReviewsPage from "@pages/User/UserReviewsPage";
+import ReviewDisplayComponent from "@components/Reviews/ReviewDisplayComponent";
+import UserReviewForm from "@components/User/UserReviewForm";
+
+// VEHICLE & SERVICE PROVIDER ARTIFACT IMPORTS
+import VehiclePassportPage from "@pages/Vehicle/VehiclePassportPage";
+import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashboard";
+import ServiceUpdateForm from "@components/ServiceProvider/ServiceUpdateForm";
+// ==================== END DEVELOPMENT IMPORTS ====================
 
 // Create Material-UI theme with our color scheme
 const theme = createTheme({
@@ -46,32 +65,18 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: {
-      fontWeight: 700,
-    },
-    h2: {
-      fontWeight: 600,
-    },
-    h3: {
-      fontWeight: 600,
-    },
-    h4: {
-      fontWeight: 600,
-    },
-    h5: {
-      fontWeight: 500,
-    },
-    h6: {
-      fontWeight: 500,
-    },
+    h1: { fontWeight: 700 },
+    h2: { fontWeight: 600 },
+    h3: { fontWeight: 600 },
+    h4: { fontWeight: 600 },
+    h5: { fontWeight: 500 },
+    h6: { fontWeight: 500 },
     button: {
       textTransform: "none",
       fontWeight: 500,
     },
   },
-  shape: {
-    borderRadius: 12,
-  },
+  shape: { borderRadius: 12 },
   components: {
     MuiButton: {
       styleOverrides: {
@@ -101,15 +106,9 @@ const theme = createTheme({
         root: {
           "& .MuiOutlinedInput-root": {
             borderRadius: 12,
-            "& fieldset": {
-              borderColor: "#B9E5E8",
-            },
-            "&:hover fieldset": {
-              borderColor: "#7AB2D3",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "#4A628A",
-            },
+            "& fieldset": { borderColor: "#B9E5E8" },
+            "&:hover fieldset": { borderColor: "#7AB2D3" },
+            "&.Mui-focused fieldset": { borderColor: "#4A628A" },
           },
         },
       },
@@ -125,22 +124,153 @@ const theme = createTheme({
   },
 });
 
+// ==================== DEVELOPMENT COMPONENTS - REMOVE IN PRODUCTION ====================
+// Mock User Context for Development
+const MockServiceProviderContext = ({ children }) => {
+  const mockUser = {
+    id: 1,
+    role: "service_center",
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@servicecenterdemo.com",
+    businessInfo: {
+      businessName: "AutoCare Service Center",
+      businessType: "service_center",
+      address: {
+        street: "123 Main Street",
+        city: "Colombo",
+        state: "Western Province",
+        postalCode: "00100",
+        country: "Sri Lanka",
+      },
+      phone: "+94 11 234 5678",
+      website: "https://autocare-demo.com",
+    },
+    permissions: ["manage_services", "manage_appointments", "view_reports"],
+  };
+
+  return (
+    <UserContext.Provider
+      value={{ userContext: mockUser, setUserContext: () => {} }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+// Development Navigation Component
+const DevNavigation = () => {
+  const devStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    background: "linear-gradient(90deg, #ff6b6b, #4ecdc4)",
+    color: "white",
+    padding: "10px 20px",
+    zIndex: 9999,
+    fontSize: "14px",
+    fontWeight: "bold",
+    textAlign: "center",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+  };
+
+  return (
+    <div style={devStyle}>
+      🚧 DEVELOPMENT MODE - Service Provider Pages 🚧 |
+      <a
+        href="/dev/service-listings"
+        style={{ color: "white", margin: "0 10px" }}
+      >
+        Listings
+      </a>{" "}
+      |
+      <a href="/dev/add-service" style={{ color: "white", margin: "0 10px" }}>
+        Add Service
+      </a>{" "}
+      |
+      <a
+        href="/dev/edit-service/123"
+        style={{ color: "white", margin: "0 10px" }}
+      >
+        Edit Service
+      </a>{" "}
+      |
+      <a href="/dev/manage-slots" style={{ color: "white", margin: "0 10px" }}>
+        Manage Slots
+      </a>
+      |
+      <a
+        href="/dev/vehicle-passport"
+        style={{ color: "white", margin: "0 10px" }}
+      >
+        Vehicle Passport
+      </a>
+      |
+      <a
+        href="/dev/vehicle-history-dashboard"
+        style={{ color: "white", margin: "0 10px" }}
+      >
+        Vehicle History
+      </a>
+      |
+      <a
+        href="/dev/service-update-form"
+        style={{ color: "white", margin: "0 10px" }}
+      >
+        Service Update
+      </a>
+    </div>
+  );
+};
+
+// Development Layout Wrapper
+const DevLayout = ({ children, title, subtitle }) => {
+  return (
+    <div
+      style={{ paddingTop: "60px", minHeight: "100vh", background: "#DFF2EB" }}
+    >
+      <DevNavigation />
+      <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
+        <div
+          style={{
+            background: "white",
+            padding: "20px",
+            borderRadius: "12px",
+            marginBottom: "20px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h1 style={{ color: "#4A628A", margin: "0 0 8px 0" }}>{title}</h1>
+          <p style={{ color: "#666", margin: 0 }}>{subtitle}</p>
+        </div>
+        <div
+          style={{
+            background: "white",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+// ==================== END DEVELOPMENT COMPONENTS ====================
+
 function App() {
   const [userContext, setUserContext] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    // Preserve your existing logic but uncomment auth checking
     const checkAuth = async () => {
       try {
         const storedUser = localStorage.getItem("user");
         const token = localStorage.getItem("token");
-
         if (storedUser && token) {
           setUserContext(JSON.parse(storedUser));
-        } else {
-          // Fallback to your existing default for testing
-          // setUserContext({ role: "administrator" });
         }
       } catch (error) {
         console.error("Auth check error:", error);
@@ -150,25 +280,20 @@ function App() {
         setIsCheckingAuth(false);
       }
     };
-
     checkAuth();
   }, []);
 
-  // Preserve your existing handlers
   const handleEdit = (row) => {
     console.log("Edit action for row:", row);
-    // Implement edit logic here, e.g., open a modal with a form
   };
 
   const handleDelete = (id) => {
     console.log("Delete action for ID:", id);
-    // Implement delete logic here, e.g., show a confirmation dialog
     Confirm({
       title: "Confirm Deletion",
       message: "Are you sure you want to delete this item?",
       onConfirm: () => {
         console.log("Item deleted");
-        // Perform deletion logic here
       },
       onCancel: () => {
         console.log("Deletion cancelled");
@@ -199,11 +324,9 @@ function App() {
       { id: "user0019", name: "Quinn Martinez", email: "s@t.u" },
       { id: "user0020", name: "Rita Robinson", email: "t@u.v" },
     ];
-
-    // Simulate fetching data from an API with pagination
     return new Promise((resolve) => {
       setTimeout(() => {
-        const pageSize = 10; // Number of items per page
+        const pageSize = 10;
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
         const paginatedData = data.slice(startIndex, endIndex);
@@ -211,7 +334,7 @@ function App() {
           data: paginatedData,
           totalRecords: data.length,
         });
-      }, 1000); // Reduced delay for better UX
+      }, 1000);
     });
   };
 
@@ -236,11 +359,9 @@ function App() {
         </div>
       );
     }
-
     if (!userContext) {
       return <Navigate to="/auth/login" replace />;
     }
-
     return children;
   };
 
@@ -265,11 +386,9 @@ function App() {
         </div>
       );
     }
-
     if (userContext) {
       return <Navigate to="/dashboard" replace />;
     }
-
     return children;
   };
 
@@ -280,6 +399,335 @@ function App() {
         <BrowserRouter>
           <div className="app">
             <Routes>
+              {/* ==================== DEVELOPMENT ROUTES - REMOVE IN PRODUCTION ==================== */}
+              {/* Service Provider Development Routes */}
+              <Route
+                path="/dev/service-listings"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="🔧 Service Listings Page"
+                      subtitle="View and manage all services offered by your service center"
+                    >
+                      <ServiceListingsPage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/add-service"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="➕ Add Service Page"
+                      subtitle="Create new service offerings with pricing and details"
+                    >
+                      <AddServicePage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/edit-service/:serviceId"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="✏️ Edit Service Page"
+                      subtitle="Modify existing service details and pricing (Demo Service ID: 123)"
+                    >
+                      <EditServicePage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/manage-slots"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="📅 Manage Slots Page"
+                      subtitle="Configure availability and time slots for appointments"
+                    >
+                      <ManageSlotsPage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              {/* Vehicle & Service Provider Artifacts */}
+              <Route
+                path="/dev/vehicle-passport"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="🚗 Vehicle Passport Page"
+                      subtitle="View and manage vehicle passport details"
+                    >
+                      <VehiclePassportPage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/vehicle-history-dashboard"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="📜 Vehicle History Dashboard"
+                      subtitle="View the complete service history for a vehicle"
+                    >
+                      <VehicleHistoryDashboard />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/service-update-form"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="🔄 Service Update Form"
+                      subtitle="Update service information for a vehicle"
+                    >
+                      <ServiceUpdateForm />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              {/* Development Landing Page */}
+              <Route
+                path="/dev"
+                element={
+                  <div
+                    style={{
+                      paddingTop: "60px",
+                      minHeight: "100vh",
+                      background: "#DFF2EB",
+                    }}
+                  >
+                    <DevNavigation />
+                    <div
+                      style={{
+                        padding: "40px 20px",
+                        textAlign: "center",
+                        maxWidth: "800px",
+                        margin: "0 auto",
+                      }}
+                    >
+                      <h1 style={{ color: "#4A628A", marginBottom: "20px" }}>
+                        🚗 Service Provider Development Mode
+                      </h1>
+                      <p
+                        style={{
+                          color: "#666",
+                          marginBottom: "40px",
+                          fontSize: "18px",
+                        }}
+                      >
+                        Test and view Service Provider components without
+                        authentication
+                      </p>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns:
+                            "repeat(auto-fit, minmax(200px, 1fr))",
+                          gap: "20px",
+                          marginTop: "30px",
+                        }}
+                      >
+                        {[
+                          {
+                            path: "/dev/service-listings",
+                            title: "Service Listings",
+                            icon: "📋",
+                            desc: "Manage services",
+                          },
+                          {
+                            path: "/dev/add-service",
+                            title: "Add Service",
+                            icon: "➕",
+                            desc: "Create new service",
+                          },
+                          {
+                            path: "/dev/edit-service/123",
+                            title: "Edit Service",
+                            icon: "✏️",
+                            desc: "Modify service",
+                          },
+                          {
+                            path: "/dev/manage-slots",
+                            title: "Manage Slots",
+                            icon: "📅",
+                            desc: "Time management",
+                          },
+                          // NEW REVIEW ITEMS
+                          {
+                            path: "/dev/service-provider-reviews",
+                            title: "SP Reviews",
+                            icon: "⭐",
+                            desc: "Provider review dashboard",
+                          },
+                          {
+                            path: "/dev/user-reviews",
+                            title: "User Reviews",
+                            icon: "📝",
+                            desc: "User review interface",
+                          },
+                          {
+                            path: "/dev/review-display",
+                            title: "Review Display",
+                            icon: "📊",
+                            desc: "Review display component",
+                          },
+                          {
+                            path: "/dev/user-review-form",
+                            title: "Review Form",
+                            icon: "✍️",
+                            desc: "Review submission form",
+                          },
+                          // VEHICLE & SERVICE PROVIDER ARTIFACTS
+                          {
+                            path: "/dev/vehicle-passport",
+                            title: "Vehicle Passport",
+                            icon: "🚗",
+                            desc: "Vehicle passport details",
+                          },
+                          {
+                            path: "/dev/vehicle-history-dashboard",
+                            title: "Vehicle History",
+                            icon: "📜",
+                            desc: "Service history dashboard",
+                          },
+                          {
+                            path: "/dev/service-update-form",
+                            title: "Service Update",
+                            icon: "🔄",
+                            desc: "Update service info",
+                          },
+                        ].map((item, index) => (
+                          <a
+                            key={index}
+                            href={item.path}
+                            style={{
+                              textDecoration: "none",
+                              background: "white",
+                              padding: "20px",
+                              borderRadius: "12px",
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                              transition: "transform 0.2s ease",
+                              display: "block",
+                            }}
+                            onMouseOver={(e) =>
+                              (e.target.style.transform = "translateY(-2px)")
+                            }
+                            onMouseOut={(e) =>
+                              (e.target.style.transform = "translateY(0px)")
+                            }
+                          >
+                            <div
+                              style={{ fontSize: "32px", marginBottom: "10px" }}
+                            >
+                              {item.icon}
+                            </div>
+                            <h3
+                              style={{ color: "#4A628A", margin: "0 0 5px 0" }}
+                            >
+                              {item.title}
+                            </h3>
+                            <p
+                              style={{
+                                color: "#666",
+                                margin: 0,
+                                fontSize: "14px",
+                              }}
+                            >
+                              {item.desc}
+                            </p>
+                          </a>
+                        ))}
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "40px",
+                          padding: "20px",
+                          background: "#fff3cd",
+                          borderRadius: "8px",
+                          border: "1px solid #ffeaa7",
+                        }}
+                      >
+                        <h4 style={{ color: "#856404", margin: "0 0 10px 0" }}>
+                          ⚠️ Development Note
+                        </h4>
+                        <p
+                          style={{
+                            color: "#856404",
+                            margin: 0,
+                            fontSize: "14px",
+                          }}
+                        >
+                          These routes are for development only. Remove the dev
+                          routes section before production deployment.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                }
+              />
+              {/* Review Development Routes */}
+              <Route
+                path="/dev/service-provider-reviews"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="⭐ Service Provider Reviews"
+                      subtitle="View and manage customer reviews for your services"
+                    >
+                      <ServiceProviderReviews />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/user-reviews"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="📝 User Reviews Page"
+                      subtitle="User interface for viewing and writing reviews"
+                    >
+                      <UserReviewsPage />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/review-display"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="📊 Review Display Component"
+                      subtitle="Component for displaying reviews with ratings and feedback"
+                    >
+                      <ReviewDisplayComponent />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              <Route
+                path="/dev/user-review-form"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="✍️ User Review Form"
+                      subtitle="Form component for users to submit reviews"
+                    >
+                      <UserReviewForm />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+              {/* ==================== END DEVELOPMENT ROUTES ==================== */}
+
               {/* Landing Page */}
               <Route
                 path="/"
@@ -358,7 +806,7 @@ function App() {
                 }
               />
 
-              {/* Protected Dashboard Routes - preserve all your existing routes */}
+              {/* Protected Dashboard Routes */}
               <Route
                 path="/dashboard"
                 element={
@@ -821,7 +1269,6 @@ function App() {
                 }
               />
             </Routes>
-
             {/* Toast Container for notifications */}
             <ToastContainer
               position="top-right"
