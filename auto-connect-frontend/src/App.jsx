@@ -37,6 +37,10 @@ import UserReviewForm from "@components/User/UserReviewForm";
 import VehiclePassportPage from "@pages/Vehicle/VehiclePassportPage";
 import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashboard";
 import ServiceUpdateForm from "@components/ServiceProvider/ServiceUpdateForm";
+
+// Service Provider Discovery Page
+import ServiceProviderDiscovery from "@pages/ServiceProvider/ServiceProviderDiscovery";
+
 // ==================== END DEVELOPMENT IMPORTS ====================
 
 // Create Material-UI theme with our color scheme
@@ -493,6 +497,20 @@ function App() {
                   </MockServiceProviderContext>
                 }
               />
+              <Route
+                path="/dev/service-provider-discovery"
+                element={
+                  <MockServiceProviderContext>
+                    <DevLayout
+                      title="🔍 Service Provider Discovery"
+                      subtitle="Discover and browse service providers (dev only)"
+                    >
+                      <ServiceProviderDiscovery />
+                    </DevLayout>
+                  </MockServiceProviderContext>
+                }
+              />
+
               {/* Development Landing Page */}
               <Route
                 path="/dev"
@@ -603,6 +621,12 @@ function App() {
                             title: "Service Update",
                             icon: "🔄",
                             desc: "Update service info",
+                          },
+                          {
+                            path: "/dev/service-provider-discovery",
+                            title: "SP Discovery",
+                            icon: "🔍",
+                            desc: "Browse service providers",
                           },
                         ].map((item, index) => (
                           <a
