@@ -39,6 +39,24 @@ const ownerDataList = [
     engineCapacity: "1600",
     mileage: "30000",
   },
+    {
+    name: "Jane Smith",
+    mobile: "0777654321",
+    nic: "123456789V",
+    address: "456 Kandy Road, Kandy",
+    email: "jane@example.com",
+    vehicleName: "Honda",
+    vehicleModel: "Civic",
+    leasing: "No",
+    manufacturer: "Honda Motors",
+    modelYear: "2019",
+    registeredYear: "2020",
+    condition: "Good",
+    transmission: "Manual",
+    fuelType: "Diesel",
+    engineCapacity: "1600",
+    mileage: "30000",
+  },
   // Add more data if needed
 ];
 
@@ -48,11 +66,7 @@ function OwnerView() {
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
-
-  const handleToggle = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
+  const itemsPerPage = 18;
 
   const filteredOwners = useMemo(() => {
     let filtered = [...ownerDataList];
@@ -94,7 +108,7 @@ function OwnerView() {
 
   return (
     <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
-      <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-4">Vehicle Owners</h1>
+      <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-4">Vehicle Owner List</h1>
 
       <SearchFilterSortBox
         search={search}
@@ -105,16 +119,9 @@ function OwnerView() {
         onSort={setSort}
       />
 
-    <div className="tw:grid tw:justify-center tw:grid-cols-1 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6 tw:mx-auto tw:max-w-333">
+    <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6 tw:mx-auto tw:max-w-333">
     {paginatedOwners.map((owner, index) => (
-        <VehicleOwnerCard
-        key={owner.nic}
-        owner={owner}
-        isExpanded={expandedIndex === owner.nic}
-        onToggle={() =>
-            setExpandedIndex(expandedIndex === owner.nic ? null : owner.nic)
-        }
-        />
+      <VehicleOwnerCard key={owner.nic} owner={owner} />
     ))}
     </div>
 
