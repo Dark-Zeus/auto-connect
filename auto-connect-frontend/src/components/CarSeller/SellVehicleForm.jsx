@@ -3,7 +3,7 @@ import { Camera, X , CarFront, User, Logs} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
 
-const VehicleListingForm = ({ fixedName = 'John Doe', fixedEmail = 'john.doe@example.com' }) => {
+const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
   const [formData, setFormData] = useState({
     mobile: '',
     district: '',
