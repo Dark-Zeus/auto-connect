@@ -25,7 +25,7 @@ function InsuranceCompanyCard({ company }) {
       {/* Main Card */}
       <div
         onClick={() => setShowPopup(true)}
-        className="tw:cursor-pointer tw:w-[300px] tw:h-[220px] tw:bg-white tw:border tw:border-gray-300 tw:rounded-2xl tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:p-4 tw:flex tw:flex-col tw:justify-between"
+        className="tw:cursor-pointer tw:w-[308px] tw:h-[220px] tw:bg-white tw:border tw:border-gray-300 tw:rounded-2xl tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:p-4 tw:flex tw:flex-col tw:justify-between"
       >
         <div className="tw:flex tw:justify-between tw:items-start tw:gap-4">
           <img
@@ -108,10 +108,10 @@ function InsuranceCompanyCard({ company }) {
             {/* Certifications */}
             {company.certifications?.length > 0 && (
               <div className="tw:mt-6">
-                <h3 className="tw:text-xl tw:font-bold tw:text-blue-800 tw:mb-3 tw:border-b tw:border-blue-200 tw:pb-1">
+                <h3 className="tw:text-xl tw:font-bold tw:text-blue-800 tw:mb-2 tw:border-b tw:border-blue-200 tw:pb-1">
                   📜 Certifications
                 </h3>
-                <div className="tw:mt-4 tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-4">
+                <div className="tw:mt-2 tw:grid tw:grid-cols-2 md:tw:grid-cols-2 tw:gap-4">
                   {company.certifications.map((cert, index) => (
                     <div
                       key={index}
@@ -120,7 +120,7 @@ function InsuranceCompanyCard({ company }) {
                       <h4 className="tw:font-semibold tw:text-blue-700 tw:mb-2">
                         📘 {cert.name}
                       </h4>
-                      <ul className="tw:text-sm tw:text-blue-900 tw:space-y-1">
+                      <ul className="tw:text-sm tw:text-blue-900 tw:space-y-3">
                         <li><strong>Issued By:</strong> {cert.issuedBy}</li>
                         <li><strong>Certificate #:</strong> {cert.certificateNumber}</li>
                         <li>

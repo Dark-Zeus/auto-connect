@@ -133,9 +133,16 @@ function InsurancePage() {
 
   return (
   <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
-    <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-6">
-      Registered Insurance Providers
-    </h1>
+      {/* Header with Button */}
+      <div className="tw:flex tw:justify-between tw:items-center tw:mb-6">
+        <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">
+          Registered Insurance Providers
+        </h1>
+        <button className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition">
+          View Requests
+        </button>
+      </div>
+
 
     {/* Filter Box */}
     <InsuranceCompanyFilterBox

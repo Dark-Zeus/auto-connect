@@ -107,7 +107,7 @@ function OwnerView() {
         onSort={setSort}
       />
 
-    <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6 tw:mx-auto tw:max-w-333">
+    <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 tw:gap-6 lg:tw:grid-cols-3 tw:mx-auto tw:max-w-7xl">
     {paginatedOwners.map((owner, index) => (
       <VehicleOwnerCard key={owner.nic} owner={owner} />
     ))}

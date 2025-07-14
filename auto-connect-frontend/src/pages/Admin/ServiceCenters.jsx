@@ -155,17 +155,21 @@ function ServiceCenters() {
     });
 
   return (
-    <div className="tw:p-6">
-      <div className="tw:flex tw:items-center tw:justify-between tw:mb-10">
-        <div />
+    <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
+      {/* Header with Button */}
+      <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
+        <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">
+          Registered Service & Repair Centers
+        </h1>
         <button
           onClick={() => alert("Redirect to New Service Center Form")}
-          className="tw:bg-blue-600 tw:text-white tw:px-4 tw:py-3 tw:rounded-lg hover:tw:bg-blue-700 tw:transition"
+          className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition"
         >
-          + New Requests
+          View Requests
         </button>
       </div>
 
+      {/* Filter Box */}
       <ServiceCenterFilterBox
         searchQuery={searchQuery}
         selectedDistrict={selectedDistrict}
@@ -176,20 +180,22 @@ function ServiceCenters() {
         onReset={handleReset}
       />
 
+      {/* Cards */}
       <div className="tw:flex tw:flex-wrap tw:gap-6 tw:justify-center">
-        {filteredCenters.map((center, index) => (
-          <ServiceCenterCard
-            key={index}
-            name={center.name}
-            description={center.description}
-            icon={center.icon}
-            district={center.district}
-            rating={center.rating}
-            onView={() => setSelectedCenter(center.details)}
-          />
-        ))}
+          {filteredCenters.map((center, index) => (
+            <ServiceCenterCard
+              key={index}
+              name={center.name}
+              description={center.description}
+              icon={center.icon}
+              district={center.district}
+              rating={center.rating}
+              onView={() => setSelectedCenter(center.details)}
+            />
+          ))}
       </div>
 
+      {/* Detail Modal */}
       {selectedCenter && (
         <ServiceCenterDetailCard
           data={selectedCenter}
@@ -201,3 +207,4 @@ function ServiceCenters() {
 }
 
 export default ServiceCenters;
+
