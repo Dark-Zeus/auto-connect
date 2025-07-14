@@ -1,410 +1,237 @@
-/* SlotManager.css - Redesigned for Visual Consistency */
-
-/* Import design system variables */
-@import url('../../css/tailwind.css');
-
-/* Component Container */
-.slot-manager {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2xl);
-  font-family: "Poppins", "Inter", "Roboto", sans-serif;
+:root {
+  --primary-blue: #7AB2D3;
+  --primary-dark: #4A628A;
+  --background: #f8fafc;
+  --white: #fff;
+  --gray-border: #e2e8f0;
+  --gray-text: #64748b;
+  --danger: #ef4444;
+  --success: #10b981;
+  --section-gap: 2rem;
+  --border-radius: 10px;
+  --font-main: "Poppins", "Inter", "Roboto", sans-serif;
 }
 
-/* Controls Section */
+/* Main container */
+.slot-manager {
+  font-family: var(--font-main);
+  color: var(--primary-dark);
+  background: var(--background);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+/* Section containers */
+.slot-manager-controls,
+.slot-manager-date-banner,
+.slot-manager-legend,
+.slot-manager-help,
+.slot-manager-empty {
+  background: var(--background);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-border);
+  box-shadow: 0 2px 8px rgba(74,98,138,0.06);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Section header/title backgrounds */
+.slot-manager-date-banner-info h3,
+.slot-manager-legend h4,
+.slot-manager-help-text h4,
+.slot-manager-empty h3 {
+  background: var(--primary-dark);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* Controls Layout */
 .slot-manager-controls {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
-  padding: var(--spacing-2xl);
-  border-radius: var(--border-radius-xl);
-  border: 2px solid var(--primary-light);
-  box-shadow: 0 4px 20px var(--shadow-light);
-  transition: all var(--transition-bounce);
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
 }
-
-.slot-manager-controls:hover {
-  border-color: var(--primary-medium);
-  box-shadow: 0 8px 32px var(--shadow-medium);
-}
-
-@media (min-width: 1024px) {
-  .slot-manager-controls {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-}
-
-.slot-manager-controls-left {
+.slot-manager-controls-left,
+.slot-manager-controls-right {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 1.25rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
 }
-
-@media (min-width: 640px) {
-  .slot-manager-controls-left {
-    flex-direction: row;
-    align-items: flex-end;
-  }
-}
-
 .slot-manager-date-field {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 0.25rem;
 }
-
 .slot-manager-date-label {
-  display: block;
-  font-size: var(--font-size-sm);
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--text-dark);
-  font-family: "Poppins", sans-serif;
-  letter-spacing: -0.005em;
-  line-height: 1.4;
+  color: var(--primary-dark);
+  margin-bottom: 0.15rem;
 }
-
 .slot-manager-date-input {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: 2px solid var(--primary-light);
-  border-radius: var(--border-radius-md);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--primary-dark);
   background: var(--white);
-  color: var(--text-dark);
-  font-family: "Poppins", sans-serif;
-  transition: all var(--transition-normal);
-  font-size: var(--font-size-base);
-  font-weight: 400;
-  line-height: 1.5;
-  min-height: 2.75rem;
+  transition: border-color 0.2s;
+  font-family: var(--font-main);
 }
-
 .slot-manager-date-input:focus {
-  outline: none;
   border-color: var(--primary-blue);
-  box-shadow: 0 0 0 4px rgba(122, 178, 211, 0.15);
-  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
-  transform: translateY(-1px);
+  outline: 2px solid var(--primary-blue);
 }
 
-.slot-manager-date-input:hover:not(:focus) {
-  border-color: var(--primary-medium);
-  box-shadow: 0 2px 8px var(--shadow-light);
-}
-
+/* View Toggle */
 .slot-manager-view-toggle {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
-
 .slot-manager-view-label {
-  font-size: var(--font-size-sm);
-  color: var(--text-dark);
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  color: var(--gray-text);
+  font-weight: 500;
 }
-
 .slot-manager-view-button {
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  border: 2px solid var(--primary-light);
-  background: var(--white);
-  color: var(--text-dark);
+  background: none;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 6px;
+  color: var(--gray-text);
   cursor: pointer;
-  transition: all var(--transition-bounce);
+  padding: 0.4rem 0.7rem;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
+  font-size: 1.1rem;
 }
-
-.slot-manager-view-button.active {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
-  color: var(--white);
+.slot-manager-view-button.active,
+.slot-manager-view-button:hover {
+  color: var(--primary-blue);
   border-color: var(--primary-blue);
-  box-shadow: 0 4px 16px rgba(122, 178, 211, 0.3);
-  transform: translateY(-2px);
+  background: var(--background);
 }
 
-.slot-manager-view-button:hover:not(.active) {
-  background: var(--primary-light);
-  border-color: var(--primary-medium);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px var(--shadow-light);
-}
-
-.slot-manager-view-button svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.slot-manager-regenerate-button {
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+/* Buttons */
+.slot-manager-regenerate-button,
+.slot-manager-selection-button,
+.slot-manager-empty-button.primary {
+  background: var(--primary-blue);
   color: var(--white);
-  border: 3px solid #7c3aed;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
   cursor: pointer;
-  transition: all var(--transition-bounce);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-family: "Poppins", sans-serif;
-  text-transform: none;
-  letter-spacing: -0.025em;
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
-  min-height: 2.75rem;
+  transition: background 0.2s;
 }
-
-.slot-manager-regenerate-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #5b21b6, #4c1d95);
-  border-color: #5b21b6;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
-}
-
-.slot-manager-regenerate-button:disabled {
-  opacity: 0.6;
+.slot-manager-regenerate-button:disabled,
+.slot-manager-selection-button:disabled,
+.slot-manager-empty-button.primary:disabled {
+  background: var(--gray-border);
+  color: var(--gray-text);
   cursor: not-allowed;
-  transform: none;
 }
-
-.slot-manager-regenerate-button svg {
-  width: 1rem;
-  height: 1rem;
+.slot-manager-regenerate-button:not(:disabled):hover,
+.slot-manager-selection-button:not(:disabled):hover,
+.slot-manager-empty-button.primary:not(:disabled):hover {
+  background: var(--primary-dark);
 }
-
-.slot-manager-regenerate-button svg.spinning {
-  animation: spin 1s linear infinite;
+.slot-manager-bulk-button.block {
+  color: var(--danger);
+  background: none;
 }
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.slot-manager-bulk-button.unblock {
+  color: var(--success);
+  background: none;
+}
+.slot-manager-bulk-button.clear {
+  color: var(--gray-text);
+  background: none;
 }
 
 /* Bulk Actions */
-.slot-manager-controls-right {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
 .slot-manager-selection-info {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  background: var(--white);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--border-radius-lg);
-  border: 2px solid var(--primary-light);
-  box-shadow: 0 2px 8px var(--shadow-light);
+  gap: 0.7rem;
+  background: var(--background);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
 }
-
 .slot-manager-selection-count {
-  font-size: var(--font-size-sm);
-  color: var(--text-dark);
   font-weight: 600;
-  font-family: "Poppins", sans-serif;
 }
-
 .slot-manager-bulk-button {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  padding: 0.3rem 0.8rem;
+  border-radius: 5px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-bounce);
-  border: 2px solid;
-  font-family: "Poppins", sans-serif;
-  text-transform: none;
-  letter-spacing: -0.025em;
-  min-height: 2.25rem;
-}
-
-.slot-manager-bulk-button.block {
-  background: linear-gradient(135deg, var(--error-color), #dc2626);
-  color: var(--white);
-  border-color: var(--error-color);
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-}
-
-.slot-manager-bulk-button.block:hover:not(:disabled) {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  border-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-}
-
-.slot-manager-bulk-button.unblock {
-  background: linear-gradient(135deg, var(--success-color), #16a34a);
-  color: var(--white);
-  border-color: var(--success-color);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
-}
-
-.slot-manager-bulk-button.unblock:hover:not(:disabled) {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  border-color: #16a34a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
-}
-
-.slot-manager-bulk-button.clear {
-  background: linear-gradient(135deg, var(--gray-medium), var(--text-dark));
-  color: var(--white);
-  border-color: var(--gray-medium);
-  box-shadow: 0 2px 8px var(--shadow-light);
-}
-
-.slot-manager-bulk-button.clear:hover {
-  background: linear-gradient(135deg, var(--text-dark), var(--text-dark));
-  border-color: var(--text-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--shadow-medium);
-}
-
-.slot-manager-bulk-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.slot-manager-selection-button {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
-  color: var(--white);
-  border: 2px solid var(--primary-blue);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-bounce);
-  font-family: "Poppins", sans-serif;
-  text-transform: none;
-  letter-spacing: -0.025em;
-  box-shadow: 0 2px 8px rgba(122, 178, 211, 0.3);
-  min-height: 2.25rem;
-}
-
-.slot-manager-selection-button:hover {
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary-dark));
-  border-color: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(122, 178, 211, 0.4);
-}
-
-.slot-manager-selection-button.orange {
-  background: linear-gradient(135deg, #ea580c, #c2410c);
-  border-color: #ea580c;
-  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
-}
-
-.slot-manager-selection-button.orange:hover {
-  background: linear-gradient(135deg, #c2410c, #9a3412);
-  border-color: #c2410c;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
-}
-
-/* Date Info Banner */
-.slot-manager-date-banner {
-  padding: var(--spacing-xl) var(--spacing-2xl);
-  border-radius: var(--border-radius-xl);
-  border-left: 6px solid;
-  box-shadow: 0 4px 20px var(--shadow-light);
-  transition: all var(--transition-bounce);
-}
-
-.slot-manager-date-banner:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px var(--shadow-medium);
-}
-
-.slot-manager-date-banner.past {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border-color: var(--error-color);
-}
-
-.slot-manager-date-banner.today {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border-color: var(--primary-blue);
-}
-
-.slot-manager-date-banner.future {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border-color: var(--success-color);
-}
-
-.slot-manager-date-banner-content {
+  transition: background 0.2s, color 0.2s;
   display: flex;
   align-items: center;
+  gap: 0.3rem;
+}
+.slot-manager-bulk-button:hover:not(:disabled) {
+  background: var(--gray-border);
+}
+
+/* Date Banner */
+.slot-manager-date-banner {
+  border-left: 5px solid var(--primary-blue);
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.slot-manager-date-banner.past { border-color: var(--danger); }
+.slot-manager-date-banner.today { border-color: var(--primary-blue); }
+.slot-manager-date-banner.future { border-color: var(--success); }
+.slot-manager-date-banner-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1.5rem;
   flex-wrap: wrap;
-  gap: var(--spacing-lg);
 }
-
-.slot-manager-date-banner-info h3 {
-  font-weight: 700;
-  margin: 0 0 var(--spacing-sm) 0;
-  font-size: var(--font-size-lg);
-  font-family: "Poppins", sans-serif;
-  letter-spacing: -0.025em;
-}
-
-.slot-manager-date-banner.past h3 {
-  color: #991b1b;
-}
-
-.slot-manager-date-banner.today h3 {
-  color: #1e40af;
-}
-
-.slot-manager-date-banner.future h3 {
-  color: #15803d;
-}
-
 .slot-manager-date-banner-info p {
-  font-size: var(--font-size-base);
   margin: 0;
-  font-weight: 500;
-  font-family: "Poppins", sans-serif;
+  color: var(--gray-text);
+  font-weight: 400;
 }
-
-.slot-manager-date-banner.past p {
-  color: #dc2626;
-}
-
-.slot-manager-date-banner.today p {
-  color: #2563eb;
-}
-
-.slot-manager-date-banner.future p {
-  color: #16a34a;
-}
-
 .slot-manager-date-banner-stats {
-  text-align: right;
-}
-
-.slot-manager-date-banner-stats-total {
-  font-size: var(--font-size-base);
-  color: var(--text-dark);
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
-}
-
-.slot-manager-date-banner-stats-time {
-  font-size: var(--font-size-sm);
-  color: var(--gray-medium);
+  display: flex;
+  gap: 1.2rem;
   font-weight: 500;
-  font-family: "Poppins", sans-serif;
+  color: var(--primary-dark);
+  align-items: center;
+}
+.slot-manager-date-banner-stats-total,
+.slot-manager-date-banner-stats-time {
+  background: var(--white);
+  padding: 0.2rem 0.8rem;
+  border-radius: 5px;
+  font-size: 0.98rem;
 }
 
 /* Loading State */
@@ -412,750 +239,364 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--spacing-3xl);
-  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
-  border-radius: var(--border-radius-xl);
-  border: 2px dashed var(--primary-medium);
+  padding: 2.5rem 0;
 }
-
 .slot-manager-loading-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.slot-manager-loading-spinner {
-  width: 3rem;
-  height: 3rem;
+  gap: 0.8rem;
   color: var(--primary-blue);
-  animation: spin 1s linear infinite;
 }
-
+.slot-manager-loading-spinner {
+  width: 2.2rem;
+  height: 2.2rem;
+}
 .slot-manager-loading-text {
-  color: var(--text-dark);
-  font-size: var(--font-size-lg);
   font-weight: 600;
-  font-family: "Poppins", sans-serif;
+  font-size: 1.1rem;
 }
 
 /* Empty State */
 .slot-manager-empty {
   text-align: center;
-  padding: var(--spacing-3xl) var(--spacing-2xl);
-  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
-  border-radius: var(--border-radius-xl);
-  border: 2px dashed var(--primary-medium);
-  transition: all var(--transition-bounce);
 }
-
-.slot-manager-empty:hover {
-  border-color: var(--primary-blue);
-  box-shadow: 0 8px 32px var(--shadow-light);
-}
-
 .slot-manager-empty-icon {
-  width: 5rem;
-  height: 5rem;
-  color: var(--primary-medium);
-  margin: 0 auto var(--spacing-xl);
+  width: 2.8rem;
+  height: 2.8rem;
+  color: var(--danger);
+  margin-bottom: 0.7rem;
 }
-
-.slot-manager-empty h3 {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--primary-dark);
-  margin: 0 0 var(--spacing-md) 0;
-  font-family: "Poppins", sans-serif;
-  letter-spacing: -0.025em;
-}
-
 .slot-manager-empty p {
-  color: var(--gray-medium);
-  margin: 0 0 var(--spacing-xl) 0;
-  line-height: 1.6;
-  font-size: var(--font-size-lg);
-  font-weight: 500;
-  font-family: "Poppins", sans-serif;
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1rem;
+  color: var(--gray-text);
 }
-
 .slot-manager-empty-actions {
   display: flex;
   justify-content: center;
-  gap: var(--spacing-lg);
+  gap: 1rem;
   flex-wrap: wrap;
 }
-
 .slot-manager-empty-button {
-  color: var(--primary-blue);
-  background: transparent;
+  background: none;
   border: none;
+  color: var(--primary-blue);
   font-weight: 600;
   cursor: pointer;
-  transition: color var(--transition-fast);
-  font-family: "Poppins", sans-serif;
-  font-size: var(--font-size-base);
+  font-size: 1rem;
+  border-radius: 5px;
+  padding: 0.3rem 1.1rem;
+  transition: color 0.2s, background 0.2s;
 }
-
 .slot-manager-empty-button:hover {
+  background: var(--gray-border);
   color: var(--primary-dark);
-}
-
-.slot-manager-empty-button.primary {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
-  color: var(--white);
-  padding: var(--spacing-lg) var(--spacing-2xl);
-  border-radius: var(--border-radius-lg);
-  border: 3px solid var(--primary-blue);
-  box-shadow: 0 4px 16px rgba(122, 178, 211, 0.3);
-  font-weight: 700;
-  min-height: 3rem;
-}
-
-.slot-manager-empty-button.primary:hover {
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary-dark));
-  border-color: var(--primary-dark);
-  color: var(--white);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(122, 178, 211, 0.4);
 }
 
 /* Slots Grid View */
 .slot-manager-slots-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-lg);
-}
-
-@media (min-width: 640px) {
-  .slot-manager-slots-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .slot-manager-slots-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .slot-manager-slots-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-@media (min-width: 1280px) {
-  .slot-manager-slots-grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.2rem;
 }
 
 /* Slot Card */
 .slot-manager-slot-card {
   position: relative;
-  padding: var(--spacing-xl);
-  border: 2px solid;
-  border-radius: var(--border-radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-bounce);
-  min-height: 8rem;
+  padding: 1.2rem 1rem 1.5rem 1rem;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(74,98,138,0.06);
   display: flex;
   flex-direction: column;
-  font-family: "Poppins", sans-serif;
-  box-shadow: 0 2px 8px var(--shadow-light);
+  min-height: 8rem;
+  cursor: pointer;
+  transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
+  margin-bottom: 0;
 }
-
-.slot-manager-slot-card.available {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border-color: #bbf7d0;
-  color: #15803d;
-}
-
-.slot-manager-slot-card.booked {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border-color: #bfdbfe;
-  color: #1e40af;
-}
-
-.slot-manager-slot-card.blocked {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border-color: #fecaca;
-  color: #991b1b;
-}
-
+.slot-manager-slot-card.available { border-color: var(--success); }
+.slot-manager-slot-card.booked { border-color: var(--primary-blue); }
+.slot-manager-slot-card.blocked { border-color: var(--danger); }
 .slot-manager-slot-card.selected {
-  box-shadow: 0 0 0 4px rgba(122, 178, 211, 0.3), 0 8px 24px var(--shadow-medium);
-  transform: scale(1.05);
   border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px var(--primary-blue), 0 8px 32px rgba(74,98,138,0.08);
 }
-
 .slot-manager-slot-card.disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.65;
 }
-
-.slot-manager-slot-card:not(.disabled):not(.booked):hover {
-  box-shadow: 0 8px 32px var(--shadow-medium);
-  transform: translateY(-4px) scale(1.02);
+.slot-manager-slot-card:not(.disabled):hover {
+  box-shadow: 0 8px 32px rgba(74,98,138,0.08);
+  border-color: var(--primary-dark);
 }
-
 .slot-manager-slot-checkbox {
   position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
+  top: 10px;
+  right: 10px;
   width: 1rem;
   height: 1rem;
   cursor: pointer;
   z-index: 2;
 }
-
 .slot-manager-slot-header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
 }
-
 .slot-manager-slot-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.15rem;
+  height: 1.15rem;
   flex-shrink: 0;
 }
-
-.slot-manager-slot-icon.available {
-  color: #16a34a;
-}
-
-.slot-manager-slot-icon.booked {
-  color: #2563eb;
-}
-
-.slot-manager-slot-icon.blocked {
-  color: #dc2626;
-}
-
+.slot-manager-slot-icon.available { color: var(--success); }
+.slot-manager-slot-icon.booked { color: var(--primary-blue); }
+.slot-manager-slot-icon.blocked { color: var(--danger); }
 .slot-manager-slot-time {
-  font-size: var(--font-size-base);
+  font-size: 1.08rem;
   font-weight: 700;
   flex: 1;
-  font-family: "Poppins", sans-serif;
 }
-
 .slot-manager-slot-end-time {
-  font-size: var(--font-size-sm);
-  color: var(--gray-medium);
-  margin-bottom: var(--spacing-sm);
-  font-weight: 500;
+  font-size: 0.97rem;
+  color: var(--gray-text);
+  margin-bottom: 0.3rem;
 }
-
 .slot-manager-slot-status {
-  font-size: var(--font-size-sm);
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   text-transform: capitalize;
-  margin-bottom: var(--spacing-md);
-  font-family: "Poppins", sans-serif;
+  color: var(--gray-text);
+  margin-bottom: 0.2rem;
 }
-
 .slot-manager-slot-details {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.15rem;
 }
-
 .slot-manager-slot-customer,
 .slot-manager-slot-service,
 .slot-manager-slot-notes {
-  font-size: var(--font-size-xs);
-  color: var(--gray-medium);
+  font-size: 0.93rem;
+  color: var(--gray-text);
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 0.2rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.slot-manager-slot-customer {
-  font-weight: 600;
-}
-
 .slot-manager-slot-action {
   position: absolute;
-  bottom: var(--spacing-sm);
-  left: var(--spacing-sm);
-  font-size: var(--font-size-xs);
-  background: rgba(255, 255, 255, 0.95);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--primary-light);
+  bottom: 12px;
+  left: 12px;
+  font-size: 0.93rem;
+  background: var(--background);
+  padding: 0.2rem 0.9rem;
+  border-radius: 5px;
+  border: none;
   cursor: pointer;
-  transition: all var(--transition-bounce);
-  backdrop-filter: blur(8px);
   font-weight: 600;
-  font-family: "Poppins", sans-serif;
+  color: var(--primary-dark);
+  transition: background 0.2s;
 }
-
 .slot-manager-slot-action:hover {
-  background: var(--white);
-  box-shadow: 0 4px 12px var(--shadow-light);
-  transform: translateY(-1px);
+  background: var(--primary-blue);
+  color: var(--white);
 }
 
 /* Slots List View */
 .slot-manager-slots-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 1.2rem;
 }
-
 .slot-manager-slot-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-xl);
-  border: 2px solid;
-  border-radius: var(--border-radius-lg);
-  transition: all var(--transition-bounce);
-  font-family: "Poppins", sans-serif;
-  box-shadow: 0 2px 8px var(--shadow-light);
+  padding: 1.1rem 1.5rem;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(74,98,138,0.06);
+  transition: box-shadow 0.18s, border-color 0.18s;
+  margin-bottom: 0;
 }
-
-.slot-manager-slot-row.available {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border-color: #bbf7d0;
-}
-
-.slot-manager-slot-row.booked {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border-color: #bfdbfe;
-}
-
-.slot-manager-slot-row.blocked {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border-color: #fecaca;
-}
-
+.slot-manager-slot-row.available { border-color: var(--success); }
+.slot-manager-slot-row.booked { border-color: var(--primary-blue); }
+.slot-manager-slot-row.blocked { border-color: var(--danger); }
 .slot-manager-slot-row.selected {
-  box-shadow: 0 0 0 4px rgba(122, 178, 211, 0.3), 0 8px 24px var(--shadow-medium);
   border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px var(--primary-blue), 0 8px 32px rgba(74,98,138,0.08);
 }
-
 .slot-manager-slot-row.disabled {
-  opacity: 0.7;
+  opacity: 0.65;
 }
-
 .slot-manager-slot-row:not(.disabled):hover {
-  box-shadow: 0 8px 32px var(--shadow-medium);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(74,98,138,0.08);
+  border-color: var(--primary-dark);
 }
-
 .slot-manager-slot-row-left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: 1.2rem;
 }
-
 .slot-manager-slot-row-checkbox {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   cursor: pointer;
 }
-
 .slot-manager-slot-row-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.08rem;
 }
-
 .slot-manager-slot-row-time {
   font-weight: 700;
-  color: var(--text-dark);
-  font-size: var(--font-size-lg);
-  font-family: "Poppins", sans-serif;
+  color: var(--primary-dark);
+  font-size: 1.07rem;
 }
-
 .slot-manager-slot-row-duration {
-  font-size: var(--font-size-sm);
-  color: var(--gray-medium);
+  font-size: 0.97rem;
+  color: var(--gray-text);
   font-weight: 500;
 }
-
 .slot-manager-slot-row-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: 1.2rem;
 }
-
 .slot-manager-slot-row-details {
   text-align: right;
   flex: 1;
 }
-
 .slot-manager-slot-row-status {
-  font-size: var(--font-size-base);
+  font-size: 1rem;
   font-weight: 700;
   text-transform: capitalize;
-  margin-bottom: var(--spacing-xs);
-  font-family: "Poppins", sans-serif;
 }
-
-.slot-manager-slot-row-status.available {
-  color: #15803d;
-}
-
-.slot-manager-slot-row-status.booked {
-  color: #1e40af;
-}
-
-.slot-manager-slot-row-status.blocked {
-  color: #991b1b;
-}
-
+.slot-manager-slot-row-status.available { color: var(--success); }
+.slot-manager-slot-row-status.booked { color: var(--primary-blue); }
+.slot-manager-slot-row-status.blocked { color: var(--danger); }
 .slot-manager-slot-row-meta {
-  font-size: var(--font-size-sm);
-  color: var(--gray-medium);
-  margin-bottom: var(--spacing-xs);
+  font-size: 0.97rem;
+  color: var(--gray-text);
+  margin-bottom: 0.1rem;
   font-weight: 500;
 }
-
 .slot-manager-slot-row-button {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: 700;
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  padding: 0.3rem 0.9rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-bounce);
-  border: 2px solid;
-  font-family: "Poppins", sans-serif;
-  text-transform: none;
-  letter-spacing: -0.025em;
-  min-height: 2.5rem;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
-
-.slot-manager-slot-row-button.block {
-  background: linear-gradient(135deg, var(--error-color), #dc2626);
-  color: var(--white);
-  border-color: var(--error-color);
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-}
-
-.slot-manager-slot-row-button.block:hover {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  border-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-}
-
-.slot-manager-slot-row-button.unblock {
-  background: linear-gradient(135deg, var(--success-color), #16a34a);
-  color: var(--white);
-  border-color: var(--success-color);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
-}
-
-.slot-manager-slot-row-button.unblock:hover {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  border-color: #16a34a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+.slot-manager-slot-row-button.block { color: var(--danger); }
+.slot-manager-slot-row-button.unblock { color: var(--success); }
+.slot-manager-slot-row-button:hover {
+  background: var(--gray-border);
 }
 
 /* Legend */
-.slot-manager-legend {
-  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
-  border: 2px solid var(--primary-light);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: 0 4px 20px var(--shadow-light);
-  transition: all var(--transition-bounce);
-}
-
-.slot-manager-legend:hover {
-  border-color: var(--primary-medium);
-  box-shadow: 0 8px 32px var(--shadow-medium);
-}
-
-.slot-manager-legend h4 {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--primary-dark);
-  margin: 0 0 var(--spacing-lg) 0;
-  font-family: "Poppins", sans-serif;
-  letter-spacing: -0.025em;
-}
-
 .slot-manager-legend-items {
   display: flex;
+  gap: 1.3rem;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xl);
-  font-size: var(--font-size-base);
 }
-
 .slot-manager-legend-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--primary-light);
-  backdrop-filter: blur(4px);
+  gap: 0.4rem;
 }
-
 .slot-manager-legend-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.1rem;
+  height: 1.1rem;
 }
-
-.slot-manager-legend-icon.available {
-  color: #16a34a;
-}
-
-.slot-manager-legend-icon.booked {
-  color: #2563eb;
-}
-
-.slot-manager-legend-icon.blocked {
-  color: #dc2626;
-}
-
+.slot-manager-legend-icon.available { color: var(--success); }
+.slot-manager-legend-icon.booked { color: var(--primary-blue); }
+.slot-manager-legend-icon.blocked { color: var(--danger); }
 .slot-manager-legend-text {
-  color: var(--text-dark);
   font-weight: 600;
-  font-family: "Poppins", sans-serif;
+  color: var(--primary-dark);
 }
-
 .slot-manager-legend-count {
-  font-weight: 700;
-  margin-left: var(--spacing-xs);
+  margin-left: 0.18rem;
+  font-weight: 400;
+  color: var(--gray-text);
 }
-
 .slot-manager-legend-total {
-  color: var(--gray-medium);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin-left: auto;
 }
 
 /* Help Panel */
-.slot-manager-help {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border: 2px solid #bfdbfe;
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
-}
-
 .slot-manager-help-content {
   display: flex;
+  gap: 1rem;
   align-items: flex-start;
-  gap: var(--spacing-lg);
 }
-
 .slot-manager-help-icon {
-  width: 2rem;
-  height: 2rem;
-  color: #2563eb;
-  margin-top: 0.125rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--primary-blue);
   flex-shrink: 0;
 }
-
-.slot-manager-help-text h4 {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: #1e40af;
-  margin: 0 0 var(--spacing-md) 0;
-  font-family: "Poppins", sans-serif;
-  letter-spacing: -0.025em;
-}
-
 .slot-manager-help-list {
-  list-style: none;
   margin: 0;
-  padding: 0;
-  font-size: var(--font-size-base);
-  color: #1e40af;
+  padding-left: 1.1rem;
+  list-style-type: disc;
+  color: var(--gray-text);
 }
-
 .slot-manager-help-list li {
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0.3rem;
   line-height: 1.5;
-  position: relative;
-  padding-left: var(--spacing-lg);
-  font-weight: 500;
-  font-family: "Poppins", sans-serif;
 }
-
-.slot-manager-help-list li::before {
-  content: '●';
-  position: absolute;
-  left: 0;
-  color: #3b82f6;
-  font-weight: bold;
-}
-
 .slot-manager-help-list li.today {
   font-weight: 700;
-  color: #1e40af;
+  color: var(--primary-blue);
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .slot-manager-controls {
-    flex-direction: column;
-  }
-
-  .slot-manager-controls-right {
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 768px) {
-  .slot-manager-controls {
-    padding: var(--spacing-xl);
-  }
-
-  .slot-manager-controls-left {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .slot-manager-controls-right {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-md);
-  }
-
-  .slot-manager-selection-info {
-    justify-content: center;
-  }
-
-  .slot-manager-slots-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-md);
-  }
-
-  .slot-manager-slot-row-left {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
-
-  .slot-manager-slot-row-right {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--spacing-md);
-  }
-
-  .slot-manager-legend-items {
-    justify-content: flex-start;
-    gap: var(--spacing-lg);
-  }
-
-  .slot-manager-date-banner {
-    padding: var(--spacing-lg);
-  }
-
-  .slot-manager-date-banner-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
-
-  .slot-manager-date-banner-stats {
-    text-align: left;
-    align-self: stretch;
-  }
-
+@media (max-width: 900px) {
+  .slot-manager { padding: 1rem; }
+  .slot-manager-controls,
+  .slot-manager-date-banner,
   .slot-manager-legend,
-  .slot-manager-help {
-    padding: var(--spacing-xl);
-  }
-}
-
-@media (max-width: 480px) {
-  .slot-manager {
-    gap: var(--spacing-xl);
-  }
-
-  .slot-manager-controls {
-    padding: var(--spacing-lg);
-  }
-
-  .slot-manager-date-banner {
-    padding: var(--spacing-md);
-  }
-
-  .slot-manager-slots-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .slot-manager-slot-card {
-    min-height: 7rem;
-    padding: var(--spacing-lg);
-  }
-
-  .slot-manager-slot-row {
-    padding: var(--spacing-lg);
-  }
-
-  .slot-manager-slot-row-left {
-    gap: var(--spacing-sm);
-  }
-
+  .slot-manager-help,
   .slot-manager-empty {
-    padding: var(--spacing-2xl) var(--spacing-lg);
+    padding: 1rem;
   }
-
+  .slot-manager-slots-grid { gap: 0.7rem; }
+}
+@media (max-width: 600px) {
+  .slot-manager-controls,
+  .slot-manager-date-banner,
   .slot-manager-legend,
-  .slot-manager-help {
-    padding: var(--spacing-lg);
+  .slot-manager-help,
+  .slot-manager-empty {
+    padding: 0.7rem;
   }
-
-  .slot-manager-legend-items {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
+  .slot-manager-slots-grid { grid-template-columns: 1fr; }
+  .slot-manager-slot-card { min-height: 6rem; padding: 0.7rem; }
+  .slot-manager-slot-row { padding: 0.7rem; }
+  .slot-manager-empty { padding: 1.2rem 0.5rem; }
 }
 
-/* Animation Classes */
-.slot-manager-fade-in {
-  animation: slotManagerFadeIn 0.6s ease-out;
-}
-
-@keyframes slotManagerFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.slot-manager-slot-card.animate-in {
-  animation: slotCardAppear 0.4s ease-out;
-}
-
-@keyframes slotCardAppear {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Focus and Accessibility */
+/* Focus State */
 .slot-manager-date-input:focus-visible,
 .slot-manager-view-button:focus-visible,
 .slot-manager-regenerate-button:focus-visible,
@@ -1165,94 +606,6 @@
 .slot-manager-slot-card:focus-visible,
 .slot-manager-slot-action:focus-visible,
 .slot-manager-slot-row-button:focus-visible {
-  outline: 4px solid var(--primary-blue);
-  outline-offset: 4px;
-}
-
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-  .slot-manager-slot-card,
-  .slot-manager-slot-row {
-    border-width: 4px;
-  }
-
-  .slot-manager-bulk-button,
-  .slot-manager-selection-button,
-  .slot-manager-regenerate-button,
-  .slot-manager-empty-button.primary,
-  .slot-manager-slot-row-button {
-    border-width: 4px;
-    font-weight: 800;
-  }
-
-  .slot-manager-view-button.active {
-    border-width: 4px;
-  }
-
-  .slot-manager-slot-status,
-  .slot-manager-slot-row-status {
-    font-weight: 800;
-  }
-
-  .slot-manager-date-label,
-  .slot-manager-view-label {
-    font-weight: 800;
-  }
-
-  .slot-manager-date-input {
-    border-width: 4px;
-    font-weight: 700;
-  }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  .slot-manager *,
-  .slot-manager *::before,
-  .slot-manager *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    transform: none !important;
-  }
-
-  .slot-manager-loading-spinner {
-    animation: none;
-  }
-
-  .slot-manager-regenerate-button svg.spinning {
-    animation: none;
-  }
-}
-
-/* Print Styles */
-@media print {
-  .slot-manager-controls,
-  .slot-manager-bulk-button,
-  .slot-manager-selection-button,
-  .slot-manager-regenerate-button,
-  .slot-manager-slot-action,
-  .slot-manager-slot-row-button,
-  .slot-manager-slot-checkbox,
-  .slot-manager-slot-row-checkbox {
-    display: none;
-  }
-
-  .slot-manager-slot-card,
-  .slot-manager-slot-row {
-    border-color: #000 !important;
-    box-shadow: none;
-    page-break-inside: avoid;
-  }
-
-  .slot-manager-date-banner,
-  .slot-manager-legend,
-  .slot-manager-help {
-    border-color: #000 !important;
-    background: #f9f9f9 !important;
-  }
-
-  .slot-manager-slots-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
 }

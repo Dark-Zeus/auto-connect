@@ -1,199 +1,218 @@
-/* ServiceForm.css - Simplified and Clean Version */
+:root {
+  --primary-blue: #7AB2D3;
+  --primary-dark: #4A628A;
+  --white: #fff;
+  --gray-light: #f8fafc;
+  --gray-border: #e2e8f0;
+  --gray-text: #64748b;
+  --gray-placeholder: #9ca3af;
+  --danger: #ef4444;
+  --success: #10b981;
+  --shadow: 0 2px 8px rgba(74,98,138,0.07);
+  --shadow-lg: 0 8px 32px rgba(74,98,138,0.12);
+  --text-dark: #1e293b;
+  --section-gap: 2.5rem;
+}
 
-/* Form Container */
+body, .service-form {
+  font-family: "Inter", "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+/* Container */
 .service-form {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  background: var(--gray-light);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  font-family: "Inter", "Roboto", "Helvetica", "Arial", sans-serif;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem;
+  gap: var(--section-gap);
 }
 
-/* Form Sections */
+/* Section separation */
 .service-form-section {
   background: var(--white);
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-bottom: 1.5rem;
-}
-
-.service-form-section:focus-within {
-  border-color: var(--primary-blue);
-  box-shadow: 0 4px 16px rgba(122, 178, 211, 0.15);
-}
-
-.service-form-section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-dark);
-  margin-bottom: 1.5rem;
-  font-family: "Inter", sans-serif;
-  letter-spacing: -0.025em;
-}
-
-.service-form-section-description {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin-bottom: 1.5rem;
-  line-height: 1.5;
-}
-
-/* Grid Layouts */
-.service-form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  border-radius: 14px;
+  border: 1.5px solid var(--gray-border);
+  box-shadow: var(--shadow);
+  padding: 2rem 1.5rem;
+  margin-bottom: var(--section-gap);
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-@media (min-width: 768px) {
-  .service-form-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.service-form-section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
 }
 
+.service-form-section-description {
+  font-size: 1rem;
+  color: var(--gray-text);
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+/* Grid for fields */
+.service-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
 .service-form-grid-full {
   grid-column: 1 / -1;
 }
+@media (max-width: 700px) {
+  .service-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
 
-/* Form Groups */
+/* Form Group */
 .service-form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* Labels - Clean and Consistent */
-.service-form-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-dark);
-  font-family: "Inter", sans-serif;
+  gap: 0.4rem;
   margin-bottom: 0.5rem;
-  line-height: 1.4;
 }
 
+/* Labels */
+.service-form-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
 .service-form-label.required::after {
   content: " *";
-  color: #ef4444;
-  font-weight: 600;
+  color: var(--danger);
+  font-weight: 700;
+  margin-left: 2px;
 }
 
-/* Input Base Styles - Better Spacing */
+/* Inputs, Selects, Textareas */
 .service-form-input,
 .service-form-select,
 .service-form-textarea {
   width: 100%;
-  padding: 0.875rem 1rem;
-  border: 1px solid #d1d5db;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--gray-border);
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 400;
-  font-family: "Inter", sans-serif;
-  background: #ffffff;
+  font-family: inherit;
+  background: var(--white);
   color: var(--text-dark);
-  transition: all 0.2s ease;
-  line-height: 1.5;
+  transition: border 0.2s, box-shadow 0.2s;
   min-height: 44px;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  /* Remove default select arrow in all browsers */
 }
 
-/* Consistent Placeholder Styling */
-.service-form-input::placeholder,
-.service-form-textarea::placeholder {
-  color: #9ca3af;
-  opacity: 1;
-  font-style: normal;
-  font-size: 0.9rem;
-  font-weight: 400;
-}
-
-/* Focus States */
 .service-form-input:focus,
 .service-form-select:focus,
 .service-form-textarea:focus {
   outline: none;
   border-color: var(--primary-blue);
-  box-shadow: 0 0 0 3px rgba(122, 178, 211, 0.1);
-  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(122, 178, 211, 0.10);
 }
 
-/* Error States */
 .service-form-input.error,
 .service-form-select.error,
 .service-form-textarea.error {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10);
 }
 
-/* Success States */
-.service-form-input.success,
-.service-form-select.success,
-.service-form-textarea.success {
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+.service-form-input:disabled,
+.service-form-select:disabled,
+.service-form-textarea:disabled {
+  background: #f3f4f6;
+  color: var(--gray-placeholder);
+  cursor: not-allowed;
 }
 
-/* Hover States */
-.service-form-input:hover:not(:disabled):not(:focus),
-.service-form-select:hover:not(:disabled):not(:focus),
-.service-form-textarea:hover:not(:disabled):not(:focus) {
-  border-color: #9ca3af;
+.service-form-input::placeholder,
+.service-form-textarea::placeholder {
+  color: var(--gray-placeholder);
+  opacity: 1;
+  font-size: 0.97rem;
 }
 
-/* Textarea Specific */
+/* Textarea specifics */
 .service-form-textarea {
   resize: vertical;
   min-height: 100px;
-  max-height: 200px;
+  max-height: 220px;
   line-height: 1.6;
 }
 
-/* Select Wrapper for Consistent Dropdown Styling */
+/* Custom select arrow */
 .service-form-select-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
-
+.service-form-select {
+  padding-right: 2.5rem;
+}
 .service-form-select-wrapper::after {
   content: "";
   position: absolute;
-  right: 0.75rem;
+  right: 1.1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 0;
-  height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-top: 6px solid #6b7280;
   pointer-events: none;
-  transition: all 0.2s ease;
 }
-
-.service-form-select-wrapper:hover::after {
-  border-top-color: var(--primary-blue);
-}
-
 .service-form-select:focus + .service-form-select-wrapper::after,
 .service-form-select-wrapper:focus-within::after {
   border-top-color: var(--primary-blue);
-  transform: translateY(-50%) rotate(180deg);
 }
 
-/* Select Specific */
-.service-form-select {
-  background-image: none;
-  background-position: right 0.75rem center;
-  background-repeat: no-repeat;
-  background-size: 1.25em 1.25em;
-  padding-right: 2.5rem;
-  appearance: none;
-  cursor: pointer;
+/* Remove double arrow: don't put select inside another select wrapper */
+select.service-form-select {
+  background: none !important;
+}
+
+/* Helper, error, and success messages */
+.service-form-helper-text,
+.service-form-description-helper {
+  font-size: 0.95rem;
+  color: var(--gray-text);
+  margin-top: 0.1rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+.service-form-error {
+  color: var(--danger);
+  font-size: 0.97rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+.service-form-success {
+  color: var(--success);
+  font-size: 0.97rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
 }
 
 /* Character Counter */
@@ -201,78 +220,38 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
 }
-
 .service-form-char-count {
-  font-size: 0.75rem;
-  color: #6b7280;
-  font-family: "Inter", sans-serif;
+  font-size: 0.85rem;
+  color: var(--gray-text);
 }
 
-/* Error and Success Messages - Simplified */
-.service-form-error {
-  color: #ef4444;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: "Inter", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.service-form-error svg {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-}
-
-.service-form-success {
-  color: #10b981;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: "Inter", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.service-form-success svg {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-}
-
-/* Array Input Groups - Better Spacing */
+/* Array Input Groups */
 .service-form-array-group {
-  margin-bottom: 2rem;
-  background: #f8fafc;
-  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--gray-light);
+  padding: 1.1rem 1rem;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1.5px solid var(--gray-border);
 }
-
 .service-form-array-item {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
   align-items: flex-start;
 }
-
 .service-form-array-input {
   flex: 1;
 }
-
 .service-form-array-remove {
-  color: #ffffff;
-  background: #ef4444;
+  color: #fff;
+  background: var(--danger);
   border: none;
   cursor: pointer;
-  padding: 0.75rem;
+  padding: 0.7rem;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  transition: background 0.18s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -280,155 +259,122 @@
   height: 44px;
   flex-shrink: 0;
 }
-
 .service-form-array-remove:hover {
   background: #dc2626;
 }
-
-.service-form-array-remove svg {
-  width: 1rem;
-  height: 1rem;
-}
-
 .service-form-array-add {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--primary-blue);
   background: transparent;
-  border: 1px solid var(--primary-blue);
+  border: 1.5px solid var(--primary-blue);
   cursor: pointer;
-  font-size: 0.875rem;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  transition: background 0.18s, color 0.18s, border 0.18s;
   width: fit-content;
 }
-
 .service-form-array-add:hover {
   background: var(--primary-blue);
-  color: #ffffff;
+  color: #fff;
 }
 
-.service-form-array-add svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-/* Checkbox Group - Simplified */
+/* Checkbox Group */
 .service-form-checkbox-group {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
   padding: 1rem;
-  background: #f8fafc;
+  background: var(--gray-light);
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1.5px solid var(--gray-border);
 }
-
 .service-form-checkbox {
   width: 1.125rem;
   height: 1.125rem;
-  border: 1px solid #d1d5db;
+  border: 1.5px solid var(--gray-border);
   border-radius: 4px;
-  background: #ffffff;
+  background: var(--white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border 0.18s, background 0.18s;
   flex-shrink: 0;
 }
-
 .service-form-checkbox:checked {
   background: var(--primary-blue);
   border-color: var(--primary-blue);
 }
-
 .service-form-checkbox-label {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
-  color: var(--text-dark);
-  font-family: "Inter", sans-serif;
+  color: var(--primary-dark);
   cursor: pointer;
   line-height: 1.5;
 }
 
-/* Helper Text */
-.service-form-helper-text {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.25rem;
-  line-height: 1.4;
-}
-
-.service-form-description-helper {
+/* Status badge container */
+.service-form-status-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
 }
 
-.service-form-helper-icon {
-  width: 0.875rem;
-  height: 0.875rem;
-  flex-shrink: 0;
+/* Price Range Container */
+.service-form-price-container {
+  grid-column: 1 / -1;
+  margin-bottom: 1.5rem;
 }
 
-/* Submit Buttons - Cleaner Design */
+/* Submit Buttons */
 .service-form-submit-section {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  padding: 1.5rem 0;
-  border-top: 1px solid #e2e8f0;
+  gap: 1.2rem;
+  padding: 1.5rem 0 0 0;
+  border-top: 1.5px solid var(--gray-border);
   margin-top: 2rem;
 }
-
 .service-form-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
-  font-family: "Inter", sans-serif;
+  gap: 0.6rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
   border: none;
-  font-size: 0.875rem;
-  min-width: 100px;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  min-width: 120px;
   justify-content: center;
   min-height: 44px;
+  box-shadow: var(--shadow);
 }
-
 .service-form-btn svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.1rem;
+  height: 1.1rem;
 }
-
 .service-form-btn-cancel {
-  background: #ffffff;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: #fff;
+  color: var(--primary-dark);
+  border: 1.5px solid var(--gray-border);
 }
-
 .service-form-btn-cancel:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: #f1f5f9;
+  border-color: var(--primary-blue);
 }
-
 .service-form-btn-submit {
   background: var(--primary-blue);
-  color: #ffffff;
+  color: #fff;
+  border: 1.5px solid var(--primary-blue);
 }
-
 .service-form-btn-submit:hover:not(:disabled) {
   background: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
-
 .service-form-btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -439,121 +385,53 @@
   position: relative;
   pointer-events: none;
 }
-
 .service-form-loading::after {
   content: 'Processing...';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-dark);
-  font-family: "Inter", sans-serif;
+  border-radius: 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-dark);
   z-index: 10;
 }
 
-/* Disabled States */
-.service-form-input:disabled,
-.service-form-select:disabled,
-.service-form-textarea:disabled {
-  background: #f3f4f6;
-  color: #9ca3af;
-  cursor: not-allowed;
-  border-color: #e5e7eb;
-}
-
-/* Price Range Container */
-.service-form-price-container {
-  grid-column: 1 / -1;
-}
-
-/* Status Badge Integration */
-.service-form-status-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .service-form {
-    padding: 1rem;
-  }
-  
-  .service-form-section {
-    padding: 1.5rem;
-  }
-  
-  .service-form-section-title {
-    font-size: 1.125rem;
-    margin-bottom: 1rem;
-  }
-  
-  .service-form-grid {
-    gap: 1rem;
-  }
-  
-  .service-form-submit-section {
-    flex-direction: column;
-    padding: 1rem 0;
-  }
-  
-  .service-form-btn {
-    width: 100%;
-  }
-  
-  .service-form-array-item {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-  }
-  
-  .service-form-array-remove {
-    align-self: flex-end;
-    width: fit-content;
-  }
-  
-  .service-form-checkbox-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .service-form {
-    padding: 0.75rem;
-  }
-  
-  .service-form-section {
-    padding: 1rem;
-  }
-  
-  .service-form-section-title {
-    font-size: 1rem;
-  }
-  
-  .service-form-input,
-  .service-form-select,
-  .service-form-textarea {
-    padding: 0.75rem;
-  }
-}
-
-/* Focus Ring for Accessibility */
+/* Accessibility: Focus Ring */
 .service-form input:focus-visible,
 .service-form select:focus-visible,
 .service-form textarea:focus-visible,
 .service-form button:focus-visible {
   outline: 2px solid var(--primary-blue);
   outline-offset: 2px;
+}
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+  .service-form {
+    padding: 1rem 0.5rem;
+  }
+  .service-form-section {
+    padding: 1rem 0.5rem;
+  }
+  .service-form-section-title {
+    font-size: 1.05rem;
+  }
+  .service-form-btn {
+    width: 100%;
+  }
+  .service-form-submit-section {
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem 0 0 0;
+  }
+  .service-form-array-item {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
 }
 
 /* Reduce Motion for Accessibility */

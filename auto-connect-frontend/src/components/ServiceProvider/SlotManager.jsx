@@ -440,7 +440,10 @@ const SlotManager = ({
             </div>
           )}
 
-          <div className="slot-manager-selection-actions">
+          <div
+            className="slot-manager-selection-actions"
+            style={{ display: "flex", gap: "1rem" }}
+          >
             <button
               onClick={selectAllAvailableSlots}
               className="slot-manager-selection-button"
@@ -470,7 +473,8 @@ const SlotManager = ({
                 Total Slots: {timeSlots.length}
               </div>
               <div className="slot-manager-date-banner-stats-time">
-                {timeSlots[0]?.startTime} - {timeSlots[timeSlots.length - 1]?.endTime}
+                {timeSlots[0]?.startTime} -{" "}
+                {timeSlots[timeSlots.length - 1]?.endTime}
               </div>
             </div>
           )}
@@ -482,7 +486,9 @@ const SlotManager = ({
         <div className="slot-manager-loading">
           <div className="slot-manager-loading-content">
             <Loader className="slot-manager-loading-spinner" />
-            <div className="slot-manager-loading-text">Loading time slots...</div>
+            <div className="slot-manager-loading-text">
+              Loading time slots...
+            </div>
           </div>
         </div>
       )}
@@ -559,9 +565,7 @@ const SlotManager = ({
                     {slot.endTime}
                   </div>
 
-                  <div className="slot-manager-slot-status">
-                    {slot.status}
-                  </div>
+                  <div className="slot-manager-slot-status">{slot.status}</div>
 
                   <div className="slot-manager-slot-details">
                     {slot.customerInfo && (
@@ -633,7 +637,9 @@ const SlotManager = ({
 
                   <div className="slot-manager-slot-row-right">
                     <div className="slot-manager-slot-row-details">
-                      <div className={`slot-manager-slot-row-status ${slot.status}`}>
+                      <div
+                        className={`slot-manager-slot-row-status ${slot.status}`}
+                      >
                         {slot.status}
                       </div>
                       {slot.customerInfo && (
@@ -732,9 +738,14 @@ const SlotManager = ({
                 <li>Booked slots cannot be modified (shown in blue)</li>
                 <li>Use bulk actions to manage multiple slots efficiently</li>
                 {isToday && (
-                  <li className="today">Past time slots for today are automatically blocked</li>
+                  <li className="today">
+                    Past time slots for today are automatically blocked
+                  </li>
                 )}
-                <li>Grid view for quick overview, List view for detailed information</li>
+                <li>
+                  Grid view for quick overview, List view for detailed
+                  information
+                </li>
                 <li>Changes are saved automatically when you modify slots</li>
               </ul>
             </div>

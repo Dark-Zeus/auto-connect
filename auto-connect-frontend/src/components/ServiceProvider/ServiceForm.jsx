@@ -674,36 +674,44 @@ const ServiceForm = ({
                   ))}
                 </select>
               </div>
-              <div className="service-form-helper-text">
-                Offering a warranty builds customer trust and confidence
-              </div>
             </div>
 
             <div className="service-form-group">
-              <div className="service-form-checkbox-group">
-                <input
-                  type="checkbox"
-                  name="isActive"
-                  checked={serviceData.isActive}
-                  onChange={handleInputChange}
-                  className="service-form-checkbox"
-                  id="service-active-toggle"
-                />
-                <label
-                  htmlFor="service-active-toggle"
-                  className="service-form-checkbox-label"
+              <div
+                className="service-form-checkbox-group"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
-                  Make this service active immediately
-                </label>
+                  <input
+                    type="checkbox"
+                    name="isActive"
+                    checked={serviceData.isActive}
+                    onChange={handleInputChange}
+                    className="service-form-checkbox"
+                    id="service-active-toggle"
+                  />
+                  <label
+                    htmlFor="service-active-toggle"
+                    className="service-form-checkbox-label"
+                    style={{ margin: 0 }}
+                  >
+                    Make this service active immediately
+                  </label>
+                </div>
                 <div className="service-form-status-container">
                   <StatusBadge
                     status={serviceData.isActive ? "active" : "inactive"}
                     size="sm"
                   />
                 </div>
-              </div>
-              <div className="service-form-helper-text">
-                Active services will be visible to customers right away
               </div>
             </div>
           </div>
