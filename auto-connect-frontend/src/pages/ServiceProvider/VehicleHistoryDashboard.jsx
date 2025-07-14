@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Car,
   Search,
@@ -6,7 +6,6 @@ import {
   Calendar,
   FileText,
   Wrench,
-  AlertTriangle,
   TrendingUp,
   Users,
   DollarSign,
@@ -16,24 +15,35 @@ import {
   Edit3,
   Download,
   BarChart3,
-  PieChart,
   Activity,
-  Settings,
   Plus,
   RefreshCw,
   ExternalLink,
 } from "lucide-react";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+const COLORS = ["#4A628A", "#7AB2D3", "#B9E5E8", "#DFF2EB", "#FF6F61"];
 import "./VehicleHistoryDashboard.css";
 
 const VehicleHistoryDashboard = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState("30days");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Mock data - replace with actual API calls
+  // Mock data - replace with API calls in production
   const dashboardStats = {
     totalVehiclesServiced: 1247,
     totalServices: 3891,
@@ -186,13 +196,14 @@ const VehicleHistoryDashboard = () => {
     return `₹${amount.toLocaleString()}`;
   };
 
+  // --- TABS CONTENT ---
   const renderOverviewTab = () => (
     <div className="overview-content">
       {/* Stats Grid */}
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon vehicles">
-            <Car className="w-6 h-6" />
+            <Car />
           </div>
           <div className="stat-info">
             <h3>{dashboardStats.totalVehiclesServiced.toLocaleString()}</h3>
@@ -202,10 +213,9 @@ const VehicleHistoryDashboard = () => {
             </span>
           </div>
         </div>
-
         <div className="stat-card">
           <div className="stat-icon services">
-            <Wrench className="w-6 h-6" />
+            <Wrench />
           </div>
           <div className="stat-info">
             <h3>{dashboardStats.totalServices.toLocaleString()}</h3>
@@ -213,10 +223,9 @@ const VehicleHistoryDashboard = () => {
             <span className="stat-change positive">+156 from last month</span>
           </div>
         </div>
-
         <div className="stat-card">
           <div className="stat-icon revenue">
-            <DollarSign className="w-6 h-6" />
+            <DollarSign />
           </div>
           <div className="stat-info">
             <h3>{formatCurrency(dashboardStats.totalRevenue)}</h3>
@@ -226,10 +235,9 @@ const VehicleHistoryDashboard = () => {
             </span>
           </div>
         </div>
-
         <div className="stat-card">
           <div className="stat-icon satisfaction">
-            <Users className="w-6 h-6" />
+            <Users />
           </div>
           <div className="stat-info">
             <h3>{dashboardStats.customerSatisfaction}/5</h3>
@@ -243,79 +251,65 @@ const VehicleHistoryDashboard = () => {
 
       {/* Charts Section */}
       <div className="charts-section">
+        {/* Revenue Bar Chart */}
         <div className="chart-card revenue-chart">
           <div className="chart-header">
             <h3>Monthly Revenue Trend</h3>
             <div className="chart-actions">
-              <button className="btn-icon">
-                <BarChart3 className="w-4 h-4" />
+              <button className="btn-icon" aria-label="Bar Chart">
+                <BarChart3 />
               </button>
-              <button className="btn-icon">
-                <Download className="w-4 h-4" />
+              <button className="btn-icon" aria-label="Download">
+                <Download />
               </button>
             </div>
           </div>
-          <div className="chart-content">
-            <div className="revenue-chart-display">
-              {monthlyData.map((data, index) => (
-                <div key={data.month} className="chart-bar">
-                  <div
-                    className="bar"
-                    style={{
-                      height: `${(data.revenue / 6000000) * 100}%`,
-                      animationDelay: `${index * 0.1}s`,
-                    }}
-                  ></div>
-                  <span className="bar-label">{data.month}</span>
-                  <span className="bar-value">
-                    {formatCurrency(data.revenue)}
-                  </span>
-                </div>
-              ))}
-            </div>
+          <div className="chart-content" style={{ height: "300px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={monthlyData}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip formatter={(value) => formatCurrency(value)} />
+                <Bar dataKey="revenue" fill="#4A628A" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
+        {/* Service Categories Pie Chart */}
         <div className="chart-card service-distribution">
           <div className="chart-header">
             <h3>Service Categories</h3>
             <div className="chart-actions">
-              <button className="btn-icon">
-                <PieChart className="w-4 h-4" />
+              <button className="btn-icon" aria-label="Pie Chart">
+                <PieChart />
               </button>
-              <button className="btn-icon">
-                <Download className="w-4 h-4" />
+              <button className="btn-icon" aria-label="Download">
+                <Download />
               </button>
             </div>
           </div>
-          <div className="chart-content">
-            <div className="service-categories">
-              {serviceCategories.map((category, index) => (
-                <div key={category.name} className="category-item">
-                  <div className="category-info">
-                    <div className="category-header">
-                      <span className="category-name">{category.name}</span>
-                      <span className="category-percentage">
-                        {category.percentage}%
-                      </span>
-                    </div>
-                    <div className="category-details">
-                      <span>{category.count} services</span>
-                      <span>{formatCurrency(category.revenue)}</span>
-                    </div>
-                  </div>
-                  <div className="category-bar">
-                    <div
-                      className="bar-fill"
-                      style={{
-                        width: `${category.percentage}%`,
-                        animationDelay: `${index * 0.1}s`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="chart-content" style={{ height: "300px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={serviceCategories}
+                  dataKey="percentage"
+                  nameKey="name"
+                  outerRadius={100}
+                  label
+                >
+                  {serviceCategories.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
@@ -325,11 +319,11 @@ const VehicleHistoryDashboard = () => {
         <div className="section-header">
           <h3>Recent Services</h3>
           <button className="btn btn-primary">
-            <Plus className="w-4 h-4" />
+            <Plus />
             Add Service Record
           </button>
         </div>
-        <div className="services-table">
+        <div className="services-table" style={{ textTransform: "uppercase" }}>
           <div className="table-header">
             <div className="table-cell">Vehicle</div>
             <div className="table-cell">Service</div>
@@ -369,17 +363,33 @@ const VehicleHistoryDashboard = () => {
                   {formatCurrency(service.cost)}
                 </span>
               </div>
-              <div className="table-cell actions">
-                <button className="btn-icon">
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button className="btn-icon">
-                  <Edit3 className="w-4 h-4" />
-                </button>
-                <button className="btn-icon">
-                  <Download className="w-4 h-4" />
-                </button>
-              </div>
+              <td className="service-table-cell">
+                <div className="actions-container">
+                  <button
+                    onClick={() => onView(service.id)}
+                    className="action-button view"
+                    title="View Service"
+                  >
+                    <Eye className="action-icon" />
+                  </button>
+
+                  <button
+                    onClick={() => onEdit(service.id)}
+                    className="action-button edit"
+                    title="Edit Service"
+                  >
+                    <Edit3 className="action-icon" />
+                  </button>
+
+                  <button
+                    onClick={() => onDownload(service.id)}
+                    className="action-button download"
+                    title="Download Service"
+                  >
+                    <Download className="action-icon" />
+                  </button>
+                </div>
+              </td>
             </div>
           ))}
         </div>
@@ -393,7 +403,7 @@ const VehicleHistoryDashboard = () => {
         <h3>Top Vehicles by Service History</h3>
         <div className="vehicles-actions">
           <div className="search-box">
-            <Search className="w-4 h-4" />
+            <Search />
             <input
               type="text"
               placeholder="Search vehicles..."
@@ -402,12 +412,11 @@ const VehicleHistoryDashboard = () => {
             />
           </div>
           <button className="btn btn-primary">
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink />
             View All Vehicles
           </button>
         </div>
       </div>
-
       <div className="vehicles-grid">
         {topVehicles.map((vehicle) => (
           <div key={vehicle.registration} className="vehicle-card">
@@ -426,10 +435,9 @@ const VehicleHistoryDashboard = () => {
                 </span>
               </div>
               <div className="vehicle-image">
-                <Car className="w-8 h-8" />
+                <Car />
               </div>
             </div>
-
             <div className="vehicle-stats">
               <div className="stat-item">
                 <span className="stat-label">Services</span>
@@ -446,18 +454,17 @@ const VehicleHistoryDashboard = () => {
                 <span className="stat-value">{vehicle.lastService}</span>
               </div>
             </div>
-
             <div className="vehicle-footer">
               <div className="customer-info">
-                <Users className="w-4 h-4" />
+                <Users />
                 <span>{vehicle.customerName}</span>
               </div>
               <div className="vehicle-actions">
-                <button className="btn-icon">
-                  <Eye className="w-4 h-4" />
+                <button className="btn-icon" aria-label="View">
+                  <Eye />
                 </button>
-                <button className="btn-icon">
-                  <FileText className="w-4 h-4" />
+                <button className="btn-icon" aria-label="History">
+                  <FileText />
                 </button>
               </div>
             </div>
@@ -484,17 +491,16 @@ const VehicleHistoryDashboard = () => {
             ))}
           </select>
           <button className="btn btn-primary">
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw />
             Refresh
           </button>
         </div>
       </div>
-
       <div className="analytics-grid">
         <div className="analytics-card performance">
           <div className="card-header">
             <h4>Performance Metrics</h4>
-            <TrendingUp className="w-5 h-5" />
+            <TrendingUp />
           </div>
           <div className="metrics-list">
             <div className="metric-item">
@@ -519,11 +525,10 @@ const VehicleHistoryDashboard = () => {
             </div>
           </div>
         </div>
-
         <div className="analytics-card technician-performance">
           <div className="card-header">
             <h4>Top Performing Technicians</h4>
-            <Users className="w-5 h-5" />
+            <Users />
           </div>
           <div className="technician-list">
             <div className="technician-item">
@@ -564,11 +569,10 @@ const VehicleHistoryDashboard = () => {
             </div>
           </div>
         </div>
-
         <div className="analytics-card revenue-analysis">
           <div className="card-header">
             <h4>Revenue Analysis</h4>
-            <DollarSign className="w-5 h-5" />
+            <DollarSign />
           </div>
           <div className="revenue-metrics">
             <div className="revenue-item">
@@ -591,11 +595,10 @@ const VehicleHistoryDashboard = () => {
             </div>
           </div>
         </div>
-
         <div className="analytics-card service-trends">
           <div className="card-header">
             <h4>Service Trends</h4>
-            <Activity className="w-5 h-5" />
+            <Activity />
           </div>
           <div className="trends-list">
             <div className="trend-item">
@@ -605,7 +608,7 @@ const VehicleHistoryDashboard = () => {
               </div>
               <div className="trend-change positive">
                 <span>+23%</span>
-                <TrendingUp className="w-4 h-4" />
+                <TrendingUp />
               </div>
             </div>
             <div className="trend-item">
@@ -615,7 +618,7 @@ const VehicleHistoryDashboard = () => {
               </div>
               <div className="trend-change positive">
                 <span>+18%</span>
-                <TrendingUp className="w-4 h-4" />
+                <TrendingUp />
               </div>
             </div>
             <div className="trend-item">
@@ -625,7 +628,7 @@ const VehicleHistoryDashboard = () => {
               </div>
               <div className="trend-change negative">
                 <span>-5%</span>
-                <TrendingUp className="w-4 h-4 rotate-180" />
+                <TrendingUp className="rotate-180" />
               </div>
             </div>
           </div>
@@ -638,40 +641,33 @@ const VehicleHistoryDashboard = () => {
     {
       id: "overview",
       label: "Overview",
-      icon: <BarChart3 className="w-4 h-4" />,
+      icon: <BarChart3 />,
     },
-    { id: "vehicles", label: "Vehicles", icon: <Car className="w-4 h-4" /> },
+    { id: "vehicles", label: "Vehicles", icon: <Car /> },
     {
       id: "analytics",
       label: "Analytics",
-      icon: <TrendingUp className="w-4 h-4" />,
+      icon: <TrendingUp />,
     },
   ];
 
   return (
     <div className="vehicle-history-dashboard">
+      {/* HEADER */}
       <div className="dashboard-header">
         <div className="header-content">
           <div className="page-title">
-            <Activity className="w-6 h-6" />
+            <Activity />
             <span>Vehicle Service History Dashboard</span>
           </div>
-          <div className="header-stats">
-            <div className="quick-stat">
-              <Clock className="w-4 h-4" />
-              <span>{dashboardStats.pendingServices} pending services</span>
-            </div>
-            <div className="quick-stat">
-              <CheckCircle className="w-4 h-4" />
-              <span>96.8% completion rate</span>
-            </div>
-          </div>
+
         </div>
         <div className="header-actions">
           <div className="filters">
             <div className="filter-group">
-              <label>Time Range:</label>
+              <label htmlFor="timeRange">Time Range:</label>
               <select
+                id="timeRange"
                 value={selectedTimeRange}
                 onChange={(e) => setSelectedTimeRange(e.target.value)}
                 className="form-select"
@@ -684,8 +680,9 @@ const VehicleHistoryDashboard = () => {
               </select>
             </div>
             <div className="filter-group">
-              <label>Status:</label>
+              <label htmlFor="statusFilter">Status:</label>
               <select
+                id="statusFilter"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="form-select"
@@ -700,17 +697,18 @@ const VehicleHistoryDashboard = () => {
           </div>
           <div className="action-buttons">
             <button className="btn btn-secondary">
-              <Download className="w-4 h-4" />
+              <Download />
               Export Report
             </button>
             <button className="btn btn-primary">
-              <Plus className="w-4 h-4" />
+              <Plus />
               Add Service
             </button>
           </div>
         </div>
       </div>
 
+      {/* NAVIGATION */}
       <div className="dashboard-navigation">
         <div className="nav-tabs">
           {tabs.map((tab) => (
@@ -718,6 +716,7 @@ const VehicleHistoryDashboard = () => {
               key={tab.id}
               className={`nav-tab ${activeTab === tab.id ? "active" : ""}`}
               onClick={() => setActiveTab(tab.id)}
+              type="button"
             >
               {tab.icon}
               <span>{tab.label}</span>
@@ -726,6 +725,7 @@ const VehicleHistoryDashboard = () => {
         </div>
       </div>
 
+      {/* MAIN CONTENT */}
       <div className="dashboard-content">
         {activeTab === "overview" && renderOverviewTab()}
         {activeTab === "vehicles" && renderVehiclesTab()}
