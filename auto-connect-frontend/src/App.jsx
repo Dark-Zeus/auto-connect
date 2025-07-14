@@ -35,7 +35,7 @@ import SystemData from "@pages/Admin/SystemData";
 //import ProfilePage from "@pages/Admin/Profile";
 import VehicleOwnersPage from "@pages/Admin/VehicleOwners";
 import InsuranceCompaniesPage from "@pages/Admin/InsurenceCompanies";
-import UserRequestsPage from "@pages/Admin/UserRequests";
+//import UserRequestsPage from "@pages/Admin/UserRequests";
 import UserLayout from "@pages/Admin/UserLayout";
 
 //Pages
@@ -81,7 +81,7 @@ function App() {
               <Route index element={<UserPage />} /> {/* /users */}
               <Route path="vehicleowners" element={<VehicleOwnersPage />} />
               <Route path="insurancecompanies" element={<InsuranceCompaniesPage />} />
-              <Route path="requests" element={<UserRequestsPage />} />
+              <Route path="services" element={<ServicePage />} />
             </Route>
             <Route path="notifications" element={<Notifications />} />
             <Route path="transactions" element={<Transactions />} />

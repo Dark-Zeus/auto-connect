@@ -36,7 +36,7 @@ function DashboardPage() {
     "/users": "User Management",
         "/users/vehicleowners": "Vehicle Owners",
         "/users/insurancecompanies": "Insurance Companies",
-        "/users/requests": "User Requests",
+        "/users/services": "Service & Repair Centers",
     "/notifications": "Notifications",
     "/transactions": "Transactions",
     "/updates": "Updates",
@@ -72,18 +72,18 @@ function DashboardPage() {
             <ul className="tw:space-y-3 tw:text-lg tw:font-medium tw:text-gray-800">
               <SidebarItem
                 to="/"
-                icon={<Dashboard style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<Dashboard style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Dashboard"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarItem
                 to="/services"
-                icon={<Garage style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<Garage style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Service Centers"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarDropdown
-                icon={<People style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<People style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="User Management"
                 basePath="/users"
                 items={[
@@ -98,39 +98,39 @@ function DashboardPage() {
                     icon: <BusinessIcon className="tw:text-gray-500" fontSize="small" />,
                   },
                   {
-                    to: "/users/requests",
-                    label: "User Requests",
-                    icon: <ContactPageIcon className="tw:text-gray-500" fontSize="small" />,
+                    to: "/users/services",
+                    label: "Service & Repair Centers",
+                    icon: <Garage className="tw:text-gray-500" fontSize="small" />,
                   },
                 ]}
               />
               <SidebarItem
                 to="/notifications"
-                icon={<Notifications style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<Notifications style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Notifications"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarItem
                 to="/transactions"
-                icon={<PaymentsOutlined style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<PaymentsOutlined style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Transactions"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarItem
                 to="/updates"
-                icon={<Update style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<Update style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Updates"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarItem
                 to="/analytics"
-                icon={<BarIcon style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<BarIcon style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Analytics"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarItem
                 to="/systemdata"
-                icon={<SystemSecurityUpdateSharp style={{ fontSize: 35 }} className="tw:text-black" />}
+                icon={<SystemSecurityUpdateSharp style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="System Data"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
@@ -141,7 +141,7 @@ function DashboardPage() {
             <ul className="tw:mb-2">
               <SidebarItem
                 to="/auth"
-                icon={<Logout style={{ fontSize: 35 }} className="tw:text-red-600" />}
+                icon={<Logout style={{ fontSize: 30 }} className="tw:text-red-600" />}
                 text="Logout"
                 className="tw:!text-red-600 tw:text-lg hover:tw:text-red-800 hover:tw:bg-red-800 hover:tw:shadow-inner"
               />

@@ -124,6 +124,40 @@ function ServiceCenterDetailCard({ data, onClose }) {
                   </ul>
                 </div>
               )}
+
+              {/* Certifications */}
+              {businessInfo?.certifications?.length > 0 && (
+                <div className="tw:mt-10">
+                  <h3 className="tw:text-2xl tw:font-bold tw:text-blue-800 tw:mb-5 tw:pb-2 tw:border-b tw:border-blue-200">
+                    📜 Certifications
+                  </h3>
+                  <div className="tw:mt-4 tw:grid tw:grid-cols-1 md:tw:grid-cols-2 lg:tw:grid-cols-2 tw:gap-4">
+                    {businessInfo.certifications.map((cert, idx) => (
+                      <div
+                        key={idx}
+                        className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:border tw:border-blue-200 tw:rounded-2xl tw:p-6 tw:shadow-md hover:tw:shadow-lg tw:transition-all tw:duration-200"
+                      >
+                        <h4 className="tw:text-lg tw:font-semibold tw:text-blue-700 tw:mb-2">
+                          📘 {cert.name}
+                        </h4>
+                        <div className="tw:space-y-2 tw:text-[14px] tw:text-blue-900">
+                          <p><span className="tw:font-medium">Issued By:</span> {cert.issuedBy}</p>
+                          <p><span className="tw:font-medium">Certificate #:</span> {cert.certificateNumber}</p>
+                          <div className="tw:flex tw:flex-wrap tw:gap-2 tw:mt-2">
+                            <span className="tw:bg-blue-100 tw:text-blue-700 tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:font-medium">
+                              📅 Issued: {new Date(cert.issueDate).toLocaleDateString()}
+                            </span>
+                            <span className="tw:bg-red-100 tw:text-red-700 tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:font-medium">
+                              ⏳ Expires: {new Date(cert.expiryDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         </div>
