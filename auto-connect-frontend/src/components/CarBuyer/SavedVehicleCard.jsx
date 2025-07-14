@@ -17,7 +17,10 @@ import {
   BookmarkBorder 
 } from '@mui/icons-material';
 
+import { useNavigate } from 'react-router-dom';
+
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
+import lc150_1 from '../../assets/images/lc150_1.jpg';
 
 const SavedVehicleCard = ({ vehicle = null }) => {
   // State to manage saved/unsaved toggle
@@ -32,11 +35,13 @@ const SavedVehicleCard = ({ vehicle = null }) => {
     price: 32000000,
     odometer: 135000,
     fuelType: 'Diesel',
-    image: toyotaImage,
+    image: lc150_1,
     postedDate: '2025-06-20',
     district: 'Gampaha',
     city: 'Katana'
   };
+
+  const navigate = useNavigate();
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-LK', {
@@ -60,7 +65,8 @@ const SavedVehicleCard = ({ vehicle = null }) => {
   };
 
   const handleHeaderClick = () => {
-    console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
+    //console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
+    navigate('/vehicleview');
   };
 
   const handleBookmarkToggle = () => {
