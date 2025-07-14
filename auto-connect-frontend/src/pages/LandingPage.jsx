@@ -326,7 +326,6 @@ const LandingPage = () => {
                   src="/logo.png"
                   alt="AutoConnect Logo"
                   className="w-8 h-8" // Adjust size as needed
-                  style={{ filter: "brightness(0) invert(1)" }} // Makes logo white
                 />
               </div>
               <span className="logo-text">
@@ -419,7 +418,7 @@ const LandingPage = () => {
                 <span>Technical Infrastructure</span>
               </div>
               <h2 className="section-title">
-                <span>Platform </span>
+                <span style={{ color: "var(--charcoal)" }}>Platform </span>
                 <span className="title-gradient">Capabilities</span>
               </h2>
               <p className="section-description">
@@ -511,7 +510,10 @@ const LandingPage = () => {
             {/* Header */}
             <div className="section-header">
               <h2 className="section-title">
-                Platform Impact & <span className="title-gradient">Growth</span>
+                <span style={{ color: "var(--charcoal)" }}>
+                  Platform Impact &{" "}
+                </span>
+                <span className="title-gradient">Growth</span>
               </h2>
               <p className="section-description">
                 Real numbers demonstrating our platform's success in
@@ -554,7 +556,7 @@ const LandingPage = () => {
                 <span>User Experience</span>
               </div>
               <h2 className="section-title">
-                <span>How It </span>
+                <span style={{ color: "var(--charcoal)" }}>How it </span>
                 <span className="title-gradient">Works</span>
               </h2>
               <p className="section-description">
@@ -665,7 +667,7 @@ const LandingPage = () => {
                 <span>Pricing Plans</span>
               </div>
               <h2 className="section-title">
-                <span>Choose Your </span>
+                <span style={{ color: "var(--charcoal)" }}>Choose Your </span>
                 <span className="title-gradient">Plan</span>
               </h2>
               <p className="section-description">
@@ -756,7 +758,9 @@ const LandingPage = () => {
             {/* Header */}
             <div className="section-header">
               <h2 className="section-title">
-                <span>Success </span>
+                <span style={{ color: "var(--charcoal)" }}>
+                  Success{" "}
+                </span>
                 <span className="title-gradient">Stories</span>
               </h2>
               <p className="section-description">
