@@ -9,7 +9,7 @@ const SavedVehiclesPage = () => {
   const vehiclesPerPage = 20;
 
   // Create hardcoded card components as an array
-  const allCards = Array(5).fill().map((_, index) => (
+  const allCards = Array(1).fill().map((_, index) => (
     <SavedVehicleCard key={index} />
   ));
 
