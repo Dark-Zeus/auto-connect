@@ -12,7 +12,8 @@ import {
   LocationOn, 
   AttachMoney, 
   Speed, 
-  LocalGasStation 
+  LocalGasStation,
+  Visibility 
 } from '@mui/icons-material';
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
@@ -28,14 +29,18 @@ const ListedVehicleCard = ({ vehicle = null }) => {
     id: 1,
     manufacturer: 'Toyota',
     model: 'Land Cruiser 150',
+    vehicleType: 'SUV',
     year: 2008,
     price: 32000000,
     odometer: 135000,
     fuelType: 'Diesel',
+    engineCapacity: 3000,
+    transmission: 'Automatic',
     image: toyotaImage,
     postedDate: '2025-06-20',
     district: 'Gampaha',
-    city: 'Katana'
+    city: 'Katana',
+    views: 120
   };
 
   const formatPrice = (price) => {
@@ -61,7 +66,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
 
   const handleHeaderClick = () => {
     // Default ref for navigation - will be replaced with actual routing
-    console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
+    //navigate('/vehicleview');
   };
 
   const handleConfirm = (type) => {
@@ -89,7 +94,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
     <>
       <Card 
         className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 tw:mb-1.5"
-        style={{ 
+        sx={{ 
           width: '50vw', 
           height: '15vh',
           minWidth: 500,
@@ -102,7 +107,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           '&:hover': {
             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-            transform: 'translateY(-4px)'
+            transform: 'translateY(-3px)'
           }
         }}
       >
@@ -122,8 +127,8 @@ const ListedVehicleCard = ({ vehicle = null }) => {
               <CardContent className="tw:p-4 tw:h-full tw:flex tw:flex-col" sx={{ height: '100%', boxSizing: 'border-box', padding: '16px !important' }}>
                 {/* Clickable Header */}
                 <Box 
-                  onClick={handleHeaderClick}
-                  className="tw:cursor-pointer tw:mb-3 tw:group"
+                  onClick={handleHeaderClick}  
+                  className=" tw:mb-3 tw:group"
                 >
                   <Typography 
                     variant="h6" 
@@ -203,8 +208,24 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   </Box>
                 </Box>
                 
-                {/* Posted Date */}
-                <Box className="tw:flex tw:justify-end tw:pt-2 tw:border-t tw:border-gray-300">
+                {/* Posted Date and Views */}
+                <Box className="tw:flex tw:justify-between tw:items-center tw:pt-2 tw:border-t tw:border-gray-300">
+                  {/* Views Count */}
+                  <Box className="tw:flex tw:items-center tw:gap-1">
+                    <Visibility 
+                      fontSize="small" 
+                      style={{ color: '#7bb1d2', fontSize: '16px' }}
+                    />
+                    <Typography 
+                      variant="caption" 
+                      className="tw:text-gray-500 tw:text-xs"
+                      fontSize={12}
+                    >
+                      {vehicleData.views || 0} views
+                    </Typography>
+                  </Box>
+
+                  {/* Posted Date */}
                   <Typography 
                     variant="caption" 
                     className="tw:text-gray-500 tw:text-xs"
