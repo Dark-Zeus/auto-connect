@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, X , Car, User} from 'lucide-react';
+import { Camera, X , CarFront, User, Logs} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
 
@@ -229,7 +229,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
         <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
           <div className="tw:flex tw:items-center tw:gap-3">
             <div className="tw:bg-red-500 tw:p-2 tw:rounded-lg">
-              <Camera className="tw:w-6 tw:h-6 tw:text-white" />
+              <CarFront className="tw:w-6 tw:h-6 tw:text-white" />
             </div>
             <div>
               <h1 className="tw:text-3xl tw:font-bold">List Your Vehicle</h1>
@@ -239,90 +239,12 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
         </div>
 
         <div className="tw:bg-white tw:rounded-b-xl tw:shadow-lg">
-          {/* Contact Information */}
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
-            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
-              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
-                <svg className="tw:w-5 tw:h-5 tw:text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                </svg>
-              </div>
-              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Contact Information</h2>
-            </div>
-
-            <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Name
-                </label>
-                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
-                  {fixedName}
-                </div>
-              </div>
-
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  Mobile Phone <span className="tw:text-red-500">*</span>
-                </label>
-                <input
-                  ref={fieldRefs.mobile}
-                  type="tel"
-                  name="mobile"
-                  value={formData.mobile}
-                  onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mobile ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
-                  placeholder="07xxxxxxxx"
-                  required
-                />
-                {errors.mobile && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.mobile}</p>}
-              </div>
-
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
-                  District <span className="tw:text-red-500">*</span>
-                </label>
-                <select
-                  ref={fieldRefs.district}
-                  name="district"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.district ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
-                  required
-                >
-                  <option value="">Select District</option>
-                  {sriLankanDistricts.map(district => (
-                    <option key={district} value={district}>{district}</option>
-                  ))}
-                </select>
-                {errors.district && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.district}</p>}
-              </div>
-
-              <div>
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">City</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
-                  placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
-                />
-              </div>
-
-              <div className="md:tw:col-span-2">
-                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Email</label>
-                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
-                  {fixedEmail}
-                </div>
-              </div>
-            </div>
-          </div>
-
+          
           {/* Vehicle Information */}
           <div className="tw:p-8 tw:border-b tw:border-slate-200">
             <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
               <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
-                <Camera className="tw:w-5 tw:h-5 tw:text-white" />
+                <Logs className="tw:w-5 tw:h-5 tw:text-white" />
               </div>
               <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Vehicle Information</h2>
             </div>
@@ -337,7 +259,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="vehicleType"
                   value={formData.vehicleType}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.vehicleType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.vehicleType ? 'tw:border-black' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Type</option>
@@ -381,7 +303,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="make"
                   value={formData.make}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.make ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.make ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Make</option>
@@ -402,7 +324,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="model"
                   value={formData.model}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.model ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.model ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="e.g., CLA180, Corolla, CT100"
                   required
                 />
@@ -418,7 +340,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="year"
                   value={formData.year}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.year ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.year ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Year</option>
@@ -437,7 +359,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.price ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.price ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="0"
                   min="0"
                 />
@@ -466,7 +388,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="transmission"
                   value={formData.transmission}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.transmission ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.transmission ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Transmission</option>
@@ -486,7 +408,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="fuelType"
                   value={formData.fuelType}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.fuelType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.fuelType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Fuel Type</option>
@@ -505,7 +427,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="engineCapacity"
                   value={formData.engineCapacity}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.engineCapacity ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.engineCapacity ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="1500"
                   min="1"
                   max="10000"
@@ -523,7 +445,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="mileage"
                   value={formData.mileage}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mileage ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mileage ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="45000"
                   min="0"
                   max="1000000"
@@ -541,7 +463,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                 onChange={handleInputChange}
                 rows="4"
                 maxLength="5000"
-                className="tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all tw:resize-none"
+                className="tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all tw:resize-none"
                 placeholder="Describe your vehicle's features, condition and any additional information..."
               />
               <div className="tw:text-right tw:text-sm tw:text-slate-500 tw:mt-1">
@@ -594,12 +516,89 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
             </div>
           </div>
 
+          {/* Contact Information */}
+          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
+              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
+                <User className="tw:w-5 tw:h-5 tw:text-white" />
+              </div>
+              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Contact Information</h2>
+            </div>
+
+            <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Name
+                </label>
+                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
+                  {fixedName}
+                </div>
+              </div>
+
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Mobile Phone <span className="tw:text-red-500">*</span>
+                </label>
+                <input
+                  ref={fieldRefs.mobile}
+                  type="tel"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mobile ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="07xxxxxxxx"
+                  required
+                />
+                {errors.mobile && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.mobile}</p>}
+              </div>
+
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  District <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.district}
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.district ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
+                >
+                  <option value="">Select District</option>
+                  {sriLankanDistricts.map(district => (
+                    <option key={district} value={district}>{district}</option>
+                  ))}
+                </select>
+                {errors.district && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.district}</p>}
+              </div>
+
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
+                  placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
+                />
+              </div>
+
+              <div className="md:tw:col-span-2">
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Email</label>
+                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
+                  {fixedEmail}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Action Buttons */}
           <div className="tw:p-8 tw:flex tw:flex-col sm:tw:flex-row tw:gap-4 tw:justify-end">
             <button
               type="button"
               onClick={handleDiscard}
-              className="tw:px-8 tw:py-3 tw:border tw:border-slate-300 tw:text-slate-700 tw:rounded-lg hover:tw:bg-slate-50 tw:transition-colors tw:font-medium tw:cursor-pointer"
+              className="tw:px-8 tw:py-3 tw:border tw:bg-red-700 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-red-800 tw:transition-colors tw:font-medium tw:cursor-pointer"
               disabled={Object.values(formData).every(val => !val) && photos.every(photo => !photo)}
             >
               Discard
@@ -607,7 +606,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
             <button
               type="submit"
               onClick={handleSubmit}
-              className="tw:px-8 tw:py-3 tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:rounded-lg hover:tw:from-slate-700 hover:tw:to-slate-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
+              className="tw:px-8 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:hover:bg-blue-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
             >
               List Vehicle
             </button>
