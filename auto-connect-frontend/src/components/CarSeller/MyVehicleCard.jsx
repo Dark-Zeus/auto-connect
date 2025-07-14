@@ -82,7 +82,10 @@ const ListedVehicleCard = ({ vehicle = null }) => {
       setConfirmProps({
         title: 'Edit Vehicle',
         message: 'Do you want to edit this vehicle listing?',
-        onOK: () => setConfirmOpen(false),
+        onOK: () => {
+          setConfirmOpen(false);
+          navigate('/update-vehicle-ad');
+        },
         onCancel: () => setConfirmOpen(false)
       });
       setConfirmOpen(true);
