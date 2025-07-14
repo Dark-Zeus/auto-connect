@@ -49,8 +49,8 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   ];
 
   const vehicleTypes = [
-    'car', 'van', 'suv', 'crew cab', 'pickup/double cab', 'bus', 'lorry/tipper',
-    'tractor', 'threewheel', 'heavyduty', 'other', 'motorcycle'
+    'Car', 'Van', 'SUV', 'Crew Cab', 'Pickup/Double Cab', 'Bus', 'Lorry/Tipper',
+    'Tractor', 'Threewheel', 'Heavyduty', 'Other', 'Motorcycle'
   ];
 
   const vehicleMakes = [
