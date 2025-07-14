@@ -21,7 +21,7 @@ const VehicleDescriptionBox = ({ vehicle }) => {
     fuelType: 'Petrol',
     engineCapacity: '1500',
     mileage: '272000',
-    description: 'Toyota Tercel in Akuressa. Well maintained. Updated documents and registration. Inspection on prior appointment can be arranged. Please call for more information zzzzzzzzzzzzzzzzzzzzzzzzzzzzz zzzzzzzzzzz zzzzzzzzzz zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz zzzzzzzzzzz zzzzzzzzz zzzzzzzzz zzzzzzzzzzz zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz zzzzzzzzzzzzzzzzzzzzz',
+    description: 'Toyota Land Cruiser 150 in Akuressa. Well maintained. Family used. Company maintained. All services up to date. Updated documents and registration. Inspection on prior appointment can be arranged. Please call for more information.',
     views: '2164'
   };
 
