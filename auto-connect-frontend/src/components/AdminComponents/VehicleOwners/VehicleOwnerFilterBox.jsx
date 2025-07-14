@@ -2,7 +2,7 @@ import React from "react";
 
 function SearchFilterSortBox({ search, onSearch, filter, onFilter, sort, onSort, onReset }) {
   return (
-    <div className="tw:max-w-333 tw:mx-auto">
+    <div className="tw:max-w-7xl tw:mx-auto">
       <div className="tw:mb-8 tw:p-6 tw:bg-white tw:border tw:border-gray-300 tw:rounded-xl tw:shadow-md">
         {/* Filters Row - single line */}
         <div className="tw:flex tw:justify-center tw:gap-6 tw:flex-nowrap tw:w-full">

@@ -15,6 +15,23 @@ const sampleCompanies = [
     website: "www.safelife.lk",
     establishedDate: "2008-04-10",
     image: insurence1,
+    rating: 4.5,
+    certifications: [
+      {
+        name: "ISO 9001: Quality Management",
+        issuedBy: "Sri Lanka Standards Institution",
+        issueDate: "2015-05-10",
+        expiryDate: "2025-05-10",
+        certificateNumber: "ISO9001-SL-2025-001",
+      },
+      {
+        name: "IRCS Compliance Certificate",
+        issuedBy: "Insurance Regulatory Commission of Sri Lanka",
+        issueDate: "2022-01-01",
+        expiryDate: "2026-01-01",
+        certificateNumber: "IRCS-2022-456",
+      },
+    ],
   },
   {
     name: "TrustShield Insurance",
@@ -26,7 +43,17 @@ const sampleCompanies = [
     address: "No. 101, Marine Drive, Colombo 06",
     website: "www.trustshield.lk",
     establishedDate: "2015-09-20",
-    image: "https://via.placeholder.com/100x100.png?text=Trust",
+    image: insurence1,
+    rating: 4.5,
+    certifications: [
+      {
+        name: "ISO 27001: Information Security",
+        issuedBy: "Bureau Veritas",
+        issueDate: "2020-08-15",
+        expiryDate: "2026-08-15",
+        certificateNumber: "BV-ISO27001-2020",
+      },
+    ],
   },
   {
     name: "LifeGuard Assurance",
@@ -38,9 +65,27 @@ const sampleCompanies = [
     address: "No. 88, Lake Road, Kandy",
     website: "www.lifeguard.lk",
     establishedDate: "2005-03-15",
-    image: "https://via.placeholder.com/100x100.png?text=Guard",
+    image: insurence1,
+    rating: 4.5,
+    certifications: [
+      {
+        name: "Insurance Best Practices Award",
+        issuedBy: "Asia Insurance Forum",
+        issueDate: "2019-11-01",
+        expiryDate: "2024-11-01",
+        certificateNumber: "AIF-BEST-2019",
+      },
+      {
+        name: "Compliance Excellence",
+        issuedBy: "Central Bank of Sri Lanka",
+        issueDate: "2021-06-30",
+        expiryDate: "2026-06-30",
+        certificateNumber: "CBSL-COMP-789",
+      },
+    ],
   },
 ];
+
 
 function InsurancePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -105,7 +150,7 @@ function InsurancePage() {
 
     {/* Centered Cards */}
     <div className="tw:flex tw:justify-center">
-      <div className="tw:grid tw:grid-cols-3 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6 tw:mb-10 tw:max-w-7xl">
+      <div className="tw:grid tw:grid-cols-3 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6 tw:mb-10 tw:max-w-8xl">
         {filteredCompanies.map((company) => (
           <InsuranceCompanyCard key={company.licenseNumber} company={company} />
         ))}

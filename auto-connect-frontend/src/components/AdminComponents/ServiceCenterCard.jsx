@@ -29,7 +29,7 @@ function ServiceCenterCard({ name, description, icon, district, rating, onView }
   };
 
   return (
-    <div className="tw:w-full tw:max-w-[320px] tw:h-[220px] tw:bg-white tw:border tw:border-gray-300 tw:rounded-2xl tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:p-4 tw:flex tw:flex-col tw:justify-between">
+    <div className="tw:w-full tw:max-w-[300px] tw:h-[220px] tw:bg-white tw:border tw:border-gray-300 tw:rounded-2xl tw:shadow-md tw:transition-all tw:duration-300 hover:tw:shadow-lg tw:p-4 tw:flex tw:flex-col tw:justify-between">
       
       {/* Top Section: Image and Name */}
       <div className="tw:flex tw:justify-between tw:items-start tw:gap-4">
