@@ -8,7 +8,7 @@ const MyAdsPage = () => {
   const vehiclesPerPage = 20;
 
   // Create hardcoded card components as an array
-  const allCards = Array(3).fill().map((_, index) => (
+  const allCards = Array(1).fill().map((_, index) => (
     <MyVehicleCard key={index} />
   ));
 
