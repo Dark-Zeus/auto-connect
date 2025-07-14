@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Fuel, Gauge } from 'lucide-react';
 import vehicleImage from '../../assets/images/toyota-v8.jpg';
+import tlc150_1 from '../../assets/images/lc150Photos/tlc150_1.jpg';
+import tlc150_2 from '../../assets/images/lc150Photos/tlc150_2.jpg';
+import tlc150_3 from '../../assets/images/lc150Photos/tlc150_3.jpg';
+import tlc150_4 from '../../assets/images/lc150Photos/tlc150_4.jpg';
+import tlc150_5 from '../../assets/images/lc150Photos/tlc150_5.jpg';
+import tlc150_6 from '../../assets/images/lc150Photos/tlc150_6.jpg';
+import tlc150_7 from '../../assets/images/lc150Photos/tlc150_7.jpg';
 
 const SimilarAds = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -8,83 +15,83 @@ const SimilarAds = () => {
   const ads = [
     {
       id: 1,
-      title: "Honda Vezel",
-      price: "LKR 14,800,000",
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 34,800,000",
       image: vehicleImage,
-      year: "2023",
-      fuel: "Hybrid",
-      mileage: "15,000 km",
+      year: "2014",
+      fuel: "Diesel",
+      mileage: "115,000 km",
       location: "Colombo"
     },
     {
       id: 2,
-      title: "Honda Vezel",
-      price: "LKR 21,500,000",
-      image: vehicleImage,
-      year: "2024",
-      fuel: "Hybrid",
-      mileage: "8,500 km",
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 31,500,000",
+      image: tlc150_1,
+      year: "2014",
+      fuel: "Diesel",
+      mileage: "118,500 km",
       location: "Kandy"
     },
     {
       id: 3,
-      title: "Honda Vezel",
-      price: "LKR 11,600,000",
-      image: vehicleImage,
-      year: "2022",
-      fuel: "Hybrid",
-      mileage: "25,000 km",
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 31,600,000",
+      image: tlc150_2,
+      year: "2014",
+      fuel: "Diesel",
+      mileage: "125,000 km",
       location: "Galle"
     },
     {
       id: 4,
-      title: "Honda Vezel",
-      price: "LKR 18,200,000",
-      image: vehicleImage,
-      year: "2023",
-      fuel: "Hybrid",
-      mileage: "12,000 km",
-      location: "Negombo"
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 33,200,000",
+      image: tlc150_3,
+      year: "2015",
+      fuel: "Diesel",
+      mileage: "112,000 km",
+      location: "Kaluthara"
     },
     {
       id: 5,
-      title: "Honda Vezel",
-      price: "LKR 16,500,000",
-      image: vehicleImage,
-      year: "2023",
-      fuel: "Hybrid",
-      mileage: "18,000 km",
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 36,500,000",
+      image: tlc150_6,
+      year: "2015",
+      fuel: "Diesel",
+      mileage: "138,000 km",
       location: "Matara"
     },
     {
       id: 6,
-      title: "Honda Vezel",
-      price: "LKR 20,000,000",
-      image: vehicleImage,
-      year: "2024",
-      fuel: "Hybrid",
-      mileage: "5,000 km",
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 31,000,000",
+      image: tlc150_5,
+      year: "2014",
+      fuel: "Diesel",
+      mileage: "135,000 km",
       location: "Jaffna"
     },
     {
       id: 7,
-      title: "Honda Vezel",
-      price: "LKR 15,300,000",
-      image: vehicleImage,
-      year: "2023",
-      fuel: "Hybrid",
-      mileage: "20,000 km",
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 30,500,000",
+      image: tlc150_4,
+      year: "2013",
+      fuel: "Diesel",
+      mileage: "120,000 km",
       location: "Anuradhapura"
     },
     {
       id: 8,
-      title: "Honda Vezel",
-      price: "LKR 19,800,000",
-      image: vehicleImage,
-      year: "2024",
-      fuel: "Hybrid",
-      mileage: "10,000 km",
-      location: "Batticaloa"
+      title: "Toyota Land Cruiser 150",
+      price: "LKR 29,850,000",
+      image: tlc150_7,
+      year: "2014",
+      fuel: "Diesel",
+      mileage: "165,000 km",
+      location: "Badulla"
     }
   ];
 
@@ -104,7 +111,7 @@ const SimilarAds = () => {
   };
 
   return (
-    <div className="tw:w-full tw:bg-gray-50 tw:py-8 tw:px-4">
+    <div className="tw:w-full tw:bg-gray-50 tw:py-8 tw:px-4 tw:rounded-xl">
       <div className="tw:max-w-7xl tw:mx-auto">
         {/* Header */}
         <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
@@ -138,9 +145,9 @@ const SimilarAds = () => {
             {ads.map((ad) => (
               <div
                 key={ad.id}
-                className="tw:flex-shrink-0 tw:w-1/4 tw:px-2 tw:hover:cursor-pointer"
+                className="tw:flex-shrink-0 tw:w-1/4 tw:px-2"
               >
-                <div className="tw:bg-white tw:rounded-lg tw:shadow-md tw:overflow-hidden tw:transition-all tw:duration-300 hover:tw:shadow-xl hover:tw:transform hover:tw:scale-105">
+                <div className="tw:bg-white tw:rounded-lg tw:shadow-md tw:overflow-hidden tw:transition-all tw:duration-300 tw:hover:shadow-xl tw:transform tw:hover:scale-102">
                   {/* Image Container */}
                   <div className="tw:relative tw:h-48 tw:bg-gray-100 tw:overflow-hidden">
                     <img 
@@ -149,10 +156,10 @@ const SimilarAds = () => {
                         className="tw:w-full tw:h-full tw:object-cover" 
                     />
                     
-                    {/* Premium Badge */}
+                    {/* Premium Badge 
                     <div className="tw:absolute tw:top-3 tw:right-3 tw:bg-yellow-400 tw:text-yellow-900 tw:px-2 tw:py-1 tw:rounded-full tw:text-xs tw:font-medium">
                         Premium
-                    </div>
+                    </div>*/}
                   </div>
 
                   {/* Content */}
@@ -189,10 +196,10 @@ const SimilarAds = () => {
                     <div className="tw:flex tw:gap-2 tw:mt-4">
                       <button className="tw:flex-1 tw:bg-blue-600 tw:hover:bg-blue-900 tw:text-white tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-blue-700 tw:hover:cursor-pointer">
                         View Details
-                      </button>
+                      </button> {/* 
                       <button className="tw:flex-1 tw:bg-gray-100 tw:hover:bg-gray-400 tw:text-gray-700 tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-gray-200 tw:hover:cursor-pointer">
                         Contact
-                      </button>
+                      </button>*/}
                     </div>
                   </div>
                 </div>
