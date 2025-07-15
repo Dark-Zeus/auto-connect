@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ServiceCenterCard from "../../components/AdminComponents/ServiceCenterCard";
 import ServiceCenterFilterBox from "../../components/AdminComponents/ServiceCenterFilterBox";
 import ServiceCenterDetailCard from "../../components/AdminComponents/ServiceCenterDetailCard";
+import ServiceCenterRequestPopup from "@components/AdminComponents/ServiceCenterRequestsBox";
 
 import center1 from "../../assets/images/service_center1.jpg";
 import center2 from "../../assets/images/service_center2.jpg";
@@ -131,12 +132,29 @@ function ServiceCenters() {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [selectedCenter, setSelectedCenter] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const popupRef = useRef(null);
 
   const handleReset = () => {
     setSearchQuery("");
     setSelectedDistrict("");
     setSortBy("");
   };
+
+  //close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setShowPopup(false);
+      }
+    };
+    if (showPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+  return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPopup]);
 
   const filteredCenters = allCenters
     .filter((center) => {
@@ -162,12 +180,20 @@ function ServiceCenters() {
           Registered Service & Repair Centers
         </h1>
         <button
-          onClick={() => alert("Redirect to New Service Center Form")}
+          onClick={() => setShowPopup(true)}
           className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition"
         >
-          View Requests
+          {showPopup ? "Hide Requests" : "View Requests"}
         </button>
       </div>
+
+      {showPopup && (
+        <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-50">
+          <div ref={popupRef}>
+            <ServiceCenterRequestPopup />
+          </div>
+        </div>
+      )}
 
       {/* Filter Box */}
       <ServiceCenterFilterBox

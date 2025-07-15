@@ -37,6 +37,7 @@ import VehicleOwnersPage from "@pages/Admin/VehicleOwners";
 import InsuranceCompaniesPage from "@pages/Admin/InsurenceCompanies";
 //import UserRequestsPage from "@pages/Admin/UserRequests";
 import UserLayout from "@pages/Admin/UserLayout";
+import Subscriptions from "@pages/Admin/Subscriptions";
 
 //Pages
 function App() {
@@ -76,7 +77,7 @@ function App() {
 
           <Route path="/" element={<DashboardPage/> } >
             <Route index element={<DashboardHome />} />
-            <Route path="services" element={<ServicePage />} />
+            <Route path="subscription" element={<Subscriptions />} />
             <Route path="users" element={<UserLayout />}>
               <Route index element={<UserPage />} /> {/* /users */}
               <Route path="vehicleowners" element={<VehicleOwnersPage />} />

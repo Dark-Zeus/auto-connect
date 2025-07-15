@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect, use } from "react";
 import InsuranceCompanyCard from "@components/AdminComponents/InsurenceCompany/InsuranceCompanyCard";
 import InsuranceCompanyFilterBox from "@components/AdminComponents/InsurenceCompany/InsuranceCompanyFilterBox";
 import insurence1 from "@assets/images/insurense.jpg";
+import InsuranceCompanyRequestPopup from "@components/AdminComponents/InsurenceCompaniesRequestsBox";
 
 const sampleCompanies = [
   {
@@ -86,11 +87,59 @@ const sampleCompanies = [
   },
 ];
 
+const pendingInsuranceRequests = [
+  {
+    name: "SafeLife Insurance",
+    owner: "Ruwan Fernando",
+    description: "Providing life, vehicle and property insurance with reliable service.",
+    licenseNumber: "LIC123456789",
+    email: "contact@safelife.lk",
+    phone: "011-2345678",
+    address: "No. 45, Park Street, Colombo 02",
+    website: "www.safelife.lk",
+    establishedDate: "2008-04-10",
+    image: insurence1,
+    certifications: [
+      {
+        name: "ISO 9001: Quality Management",
+        issuedBy: "Sri Lanka Standards Institution",
+        issueDate: "2015-05-10",
+        expiryDate: "2025-05-10",
+        certificateNumber: "ISO9001-SL-2025-001",
+      },
+      {
+        name: "IRCS Compliance Certificate",
+        issuedBy: "Insurance Regulatory Commission of Sri Lanka",
+        issueDate: "2022-01-01",
+        expiryDate: "2026-01-01",
+        certificateNumber: "IRCS-2022-456",
+      },
+    ],
+  },
+  // You can add more sample requests here
+];
+
 
 function InsurancePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [sortValue, setSortValue] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const popupRef = useRef(null);
+
+useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setShowPopup(false);
+      }
+    };
+    if (showPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPopup]);
 
   const filteredCompanies = useMemo(() => {
     let companies = [...sampleCompanies];
@@ -138,10 +187,25 @@ function InsurancePage() {
         <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">
           Registered Insurance Providers
         </h1>
-        <button className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition">
-          View Requests
+        <button 
+          onClick={() => setShowPopup(true)}  
+          className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition"
+          >
+          {showPopup ? "Hide Requests" : "View Requests"}
         </button>
       </div>
+
+      {showPopup && (
+        <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-50">
+          <div ref={popupRef}>
+            <InsuranceCompanyRequestPopup 
+                requests={pendingInsuranceRequests}
+                onClose={() => setShowPopup(false)}
+                onAccept={(req) => console.log("Accepted", req.name)}
+                onReject={(req) => console.log("Rejected", req.name)}/>
+          </div>
+        </div>
+      )}
 
 
     {/* Filter Box */}

@@ -19,6 +19,8 @@ import {
   Search,
   SystemSecurityUpdateSharp,
   Menu,
+  Subscriptions,
+  WorkspacePremium,
 } from "@mui/icons-material";
 
 function DashboardPage() {
@@ -32,7 +34,7 @@ function DashboardPage() {
 
   const pageTitles = {
     "/": "Dashboard",
-    "/services": "Service Centers",
+    "/subscription": "Subscriptions Plans",
     "/users": "User Management",
         "/users/vehicleowners": "Vehicle Owners",
         "/users/insurancecompanies": "Insurance Companies",
@@ -77,9 +79,9 @@ function DashboardPage() {
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarItem
-                to="/services"
-                icon={<Garage style={{ fontSize: 30 }} className="tw:text-black" />}
-                text="Service Centers"
+                to="/subscription"
+                icon={<WorkspacePremium style={{ fontSize: 30 }} className="tw:text-black" />}
+                text="Sunscriptions Plans"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
               <SidebarDropdown
