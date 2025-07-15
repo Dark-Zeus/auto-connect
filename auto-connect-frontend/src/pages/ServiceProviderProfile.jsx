@@ -189,7 +189,7 @@ const ServiceProviderProfile = () => {
 
           {/* Services & Gallery Side by Side */}
           <Divider sx={{ my: 4 }} />
-          <Grid container spacing={4}>
+          <Grid container spacing={20}>
             {/* Services List */}
             <Grid item xs={12} md={6}>
               <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
@@ -226,9 +226,9 @@ const ServiceProviderProfile = () => {
             >
               <Box
                 sx={{
-                  position: "relative",
+                  position: "left",
                   width: "100%",
-                  maxWidth: 320,
+                  maxWidth: 300,
                   height: 250,
                   overflow: "hidden",
                   borderRadius: 2,
@@ -254,12 +254,12 @@ const ServiceProviderProfile = () => {
                   sx={{
                     position: "absolute",
                     top: "50%",
-                    left: 8,
+                    left: -55,
                     transform: "translateY(-50%)",
                     minWidth: 0,
-                    borderRadius: "50%",
+                    borderRadius: "25%",
                     zIndex: 1,
-                    bgcolor: "white",
+                    bgcolor: "#e9f7ef",
                     boxShadow: 2,
                   }}
                 >
@@ -270,12 +270,12 @@ const ServiceProviderProfile = () => {
                   sx={{
                     position: "absolute",
                     top: "50%",
-                    right: 8,
+                    right: -55,
                     transform: "translateY(-50%)",
                     minWidth: 0,
-                    borderRadius: "50%",
+                    borderRadius: "25%",
                     zIndex: 1,
-                    bgcolor: "white",
+                    bgcolor: "#e9f7ef",
                     boxShadow: 2,
                   }}
                 >

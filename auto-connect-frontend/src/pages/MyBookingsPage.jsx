@@ -6,12 +6,12 @@ import {
   Paper,
   Chip,
   Button,
-  Stack,
   Divider,
   TextField,
   InputAdornment,
-  MenuItem,
   Grid,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import {
   LocationOn,
@@ -21,7 +21,6 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-// ✅ Full service center data
 const serviceCenters = [
   {
     id: 1,
@@ -83,7 +82,7 @@ const serviceCenters = [
 // ✅ Mock bookings
 const mockBookings = [
   {
-    id: "BOOK12345",
+    id: "1",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -92,7 +91,7 @@ const mockBookings = [
     status: "Pending",
   },
   {
-    id: "BOOK12346",
+    id: "2",
     centerName: "Express Motor Works",
     location: "Colombo 05, 3.2 km away",
     date: "2025-07-25",
@@ -101,7 +100,7 @@ const mockBookings = [
     status: "Completed",
   },
   {
-    id: "BOOK12347",
+    id: "3",
     centerName: "Premium Motors & Repairs",
     location: "Kollupitiya, 2.0 km away",
     date: "2025-08-02",
@@ -110,7 +109,7 @@ const mockBookings = [
     status: "Confirmed",
   },
   {
-    id: "BOOK12345",
+    id: "4",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -119,7 +118,7 @@ const mockBookings = [
     status: "Pending",
   },
   {
-    id: "BOOK12345",
+    id: "5",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -128,7 +127,7 @@ const mockBookings = [
     status: "Confirmed",
   },
   {
-    id: "BOOK12345",
+    id: "6",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -137,7 +136,7 @@ const mockBookings = [
     status: "Completed",
   },
   {
-    id: "BOOK12345",
+    id: "7",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -146,7 +145,7 @@ const mockBookings = [
     status: "Pending",
   },
   {
-    id: "BOOK12345",
+    id: "8",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -155,7 +154,7 @@ const mockBookings = [
     status: "Confirmed",
   },
   {
-    id: "BOOK12345",
+    id: "9",
     centerName: "City Auto Care Center",
     location: "Colombo 03, 2.5 km away",
     date: "2025-07-20",
@@ -163,12 +162,72 @@ const mockBookings = [
     services: ["Oil Change", "AC Service"],
     status: "Completed",
   },
+  {
+    id: "10",
+    centerName: "City Auto Care Center",
+    location: "Colombo 03, 2.5 km away",
+    date: "2025-07-20",
+    time: "10:00 AM",
+    services: ["Oil Change", "AC Service"],
+    status: "Cancelled",
+  },
+  {
+    id: "11",
+    centerName: "City Auto Care Center",
+    location: "Colombo 03, 2.5 km away",
+    date: "2025-07-20",
+    time: "10:00 AM",
+    services: ["Oil Change", "AC Service"],
+    status: "Cancelled",
+  },
+  {
+    id: "12",
+    centerName: "City Auto Care Center",
+    location: "Colombo 03, 2.5 km away",
+    date: "2025-07-20",
+    time: "10:00 AM",
+    services: ["Oil Change", "AC Service"],
+    status: "Cancelled",
+  },
+];
+
+const tabStatusOrder = [
+  { key: "Confirmed", label: "Confirmed Services" },
+  { key: "Pending", label: "Pending Services" },
+  { key: "Completed", label: "Completed Services" },
+  { key: "Cancelled", label: "Cancelled Services" },
 ];
 
 const MyBookings = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    setSearchTerm(""); // clear search term on tab change
+  };
+
+  const groupedBookings = {
+    Confirmed: mockBookings.filter((b) => b.status === "Confirmed"),
+    Pending: mockBookings.filter((b) => b.status === "Pending"),
+    Completed: mockBookings.filter((b) => b.status === "Completed"),
+    Cancelled: mockBookings.filter((b) => b.status === "Cancelled"),
+  };
+
+  const activeKey = tabStatusOrder[activeTab].key;
+  const allBookings = groupedBookings[activeKey];
+
+  const searchedBookings = searchTerm
+    ? allBookings.filter((booking) => {
+        const s = searchTerm.toLowerCase();
+        return (
+          booking.id.toLowerCase().includes(s) ||
+          booking.centerName.toLowerCase().includes(s) ||
+          booking.services.some((service) => service.toLowerCase().includes(s))
+        );
+      })
+    : allBookings;
 
   const handleViewProvider = (booking) => {
     const matchedProvider = serviceCenters.find(
@@ -207,32 +266,28 @@ const MyBookings = () => {
     alert(`Booking ${bookingId} cancelled.`);
   };
 
-  const filteredBookings = mockBookings.filter((booking) => {
-    const matchesSearch =
-      booking.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.centerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.services.some((s) =>
-        s.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-    const matchesStatus =
-      statusFilter === "All" || booking.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const groupedBookings = {
-    Confirmed: filteredBookings.filter((b) => b.status === "Confirmed"),
-    Pending: filteredBookings.filter((b) => b.status === "Pending"),
-    Completed: filteredBookings.filter((b) => b.status === "Completed"),
+  // === THE ONLY CHANGE: THIS FUNCTION FOR RESCHEDULE BUTTON ===
+  const handleReschedule = (booking) => {
+    const matchedProvider = serviceCenters.find(
+      (center) =>
+        center.name === booking.centerName &&
+        center.location === booking.location
+    );
+    if (matchedProvider) {
+      navigate("/service-booking-form", {
+        state: {
+          center: matchedProvider,
+          booking,
+        },
+      });
+    } else {
+      alert("Provider not found for reschedule.");
+    }
   };
-
-  const sectionOrder = ["Confirmed", "Pending", "Completed"];
 
   return (
     <Box sx={{ backgroundColor: "#e9f7ef", minHeight: "100vh", py: 3 }}>
       <Container maxWidth="lg">
-        {/* Home button */}
         <Box sx={{ mb: 0, textAlign: "left" }}>
           <Button
             variant="contained"
@@ -243,7 +298,6 @@ const MyBookings = () => {
           </Button>
         </Box>
 
-        {/* Page Title */}
         <Box sx={{ textAlign: "center", mb: 3 }}>
           <AssignmentTurnedIn sx={{ fontSize: 40, color: "#4a628a" }} />
           <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
@@ -254,202 +308,229 @@ const MyBookings = () => {
           </Typography>
         </Box>
 
-        {/* Search and Filter */}
+        {/* Only the search bar */}
         <Paper sx={{ p: 2, mb: 3 }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              gap: 2,
-              mb: 0,
+          <TextField
+            placeholder={`Search by ID, center, or service in ${tabStatusOrder[activeTab].label}`}
+            fullWidth
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
             }}
-          >
-            <TextField
-              placeholder="Search by ID, center, or service"
-              fullWidth
-              variant="outlined"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon color="action" />
-                  </InputAdornment>
-                ),
-              }}
-              inputProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
-            />
-            <TextField
-              select
-              label="Filter by Status"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              sx={{ minWidth: 200 }}
-              inputProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
-            >
-              <MenuItem value="All" sx={{ fontSize: 16, fontWeight: 500 }}>All</MenuItem>
-              <MenuItem value="Confirmed" sx={{ fontSize: 16, fontWeight: 500 }}>Confirmed</MenuItem>
-              <MenuItem value="Pending" sx={{ fontSize: 16, fontWeight: 500 }}>Pending</MenuItem>
-              <MenuItem value="Completed" sx={{ fontSize: 16, fontWeight: 500 }}>Completed</MenuItem>
-            </TextField>
-          </Box>
+            inputProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
+          />
         </Paper>
 
-        {/* Bookings Sections */}
-        {sectionOrder.map(
-          (status) =>
-            groupedBookings[status].length > 0 && (
-              <Box key={status} sx={{ mb: 4 }}>
-                <Typography sx={{ fontSize: 24, fontWeight: 600, mb: 1 }}>
-                  {status} Services
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-                <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: 1200 }}>
-                  {groupedBookings[status].map((booking) => (
-                    <Grid item xs={12} sm={6} md={4} sx={{ display: "flex", justifyContent: "center" }} key={booking.id + booking.time}>
-                      <Paper
-                        elevation={3}
+        {/* Tab Bar */}
+        <Paper sx={{ boxShadow: "none", background: "#e9f7ef", mb: 2 }}>
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="booking status tabs"
+          >
+            {tabStatusOrder.map(({ key, label }) => (
+              <Tab
+                key={key}
+                label={label}
+                sx={{
+                  fontWeight: 600,
+                  fontSize: 16,
+                  textTransform: "none",
+                  minWidth: 170,
+                }}
+              />
+            ))}
+          </Tabs>
+        </Paper>
+
+        <Divider sx={{ mb: 2 }} />
+
+        {/* Tab Panel - only current tab's bookings with search */}
+        <Box key={activeKey} sx={{ width: "100%" }}>
+          <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: 1200, mt: 0 }}>
+            {searchedBookings && searchedBookings.length > 0 ? (
+              searchedBookings.map((booking) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  key={booking.id + booking.time + booking.status}
+                >
+                  <Paper
+                    elevation={3}
+                    sx={{
+                      p: 2,
+                      minHeight: 280,
+                      maxHeight: 350,
+                      minWidth: 350,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      borderRadius: 2,
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+                    }}
+                  >
+                    <Box>
+                      <Box
                         sx={{
-                          p: 2,
-                          minHeight: 280,
-                          maxHeight: 350,
-                          minWidth: 350,
                           display: "flex",
-                          flexDirection: "column",
                           justifyContent: "space-between",
-                          borderRadius: 2,
-                          boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+                          alignItems: "center",
+                          mb: 1,
                         }}
                       >
-                        <Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              mb: 1,
-                            }}
-                          >
-                            <Typography sx={{ fontSize: 18, fontWeight: 700 }}>
-                              {booking.centerName}
-                            </Typography>
-                            <Chip
-                              label={booking.status}
-                              color={
-                                booking.status === "Confirmed"
-                                  ? "success"
-                                  : booking.status === "Pending"
-                                  ? "warning"
-                                  : "default"
-                              }
-                              variant="outlined"
-                              size="small"
-                              sx={{ fontSize: 12, fontWeight: 500 }}
-                            />
-                          </Box>
+                        <Typography sx={{ fontSize: 18, fontWeight: 700 }}>
+                          {booking.centerName}
+                        </Typography>
+                        <Chip
+                          label={booking.status}
+                          color={
+                            booking.status === "Confirmed"
+                              ? "success"
+                              : booking.status === "Pending"
+                              ? "warning"
+                              : booking.status === "Completed"
+                              ? "default"
+                              : "error"
+                          }
+                          variant="outlined"
+                          size="small"
+                          sx={{ fontSize: 12, fontWeight: 500 }}
+                        />
+                      </Box>
 
-                          <Box display="flex" alignItems="center" gap={1}>
-                            <LocationOn fontSize="small" color="action" />
-                            <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                              {booking.location}
-                            </Typography>
-                          </Box>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <LocationOn fontSize="small" color="action" />
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                          {booking.location}
+                        </Typography>
+                      </Box>
 
-                          <Box display="flex" alignItems="center" gap={1} mt={0.5}>
-                            <CalendarToday fontSize="small" color="action" />
-                            <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                              {booking.date} at {booking.time}
-                            </Typography>
-                          </Box>
+                      <Box display="flex" alignItems="center" gap={1} mt={0.5}>
+                        <CalendarToday fontSize="small" color="action" />
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                          {booking.date} at {booking.time}
+                        </Typography>
+                      </Box>
 
-                          <Typography
-                            sx={{ fontSize: 14, fontWeight: 500, mt: 1 }}
-                            color="text.secondary"
-                          >
-                            Booking ID: {booking.id}
-                          </Typography>
+                      <Typography
+                        sx={{ fontSize: 14, fontWeight: 500, mt: 1 }}
+                        color="text.secondary"
+                      >
+                        Booking ID: {booking.id}
+                      </Typography>
 
-                          <Typography
-                            sx={{ fontSize: 16, fontWeight: 500, mt: 1, mb: 0.5 }}
-                          >
-                            Services:
-                          </Typography>
+                      <Typography
+                        sx={{ fontSize: 16, fontWeight: 500, mt: 1, mb: 0.5 }}
+                      >
+                        Services:
+                      </Typography>
 
-                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                            {booking.services.map((s, idx) => (
-                              <Chip
-                                key={idx}
-                                label={s}
-                                size="small"
-                                variant="outlined"
-                                color="primary"
-                                sx={{ fontSize: 12, fontWeight: 500 }}
-                              />
-                            ))}
-                          </Box>
-                        </Box>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {booking.services.map((s, idx) => (
+                          <Chip
+                            key={idx}
+                            label={s}
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            sx={{ fontSize: 12, fontWeight: 500 }}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
 
-                        {/* Buttons */}
-                        <Box
-                          sx={{
-                            mt: 2,
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            gap: 1,
-                            flexWrap: "wrap",
-                          }}
-                        >
+                    {/* Buttons */}
+                    <Box
+                      sx={{
+                        mt: 2,
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        gap: 1,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleViewProvider(booking)}
+                        sx={{ fontSize: 13, fontWeight: 500 }}
+                      >
+                        View Provider
+                      </Button>
+
+                      {booking.status === "Pending" && (
+                        <>
                           <Button
                             variant="outlined"
                             size="small"
-                            onClick={() => handleViewProvider(booking)}
+                            color="primary"
+                            onClick={() => handleEdit(booking)}
                             sx={{ fontSize: 13, fontWeight: 500 }}
                           >
-                            View Provider
+                            Edit
                           </Button>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="error"
+                            onClick={() => handleCancel(booking.id)}
+                            sx={{ fontSize: 13, fontWeight: 500 }}
+                          >
+                            Cancel
+                          </Button>
+                        </>
+                      )}
 
-                          {booking.status === "Pending" && (
-                            <>
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                color="primary"
-                                onClick={() => handleEdit(booking)}
-                                sx={{ fontSize: 13, fontWeight: 500 }}
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                variant="contained"
-                                size="small"
-                                color="error"
-                                onClick={() => handleCancel(booking.id)}
-                                sx={{ fontSize: 13, fontWeight: 500 }}
-                              >
-                                Cancel
-                              </Button>
-                            </>
-                          )}
+                      {booking.status === "Confirmed" && (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="error"
+                          onClick={() => handleCancel(booking.id)}
+                          sx={{ fontSize: 13, fontWeight: 500 }}
+                        >
+                          Cancel
+                        </Button>
+                      )}
 
-                          {booking.status === "Confirmed" && (
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="error"
-                              onClick={() => handleCancel(booking.id)}
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                            >
-                              Cancel
-                            </Button>
-                          )}
-                        </Box>
-                      </Paper>
-                    </Grid>
-                  ))}
+                      {/* ===== THIS IS THE ONLY ADDITION ===== */}
+                      {booking.status === "Cancelled" && (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                          onClick={() => handleReschedule(booking)}
+                          sx={{ fontSize: 13, fontWeight: 500 }}
+                        >
+                          Reschedule
+                        </Button>
+                      )}
+                    </Box>
+                  </Paper>
                 </Grid>
-              </Box>
-            )
-        )}
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography variant="body1" sx={{ mt: 4, textAlign: "center", color: "#aaa" }}>
+                  No {tabStatusOrder[activeTab].label.toLowerCase()} found.
+                </Typography>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );
