@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect, use } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import InsuranceCompanyCard from "@components/AdminComponents/InsurenceCompany/InsuranceCompanyCard";
 import InsuranceCompanyFilterBox from "@components/AdminComponents/InsurenceCompany/InsuranceCompanyFilterBox";
 import insurence1 from "@assets/images/insurense.jpg";

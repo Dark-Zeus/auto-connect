@@ -59,7 +59,7 @@ function InsuranceCompanyCard({ company }) {
 
       {/* Popup */}
       {showPopup && (
-        <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:backdrop-blur-sm tw:flex tw:items-center tw:justify-center tw:z-50 tw:px-4">
+        <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-50 tw:px-4">
           <div className="tw:bg-white tw:rounded-3xl tw:shadow-2xl tw:p-8 tw:max-w-3xl tw:w-full tw:relative tw:overflow-y-auto tw:max-h-[90vh] tw:border tw:border-blue-100">
             <button
               onClick={() => setShowPopup(false)}

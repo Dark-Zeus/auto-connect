@@ -12,20 +12,13 @@ import {
   People,
   Garage,
   Notifications,
-  PaymentsOutlined,
   Update,
   BarChart as BarIcon,
   Logout,
   Search,
   SystemSecurityUpdateSharp,
   Menu,
-  Subscriptions,
   WorkspacePremium,
-  Money,
-  MoneyOffSharp,
-  MoneyOutlined,
-  TransgenderSharp,
-  TranscribeSharp,
   CreditCard,
 } from "@mui/icons-material";
 
@@ -77,7 +70,7 @@ function DashboardPage() {
           </h2>
 
           <nav className="tw:flex-1">
-            <ul className="tw:space-y-3 tw:text-lg tw:font-medium tw:text-gray-800">
+            <ul className="tw:space-y-3 tw:text-lg tw:font-medium">
               <SidebarItem
                 to="/"
                 icon={<Dashboard style={{ fontSize: 30 }} className="tw:text-black" />}
