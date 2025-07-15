@@ -14,7 +14,6 @@ const BookingConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Dummy booking fallback
   const dummyBooking = {
     reference: "BK-20250711-001",
     date: "2025-07-15",
@@ -40,29 +39,34 @@ const BookingConfirmationPage = () => {
           }}
         >
           <CheckCircleIcon color="success" sx={{ fontSize: 60, mb: 2 }} />
-          <Typography variant="h5" fontWeight="bold" gutterBottom>
+
+          <Typography
+            sx={{ fontSize: 32, fontWeight: 700, mb: 1 }}
+            gutterBottom
+          >
             Booking Confirmed!
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+
+          <Typography sx={{ fontSize: 14, fontWeight: 500, color: "text.secondary" }}>
             Thank you. Your appointment has been successfully booked.
           </Typography>
 
           <Divider sx={{ my: 3 }} />
 
-          <Box textAlign="left">
-            <Typography>
+          <Box textAlign="left" sx={{ fontSize: 16 }}>
+            <Typography sx={{ fontSize: 16, fontWeight: 500, mb: 0.5 }}>
               <strong>Booking Reference:</strong> {reference}
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: 16, fontWeight: 500, mb: 0.5 }}>
               <strong>Date:</strong> {date}
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: 16, fontWeight: 500, mb: 0.5 }}>
               <strong>Time:</strong> {time}
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: 16, fontWeight: 500, mb: 0.5 }}>
               <strong>Service Provider:</strong> {centerName}
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
               <strong>Location:</strong> {loc}
             </Typography>
           </Box>
@@ -70,7 +74,7 @@ const BookingConfirmationPage = () => {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 4 }}
+            sx={{ mt: 4, fontSize: 13, fontWeight: 500 }}
             onClick={() => navigate("/my-bookings")}
           >
             Go to My Bookings

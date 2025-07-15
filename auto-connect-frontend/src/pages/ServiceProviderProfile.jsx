@@ -36,11 +36,12 @@ const ServiceProviderProfile = () => {
   const center = location.state?.center;
 
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
 
   if (!center) {
     return (
       <Container sx={{ py: 5 }}>
-        <Typography variant="h6" color="error">
+        <Typography sx={{ fontSize: 24, fontWeight: 600, color: "error.main" }}>
           No service provider data available.
         </Typography>
       </Container>
@@ -75,11 +76,15 @@ const ServiceProviderProfile = () => {
     "04:30 PM - 05:30 PM",
   ];
 
-  const galleryImages = [
-    { img: "https://source.unsplash.com/400x300/?garage", title: "Garage" },
-    { img: "https://source.unsplash.com/400x300/?car-service", title: "Car Service" },
-    { img: "https://source.unsplash.com/400x300/?auto-shop", title: "Workshop" },
-  ];
+ const galleryImages = [
+  
+  {
+    img: "https://picsum.photos/id/1015/600/400", // mechanical feel
+    title: "Mechanic at Work"
+  }
+ 
+];
+
 
   const reviewsData = [
     {
@@ -122,104 +127,190 @@ const ServiceProviderProfile = () => {
 
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                <Typography variant="h4" fontWeight={700}>
+                <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
                   {name}
                 </Typography>
                 {verified && (
-                  <Chip icon={<Verified />} label="Verified" color="success" size="small" />
+                  <Chip
+                    icon={<Verified />}
+                    label="Verified"
+                    color="success"
+                    size="small"
+                    sx={{ fontSize: 12, fontWeight: 500 }}
+                  />
                 )}
                 {premium && (
-                  <Chip label="Premium" color="warning" size="small" sx={{ ml: 1 }} />
+                  <Chip
+                    label="Premium"
+                    color="warning"
+                    size="small"
+                    sx={{ fontSize: 12, fontWeight: 500, ml: 1 }}
+                  />
                 )}
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 1 }}>
                 <LocationOn color="action" />
-                <Typography variant="body1">{loc}</Typography>
+                <Typography sx={{ fontSize: 14, fontWeight: 500 }}>{loc}</Typography>
               </Box>
 
-              <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 3, flexWrap: "wrap" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mt: 1,
+                  gap: 3,
+                  flexWrap: "wrap",
+                }}
+              >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <Phone color="action" />
-                  <Typography variant="body2">{phone || "Not available"}</Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                    {phone || "Not available"}
+                  </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <Email color="action" />
-                  <Typography variant="body2">{email || "Not available"}</Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                    {email || "Not available"}
+                  </Typography>
                 </Box>
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 1 }}>
                 <Star color="warning" />
                 <Rating name="read-only" value={rating} precision={0.1} readOnly size="small" />
-                <Typography variant="body2" color="text.secondary">
+                <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
                   ({reviews} reviews)
                 </Typography>
               </Box>
             </Box>
           </Box>
 
-          {/* Services With Pricing */}
+          {/* Services & Gallery Side by Side */}
           <Divider sx={{ my: 4 }} />
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Services & Pricing
-            </Typography>
-            <List dense>
-              {pricedServices.map((item) => (
-                <ListItem key={item.name}>
-                  <ListItemIcon>
-                    <Build />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.name}
-                    secondary={item.price}
-                    primaryTypographyProps={{ fontWeight: 500 }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
+          <Grid container spacing={4}>
+            {/* Services List */}
+            <Grid item xs={12} md={6}>
+              <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
+                Services & Pricing
+              </Typography>
+              <List dense>
+                {pricedServices.map((item) => (
+                  <ListItem key={item.name}>
+                    <ListItemIcon>
+                      <Build />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.name}
+                      secondary={item.price}
+                      primaryTypographyProps={{ sx: { fontSize: 16, fontWeight: 500 } }}
+                      secondaryTypographyProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
+
+            {/* Gallery Carousel */}
+          <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "relative",
+              }}
+            >
+              <Box
+                sx={{
+                  position: "relative",
+                  width: "100%",
+                  maxWidth: 320,
+                  height: 250,
+                  overflow: "hidden",
+                  borderRadius: 2,
+                  boxShadow: 1,
+                  bgcolor: "#eee",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={galleryImages[currentImage].img}
+                  alt={galleryImages[currentImage].title}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                    borderRadius: 2,
+                  }}
+                />
+
+                <Button
+                  onClick={() => setCurrentImage((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: 8,
+                    transform: "translateY(-50%)",
+                    minWidth: 0,
+                    borderRadius: "50%",
+                    zIndex: 1,
+                    bgcolor: "white",
+                    boxShadow: 2,
+                  }}
+                >
+                  ‹
+                </Button>
+                <Button
+                  onClick={() => setCurrentImage((prev) => (prev + 1) % galleryImages.length)}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    right: 8,
+                    transform: "translateY(-50%)",
+                    minWidth: 0,
+                    borderRadius: "50%",
+                    zIndex: 1,
+                    bgcolor: "white",
+                    boxShadow: 2,
+                  }}
+                >
+                  ›
+                </Button>
+              </Box>
+            </Grid>
+
+
+          </Grid>
 
           {/* Availability */}
           <Divider sx={{ my: 4 }} />
           <Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
               Available Time Slots
             </Typography>
             <Grid container spacing={2}>
               {availableSlots.map((slot, i) => (
                 <Grid item key={i}>
-                  <Chip label={slot} color="primary" variant="outlined" />
+                  <Chip
+                    label={slot}
+                    color="primary"
+                    variant="outlined"
+                    sx={{ fontSize: 12, fontWeight: 500 }}
+                  />
                 </Grid>
               ))}
             </Grid>
           </Box>
 
-          {/* Image Gallery */}
-          <Divider sx={{ my: 4 }} />
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Workshop Gallery
-            </Typography>
-            <ImageList cols={3} rowHeight={120} gap={8}>
-              {galleryImages.map((item, i) => (
-                <ImageListItem key={i}>
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    loading="lazy"
-                    style={{ borderRadius: 8 }}
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
-          </Box>
-
           {/* Reviews Section */}
           <Divider sx={{ my: 4 }} />
           <Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
               Customer Reviews
             </Typography>
             <List dense sx={{ bgcolor: "#f5f5f5", borderRadius: 2 }}>
@@ -229,7 +320,7 @@ const ServiceProviderProfile = () => {
                     {review.name.charAt(0)}
                   </Avatar>
                   <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
+                    <Typography sx={{ fontSize: 14, fontWeight: 600 }}>
                       {review.name}
                     </Typography>
                     <Rating
@@ -239,7 +330,7 @@ const ServiceProviderProfile = () => {
                       readOnly
                       sx={{ mt: 0.5, mb: 0.5 }}
                     />
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography sx={{ fontSize: 12, fontWeight: 500 }} color="text.secondary">
                       {review.comment}
                     </Typography>
                   </Box>
@@ -248,7 +339,11 @@ const ServiceProviderProfile = () => {
             </List>
             {reviewsData.length > 2 && (
               <Box textAlign="center" mt={1}>
-                <Button size="small" onClick={() => setShowAllReviews((prev) => !prev)}>
+                <Button
+                  size="small"
+                  onClick={() => setShowAllReviews((prev) => !prev)}
+                  sx={{ fontSize: 13, fontWeight: 500 }}
+                >
                   {showAllReviews ? "Hide Reviews" : "View All Reviews"}
                 </Button>
               </Box>
@@ -265,13 +360,19 @@ const ServiceProviderProfile = () => {
               gap: 2,
             }}
           >
-            <Button variant="contained" size="large" onClick={() => navigate(-1)}>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => navigate(-1)}
+              sx={{ fontSize: 13, fontWeight: 500 }}
+            >
               Back
             </Button>
             <Button
               variant="outlined"
               size="large"
               onClick={() => navigate("/service-booking-form", { state: { center } })}
+              sx={{ fontSize: 13, fontWeight: 500 }}
             >
               Book Appointment
             </Button>

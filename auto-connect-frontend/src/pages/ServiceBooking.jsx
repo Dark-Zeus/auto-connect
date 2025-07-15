@@ -229,9 +229,10 @@ const ServiceBookingApp = () => {
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Build />
-              <Typography variant="h4">Auto Connect - Service Providers</Typography>
+              <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
+                Auto Connect - Service Providers
+              </Typography>
             </Box>
-            <Box>{/* Optional header controls */}</Box>
           </Box>
         </Container>
       </Box>
@@ -240,12 +241,22 @@ const ServiceBookingApp = () => {
       <Box sx={{ flex: 1, overflowY: "auto", backgroundColor: "#DFF2EB", p: 3 }}>
         <Container maxWidth="xl">
           {/* Title and description */}
-          <Paper sx={{ p: 2, mb: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2 }}>
+          <Paper
+            sx={{
+              p: 2,
+              mb: 1,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
             <Box>
-              <Typography variant="h6" gutterBottom>
+              <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
                 Service Booking
               </Typography>
-              <Typography variant="body1" sx={{ mb: 0 }}>
+              <Typography sx={{ fontSize: 16, fontWeight: 500, mb: 0 }}>
                 Find and book trusted service providers for your vehicle
               </Typography>
             </Box>
@@ -253,18 +264,17 @@ const ServiceBookingApp = () => {
               variant="contained"
               color="primary"
               onClick={() => navigate("/my-bookings")}
-              sx={{ whiteSpace: "nowrap" }}
+              sx={{ whiteSpace: "nowrap", fontSize: 13, fontWeight: 500 }}
             >
               My Bookings
             </Button>
           </Paper>
 
-
-          <Paper sx={{ p: 2, mb: 2 }}>  
+          <Paper sx={{ p: 2, mb: 2 }}>
             {/* Search and Filter Controls */}
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mb: 0 }}>
               <TextField
-                label="Search by name, location, or phone"
+                placeholder="Search by name, location, or phone"
                 variant="outlined"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -275,19 +285,23 @@ const ServiceBookingApp = () => {
                       <Search color="action" />
                     </InputAdornment>
                   ),
+                  sx: { fontSize: 14, fontWeight: 500 },
                 }}
                 size="medium"
               />
               <FormControl sx={{ minWidth: 220 }}>
-                <InputLabel>Main Service Category</InputLabel>
+                <InputLabel sx={{ fontSize: 14, fontWeight: 500 }}>
+                  Main Service Category
+                </InputLabel>
                 <Select
                   value={selectedCategory}
                   label="Main Service Category"
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   size="medium"
+                  sx={{ fontSize: 14, fontWeight: 500 }}
                 >
                   {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>
+                    <MenuItem key={cat} value={cat} sx={{ fontSize: 14, fontWeight: 500 }}>
                       {cat}
                     </MenuItem>
                   ))}
@@ -305,7 +319,7 @@ const ServiceBookingApp = () => {
                     <Paper
                       sx={{
                         p: 3,
-                        height: 360,
+                        minHeight: 450,
                         width: 350,
                         display: "flex",
                         flexDirection: "column",
@@ -314,68 +328,94 @@ const ServiceBookingApp = () => {
                       }}
                     >
                       <Typography
-                        variant="h6"
-                        sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}
+                        sx={{
+                          fontSize: 18,
+                          fontWeight: 700,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          flexWrap: "wrap",
+                        }}
                       >
                         {center.name}
                         {center.verified && (
-                          <Chip label="Verified" size="small" color="success" sx={{ ml: 0 }} />
+                          <Chip
+                            label="Verified"
+                            size="small"
+                            color="success"
+                            sx={{ ml: 0, fontSize: 12, fontWeight: 500 }}
+                          />
                         )}
                         {center.premium && (
-                          <Chip label="Premium" size="small" color="warning" sx={{ ml: 0 }} />
+                          <Chip
+                            label="Premium"
+                            size="small"
+                            color="warning"
+                            sx={{ ml: 0, fontSize: 12, fontWeight: 500 }}
+                          />
                         )}
                       </Typography>
 
                       <Box display="flex" alignItems="center" mt={1}>
                         <LocationOn fontSize="small" sx={{ mr: 1 }} />
-                        <Typography variant="body2">{center.location}</Typography>
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                          {center.location}
+                        </Typography>
                       </Box>
 
                       <Box display="flex" alignItems="center" mt={1}>
-                        <Typography variant="body2" sx={{ mr: 2 }}>
+                        <Typography sx={{ fontSize: 14, fontWeight: 500, mr: 2 }}>
                           📞 {center.phone}
                         </Typography>
                         <Star fontSize="small" sx={{ color: "#f39c12", mr: 1 }} />
-                        <Typography variant="body2">
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
                           {center.rating} ({center.reviews} reviews)
                         </Typography>
                       </Box>
 
                       <Box mt={2}>
-                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                        <Typography sx={{ fontSize: 14, fontWeight: 600, mb: 0.5 }}>
                           Service Categories:
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
                           {center.serviceCategories.join(", ")}
                         </Typography>
                       </Box>
 
                       <Box mt={1}>
-                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                        <Typography sx={{ fontSize: 14, fontWeight: 600, mb: 0.5 }}>
                           Services Offered:
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
                           {center.services.join(", ")}
                         </Typography>
                       </Box>
 
                       <Box mt={2}>
-                        <Typography variant="body2">
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
                           <strong>{center.onTime}</strong> On-time
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
                           <strong>{center.cost}</strong> Avg. Cost
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
                           <strong>{center.waitTime}</strong> Wait Time
                         </Typography>
                       </Box>
 
                       <Box mt={2} display="flex" gap={1}>
-                        <Button variant="contained" onClick={() => handleBookAppointment(center)}>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleBookAppointment(center)}
+                          sx={{ fontSize: 13, fontWeight: 500 }}
+                        >
                           Book Appointment
                         </Button>
-                        <Button variant="outlined" onClick={() => handleViewDetails(center)}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleViewDetails(center)}
+                          sx={{ fontSize: 13, fontWeight: 500 }}
+                        >
                           View Details
                         </Button>
                       </Box>
@@ -384,7 +424,7 @@ const ServiceBookingApp = () => {
                 ))
               ) : (
                 <Grid item xs={12}>
-                  <Typography variant="body1" sx={{ mt: 4, textAlign: "center" }}>
+                  <Typography sx={{ fontSize: 16, fontWeight: 500, mt: 4, textAlign: "center" }}>
                     No service providers found matching your criteria.
                   </Typography>
                 </Grid>
