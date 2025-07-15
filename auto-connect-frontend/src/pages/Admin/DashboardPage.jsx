@@ -21,6 +21,12 @@ import {
   Menu,
   Subscriptions,
   WorkspacePremium,
+  Money,
+  MoneyOffSharp,
+  MoneyOutlined,
+  TransgenderSharp,
+  TranscribeSharp,
+  CreditCard,
 } from "@mui/icons-material";
 
 function DashboardPage() {
@@ -114,7 +120,7 @@ function DashboardPage() {
               />
               <SidebarItem
                 to="/transactions"
-                icon={<PaymentsOutlined style={{ fontSize: 30 }} className="tw:text-black" />}
+                icon={<CreditCard style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="Transactions"
                 className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
               />
