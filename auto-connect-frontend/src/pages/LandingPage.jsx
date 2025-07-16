@@ -246,22 +246,22 @@ const LandingPage = () => {
 
   const stats = [
     {
-      number: "25,000+",
+      number: "500+",
       label: "Registered Vehicles",
       subtext: "Complete digital profiles",
     },
     {
-      number: "1,200+",
+      number: "200+",
       label: "Verified Service Providers",
       subtext: "Across Sri Lanka",
     },
     {
-      number: "150,000+",
+      number: "100+",
       label: "Services Completed",
       subtext: "With full transparency",
     },
     {
-      number: "₹2.5B+",
+      number: "2.5B+",
       label: "Transaction Value",
       subtext: "Facilitated securely",
     },
@@ -323,10 +323,9 @@ const LandingPage = () => {
             <div className="logo">
               <div className="logo-icon">
                 <img
-                  src="../../public/logo.png"
+                  src="/logo.png"
                   alt="AutoConnect Logo"
                   className="w-8 h-8" // Adjust size as needed
-                  style={{ filter: "brightness(0) invert(1)" }} // Makes logo white
                 />
               </div>
               <span className="logo-text">
@@ -419,7 +418,7 @@ const LandingPage = () => {
                 <span>Technical Infrastructure</span>
               </div>
               <h2 className="section-title">
-                <span>Platform </span>
+                <span style={{ color: "var(--charcoal)" }}>Platform </span>
                 <span className="title-gradient">Capabilities</span>
               </h2>
               <p className="section-description">
@@ -511,7 +510,10 @@ const LandingPage = () => {
             {/* Header */}
             <div className="section-header">
               <h2 className="section-title">
-                Platform Impact & <span className="title-gradient">Growth</span>
+                <span style={{ color: "var(--charcoal)" }}>
+                  Platform Impact &{" "}
+                </span>
+                <span className="title-gradient">Growth</span>
               </h2>
               <p className="section-description">
                 Real numbers demonstrating our platform's success in
@@ -554,7 +556,7 @@ const LandingPage = () => {
                 <span>User Experience</span>
               </div>
               <h2 className="section-title">
-                <span>How It </span>
+                <span style={{ color: "var(--charcoal)" }}>How it </span>
                 <span className="title-gradient">Works</span>
               </h2>
               <p className="section-description">
@@ -665,7 +667,7 @@ const LandingPage = () => {
                 <span>Pricing Plans</span>
               </div>
               <h2 className="section-title">
-                <span>Choose Your </span>
+                <span style={{ color: "var(--charcoal)" }}>Choose Your </span>
                 <span className="title-gradient">Plan</span>
               </h2>
               <p className="section-description">
@@ -756,7 +758,9 @@ const LandingPage = () => {
             {/* Header */}
             <div className="section-header">
               <h2 className="section-title">
-                <span>Success </span>
+                <span style={{ color: "var(--charcoal)" }}>
+                  Success{" "}
+                </span>
                 <span className="title-gradient">Stories</span>
               </h2>
               <p className="section-description">
@@ -908,7 +912,7 @@ const LandingPage = () => {
                 <div className="footer-logo">
                   <div className="footer-logo-icon">
                     <img
-                      src="../../public/logo.png"
+                      src="/logo.png"
                       alt="AutoConnect Logo"
                       className="w-6 h-6"
                     />

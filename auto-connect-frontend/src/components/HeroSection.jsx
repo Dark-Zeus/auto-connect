@@ -27,17 +27,17 @@ const HeroSection = () => {
   const interactiveCards = [
     {
       icon: <Car className="w-8 h-8" />,
-      title: "25,000+",
+      title: "500+",
       subtitle: "Vehicles Registered",
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "1,200+",
+      title: "200+",
       subtitle: "Service Providers",
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: "₹2.5B+",
+      title: "2.5B+",
       subtitle: "Transaction Value",
     },
     {
