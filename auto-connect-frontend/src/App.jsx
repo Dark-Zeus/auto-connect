@@ -6,8 +6,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Existing Components
-import Dashboard from "@pages/Dashboard";
 import { UserContext } from "@contexts/UserContext";
+
+import LandingPage from "@pages/LandingPage";
+import AuthPage from "@pages/AuthPage";
+import LoginForm from "@components/LoginForm";
+import RegisterForm from "@components/RegisterForm";
+import Dashboard from "@pages/Dashboard";
 
 // ==================== DEVELOPMENT IMPORTS - REMOVE IN PRODUCTION ====================
 
@@ -175,39 +180,118 @@ function App() {
     return children;
   };
 
-  return (  
+  return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <UserContext.Provider value={{ userContext, setUserContext }}>
         <BrowserRouter>
-            <Routes>
-              {/* Protected Dashboard Routes */}
-              <Route
-                path="/*"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-            {/* Toast Container for notifications */}
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-              toastStyle={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
-              }}
+          <Routes>
+            {/* Landing Page */}
+            <Route
+              path="/"
+              element={
+                <PublicRoute>
+                  <LandingPage />
+                </PublicRoute>
+              }
             />
+
+            {/* Authentication Routes */}
+            <Route
+              path="/auth/*"
+              element={
+                <PublicRoute>
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={<Navigate to="/auth/login" replace />}
+                    />
+                    <Route
+                      path=""
+                      element={
+                        <AuthPage>
+                          <LoginForm />
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/login"
+                      element={
+                        <AuthPage>
+                          <LoginForm />
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/register"
+                      element={
+                        <AuthPage>
+                          <RegisterForm />
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/forgot-password"
+                      element={
+                        <AuthPage>
+                          <div
+                            style={{ textAlign: "center", padding: "2rem" }}
+                          >
+                            <h2>Forgot Password</h2>
+                            <p>This feature is coming soon!</p>
+                          </div>
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/verify"
+                      element={
+                        <AuthPage>
+                          <div
+                            style={{ textAlign: "center", padding: "2rem" }}
+                          >
+                            <h2>Email Verification</h2>
+                            <p>
+                              Please check your email for verification
+                              instructions.
+                            </p>
+                          </div>
+                        </AuthPage>
+                      }
+                    />
+                  </Routes>
+                </PublicRoute>
+              }
+            />
+
+
+            {/* Protected Dashboard Routes */}
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+          {/* Toast Container for notifications */}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            toastStyle={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
+            }}
+          />
         </BrowserRouter>
       </UserContext.Provider>
     </ThemeProvider>

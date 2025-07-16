@@ -264,7 +264,7 @@ const DevLayout = ({ children, title, subtitle }) => {
 };
 // ==================== END DEVELOPMENT COMPONENTS ====================
 
-function App() {
+function DevApp() {
   const [userContext, setUserContext] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
@@ -817,4 +817,4 @@ function App() {
   );
 }
 
-export default App;
+export default DevApp;
