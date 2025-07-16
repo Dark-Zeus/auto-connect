@@ -30,6 +30,7 @@ async function fetchMonthlyData(monthIndex, year) {
         totalInsuranceCompanies: Math.floor(Math.random() * 8) + 3,
         totalVehicleSellings: Math.floor(Math.random() * 120) + 60,
         totalAdvertisements: Math.floor(Math.random() * 20) + 10,
+        totalReportsSales: Math.floor(Math.random() * 30) + 15,
       };
       
       // Simulate previous month data for growth calculation
@@ -41,6 +42,7 @@ async function fetchMonthlyData(monthIndex, year) {
         totalInsuranceCompanies: Math.floor(Math.random() * 6) + 2,
         totalVehicleSellings: Math.floor(Math.random() * 100) + 40,
         totalAdvertisements: Math.floor(Math.random() * 15) + 8,
+        totalReportsSales: Math.floor(Math.random() * 25) + 10,
       };
       
       resolve({ currentData, previousData });
@@ -65,6 +67,7 @@ function convertToCSV(data, month, year) {
     ["Insurance Companies", data.currentData.totalInsuranceCompanies, data.previousData.totalInsuranceCompanies],
     ["Vehicle Sellings", data.currentData.totalVehicleSellings, data.previousData.totalVehicleSellings],
     ["Advertisements", data.currentData.totalAdvertisements, data.previousData.totalAdvertisements],
+    ["Reports Sales", data.currentData.totalReportsSales, data.previousData.totalReportsSales],
   ];
   
   let csv = headers.join(",") + "\n";
@@ -96,6 +99,7 @@ function generatePDFContent(data, month, year) {
     { key: 'totalInsuranceCompanies', title: 'Insurance Companies', format: 'number' },
     { key: 'totalVehicleSellings', title: 'Vehicle Sales', format: 'number' },
     { key: 'totalAdvertisements', title: 'Advertisements', format: 'number' },
+    { key: 'totalReportsSales', title: 'Reports Sales', format: 'number' },
   ];
 
   const formatValue = (value, format) => {
@@ -372,6 +376,7 @@ function MonthlyAnalysisDashboard() {
     { key: 'totalInsuranceCompanies', title: 'Insurance Companies', icon: Shield, format: 'number' },
     { key: 'totalVehicleSellings', title: 'Vehicle Sales', icon: Car, format: 'number' },
     { key: 'totalAdvertisements', title: 'Advertisements', icon: Megaphone, format: 'number' },
+    { key: 'totalReportsSales', title: 'Reports Sales', icon: FileText, format: 'number' },
   ];
 
   return (

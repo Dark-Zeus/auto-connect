@@ -16,9 +16,9 @@ import {
 } from "recharts";
 import {
   People,
-  Settings,
-  BarChart as BarIcon,
-  Download,
+  Domain,
+  TrendingUp,
+  Garage,
 } from "@mui/icons-material";
 
 const dataTrafficLocation = [
@@ -102,7 +102,7 @@ function DashboardHome() {
 
   const cardData = [
     {
-      title: "New Users",
+      title: "Users",
       value: 123915,
       progress: 12.3456,
       icon: <People style={{ fontSize: 40 }} />,
@@ -110,26 +110,26 @@ function DashboardHome() {
       iconBg: "tw:bg-blue-600",
     },
     {
-      title: "Total Orders",
-      value: 61313,
+      title: "Verified Service Centers",
+      value: 61,
       progress: -8.1234,
-      icon: <BarIcon style={{ fontSize: 40 }} />,
+      icon: <Garage style={{ fontSize: 40 }} />,
       color: "tw:bg-green-100",
       iconBg: "tw:bg-green-600",
     },
     {
-      title: "New Product",
-      value: 71003,
-      progress: 5.6789,
-      icon: <Settings style={{ fontSize: 40 }} />,
+      title: "Income",
+      value: "LKR 710,003",
+      progress: 2.6789,
+      icon: <TrendingUp style={{ fontSize: 40 }} />,
       color: "tw:bg-purple-100",
       iconBg: "tw:bg-purple-600",
     },
     {
-      title: "Total Downloads",
-      value: 161888,
+      title: "Verified Insurence Companies",
+      value: 18,
       progress: 1.2345,
-      icon: <Download style={{ fontSize: 40 }} />,
+      icon: <Domain style={{ fontSize: 40 }} />,
       color: "tw:bg-orange-100",
       iconBg: "tw:bg-orange-600",
     },
@@ -159,8 +159,8 @@ function DashboardHome() {
               )}
             </div>
             <div className="tw:mt-auto tw:pl-4">
-              <h4 className="tw:text-lg tw:font-semibold">{card.title}</h4>
-              <p className="tw:text-3xl tw:font-bold">{card.value.toLocaleString()}</p>
+              <h4 className="tw:text-xl tw:font-semibold">{card.title}</h4>
+              <p className="tw:!mt-1 tw:!text-3xl tw:font-bold">{card.value.toLocaleString()}</p>
             </div>
           </div>
         ))}

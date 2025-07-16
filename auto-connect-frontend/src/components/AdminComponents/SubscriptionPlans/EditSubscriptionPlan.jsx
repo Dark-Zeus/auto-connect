@@ -19,22 +19,34 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
   };
 
   return (
-    <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:backdrop-blur-sm tw:flex tw:items-center tw:justify-center tw:z-50 tw:px-4">
-      <div className="tw:bg-white tw:rounded-2xl tw:p-8 tw:w-full tw:max-w-lg tw:shadow-2xl tw:animate-fadeIn tw:relative">
-        <h2 className="tw:text-2xl tw:font-bold tw:text-center tw:text-blue-800 tw:mb-6">
-          ✏️ Edit {formData.title} Plan
-        </h2>
-        <div className="tw:space-y-5">
+    <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-50 tw:px-4">
+      <div className="tw:bg-white tw:rounded-2xl tw:p-8 tw:w-full tw:max-w-2xl tw:shadow-xl tw:relative tw:animate-fadeIn">
+        {/* Header */}
+        <div className="tw:flex tw:justify-between tw:items-center tw:mb-6">
+          <h2 className="tw:text-2xl tw:font-extrabold tw:text-blue-700">
+            Edit Subscription Plan
+          </h2>
+          <button
+            onClick={onClose}
+            className="tw:text-gray-400 hover:tw:text-red-500 tw:text-2xl"
+            title="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
           {[
-            { name: "title", label: "Plan Title" },
-            { name: "price", label: "Price (LKR)" },
-            { name: "costPerAd", label: "Cost Per Ad (LKR)" },
-            { name: "validityPeriod", label: "Validity Period" },
-            { name: "adsPerMonth", label: "Ads Per Month" },
-            { name: "promotionVoucher", label: "Promotion Voucher (LKR)" },
+            { label: "Plan Title", name: "title" },
+            { label: "Price (LKR)", name: "price" },
+            { label: "Cost Per Ad (LKR)", name: "costPerAd" },
+            { label: "Validity Period (Days)", name: "validityPeriod" },
+            { label: "Ads Per Month", name: "adsPerMonth" },
+            { label: "Promotion Voucher (LKR)", name: "promotionVoucher" },
           ].map(({ name, label }) => (
             <div key={name}>
-              <label className="tw:block tw:text-sm tw:font-semibold tw:text-gray-700 tw:mb-1">
+              <label className="tw:block tw:text-sm tw:font-medium tw:text-gray-700 tw:mb-1">
                 {label}
               </label>
               <input
@@ -42,27 +54,30 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
                 name={name}
                 value={formData[name]}
                 onChange={handleChange}
-                className="tw:w-full tw:border tw:border-blue-300 tw:rounded-xl tw:py-2 tw:px-3 tw:text-gray-800 focus:tw:ring-2 focus:tw:ring-blue-300 focus:tw:outline-none tw:transition"
+                className="tw:w-full tw:border tw:border-gray-300 tw:rounded-xl tw:px-4 tw:py-2.5 tw:text-sm tw:bg-gray-50 focus:tw:ring-2 focus:tw:ring-blue-300 tw:outline-none tw:transition tw:duration-200"
+                placeholder={`Enter ${label.toLowerCase()}`}
+                required
               />
             </div>
           ))}
-          <div className="tw:flex tw:justify-end tw:gap-3 tw:pt-4">
+
+          {/* Buttons */}
+          <div className="tw:col-span-1 md:tw:col-span-2 tw:flex tw:justify-end tw:gap-4 tw:pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="tw:bg-gray-200 tw:text-gray-800 tw:px-4 tw:py-2 tw:rounded-lg hover:tw:bg-gray-300 tw:transition"
+              className="tw:bg-gray-100 tw:text-gray-700 tw:px-5 tw:py-2.5 tw:rounded-lg hover:tw:bg-gray-200 tw:transition tw:duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
-              onClick={handleSubmit}
-              className="tw:bg-blue-600 tw:text-white tw:px-5 tw:py-2 tw:rounded-lg hover:tw:bg-blue-700 tw:transition tw:font-semibold"
+              className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-2.5 tw:rounded-lg hover:tw:bg-blue-700 tw:transition tw:duration-200"
             >
               Save Changes
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
