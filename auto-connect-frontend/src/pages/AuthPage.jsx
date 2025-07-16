@@ -28,7 +28,7 @@ const AuthPage = ({ children }) => {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page tw:min-w-full">
       {/* Background Elements */}
       <div className="auth-background">
         <div className="auth-bg-element element-1"></div>
