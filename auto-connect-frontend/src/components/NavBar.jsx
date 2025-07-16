@@ -43,24 +43,24 @@ function NavBar({ navLinks, version, icon, userId }) {
     const ContainerType = link.sub ? "span" : Link;
     
     return (
-      <li key={index} className={`nav-link ${isNavLinkActive(link) ? "selected" : ""}`} title={link.title}>
+      <li key={index} className={`dashboard-nav-link ${isNavLinkActive(link) ? "selected" : ""}`} title={link.title}>
         <label htmlFor={index} className="link-label">
-          <span className="nav-link__main">
-            <ContainerType to={link.path ? link.path[0] : ""} className={`nav-link__details nav-link ${isNavLinkActive(link) ? "selected" : ""}`}>
-              <span className="nav-link__icon material-symbols-outlined-fill"> {link.icon}</span>
-              <span className="nav-link__text">
+          <span className="dashboard-nav-link__main">
+            <ContainerType to={link.path ? link.path[0] : ""} className={`dashboard-nav-link__details dashboard-nav-link ${isNavLinkActive(link) ? "selected" : ""}`}>
+              <span className="dashboard-nav-link__icon material-symbols-outlined-fill"> {link.icon}</span>
+              <span className="dashboard-nav-link__text">
                 {link.title}
               </span>
-              {link.sub && <input type="checkbox" id={index} name="nav-link" />}
+              {link.sub && <input type="checkbox" id={index} name="dashboard-nav-link" />}
             </ContainerType>
           </span>
 
-          <ul className="nav-links__sub">
+          <ul className="dashboard-nav-links__sub">
             {link.sub?.map((subLink, subIndex) => (
-              <li key={`index-sub-li-${index}-${subIndex}`} className={`nav-link ${isNavLinkActive(subLink) ? "selected" : ""}`} title={subLink.title}>
+              <li key={`index-sub-li-${index}-${subIndex}`} className={`dashboard-nav-link ${isNavLinkActive(subLink) ? "selected" : ""}`} title={subLink.title}>
                 <Link className="link" to={subLink.path[0]} key={`index-sub_${subIndex}`}>
-                  <span className="nav-link__icon material-symbols-outlined-fill"> {subLink.icon}</span>
-                  <span className="nav-link__text">
+                  <span className="dashboard-nav-link__icon material-symbols-outlined-fill"> {subLink.icon}</span>
+                  <span className="dashboard-nav-link__text">
                     {subLink.title}
                   </span>
                 </Link>
@@ -74,29 +74,29 @@ function NavBar({ navLinks, version, icon, userId }) {
   })
 
   return (
-    <div className="nav">
-      <div className="nav-container">
-        <div className="nav__logo-container">
-          <div className="nav__logo">{icon}</div>
+    <div className="dashboard-nav">
+      <div className="dashboard-nav-container">
+        <div className="dashboard-nav__logo-container">
+          <div className="dashboard-nav__logo">{icon}</div>
         </div>
-        <div className="nav__name">
-          <div className="nav__name-details">Auto Connect</div>
-          <div className="nav__name-version">{version}</div>
+        <div className="dashboard-nav__name">
+          <div className="dashboard-nav__name-details">Auto Connect</div>
+          <div className="dashboard-nav__name-version">{version}</div>
         </div>
       </div>
-      <div className="nav__wrapper">
-        <ul className="nav-links">
+      <div className="dashboard-nav__wrapper">
+        <ul className="dashboard-nav-links">
           {navLinkElements}
         </ul>
       </div>
-      <div className="nav-container">
-        <div className="nav__profile-image-container">
-          <div className="nav__profile-image"></div>
+      <div className="dashboard-nav-container">
+        <div className="dashboard-nav__profile-image-container">
+          <div className="dashboard-nav__profile-image"></div>
         </div>
-        <div className="nav__profile">
-          <div className="nav__profile-details">John Doe</div>
+        <div className="dashboard-nav__profile">
+          <div className="dashboard-nav__profile-details">John Doe</div>
           <Link to="/auth/logout">
-            <div className="nav__logout material-symbols-outlined-fill">
+            <div className="dashboard-nav__logout material-symbols-outlined-fill">
               logout
             </div>
           </Link>
