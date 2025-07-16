@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -6,18 +6,42 @@ import {
   Typography, 
   Box, 
   Chip,
-  Grid
+  IconButton
 } from '@mui/material';
 import { 
   LocationOn, 
   AttachMoney, 
   Speed, 
-  LocalGasStation 
+  LocalGasStation,
+  Bookmark,
+  BookmarkBorder 
 } from '@mui/icons-material';
 
 import { useNavigate } from 'react-router-dom';
 
-const ListedVehicleCard = ({ vehicle }) => {
+import toyotaImage from '../../assets/images/toyota-v8.jpg';
+import lc150_1 from '../../assets/images/lc150_1.jpg';
+
+const SavedVehicleCard = ({ vehicle = null }) => {
+  // State to manage saved/unsaved toggle
+  const [isSaved, setIsSaved] = useState(true);
+
+  // Use props or fallback to sample data
+  const vehicleData = vehicle || {
+    id: 1,
+    manufacturer: 'Toyota',
+    model: 'Land Cruiser 150',
+    year: 2008,
+    price: 32000000,
+    odometer: 135000,
+    fuelType: 'Diesel',
+    image: lc150_1,
+    postedDate: '2025-06-20',
+    district: 'Gampaha',
+    city: 'Katana'
+  };
+
+  const navigate = useNavigate();
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-LK', {
@@ -40,11 +64,14 @@ const ListedVehicleCard = ({ vehicle }) => {
     });
   };
 
-  const navigate = useNavigate();
-
   const handleHeaderClick = () => {
-    // Default ref for navigation - will be replaced with actual routing
+    //console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
     navigate('/vehicleview');
+  };
+
+  const handleBookmarkToggle = () => {
+    setIsSaved(!isSaved);
+    console.log(`Vehicle ${isSaved ? 'unsaved' : 'saved'}: ${vehicleData.manufacturer} ${vehicleData.model}`);
   };
 
   return (
@@ -70,14 +97,35 @@ const ListedVehicleCard = ({ vehicle }) => {
         <Box sx={{ width: '30%', height: '100%', p: 1.5, boxSizing: 'border-box' }}>
           <CardMedia
             component="img"
-            image={vehicle.image}
-            alt={`${vehicle.manufacturer} ${vehicle.model} ${vehicle.year}`}
+            image={vehicleData.image}
+            alt={`${vehicleData.manufacturer} ${vehicleData.model} ${vehicleData.year}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
           />
         </Box>
 
-        <Box sx={{ width: '70%', height: '100%' }}>
+        <Box sx={{ width: '70%', height: '100%', position: 'relative' }}>
           <CardContent className="tw:p-4 tw:h-full tw:flex tw:flex-col" sx={{ height: '100%', boxSizing: 'border-box', padding: '16px !important' }}>
+            {/* Bookmark Icon */}
+            <Box className="tw:absolute tw:top-2 tw:right-2">
+              <IconButton
+                onClick={handleBookmarkToggle}
+                style={{ padding: '8px' }}
+              >
+                {isSaved ? (
+                  <Bookmark 
+                    style={{ color: '#1E88E5' }} 
+                    className="tw:transition-colors"
+                    fontSize='large'
+                  />
+                ) : (
+                  <BookmarkBorder 
+                    style={{ color: '#4a618a' }} 
+                    className="tw:transition-colors"
+                    fontSize='large'
+                  />
+                )}
+              </IconButton>
+            </Box>
             {/* Clickable Header */}
             <Box 
               onClick={handleHeaderClick}
@@ -89,7 +137,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                 className="tw:font-bold tw:text-lg tw:mb-1 group-hover:tw:underline tw:transition-all"
                 style={{ color: '#4a618a', fontWeight: '600' }}
               >
-                {vehicle.manufacturer} {vehicle.model} {vehicle.year}
+                {vehicleData.manufacturer} {vehicleData.model} {vehicleData.year}
               </Typography>
             </Box>
             {/* Vehicle Details */}
@@ -105,7 +153,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   className="tw:text-gray-700"
                   fontSize={14}
                 >
-                  {vehicle.district}, {vehicle.city}
+                  {vehicleData.district}, {vehicleData.city}
                 </Typography>
               </Box>
               {/* Price */}
@@ -119,7 +167,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   className="tw:font-bold"
                   style={{ color: '#4a618a' }}
                 >
-                  {formatPrice(vehicle.price)}
+                  {formatPrice(vehicleData.price)}
                 </Typography>
               </Box>
               {/* Odometer */}
@@ -134,7 +182,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   fontSize={13}
                   fontWeight={600}
                 >
-                  {formatOdometer(vehicle.odometer)}
+                  {formatOdometer(vehicleData.odometer)}
                 </Typography>
               </Box>
               {/* Fuel Type */}
@@ -144,7 +192,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   style={{ color: '#7bb1d2' }}
                 />
                 <Chip
-                  label={vehicle.fuelType}
+                  label={vehicleData.fuelType}
                   size="small"
                   className="tw:text-xs"
                   style={{ 
@@ -163,7 +211,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                 className="tw:text-gray-500 tw:text-xs"
                 fontSize={12}
               >
-                Posted: {vehicle.postedDate}
+                Posted: {vehicleData.postedDate}
               </Typography>
             </Box>
           </CardContent>
@@ -173,4 +221,4 @@ const ListedVehicleCard = ({ vehicle }) => {
   );
 };
 
-export default ListedVehicleCard;
+export default SavedVehicleCard;

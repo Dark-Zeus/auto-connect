@@ -1,45 +1,90 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Camera, X , CarFront, User, Logs} from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Camera, X, CarFront, User, Logs } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
+import lc150_1 from '../../assets/images/lc150_1.jpg';
+import lc150_2 from '../../assets/images/lc150_2.jpg';
+import lc150_3 from '../../assets/images/lc150_3.jpg';
+import lc150_4 from '../../assets/images/lc150_4.jpg';
+import lc150_5 from '../../assets/images/lc150_5.jpg';
+import lc150_6 from '../../assets/images/lc150_6.jpg';
 
-const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
-  const [formData, setFormData] = useState({
-    mobile: '',
-    district: '',
-    city: '',
-    vehicleType: '',
-    condition: '',
-    make: '',
-    model: '',
-    year: '',
-    price: '',
+const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
+  const defaultVehicleData = {
+    name: 'Lomitha',
+    mobile: '0767120123',
+    district: 'Matara',
+    city: 'Matara',
+    email: 'jlomitha95@gmail.com',
+    vehicleType: 'SUV',
+    condition: 'Used',
+    make: 'Toyota',
+    model: 'Land Cruiser 300',
+    year: '2018',
+    registeredYear: '2018',
+    price: '82000000',
     ongoingLease: false,
-    transmission: '',
-    fuelType: '',
-    engineCapacity: '',
-    mileage: '',
-    description: ''
+    transmission: 'Automatic',
+    fuelType: 'Diesel',
+    engineCapacity: '3000',
+    mileage: '135000',
+    description: 'A well-maintained car with good fuel efficiency.',
+    images: [
+      lc150_1,
+      lc150_2,
+      lc150_3,
+      lc150_4,
+      lc150_5,
+      lc150_6
+    ]
+  };
+
+  // Use provided vehicle data or fall back to default
+  const vehicleData = vehicle || defaultVehicleData;
+
+  // Initialize form state with vehicle data
+  const [formData, setFormData] = useState({
+    mobile: vehicleData.mobile,
+    district: vehicleData.district,
+    city: vehicleData.city,
+    vehicleType: vehicleData.vehicleType,
+    condition: vehicleData.condition,
+    make: vehicleData.make,
+    model: vehicleData.model,
+    year: vehicleData.year,
+    price: vehicleData.price,
+    ongoingLease: vehicleData.ongoingLease,
+    transmission: vehicleData.transmission,
+    fuelType: vehicleData.fuelType,
+    engineCapacity: vehicleData.engineCapacity,
+    mileage: vehicleData.mileage,
+    description: vehicleData.description
   });
 
-  const [photos, setPhotos] = useState(Array(6).fill(null));
+  // Initialize photos with the existing images
+  const [photos, setPhotos] = useState(
+    vehicleData.images && vehicleData.images.length > 0
+      ? [...vehicleData.images]
+      : Array(6).fill(null)
+  );
+
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState("");
-const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const navigate = useNavigate();
 
   const handleSnackbarClose = (event, reason) => {
-  if (reason === 'clickaway') {
-    return;
-  }
-  setSnackbarOpen(false);
-  
-  // If this was a success message, navigate after closing
-  if (snackbarSeverity === "success") {
-    navigate('/myads');
-  }
-};
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+    
+    // If this was a success message, navigate after closing
+    if (snackbarSeverity === "success") {
+      navigate('/myads');
+    }
+  };
 
   const sriLankanDistricts = [
     'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha',
@@ -161,21 +206,18 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     const { isValid, firstErrorField } = validateForm();
 
     if (isValid) {
-      console.log('Form Data:', { ...formData, name: fixedName, email: fixedEmail });
-      console.log('Photos:', photos);
-      setSnackbarMessage("Vehicle listed successfully!");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-      setTimeout(() => {
-        setSnackbarOpen(false);
-        navigate('/myads');
-      }, 3000);
+      console.log('Updated Form Data:', { ...formData, name: fixedName, email: fixedEmail });
+      console.log('Updated Photos:', photos.filter(p => p !== null));
+      
+      setSnackbarMessage("Vehicle updated successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     } else {
       console.log('Validation failed:', errors);
-
-       setSnackbarMessage("Please fix the errors in the form");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
+      
+      setSnackbarMessage("Please fix the errors in the form");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
 
       if (firstErrorField && fieldRefs[firstErrorField]?.current) {
         fieldRefs[firstErrorField].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -184,55 +226,37 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     }
   };
 
-  const handleDiscard = () => {
-    setFormData({
-      mobile: '',
-      district: '',
-      city: '',
-      vehicleType: '',
-      condition: '',
-      make: '',
-      model: '',
-      year: '',
-      price: '',
-      ongoingLease: false,
-      transmission: '',
-      fuelType: '',
-      engineCapacity: '',
-      mileage: '',
-      description: ''
-    });
-    setPhotos(Array(6).fill(null));
-    setErrors({});
+  const handleCancel = () => {
+    navigate('/myads');
   };
 
   return (
     <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4">
       <Snackbar
-      open={snackbarOpen}
-      autoHideDuration={4000}
-      onClose={handleSnackbarClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-    >
-      <Alert
+        open={snackbarOpen}
+        autoHideDuration={4000}
         onClose={handleSnackbarClose}
-        severity={snackbarSeverity}
-        variant="filled"
-        className="tw:w-full"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        {snackbarMessage}
-      </Alert>
-    </Snackbar>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          className="tw:w-full"
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       <div className="tw:max-w-4xl tw:mx-auto">
         {/* Header */}
         <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
           <div className="tw:flex tw:items-center tw:gap-3">
-            <div className="tw:bg-red-500 tw:p-2 tw:rounded-lg">
+            <div className="tw:bg-amber-500 tw:p-2 tw:rounded-lg">
               <CarFront className="tw:w-6 tw:h-6 tw:text-white" />
             </div>
             <div>
-              <h1 className="tw:text-3xl tw:font-bold">List Your Vehicle</h1>
+              <h1 className="tw:text-3xl tw:font-bold">Update Vehicle Listing</h1>
               <p className="tw:text-slate-200 tw:mt-1">Items marked with * are required.</p>
             </div>
           </div>
@@ -259,7 +283,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="vehicleType"
                   value={formData.vehicleType}
                   onChange={handleInputChange}
-                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.vehicleType ? 'tw:border-black' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.vehicleType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Type</option>
@@ -278,7 +302,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   {['Brand New', 'Used', 'Reconditioned'].map(condition => (
                     <label key={condition} className="tw:flex tw:items-center">
                       <input
-                        ref={fieldRefs.condition}
+                        ref={condition === formData.condition ? fieldRefs.condition : null}
                         type="radio"
                         name="condition"
                         value={condition}
@@ -303,7 +327,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="make"
                   value={formData.make}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.make ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.make ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Make</option>
@@ -324,7 +348,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="model"
                   value={formData.model}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.model ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.model ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="e.g., CLA180, Corolla, CT100"
                   required
                 />
@@ -340,7 +364,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="year"
                   value={formData.year}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.year ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.year ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Year</option>
@@ -359,7 +383,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.price ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.price ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="0"
                   min="0"
                 />
@@ -388,7 +412,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="transmission"
                   value={formData.transmission}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.transmission ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.transmission ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Transmission</option>
@@ -408,7 +432,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="fuelType"
                   value={formData.fuelType}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.fuelType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.fuelType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select Fuel Type</option>
@@ -427,7 +451,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="engineCapacity"
                   value={formData.engineCapacity}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.engineCapacity ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.engineCapacity ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="1500"
                   min="1"
                   max="10000"
@@ -445,7 +469,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="mileage"
                   value={formData.mileage}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mileage ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.mileage ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="45000"
                   min="0"
                   max="1000000"
@@ -463,12 +487,12 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                 onChange={handleInputChange}
                 rows="4"
                 maxLength="5000"
-                className="tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all tw:resize-none"
+                className="tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all tw:resize-none"
                 placeholder="Describe your vehicle's features, condition and any additional information..."
               />
               <div className="tw:text-right tw:text-sm tw:text-slate-500 tw:mt-1">
                 {formData.description.length}/5000 characters
-              </ div>
+              </div>
             </div>
           </div>
 
@@ -545,7 +569,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="mobile"
                   value={formData.mobile}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mobile ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.mobile ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   placeholder="07xxxxxxxx"
                   required
                 />
@@ -561,7 +585,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="district"
                   value={formData.district}
                   onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.district ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.district ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
                   required
                 >
                   <option value="">Select District</option>
@@ -579,7 +603,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
+                  className="tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
                   placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
                 />
               </div>
@@ -597,18 +621,17 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
           <div className="tw:p-8 tw:flex tw:flex-col sm:tw:flex-row tw:gap-4 tw:justify-end">
             <button
               type="button"
-              onClick={handleDiscard}
-              className="tw:px-8 tw:py-3 tw:border tw:bg-red-700 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-red-800 tw:transition-colors tw:font-medium tw:cursor-pointer"
-              disabled={Object.values(formData).every(val => !val) && photos.every(photo => !photo)}
+              onClick={handleCancel}
+              className="tw:px-8 tw:py-3 tw:border tw:bg-gray-500 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-gray-600 tw:transition-colors tw:font-medium tw:cursor-pointer"
             >
-              Discard
+              Cancel
             </button>
             <button
               type="submit"
               onClick={handleSubmit}
-              className="tw:px-8 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:hover:bg-blue-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
+              className="tw:px-8 tw:py-3 tw:bg-amber-600 tw:text-white tw:rounded-lg tw:hover:bg-amber-700 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
             >
-              List Vehicle
+              Update Vehicle
             </button>
           </div>
         </div>
@@ -617,4 +640,4 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   );
 };
 
-export default VehicleListingForm;
+export default UpdateVehicleForm;
