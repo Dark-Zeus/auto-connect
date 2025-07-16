@@ -1,126 +1,217 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import IconButton from "@components/atoms/IconButton";
-
-//import Dashboard from "@pages/Dashboard";
-import AuthPage from "@pages/AuthPage";
-import LoginForm from "@components/LoginForm";
+// Existing Components
+import Dashboard from "@pages/Dashboard";
 import { UserContext } from "@contexts/UserContext";
 
-import AdaptiveSubTable from "@components/atoms/AdaptiveSubTable";
-import Confirm from "@components/atoms/Confirm";
-import AdaptiveTable from "@components/atoms/AdaptiveTable";
-import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
-// import VehicleDetails from "@components/CarBuyer/VehicleDetails";
-// import VehicleDescriptionBox from "@components/CarBuyer/VehicleDescriptionBox";
-// import SecurityTips from "@components/CarBuyer/SecurityTips";
-// import ImageViewer from "@components/CarBuyer/ImageViewer";
-// import SellVehicleForm from "@components/CarSeller/SellVehicleForm";
-// import ListedVehicleCard from "@components/CarBuyer/ListedVehicleCard";
-// import MyVehicleCard from "@components/CarSeller/MyVehicleCard";
-// import SearchVehicleFilter from "@components/CarBuyer/SearchVehicleFilter";
-// import Form from "@components/Form";
-// import SellVehiclePage from "@pages/SellVehiclePage";
-//import VehicleViewPage from "@pages/VehicleViewPage";
-import DashboardPage from "@pages/Admin/DashboardPage";
-import DashboardHome from "@pages/Admin/DashboardHome";
-import ServicePage from "@pages/Admin/ServiceCenters";
-import UserPage from "@pages/Admin/UserManagement";
-import Notifications from "@pages/Admin/Notifications";
-import Transactions from "@pages/Admin/Transactions";
-import Updates from "@pages/Admin/Updates";
-import Analytics from "@pages/Admin/Analytics";
-import SystemData from "@pages/Admin/SystemData";
-//import ProfilePage from "@pages/Admin/Profile";
-import VehicleOwnersPage from "@pages/Admin/VehicleOwners";
-import InsuranceCompaniesPage from "@pages/Admin/InsurenceCompanies";
-//import UserRequestsPage from "@pages/Admin/UserRequests";
-import UserLayout from "@pages/Admin/UserLayout";
-import Subscriptions from "@pages/Admin/Subscriptions";
+// ==================== DEVELOPMENT IMPORTS - REMOVE IN PRODUCTION ====================
 
-//Pages
+// Create Material-UI theme with our color scheme
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: "#DFF2EB",
+      main: "#7AB2D3",
+      dark: "#4A628A",
+      contrastText: "#ffffff",
+    },
+    secondary: {
+      light: "#B9E5E8",
+      main: "#7AB2D3",
+      dark: "#4A628A",
+      contrastText: "#ffffff",
+    },
+    background: {
+      default: "#DFF2EB",
+      paper: "#ffffff",
+    },
+    text: {
+      primary: "#2c3e50",
+      secondary: "#6c757d",
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: { fontWeight: 700 },
+    h2: { fontWeight: 600 },
+    h3: { fontWeight: 600 },
+    h4: { fontWeight: 600 },
+    h5: { fontWeight: 500 },
+    h6: { fontWeight: 500 },
+    button: {
+      textTransform: "none",
+      fontWeight: 500,
+    },
+  },
+  shape: { borderRadius: 12 },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          padding: "8px 24px",
+          fontSize: "1rem",
+          fontWeight: 500,
+          textTransform: "none",
+          boxShadow: "0 2px 8px rgba(74, 98, 138, 0.15)",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          "&:hover": {
+            transform: "translateY(-1px)",
+            boxShadow: "0 4px 16px rgba(74, 98, 138, 0.25)",
+          },
+        },
+        contained: {
+          background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+          "&:hover": {
+            background: "linear-gradient(45deg, #4A628A, #7AB2D3)",
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 12,
+            "& fieldset": { borderColor: "#B9E5E8" },
+            "&:hover fieldset": { borderColor: "#7AB2D3" },
+            "&.Mui-focused fieldset": { borderColor: "#4A628A" },
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          boxShadow: "0 8px 32px rgba(74, 98, 138, 0.12)",
+        },
+      },
+    },
+  },
+});
+
+
+
 function App() {
   const [userContext, setUserContext] = useState(null);
-  //const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    setUserContext({ role: "administrator" })
-
-    //   const checkAuth = async () => {
-    //     try {
-    //       const storedUser = localStorage.getItem('user');
-    //       if (storedUser) {
-    //         setUserContext(JSON.parse(storedUser));
-    //       }
-    //     } catch (error) {
-    //       console.error('Auth check error:', error);
-    //     } finally {
-    //       setIsCheckingAuth(false); // Mark auth check as complete
-    //     }
-    //   };
-
-    //   checkAuth();
+    const checkAuth = async () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        if (storedUser && token) {
+          setUserContext(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    checkAuth();
   }, []);
 
+  // Protected Route Component
+  const ProtectedRoute = ({ children }) => {
+    if (isCheckingAuth) {
+      return (
+        <div
+          className="loading-screen"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            background:
+              "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 50%, #7AB2D3 100%)",
+            fontSize: "1.125rem",
+            color: "#4A628A",
+          }}
+        >
+          Loading...
+        </div>
+      );
+    }
+    if (!userContext) {
+      return <Navigate to="/auth/login" replace />;
+    }
+    return children;
+  };
 
+  // Public Route Component (redirect if already authenticated)
+  const PublicRoute = ({ children }) => {
+    if (isCheckingAuth) {
+      return (
+        <div
+          className="loading-screen"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            background:
+              "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 50%, #7AB2D3 100%)",
+            fontSize: "1.125rem",
+            color: "#4A628A",
+          }}
+        >
+          Loading...
+        </div>
+      );
+    }
+    if (userContext) {
+      return <Navigate to="/dashboard" replace />;
+    }
+    return children;
+  };
 
-  return (
-
-    <UserContext.Provider value={{ userContext, setUserContext }}>
-
-      <BrowserRouter>
-        <Routes>
-          <Route path="/auth">
-            <Route path="" element={<AuthPage><LoginForm /></AuthPage>} />
-          </Route>
-
-          <Route path="/" element={<DashboardPage/> } >
-            <Route index element={<DashboardHome />} />
-            <Route path="subscription" element={<Subscriptions />} />
-            <Route path="users" element={<UserLayout />}>
-              <Route index element={<UserPage />} /> {/* /users */}
-              <Route path="vehicleowners" element={<VehicleOwnersPage />} />
-              <Route path="insurancecompanies" element={<InsuranceCompaniesPage />} />
-              <Route path="services" element={<ServicePage />} />
-            </Route>
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="transactions" element={<Transactions />} />
-            <Route path="updates" element={<Updates />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="systemdata" element={<SystemData />} />
-          </Route>
-
-          
-  
-          
-          
-
-
-          {/* <Route path="/*" element={
-            <ProtectedRoute isCheckingAuth={isCheckingAuth}>
-              <Dashboard />
-            </ProtectedRoute>
-          } /> */}
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
+  return (  
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <UserContext.Provider value={{ userContext, setUserContext }}>
+        <BrowserRouter>
+            <Routes>
+              {/* Protected Dashboard Routes */}
+              <Route
+                path="/*"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+            {/* Toast Container for notifications */}
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              toastStyle={{
+                borderRadius: "12px",
+                boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
+              }}
+            />
+        </BrowserRouter>
+      </UserContext.Provider>
+    </ThemeProvider>
   );
 }
-
-// function ProtectedRoute({ children, isCheckingAuth }) {
-//   const { userContext } = useContext(UserContext);
-//   const location = useLocation();
-
-//   if (isCheckingAuth) {
-//     return <div className="loading-screen">Loading...</div>; // Show loading indicator
-//   }
-
-//   if (!userContext) {
-//     return <Navigate to="/auth" state={{ from: location, message: 'Please login to continue' }} replace />;
-//   }
-
-//   return children;
-// }
 
 export default App;
