@@ -1,13 +1,17 @@
 :root {
-  --color-100: #ffffff; /* Pure white as requested */
-  --color-200: #fff3eb;
-  --color-300: #ffd9bc;
-  --color-400: #ffb07c;
-  --color-500: #f98d45;
-  --color-600: #f8772d;
-  --color-700: #f87c24; /* Your base color */
-  --color-800: #c9651d;
-  --color-900: #934916;
+
+  --color-100: #ffffff;
+  --color-200: #bde1ff;
+  --color-300: #8cc4ff;
+  --color-400: #5aa7ff;
+  --color-500: #288aff;
+  --color-600: #00b7e0;
+  --color-700: #009dc0;
+  --color-800: #002830;
+  --color-850: #009dc0;
+  --color-875: #009dc0;
+  --color-880: #001c6c;
+  --color-900: #00343f;
 
   /* --color-900: #; 
   --color-800: #db6917;
