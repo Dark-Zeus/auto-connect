@@ -1,69 +1,13 @@
-import React, { useState } from 'react';
-import { 
-  TextField, Select, MenuItem, FormControl, InputLabel, 
-  FormControlLabel, Radio, RadioGroup, Checkbox, Button, 
-  Box, Grid, Typography, Paper, InputAdornment,
-  FormHelperText, Divider
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { Camera, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Camera, X , CarFront, User, Logs} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Snackbar, Alert } from '@mui/material';
 
-// Custom styled components to match the original design
-const SectionHeader = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '0.5rem',
-  marginBottom: '1.5rem',
-}));
-
-const IconBox = styled(Box)(({ theme, bgcolor = theme.palette.grey[700] }) => ({
-  backgroundColor: bgcolor,
-  padding: '0.5rem',
-  borderRadius: '0.5rem',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'white',
-}));
-
-const HeaderWrapper = styled(Box)(({ theme }) => ({
-  background: `linear-gradient(to right, ${theme.palette.grey[700]}, ${theme.palette.grey[800]})`,
-  color: 'white',
-  padding: '2rem',
-  borderTopLeftRadius: '0.75rem',
-  borderTopRightRadius: '0.75rem',
-  boxShadow: theme.shadows[4],
-}));
-
-const FormSectionWrapper = styled(Box)(({ theme }) => ({
-  padding: '2rem',
-  borderBottom: `1px solid ${theme.palette.grey[200]}`,
-}));
-
-
-const PhotoUploadLabel = styled('label')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '100%',
-  height: '8rem',
-  border: `2px dashed ${theme.palette.grey[300]}`,
-  borderRadius: '0.5rem',
-  cursor: 'pointer',
-  transition: 'border-color 0.2s',
-  '&:hover': {
-    borderColor: theme.palette.grey[400],
-  },
-}));
-
-const SellVehicleForm = () => {
+const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
   const [formData, setFormData] = useState({
-    name: '',
     mobile: '',
     district: '',
     city: '',
-    email: '',
     vehicleType: '',
     condition: '',
     make: '',
@@ -79,37 +23,110 @@ const SellVehicleForm = () => {
   });
 
   const [photos, setPhotos] = useState(Array(6).fill(null));
+  const [errors, setErrors] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState("");
+const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const navigate = useNavigate();
+
+  const handleSnackbarClose = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  setSnackbarOpen(false);
+  
+  // If this was a success message, navigate after closing
+  if (snackbarSeverity === "success") {
+    navigate('/myads');
+  }
+};
 
   const sriLankanDistricts = [
-    'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha', 
-    'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala', 
-    'Mannar', 'Matale', 'Matara', 'Monaragala', 'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa', 
+    'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha',
+    'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala',
+    'Mannar', 'Matale', 'Matara', 'Monaragala', 'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa',
     'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'
   ];
 
   const vehicleTypes = [
-    'Car', 'Van', 'Suv', 'Crew Cab', 'Pickup/Double Cab', 'Bus', 'Lorry/Tipper', 
+    'Car', 'Van', 'SUV', 'Crew Cab', 'Pickup/Double Cab', 'Bus', 'Lorry/Tipper',
     'Tractor', 'Threewheel', 'Heavyduty', 'Other', 'Motorcycle'
   ];
 
   const vehicleMakes = [
-    'Acura', 'Alfa-Romeo', 'Aprilia', 'Ashok Leyland', 'Aston Martin', 'Atco', 'Audi', 'Austin', 'Baic', 
-    'Bajaj', 'BYD', 'Borgward', 'Cadillac', 'Cal', 'Ceygra', 'Changan', 'Chevrolet', 
-    'Chrysler', 'Citroen', 'Corvette', 'Daewoo','DAF', 'Daido', 'Daihatsu', 'Datsun', 'Deepal', 'Demak', 'Dfac', 
-    'DFSK', 'Ducati', 'Dyno', 'Eicher', 'Ferrari', 'Fiat', 'Force', 'Ford', 'Foton', 'GAC', 'Gallant',
-    'Hero', 'Hero-Honda', 'Hillman', 'HINO', 'Hitachi', 'Holden', 'Honda', 'Hummer', 'Hyundai', 
-    'IHI', 'Isuzu', 'Iveco', 'JCB','Jeep','JiaLing', 'JMC', 'John-Deere', 'Jonway', 'JMEV', 'Kapla', 'Kawasaki', 'Kia', 'Kinetic','King Long', 'Kobelco', 
-    'Komatsu', 'KTM', 'Kubota', 'Lamborghini', 'Land-Rover', 'Lexus', 'Lincoln', 'Longjia', 'Lotus', 
-    'Lti', 'Mahindra', 'MAN', 'Maserati', 'Massey-Ferguson', 'Mazda', 'Mercedes-Benz', 'Metrocab', 'MG', 
-    'Mg-Rover', 'Micro', 'Mini', 'Minnelli', 'Mitsubishi', 'Morgan', 'Morris', 'New-Holland', 'Nissan', 'NWOW',
-    'Opel', 'Perodua', 'Peugeot', 'Piaggio', 'Porsche', 'Powertrac', 'Proton', 'Range-Rover', 'Ranomoto', 'Reva', 'REVOLT', 'Renault', 
-    'Rolls-Royce', 'Saab', 'Sakai','Scania', 'Seat', 'Senaro', 'Singer', 'Skoda', 'Smart', 'Sonalika', 
-    'Subaru','Sunlong', 'Suzuki', 'Swaraj', 'Syuk', 'TAFE', 'TAILG', 'Tata', 'Tesla', 'Toyota', 'Triumph','TVS', 'Vauxhall', 
-    'Vespa', 'Volkswagen', 'Volvo', 'Wave', 'Willys', 'Yadea', 'Yamaha', 'Yanmar', 'Yuejin','Yutong', 'Zhongtong', 
-    'Zongshen', 'Zotye', 'Other'
+    'Acura', 'Alfa-Romeo', 'Aprilia', 'Ashok', 'Aston', 'Atco', 'Audi', 'Austin', 'Baic',
+    'Bajaj', 'BP-U', 'Borgward', 'Cadillac', 'Cal', 'Ceygra', 'Changan', 'Chevrolet',
+    'Chrysler', 'Citroen', 'Corvette', 'Daewoo', 'Daihatsu', 'Datsun', 'Deepal', 'Demak',
+    'Dfac', 'Ducati', 'Dyno', 'Eicher', 'Ferrari', 'Fiat', 'Force', 'Ford', 'Foton',
+    'Hero', 'Hero-Honda', 'Hillman', 'Hitachi', 'Holden', 'Honda', 'Hummer', 'Hyundai',
+    'Iveco', 'JiaLing', 'John-Deere', 'Jonway', 'Kawasaki', 'Kia', 'Kinetic', 'Kobelco',
+    'Komatsu', 'Kubota', 'Lamborghini', 'Land-Rover', 'Lexus', 'Loncin', 'Longjia', 'Lotus',
+    'Lti', 'Mahindra', 'Maserati', 'Massey-Ferguson', 'Mercedes-Benz', 'Metrocab', 'MG',
+    'Mg-Rover', 'Micro', 'Mini', 'Minnelli', 'Mitsubishi', 'Morgan', 'Morris', 'New-Holland',
+    'Opel', 'Perodua', 'Peugeot', 'Piaggio', 'Powertrac', 'Proton', 'Range-Rover', 'Renault',
+    'Rolls-Royce', 'Saab', 'Sakai', 'Seat', 'Senaro', 'Singer', 'Skoda', 'Smart', 'Sonalika',
+    'Subaru', 'Suzuki', 'Swaraj', 'Syuk', 'Tata', 'Tesla', 'Toyota', 'Triumph', 'Vauxhall',
+    'Vespa', 'Volkswagen', 'Volvo', 'Wave', 'Willys', 'Yadea', 'Yamaha', 'Yanmar', 'Yuejin',
+    'Zongshen', 'Zotye'
   ];
 
   const years = Array.from({ length: 100 }, (_, i) => 2025 - i);
+
+  const fieldRefs = {
+    mobile: useRef(null),
+    district: useRef(null),
+    vehicleType: useRef(null),
+    condition: useRef(null),
+    make: useRef(null),
+    model: useRef(null),
+    year: useRef(null),
+    transmission: useRef(null),
+    fuelType: useRef(null),
+    mileage: useRef(null),
+    price: useRef(null),
+    engineCapacity: useRef(null)
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    let firstErrorField = null;
+
+    // Required fields validation
+    const requiredFields = ['mobile', 'district', 'vehicleType', 'condition', 'make', 'model', 'year', 'transmission', 'fuelType', 'mileage'];
+    requiredFields.forEach(field => {
+      if (!formData[field]) {
+        newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+        if (!firstErrorField) firstErrorField = field;
+      }
+    });
+
+    // Mobile phone validation
+    if (formData.mobile && !/^07[0-9]{8}$/.test(formData.mobile)) {
+      newErrors.mobile = 'Mobile number must start with 07 and be 10 digits';
+      if (!firstErrorField) firstErrorField = 'mobile';
+    }
+
+    // Engine capacity validation
+    if (formData.engineCapacity && (formData.engineCapacity < 1 || formData.engineCapacity > 10000)) {
+      newErrors.engineCapacity = 'Engine capacity must be between 1 and 10000 cc';
+      if (!firstErrorField) firstErrorField = 'engineCapacity';
+    }
+
+    // Mileage validation
+    if (formData.mileage && (formData.mileage < 0 || formData.mileage > 1000000)) {
+      newErrors.mileage = 'Mileage must be between 0 and 1000000 km';
+      if (!firstErrorField) firstErrorField = 'mileage';
+    }
+
+    // Price validation
+    if (formData.price && (formData.price < 0 || formData.price > 9990000000)) {
+      newErrors.price = 'Price must be between 0 and 9990000000 LKR';
+      if (!firstErrorField) firstErrorField = 'price';
+    }
+
+    setErrors(newErrors);
+    return { isValid: Object.keys(newErrors).length === 0, firstErrorField };
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -117,6 +134,7 @@ const SellVehicleForm = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handlePhotoUpload = (index, event) => {
@@ -140,540 +158,463 @@ const SellVehicleForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    console.log('Photos:', photos);
+    const { isValid, firstErrorField } = validateForm();
+
+    if (isValid) {
+      console.log('Form Data:', { ...formData, name: fixedName, email: fixedEmail });
+      console.log('Photos:', photos);
+      setSnackbarMessage("Vehicle listed successfully!");
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
+      setTimeout(() => {
+        setSnackbarOpen(false);
+        navigate('/myads');
+      }, 3000);
+    } else {
+      console.log('Validation failed:', errors);
+
+       setSnackbarMessage("Please fix the errors in the form");
+    setSnackbarSeverity("error");
+    setSnackbarOpen(true);
+
+      if (firstErrorField && fieldRefs[firstErrorField]?.current) {
+        fieldRefs[firstErrorField].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        fieldRefs[firstErrorField].current.focus();
+      }
+    }
   };
 
   const handleDiscard = () => {
     setFormData({
-      name: '', mobile: '', district: '', city: '', email: '',
-      vehicleType: '', condition: '', make: '', model: '', year: '',
-      price: '', ongoingLease: false, transmission: '', fuelType: '',
-      engineCapacity: '', mileage: '', description: ''
+      mobile: '',
+      district: '',
+      city: '',
+      vehicleType: '',
+      condition: '',
+      make: '',
+      model: '',
+      year: '',
+      price: '',
+      ongoingLease: false,
+      transmission: '',
+      fuelType: '',
+      engineCapacity: '',
+      mileage: '',
+      description: ''
     });
     setPhotos(Array(6).fill(null));
+    setErrors({});
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: '800px', mx: 'auto', mt: 4, mb: 6}}>
-      <Box sx={{ width: '100%' }}>
-        
-        <HeaderWrapper>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <IconBox bgcolor="#ef4444">
-              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-              </svg>
-            </IconBox>
-            <Box>
-              <Typography variant="h4" fontWeight="700">List Your Vehicle</Typography>
-              <Typography variant="subtitle1" color="rgba(255,255,255,0.8)" mt={0.5}>
-                Items marked with * are required.
-              </Typography>
-            </Box>
-          </Box>
-        </HeaderWrapper>
+    <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4">
+      <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={4000}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    >
+      <Alert
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        variant="filled"
+        className="tw:w-full"
+      >
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
 
-        <Paper sx={{ borderBottomLeftRadius: '0.75rem', borderBottomRightRadius: '0.75rem', boxShadow: 4 }}>
+      <div className="tw:max-w-4xl tw:mx-auto">
+        {/* Header */}
+        <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
+          <div className="tw:flex tw:items-center tw:gap-3">
+            <div className="tw:bg-red-500 tw:p-2 tw:rounded-lg">
+              <CarFront className="tw:w-6 tw:h-6 tw:text-white" />
+            </div>
+            <div>
+              <h1 className="tw:text-3xl tw:font-bold">List Your Vehicle</h1>
+              <p className="tw:text-slate-200 tw:mt-1">Items marked with * are required.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="tw:bg-white tw:rounded-b-xl tw:shadow-lg">
           
-          {/* Vehicle Information Section - Now First */}
-          <FormSectionWrapper>
-            <SectionHeader>
-              <IconBox>
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                </svg>
-              </IconBox>
-              <Typography variant="h6" fontWeight="600" color="text.primary">
-                Vehicle Information
-              </Typography>
-            </SectionHeader>
+          {/* Vehicle Information */}
+          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
+              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
+                <Logs className="tw:w-5 tw:h-5 tw:text-white" />
+              </div>
+              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Vehicle Information</h2>
+            </div>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <FormControl fullWidth required>
-                <InputLabel id="vehicle-type-label">Vehicle Type</InputLabel>
-                <Select
-                  labelId="vehicle-type-label"
+            <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6">
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Vehicle Type <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.vehicleType}
                   name="vehicleType"
                   value={formData.vehicleType}
                   onChange={handleInputChange}
-                  label="Vehicle Type"
-                  sx={{
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'black',
-                    }
-                  }}
+                  className={`tw:w-full tw:text-black tw:px-4 tw:py-3 tw:border ${errors.vehicleType ? 'tw:border-black' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
                 >
-                  <MenuItem value=""><em>Select Type</em></MenuItem>
+                  <option value="">Select Type</option>
                   {vehicleTypes.map(type => (
-                    <MenuItem key={type} value={type}>{type}</MenuItem>
+                    <option key={type} value={type}>{type}</option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+                {errors.vehicleType && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.vehicleType}</p>}
+              </div>
 
-              <FormControl component="fieldset" required>
-                <Typography variant="body2" fontWeight="500" color="text.primary" gutterBottom>
-                  Condition *
-                </Typography>
-                <RadioGroup
-                  name="condition"
-                  value={formData.condition}
-                  onChange={handleInputChange}
-                >
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Condition <span className="tw:text-red-500">*</span>
+                </label>
+                <div className="tw:space-y-2">
                   {['Brand New', 'Used', 'Reconditioned'].map(condition => (
-                    <FormControlLabel 
-                      key={condition} 
-                      value={condition} 
-                      control={<Radio sx={{ '&.Mui-checked': { color: 'black' } }} />} 
-                      label={condition} 
-                    />
+                    <label key={condition} className="tw:flex tw:items-center">
+                      <input
+                        ref={fieldRefs.condition}
+                        type="radio"
+                        name="condition"
+                        value={condition}
+                        checked={formData.condition === condition}
+                        onChange={handleInputChange}
+                        className="tw:mr-2 tw:text-slate-600 focus:tw:ring-slate-500"
+                        required
+                      />
+                      <span className="tw:text-sm tw:text-slate-700">{condition}</span>
+                    </label>
                   ))}
-                </RadioGroup>
-              </FormControl>
+                </div>
+                {errors.condition && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.condition}</p>}
+              </div>
 
-              <FormControl fullWidth required>
-                <InputLabel id="make-label">Vehicle Make</InputLabel>
-                <Select
-                  labelId="make-label"
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Vehicle Make <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.make}
                   name="make"
                   value={formData.make}
                   onChange={handleInputChange}
-                  label="Vehicle Make"
-                  sx={{
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'black',
-                    }
-                  }}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.make ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
                 >
-                  <MenuItem value=""><em>Select Make</em></MenuItem>
+                  <option value="">Select Make</option>
                   {vehicleMakes.map(make => (
-                    <MenuItem key={make} value={make}>{make}</MenuItem>
+                    <option key={make} value={make}>{make}</option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+                {errors.make && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.make}</p>}
+              </div>
 
-              <TextField
-                fullWidth
-                required
-                label="Model"
-                name="model"
-                value={formData.model}
-                onChange={handleInputChange}
-                placeholder="e.g., CLA180, Corolla, CT100"
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Model <span className="tw:text-red-500">*</span>
+                </label>
+                <input
+                  ref={fieldRefs.model}
+                  type="text"
+                  name="model"
+                  value={formData.model}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.model ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="e.g., CLA180, Corolla, CT100"
+                  required
+                />
+                {errors.model && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.model}</p>}
+              </div>
 
-              <FormControl fullWidth required>
-                <InputLabel id="year-label">Manufactured Year</InputLabel>
-                <Select
-                  labelId="year-label"
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Manufactured Year <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.year}
                   name="year"
                   value={formData.year}
                   onChange={handleInputChange}
-                  label="Manufactured Year"
-                  sx={{
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'black',
-                    }
-                  }}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.year ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
                 >
-                  <MenuItem value=""><em>Select Year</em></MenuItem>
+                  <option value="">Select Year</option>
                   {years.map(year => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                    <option key={year} value={year}>{year}</option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+                {errors.year && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.year}</p>}
+              </div>
 
-              <TextField
-                fullWidth
-                label="Price (Rs.)"
-                name="price"
-                type="number"
-                value={formData.price}
-                onChange={handleInputChange}
-                placeholder="0"
-                inputProps={{ min: "0" }}
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Price (Rs.)</label>
+                <input
+                  ref={fieldRefs.price}
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.price ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="0"
+                  min="0"
+                />
+                {errors.price && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.price}</p>}
+              </div>
 
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={formData.ongoingLease} 
-                    onChange={handleInputChange} 
-                    name="ongoingLease" 
-                    sx={{ '&.Mui-checked': { color: 'black' } }}
+              <div className="tw:flex tw:items-center">
+                <label className="tw:flex tw:items-center">
+                  <input
+                    type="checkbox"
+                    name="ongoingLease"
+                    checked={formData.ongoingLease}
+                    onChange={handleInputChange}
+                    className="tw:mr-2 tw:text-slate-600 focus:tw:ring-slate-500"
                   />
-                }
-                label="Ongoing Lease"
-              />
+                  <span className="tw:text-sm tw:text-slate-700">Ongoing Lease</span>
+                </label>
+              </div>
 
-              <FormControl fullWidth required>
-                <InputLabel id="transmission-label">Transmission</InputLabel>
-                <Select
-                  labelId="transmission-label"
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Transmission <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.transmission}
                   name="transmission"
                   value={formData.transmission}
                   onChange={handleInputChange}
-                  label="Transmission"
-                  sx={{
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'black',
-                    }
-                  }}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.transmission ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
                 >
-                  <MenuItem value=""><em>Select Transmission</em></MenuItem>
+                  <option value="">Select Transmission</option>
                   {['Manual', 'Automatic', 'Triptonic', 'Other'].map(trans => (
-                    <MenuItem key={trans} value={trans}>{trans}</MenuItem>
+                    <option key={trans} value={trans}>{trans}</option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+                {errors.transmission && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.transmission}</p>}
+              </div>
 
-              <FormControl fullWidth required>
-                <InputLabel id="fuel-type-label">Fuel Type</InputLabel>
-                <Select
-                  labelId="fuel-type-label"
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Fuel Type <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.fuelType}
                   name="fuelType"
                   value={formData.fuelType}
                   onChange={handleInputChange}
-                  label="Fuel Type"
-                  sx={{
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'black',
-                    }
-                  }}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.fuelType ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
                 >
-                  <MenuItem value=""><em>Select Fuel Type</em></MenuItem>
+                  <option value="">Select Fuel Type</option>
                   {['Petrol', 'Diesel', 'Hybrid', 'Electric', 'CNG'].map(fuel => (
-                    <MenuItem key={fuel} value={fuel}>{fuel}</MenuItem>
+                    <option key={fuel} value={fuel}>{fuel}</option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+                {errors.fuelType && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.fuelType}</p>}
+              </div>
 
-              <TextField
-                fullWidth
-                label="Engine Capacity (cc)"
-                name="engineCapacity"
-                type="number"
-                value={formData.engineCapacity}
-                onChange={handleInputChange}
-                placeholder="1500"
-                inputProps={{ min: "1", max: "10000" }}
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Engine Capacity (cc)</label>
+                <input
+                  ref={fieldRefs.engineCapacity}
+                  type="number"
+                  name="engineCapacity"
+                  value={formData.engineCapacity}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.engineCapacity ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="1500"
+                  min="1"
+                  max="10000"
+                />
+                {errors.engineCapacity && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.engineCapacity}</p>}
+              </div>
 
-              <TextField
-                fullWidth
-                required
-                label="Mileage (km)"
-                name="mileage"
-                type="number"
-                value={formData.mileage}
-                onChange={handleInputChange}
-                placeholder="45000"
-                inputProps={{ min: "0", max: "1000000" }}
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Mileage (km) <span className="tw:text-red-500">*</span>
+                </label>
+                <input
+                  ref={fieldRefs.mileage}
+                  type="number"
+                  name="mileage"
+                  value={formData.mileage}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mileage ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="45000"
+                  min="0"
+                  max="1000000"
+                  required
+                />
+                {errors.mileage && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.mileage}</p>}
+              </div>
+            </div>
 
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Description"
+            <div className="tw:mt-6">
+              <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Description</label>
+              <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
+                rows="4"
+                maxLength="5000"
+                className="tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all tw:resize-none"
                 placeholder="Describe your vehicle's features, condition and any additional information..."
-                inputProps={{ maxLength: 5000 }}
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
               />
-              <Typography variant="caption" color="text.secondary" align="right" sx={{ display: 'block', mt: 0.5 }}>
+              <div className="tw:text-right tw:text-sm tw:text-slate-500 tw:mt-1">
                 {formData.description.length}/5000 characters
-              </Typography>
-            </Box>
-          </FormSectionWrapper>
+              </ div>
+            </div>
+          </div>
 
-          {/* Vehicle Photos Section - Now Second */}
-          <FormSectionWrapper>
-            <SectionHeader>
-              <IconBox>
-                <Camera size={20} />
-              </IconBox>
-              <Typography variant="h6" fontWeight="600" color="text.primary">
-                Vehicle Photos
-              </Typography>
-            </SectionHeader>
+          {/* Photos */}
+          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
+              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
+                <Camera className="tw:w-5 tw:h-5 tw:text-white" />
+              </div>
+              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Vehicle Photos</h2>
+            </div>
 
-            <Grid container spacing={2}>
-              {[0, 2, 4].map(rowStartIndex => (
-                <Grid container item spacing={2} key={`row-${rowStartIndex}`}>
-                  {[0, 1].map(colIndex => {
-                    const photoIndex = rowStartIndex + colIndex;
-                    return (
-                      <Grid item xs={6} key={photoIndex}>
-                        {photos[photoIndex] ? (
-                          <Box sx={{ position: 'relative', '&:hover .removeBtn': { opacity: 1 } }}>
-                            <Box
-                              component="img"
-                              src={photos[photoIndex]}
-                              alt={`Vehicle photo ${photoIndex + 1}`}
-                              sx={{
-                                width: '100%',
-                                height: '8rem',
-                                objectFit: 'cover',
-                                borderRadius: '0.5rem',
-                                border: '2px solid',
-                                borderColor: 'grey.200'
-                              }}
-                            />
-                            <Button
-                              className="removeBtn"
-                              onClick={() => removePhoto(photoIndex)}
-                              sx={{
-                                position: 'absolute',
-                                top: '0.5rem',
-                                right: '0.5rem',
-                                minWidth: 'unset',
-                                p: '0.25rem',
-                                bgcolor: 'error.main',
-                                color: 'white',
-                                borderRadius: '50%',
-                                opacity: 0,
-                                transition: 'opacity 0.2s',
-                                '&:hover': {
-                                  bgcolor: 'error.dark',
-                                }
-                              }}
-                            >
-                              <X size={16} />
-                            </Button>
-                          </Box>
-                        ) : (
-                          <PhotoUploadLabel>
-                            <Camera size={32} color="#9ca3af" style={{ marginBottom: '0.5rem' }} />
-                            <Typography variant="body2" color="text.secondary">Add Photo</Typography>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handlePhotoUpload(photoIndex, e)}
-                              style={{ display: 'none' }}
-                            />
-                          </PhotoUploadLabel>
-                        )}
-                      </Grid>
-                    );
-                  })}
-                </Grid>
+            <div className="tw:grid tw:grid-cols-2 md:tw:grid-cols-3 tw:gap-4">
+              {photos.map((photo, index) => (
+                <div key={index} className="tw:relative">
+                  {photo ? (
+                    <div className="tw:relative tw:group">
+                      <img
+                        src={photo}
+                        alt={`Vehicle photo ${index + 1}`}
+                        className="tw:w-full tw:h-32 tw:object-cover tw:rounded-lg tw:border-2 tw:border-slate-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(index)}
+                        className="tw:absolute tw:top-2 tw:right-2 tw:bg-red-500 tw:text-white tw:rounded-full tw:p-1 tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity"
+                      >
+                        <X className="tw:w-4 tw:h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="tw:flex tw:flex-col tw:items-center tw:justify-center tw:w-full tw:h-32 tw:border-2 tw:border-dashed tw:border-slate-300 tw:rounded-lg tw:cursor-pointer hover:tw:border-slate-400 tw:transition-colors">
+                      <Camera className="tw:w-8 tw:h-8 tw:text-slate-400 tw:mb-2" />
+                      <span className="tw:text-sm tw:text-slate-500">Add Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handlePhotoUpload(index, e)}
+                        className="tw:hidden"
+                      />
+                    </label>
+                  )}
+                </div>
               ))}
-            </Grid>
-          </FormSectionWrapper>
-          
-          {/* Contact Information Section - Now Last */}
-          <FormSectionWrapper>
-            <SectionHeader>
-              <IconBox>
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                </svg>
-              </IconBox>
-              <Typography variant="h6" fontWeight="600" color="text.primary">
-                Contact Information
-              </Typography>
-            </SectionHeader>
+            </div>
+          </div>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <TextField
-                fullWidth
-                required
-                label="Name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Your full name"
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
+          {/* Contact Information */}
+          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
+              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
+                <User className="tw:w-5 tw:h-5 tw:text-white" />
+              </div>
+              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Contact Information</h2>
+            </div>
 
-              <TextField
-                fullWidth
-                required
-                label="Mobile Phone"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleInputChange}
-                placeholder="07xxxxxxxx"
-                inputProps={{ pattern: "07[0-9]{8}" }}
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
+            <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Name
+                </label>
+                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
+                  {fixedName}
+                </div>
+              </div>
 
-              <FormControl fullWidth required>
-                <InputLabel id="district-label">District</InputLabel>
-                <Select
-                  labelId="district-label"
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Mobile Phone <span className="tw:text-red-500">*</span>
+                </label>
+                <input
+                  ref={fieldRefs.mobile}
+                  type="tel"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mobile ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="07xxxxxxxx"
+                  required
+                />
+                {errors.mobile && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.mobile}</p>}
+              </div>
+
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  District <span className="tw:text-red-500">*</span>
+                </label>
+                <select
+                  ref={fieldRefs.district}
                   name="district"
                   value={formData.district}
                   onChange={handleInputChange}
-                  label="District"
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: formData.district ? 'rgba(0, 0, 0, 0.23)' : 'rgba(0, 0, 0, 0.23)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'black',
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'black',
-                    }
-                  }}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.district ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  required
                 >
-                  <MenuItem value=""><em>Select District</em></MenuItem>
+                  <option value="">Select District</option>
                   {sriLankanDistricts.map(district => (
-                    <MenuItem key={district} value={district}>{district}</MenuItem>
+                    <option key={district} value={district}>{district}</option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+                {errors.district && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.district}</p>}
+              </div>
 
-              <TextField
-                fullWidth
-                label="City"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  },
-                  '& .MuiInputBase-input::placeholder': {
-                    color: 'grey',
-                    opacity: 0.7,
-                  },
-                }}
-              />
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border tw:border-slate-300 tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all"
+                  placeholder="e.g., Akuressa, Ihala Bope, Yatiyana"
+                />
+              </div>
 
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="your.email@example.com"
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'black',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'black',
-                  }
-                }}
-              />
-            </Box>
-          </FormSectionWrapper>
+              <div className="md:tw:col-span-2">
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Email</label>
+                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
+                  {fixedEmail}
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <Box sx={{ p: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: 'flex-end' }}>
-            <Button
-              variant="outlined"
+          {/* Action Buttons */}
+          <div className="tw:p-8 tw:flex tw:flex-col sm:tw:flex-row tw:gap-4 tw:justify-end">
+            <button
+              type="button"
               onClick={handleDiscard}
-              sx={{
-                px: 5, 
-                py: 1.5, 
-                color: 'text.primary', 
-                borderColor: 'grey.300',
-                fontWeight: 500,
-                boxShadow: 3,
-                '&:hover': {
-                  bgcolor: '#bd2115',
-                  borderColor: 'grey.400',
-                  color: 'white',
-                }
-              }}
+              className="tw:px-8 tw:py-3 tw:border tw:bg-red-700 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-red-800 tw:transition-colors tw:font-medium tw:cursor-pointer"
+              disabled={Object.values(formData).every(val => !val) && photos.every(photo => !photo)}
             >
               Discard
-            </Button>
-            <Button
+            </button>
+            <button
               type="submit"
-              variant="contained"
               onClick={handleSubmit}
-              sx={{
-                px: 5, 
-                py: 1.5, 
-                background: 'linear-gradient(to right, #475569, #334155)',
-                color: 'white',
-                fontWeight: 500,
-                boxShadow: 3,
-                '&:hover': {
-                  background: '#2563eb',
-                }
-              }}
+              className="tw:px-8 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:hover:bg-blue-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
             >
               List Vehicle
-            </Button>
-          </Box>
-        </Paper>
-      </Box>
-    </Box>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default SellVehicleForm;
+export default VehicleListingForm;

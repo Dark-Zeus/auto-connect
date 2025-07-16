@@ -9,28 +9,45 @@ import { sendEmail } from "../utils/email.util.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";
 
-// Register new user
+// Optimized register controller for your multi-step frontend
+
 export const register = catchAsync(async (req, res, next) => {
+  // Enhanced debugging
+  console.log("🔥 === REGISTER CONTROLLER START ===");
+  console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
+  console.log("🌐 Request headers:", {
+    "content-type": req.headers["content-type"],
+    "user-agent": req.headers["user-agent"],
+    origin: req.headers["origin"],
+  });
+  console.log("🔍 Body keys:", Object.keys(req.body || {}));
+  console.log("===============================");
+
   const {
-    email,
-    password,
-    passwordConfirm,
     firstName,
     lastName,
+    email,
     phone,
     role,
+    password,
+    passwordConfirm,
     address,
     businessInfo,
   } = req.body;
 
   // 1) Validate password confirmation
   if (password !== passwordConfirm) {
+    console.log("❌ Password mismatch:", {
+      password: "***",
+      passwordConfirm: "***",
+    });
     return next(new AppError("Passwords do not match", 400));
   }
 
   // 2) Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
+    console.log("❌ User already exists:", email);
     LOG.warn({
       message: "Registration attempt with existing email",
       email,
@@ -46,10 +63,16 @@ export const register = catchAsync(async (req, res, next) => {
     if (
       !businessInfo ||
       !businessInfo.businessName ||
-      !businessInfo.licenseNumber
+      !businessInfo.licenseNumber ||
+      !businessInfo.businessRegistrationNumber ||
+      !businessInfo.taxIdentificationNumber
     ) {
+      console.log("❌ Missing business info for role:", role, businessInfo);
       return next(
-        new AppError("Business information is required for this role", 400)
+        new AppError(
+          "Complete business information is required for this role",
+          400
+        )
       );
     }
   }
@@ -58,11 +81,13 @@ export const register = catchAsync(async (req, res, next) => {
     if (
       !businessInfo ||
       !businessInfo.badgeNumber ||
-      !businessInfo.department
+      !businessInfo.department ||
+      !businessInfo.rank
     ) {
+      console.log("❌ Missing police info for role:", role, businessInfo);
       return next(
         new AppError(
-          "Badge number and department are required for police registration",
+          "Badge number, department, and rank are required for police registration",
           400
         )
       );
@@ -71,23 +96,36 @@ export const register = catchAsync(async (req, res, next) => {
 
   // 4) Create user data object
   const userData = {
-    email,
-    password,
     firstName,
     lastName,
+    email,
     phone,
     role,
-    address,
+    password,
+    address: {
+      street: address?.street || "",
+      city: address?.city || "",
+      district: address?.district || "",
+      province: address?.province || "",
+      postalCode: address?.postalCode || "",
+    },
     businessInfo: businessInfo || {},
   };
+
+  console.log("✅ User data prepared:", {
+    ...userData,
+    password: "***", // Hide password in logs
+  });
 
   // 5) System admin can only be created by another system admin (or if no admins exist)
   if (role === "system_admin") {
     const adminCount = await User.countDocuments({ role: "system_admin" });
+    console.log("👑 Admin count:", adminCount);
 
     if (adminCount > 0) {
       // Check if current user is admin
       if (!req.user || req.user.role !== "system_admin") {
+        console.log("❌ Unauthorized admin creation attempt");
         return next(
           new AppError(
             "Only system administrators can create admin accounts",
@@ -96,97 +134,144 @@ export const register = catchAsync(async (req, res, next) => {
         );
       }
       userData.isVerified = true; // Auto-verify admin-created accounts
+      userData.emailVerified = true;
     } else {
       // First admin - auto-verify
+      console.log("👑 Creating first system admin");
       userData.isVerified = true;
+      userData.emailVerified = true;
     }
   }
 
-  // 6) Create new user
-  const newUser = await User.create(userData);
+  try {
+    // 6) Create new user
+    console.log("💾 Creating user in database...");
+    const newUser = await User.create(userData);
+    console.log("✅ User created successfully:", newUser._id);
 
-  // 7) Generate email verification token (unless auto-verified)
-  let verificationToken;
-  if (!newUser.isVerified) {
-    verificationToken = newUser.createEmailVerificationToken();
-    await newUser.save({ validateBeforeSave: false });
-  }
-
-  // 8) Log successful registration
-  LOG.info({
-    message: "New user registered",
-    userId: newUser._id,
-    email: newUser.email,
-    role: newUser.role,
-    isVerified: newUser.isVerified,
-    ip: req.ip,
-    userAgent: req.get("user-agent"),
-  });
-
-  // 9) Send verification email (if needed)
-  if (verificationToken) {
-    try {
-      const verifyURL = `${req.protocol}://${req.get(
-        "host"
-      )}/api/v1/auth/verify-email/${verificationToken}`;
-
-      await sendEmail({
-        email: newUser.email,
-        subject: "AutoConnect - Email Verification",
-        message: `Please verify your email by clicking this link: ${verifyURL}`,
-        html: `
-          <h2>Welcome to AutoConnect!</h2>
-          <p>Thank you for registering. Please verify your email address by clicking the link below:</p>
-          <a href="${verifyURL}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Email</a>
-          <p>This link will expire in 24 hours.</p>
-          <p>If you didn't create this account, please ignore this email.</p>
-        `,
-      });
-
-      LOG.info({
-        message: "Verification email sent",
-        userId: newUser._id,
-        email: newUser.email,
-      });
-    } catch (error) {
-      LOG.error({
-        message: "Failed to send verification email",
-        userId: newUser._id,
-        email: newUser.email,
-        error: error.message,
-      });
-
-      // Clean up user and token
-      newUser.emailVerificationToken = undefined;
-      newUser.emailVerificationExpires = undefined;
+    // 7) Generate email verification token (unless auto-verified)
+    let verificationToken;
+    if (!newUser.isVerified && !newUser.emailVerified) {
+      console.log("📧 Generating verification token...");
+      verificationToken = newUser.createEmailVerificationToken();
       await newUser.save({ validateBeforeSave: false });
+      console.log("✅ Verification token generated");
     }
-  }
 
-  // 10) Send response (auto-login if verified, otherwise require verification)
-  if (newUser.isVerified) {
-    createSendToken(
-      newUser,
-      201,
-      res,
-      "User registered and logged in successfully"
-    );
-  } else {
-    res.status(201).json({
-      success: true,
-      message:
-        "User registered successfully. Please check your email for verification instructions.",
-      data: {
-        user: {
-          id: newUser._id,
-          email: newUser.email,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          role: newUser.role,
-          isVerified: newUser.isVerified,
-        },
-      },
+    // 8) Log successful registration
+    LOG.info({
+      message: "New user registered",
+      userId: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+      isVerified: newUser.isVerified,
+      emailVerified: newUser.emailVerified,
+      ip: req.ip,
+      userAgent: req.get("user-agent"),
     });
+
+    // 9) Send verification email (if needed)
+    if (verificationToken) {
+      try {
+        console.log("📧 Sending verification email...");
+        const verifyURL = `${req.protocol}://${req.get(
+          "host"
+        )}/api/v1/auth/verify-email/${verificationToken}`;
+
+        await sendEmail({
+          email: newUser.email,
+          subject: "AutoConnect - Email Verification",
+          message: `Please verify your email by clicking this link: ${verifyURL}`,
+          html: `
+            <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+              <h2 style="color: #2c3e50;">Welcome to AutoConnect!</h2>
+              <p>Hello ${newUser.firstName},</p>
+              <p>Thank you for registering with AutoConnect. Please verify your email address by clicking the button below:</p>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${verifyURL}" style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email Address</a>
+              </div>
+              <p>This link will expire in 24 hours.</p>
+              <p>If you didn't create this account, please ignore this email.</p>
+              <hr style="margin: 30px 0;">
+              <p style="font-size: 12px; color: #666;">This is an automated message from AutoConnect. Please do not reply to this email.</p>
+            </div>
+          `,
+        });
+
+        console.log("✅ Verification email sent successfully");
+        LOG.info({
+          message: "Verification email sent",
+          userId: newUser._id,
+          email: newUser.email,
+        });
+      } catch (error) {
+        console.log("❌ Failed to send verification email:", error.message);
+        LOG.error({
+          message: "Failed to send verification email",
+          userId: newUser._id,
+          email: newUser.email,
+          error: error.message,
+        });
+
+        // Clean up user and token
+        newUser.emailVerificationToken = undefined;
+        newUser.emailVerificationExpires = undefined;
+        await newUser.save({ validateBeforeSave: false });
+      }
+    }
+
+    // 10) Send response (auto-login if verified, otherwise require verification)
+    if (newUser.isVerified || newUser.emailVerified) {
+      console.log("✅ Auto-logging in verified user");
+      createSendToken(
+        newUser,
+        201,
+        res,
+        "User registered and logged in successfully"
+      );
+    } else {
+      console.log("✅ Registration successful, verification required");
+      res.status(201).json({
+        success: true,
+        message:
+          "Registration successful! Please check your email for verification instructions.",
+        data: {
+          user: {
+            id: newUser._id,
+            email: newUser.email,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            role: newUser.role,
+            isVerified: newUser.isVerified,
+            emailVerified: newUser.emailVerified,
+          },
+        },
+        requiresVerification: true,
+      });
+    }
+
+    console.log("🔥 === REGISTER CONTROLLER END ===");
+  } catch (error) {
+    console.log("💥 Registration error:", error);
+    console.log("🔥 === REGISTER CONTROLLER END (ERROR) ===");
+
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      const message = `${
+        field.charAt(0).toUpperCase() + field.slice(1)
+      } already exists`;
+      return next(new AppError(message, 400));
+    }
+
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((val) => val.message);
+      const message = `Invalid input data: ${errors.join(", ")}`;
+      return next(new AppError(message, 400));
+    }
+
+    return next(new AppError("Registration failed. Please try again.", 500));
   }
 });
 
