@@ -18,16 +18,7 @@ import {
   Check as CheckIcon,
 } from "@mui/icons-material";
 import DirectionsCarFilledRoundedIcon from "@mui/icons-material/DirectionsCarFilledRounded";
-
-const serviceOptions = [
-  "Oil Change",
-  "Brake Check",
-  "Tire Rotation",
-  "AC Service",
-  "Diagnostic Check",
-  "Battery Replacement",
-  "Emergency Repair",
-];
+import { useLocation, useNavigate } from "react-router-dom";
 
 const timeSlots = [
   "08:00 AM",
@@ -43,11 +34,24 @@ const timeSlots = [
 ];
 
 const ServiceBookingForm = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const center = location.state?.center;
+  const booking = location.state?.booking;
+
+  if (!center) {
+    navigate("/service-booking");
+    return null;
+  }
+
+  const serviceOptions = center.services || [];
+
   const [formData, setFormData] = useState({
-    services: [],
-    preferredDate: "",
-    preferredTime: "",
-    additionalNotes: "",
+    services: booking?.services || [],
+    preferredDate: booking?.date || "",
+    preferredTime: booking?.time || "",
+    additionalNotes: booking?.additionalNotes || "",
   });
 
   const [errors, setErrors] = useState({});
@@ -96,24 +100,25 @@ const ServiceBookingForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
       await new Promise((r) => setTimeout(r, 1500));
 
-      alert("Booking submitted successfully!");
-      setFormData({
-        services: [],
-        preferredDate: "",
-        preferredTime: "",
-        additionalNotes: "",
-      });
-      setErrors({});
+      const newBooking = {
+        id: booking?.id || `BK-${Date.now()}`,
+        date: formData.preferredDate,
+        time: formData.preferredTime,
+        centerName: center.name,
+        location: center.location,
+        services: formData.services,
+        additionalNotes: formData.additionalNotes,
+        status: booking?.status || "Pending",
+      };
+
+      navigate("/booking-confirmation", { state: { booking: newBooking } });
     } catch (error) {
       alert("Failed to submit booking. Please try again.");
     } finally {
@@ -128,28 +133,26 @@ const ServiceBookingForm = () => {
         elevation={0}
         sx={{ maxWidth: 600, margin: "2rem auto" }}
       >
-        {/* Heading Section - now INSIDE the Paper */}
-        <Box
-          sx={{
-            textAlign: "center",
-            mb: 4,
-            mt: 3,
-          }}
-        >
+        <Box sx={{ textAlign: "center", mb: 4, mt: 3 }}>
           <BuildIcon sx={{ color: "var(--primary-blue)", fontSize: 40, mb: 1 }} />
-          <Typography
-            variant="h4"
-            fontWeight={600}
-            sx={{ color: "var(--primary-blue)" }}
-          >
-            Book Service Appointment
+          <Typography sx={{ fontSize: 32, fontWeight: 700, color: "var(--primary-blue)" }}>
+            {booking ? "Edit Booking" : "Book Service Appointment"}
           </Typography>
-          <Typography variant="subtitle1" sx={{ color: "var(--gray-medium)" }}>
-            Schedule your vehicle service with ease
+          <Typography sx={{ fontSize: 14, fontWeight: 500, color: "var(--gray-medium)" }}>
+            {booking ? "Update your booking details" : "Schedule your vehicle service with ease"}
           </Typography>
         </Box>
 
-        {/* User Car Details Card */}
+        <Box sx={{ mb: 2, px: 3 }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }} color="primary">
+            Provider: {center.name}
+          </Typography>
+          <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
+            {center.location}
+          </Typography>
+        </Box>
+
+        {/* Vehicle Info */}
         <Box
           sx={{
             background: "var(--primary-light)",
@@ -161,32 +164,22 @@ const ServiceBookingForm = () => {
             gap: 2,
           }}
         >
-          <DirectionsCarFilledRoundedIcon
-            sx={{ color: "var(--primary-dark)", fontSize: 32 }}
-          />
+          <DirectionsCarFilledRoundedIcon sx={{ color: "var(--primary-dark)", fontSize: 32 }} />
           <Box>
-            <Typography
-              fontWeight={600}
-              color="var(--primary-dark)"
-              sx={{ fontSize: "1.1rem" }}
-            >
+            <Typography sx={{ fontSize: 16, fontWeight: 700, color: "var(--primary-dark)" }}>
               Toyota Corolla 2020
             </Typography>
-            <Typography variant="body2" color="var(--gray-medium)">
+            <Typography sx={{ fontSize: 14, fontWeight: 500, color: "var(--gray-medium)" }}>
               ABC-1234 &nbsp;•&nbsp; 45,000 km &nbsp;•&nbsp; Next service due
             </Typography>
           </Box>
         </Box>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          className="register-form"
-          sx={{ display: "flex", flexDirection: "column", gap: 3 }}
-        >
-          {/* Services Selection */}
+        {/* Form */}
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {/* Services */}
           <Box>
-            <Typography variant="h6" sx={{ mb: 1 }}>
+            <Typography sx={{ fontSize: 24, fontWeight: 600, mb: 1 }}>
               Select Services
             </Typography>
             <FormGroup sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -203,7 +196,11 @@ const ServiceBookingForm = () => {
                       }}
                     />
                   }
-                  label={service}
+                  label={
+                    <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                      {service}
+                    </Typography>
+                  }
                   sx={{
                     minWidth: 160,
                     backgroundColor: "var(--primary-light)",
@@ -218,14 +215,14 @@ const ServiceBookingForm = () => {
               <Typography
                 color="var(--error-color)"
                 variant="caption"
-                sx={{ mt: 0.5 }}
+                sx={{ mt: 0.5, fontSize: 12, fontWeight: 500 }}
               >
                 {errors.services}
               </Typography>
             )}
           </Box>
 
-          {/* Preferred Date */}
+          {/* Date */}
           <TextField
             label="Preferred Date"
             type="date"
@@ -234,15 +231,22 @@ const ServiceBookingForm = () => {
             onChange={handleChange}
             fullWidth
             required
-            className="form-input"
             InputLabelProps={{ shrink: true }}
             inputProps={{ min: new Date().toISOString().split("T")[0] }}
             error={!!errors.preferredDate}
-            helperText={errors.preferredDate}
-            sx={{ borderRadius: "16px" }}
+            helperText={
+              errors.preferredDate && (
+                <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
+                  {errors.preferredDate}
+                </Typography>
+              )
+            }
+            InputProps={{
+              sx: { fontSize: 16, fontWeight: 500 },
+            }}
           />
 
-          {/* Preferred Time */}
+          {/* Time */}
           <TextField
             select
             label="Preferred Time"
@@ -251,20 +255,29 @@ const ServiceBookingForm = () => {
             onChange={handleChange}
             fullWidth
             required
-            className="form-input"
             error={!!errors.preferredTime}
-            helperText={errors.preferredTime}
-            sx={{ borderRadius: "16px" }}
+            helperText={
+              errors.preferredTime && (
+                <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
+                  {errors.preferredTime}
+                </Typography>
+              )
+            }
+            InputProps={{
+              sx: { fontSize: 16, fontWeight: 500 },
+            }}
           >
-            <MenuItem value="">Select Time</MenuItem>
+            <MenuItem value="" sx={{ fontSize: 16, fontWeight: 500 }}>
+              Select Time
+            </MenuItem>
             {timeSlots.map((slot) => (
-              <MenuItem key={slot} value={slot}>
+              <MenuItem key={slot} value={slot} sx={{ fontSize: 16, fontWeight: 500 }}>
                 {slot}
               </MenuItem>
             ))}
           </TextField>
 
-          {/* Additional Notes */}
+          {/* Notes */}
           <TextField
             label="Additional Notes"
             name="additionalNotes"
@@ -273,29 +286,35 @@ const ServiceBookingForm = () => {
             multiline
             rows={4}
             fullWidth
-            className="form-input"
+            placeholder="Add any specific instructions or requests"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <NotesIcon className="input-icon" />
+                  <NotesIcon />
                 </InputAdornment>
               ),
+              sx: { fontSize: 16, fontWeight: 500 },
             }}
-            placeholder="Add any specific instructions or requests"
+            InputLabelProps={{ sx: { fontSize: 16, fontWeight: 500 } }}
           />
 
           {/* Submit Button */}
           <Button
             type="submit"
             variant="contained"
-            className="register-button"
             disabled={isSubmitting}
-            startIcon={
-              isSubmitting ? <CircularProgress size={20} /> : <CheckIcon />
-            }
-            sx={{ mt: 2 }}
+            startIcon={isSubmitting ? <CircularProgress size={20} /> : <CheckIcon />}
+            sx={{
+              mt: 2,
+              fontSize: 13,
+              fontWeight: 500,
+            }}
           >
-            {isSubmitting ? "Submitting..." : "Submit Booking"}
+            {isSubmitting
+              ? "Submitting..."
+              : booking
+              ? "Update Booking"
+              : "Submit Booking"}
           </Button>
         </Box>
       </Paper>
