@@ -1,0 +1,611 @@
+:root {
+  --primary-blue: #7AB2D3;
+  --primary-dark: #4A628A;
+  --background: #f8fafc;
+  --white: #fff;
+  --gray-border: #e2e8f0;
+  --gray-text: #64748b;
+  --danger: #ef4444;
+  --success: #10b981;
+  --section-gap: 2rem;
+  --border-radius: 10px;
+  --font-main: "Poppins", "Inter", "Roboto", sans-serif;
+}
+
+/* Main container */
+.slot-manager {
+  font-family: var(--font-main);
+  color: var(--primary-dark);
+  background: var(--background);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+/* Section containers */
+.slot-manager-controls,
+.slot-manager-date-banner,
+.slot-manager-legend,
+.slot-manager-help,
+.slot-manager-empty {
+  background: var(--background);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-border);
+  box-shadow: 0 2px 8px rgba(74,98,138,0.06);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Section header/title backgrounds */
+.slot-manager-date-banner-info h3,
+.slot-manager-legend h4,
+.slot-manager-help-text h4,
+.slot-manager-empty h3 {
+  background: var(--primary-dark);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* Controls Layout */
+.slot-manager-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.slot-manager-controls-left,
+.slot-manager-controls-right {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.slot-manager-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.slot-manager-date-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 0.15rem;
+}
+.slot-manager-date-input {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--primary-dark);
+  background: var(--white);
+  transition: border-color 0.2s;
+  font-family: var(--font-main);
+}
+.slot-manager-date-input:focus {
+  border-color: var(--primary-blue);
+  outline: 2px solid var(--primary-blue);
+}
+
+/* View Toggle */
+.slot-manager-view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.slot-manager-view-label {
+  font-size: 1rem;
+  color: var(--gray-text);
+  font-weight: 500;
+}
+.slot-manager-view-button {
+  background: none;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 6px;
+  color: var(--gray-text);
+  cursor: pointer;
+  padding: 0.4rem 0.7rem;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+}
+.slot-manager-view-button.active,
+.slot-manager-view-button:hover {
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  background: var(--background);
+}
+
+/* Buttons */
+.slot-manager-regenerate-button,
+.slot-manager-selection-button,
+.slot-manager-empty-button.primary {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.slot-manager-regenerate-button:disabled,
+.slot-manager-selection-button:disabled,
+.slot-manager-empty-button.primary:disabled {
+  background: var(--gray-border);
+  color: var(--gray-text);
+  cursor: not-allowed;
+}
+.slot-manager-regenerate-button:not(:disabled):hover,
+.slot-manager-selection-button:not(:disabled):hover,
+.slot-manager-empty-button.primary:not(:disabled):hover {
+  background: var(--primary-dark);
+}
+.slot-manager-bulk-button.block {
+  color: var(--danger);
+  background: none;
+}
+.slot-manager-bulk-button.unblock {
+  color: var(--success);
+  background: none;
+}
+.slot-manager-bulk-button.clear {
+  color: var(--gray-text);
+  background: none;
+}
+
+/* Bulk Actions */
+.slot-manager-selection-info {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--background);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.slot-manager-selection-count {
+  font-weight: 600;
+}
+.slot-manager-bulk-button {
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  padding: 0.3rem 0.8rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.slot-manager-bulk-button:hover:not(:disabled) {
+  background: var(--gray-border);
+}
+
+/* Date Banner */
+.slot-manager-date-banner {
+  border-left: 5px solid var(--primary-blue);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.slot-manager-date-banner.past { border-color: var(--danger); }
+.slot-manager-date-banner.today { border-color: var(--primary-blue); }
+.slot-manager-date-banner.future { border-color: var(--success); }
+.slot-manager-date-banner-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.slot-manager-date-banner-info p {
+  margin: 0;
+  color: var(--gray-text);
+  font-weight: 400;
+}
+.slot-manager-date-banner-stats {
+  display: flex;
+  gap: 1.2rem;
+  font-weight: 500;
+  color: var(--primary-dark);
+  align-items: center;
+}
+.slot-manager-date-banner-stats-total,
+.slot-manager-date-banner-stats-time {
+  background: var(--white);
+  padding: 0.2rem 0.8rem;
+  border-radius: 5px;
+  font-size: 0.98rem;
+}
+
+/* Loading State */
+.slot-manager-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem 0;
+}
+.slot-manager-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--primary-blue);
+}
+.slot-manager-loading-spinner {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+.slot-manager-loading-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Empty State */
+.slot-manager-empty {
+  text-align: center;
+}
+.slot-manager-empty-icon {
+  width: 2.8rem;
+  height: 2.8rem;
+  color: var(--danger);
+  margin-bottom: 0.7rem;
+}
+.slot-manager-empty p {
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1rem;
+  color: var(--gray-text);
+}
+.slot-manager-empty-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.slot-manager-empty-button {
+  background: none;
+  border: none;
+  color: var(--primary-blue);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 5px;
+  padding: 0.3rem 1.1rem;
+  transition: color 0.2s, background 0.2s;
+}
+.slot-manager-empty-button:hover {
+  background: var(--gray-border);
+  color: var(--primary-dark);
+}
+
+/* Slots Grid View */
+.slot-manager-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.2rem;
+}
+
+/* Slot Card */
+.slot-manager-slot-card {
+  position: relative;
+  padding: 1.2rem 1rem 1.5rem 1rem;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(74,98,138,0.06);
+  display: flex;
+  flex-direction: column;
+  min-height: 8rem;
+  cursor: pointer;
+  transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
+  margin-bottom: 0;
+}
+.slot-manager-slot-card.available { border-color: var(--success); }
+.slot-manager-slot-card.booked { border-color: var(--primary-blue); }
+.slot-manager-slot-card.blocked { border-color: var(--danger); }
+.slot-manager-slot-card.selected {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px var(--primary-blue), 0 8px 32px rgba(74,98,138,0.08);
+}
+.slot-manager-slot-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+.slot-manager-slot-card:not(.disabled):hover {
+  box-shadow: 0 8px 32px rgba(74,98,138,0.08);
+  border-color: var(--primary-dark);
+}
+.slot-manager-slot-checkbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  z-index: 2;
+}
+.slot-manager-slot-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.slot-manager-slot-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+}
+.slot-manager-slot-icon.available { color: var(--success); }
+.slot-manager-slot-icon.booked { color: var(--primary-blue); }
+.slot-manager-slot-icon.blocked { color: var(--danger); }
+.slot-manager-slot-time {
+  font-size: 1.08rem;
+  font-weight: 700;
+  flex: 1;
+}
+.slot-manager-slot-end-time {
+  font-size: 0.97rem;
+  color: var(--gray-text);
+  margin-bottom: 0.3rem;
+}
+.slot-manager-slot-status {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--gray-text);
+  margin-bottom: 0.2rem;
+}
+.slot-manager-slot-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.slot-manager-slot-customer,
+.slot-manager-slot-service,
+.slot-manager-slot-notes {
+  font-size: 0.93rem;
+  color: var(--gray-text);
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.slot-manager-slot-action {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  font-size: 0.93rem;
+  background: var(--background);
+  padding: 0.2rem 0.9rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--primary-dark);
+  transition: background 0.2s;
+}
+.slot-manager-slot-action:hover {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+/* Slots List View */
+.slot-manager-slots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.slot-manager-slot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(74,98,138,0.06);
+  transition: box-shadow 0.18s, border-color 0.18s;
+  margin-bottom: 0;
+}
+.slot-manager-slot-row.available { border-color: var(--success); }
+.slot-manager-slot-row.booked { border-color: var(--primary-blue); }
+.slot-manager-slot-row.blocked { border-color: var(--danger); }
+.slot-manager-slot-row.selected {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px var(--primary-blue), 0 8px 32px rgba(74,98,138,0.08);
+}
+.slot-manager-slot-row.disabled {
+  opacity: 0.65;
+}
+.slot-manager-slot-row:not(.disabled):hover {
+  box-shadow: 0 8px 32px rgba(74,98,138,0.08);
+  border-color: var(--primary-dark);
+}
+.slot-manager-slot-row-left {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.slot-manager-slot-row-checkbox {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+.slot-manager-slot-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+.slot-manager-slot-row-time {
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 1.07rem;
+}
+.slot-manager-slot-row-duration {
+  font-size: 0.97rem;
+  color: var(--gray-text);
+  font-weight: 500;
+}
+.slot-manager-slot-row-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.slot-manager-slot-row-details {
+  text-align: right;
+  flex: 1;
+}
+.slot-manager-slot-row-status {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.slot-manager-slot-row-status.available { color: var(--success); }
+.slot-manager-slot-row-status.booked { color: var(--primary-blue); }
+.slot-manager-slot-row-status.blocked { color: var(--danger); }
+.slot-manager-slot-row-meta {
+  font-size: 0.97rem;
+  color: var(--gray-text);
+  margin-bottom: 0.1rem;
+  font-weight: 500;
+}
+.slot-manager-slot-row-button {
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  padding: 0.3rem 0.9rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.slot-manager-slot-row-button.block { color: var(--danger); }
+.slot-manager-slot-row-button.unblock { color: var(--success); }
+.slot-manager-slot-row-button:hover {
+  background: var(--gray-border);
+}
+
+/* Legend */
+.slot-manager-legend-items {
+  display: flex;
+  gap: 1.3rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.slot-manager-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.slot-manager-legend-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.slot-manager-legend-icon.available { color: var(--success); }
+.slot-manager-legend-icon.booked { color: var(--primary-blue); }
+.slot-manager-legend-icon.blocked { color: var(--danger); }
+.slot-manager-legend-text {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+.slot-manager-legend-count {
+  margin-left: 0.18rem;
+  font-weight: 400;
+  color: var(--gray-text);
+}
+.slot-manager-legend-total {
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin-left: auto;
+}
+
+/* Help Panel */
+.slot-manager-help-content {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.slot-manager-help-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--primary-blue);
+  flex-shrink: 0;
+}
+.slot-manager-help-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  list-style-type: disc;
+  color: var(--gray-text);
+}
+.slot-manager-help-list li {
+  margin-bottom: 0.3rem;
+  line-height: 1.5;
+}
+.slot-manager-help-list li.today {
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .slot-manager { padding: 1rem; }
+  .slot-manager-controls,
+  .slot-manager-date-banner,
+  .slot-manager-legend,
+  .slot-manager-help,
+  .slot-manager-empty {
+    padding: 1rem;
+  }
+  .slot-manager-slots-grid { gap: 0.7rem; }
+}
+@media (max-width: 600px) {
+  .slot-manager-controls,
+  .slot-manager-date-banner,
+  .slot-manager-legend,
+  .slot-manager-help,
+  .slot-manager-empty {
+    padding: 0.7rem;
+  }
+  .slot-manager-slots-grid { grid-template-columns: 1fr; }
+  .slot-manager-slot-card { min-height: 6rem; padding: 0.7rem; }
+  .slot-manager-slot-row { padding: 0.7rem; }
+  .slot-manager-empty { padding: 1.2rem 0.5rem; }
+}
+
+/* Focus State */
+.slot-manager-date-input:focus-visible,
+.slot-manager-view-button:focus-visible,
+.slot-manager-regenerate-button:focus-visible,
+.slot-manager-bulk-button:focus-visible,
+.slot-manager-selection-button:focus-visible,
+.slot-manager-empty-button:focus-visible,
+.slot-manager-slot-card:focus-visible,
+.slot-manager-slot-action:focus-visible,
+.slot-manager-slot-row-button:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
