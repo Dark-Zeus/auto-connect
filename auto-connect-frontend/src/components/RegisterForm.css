@@ -16,16 +16,6 @@
   --warning-color: #f39c12;
 }
 
-/* CRITICAL FIX: Ensure scrolling works properly */
-html, body {
-  height: auto !important;
-  min-height: 100vh !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  margin: 0;
-  padding: 0;
-}
-
 .register-form-container {
   /* FIXED: Changed from min-height: 100vh to auto height with proper padding */
   min-height: 100vh;
@@ -705,13 +695,6 @@ html, body {
 .MuiBox-root {
   height: auto !important;
   max-height: none !important;
-}
-
-/* Override any global styles that might interfere */
-#root {
-  height: auto !important;
-  min-height: 100vh !important;
-  overflow-y: auto !important;
 }
 
 .App {
