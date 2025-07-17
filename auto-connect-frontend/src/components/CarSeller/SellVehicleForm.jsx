@@ -226,9 +226,9 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
       <div className="tw:max-w-4xl tw:mx-auto">
         {/* Header */}
-        <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
+        <div className="tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
           <div className="tw:flex tw:items-center tw:gap-3">
-            <div className="tw:bg-red-500 tw:p-2 tw:rounded-lg">
+            <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
               <CarFront className="tw:w-6 tw:h-6 tw:text-white" />
             </div>
             <div>
