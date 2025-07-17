@@ -17,7 +17,7 @@ const data = [
   { month: "Mar", centerA: 35, centerB: 18, centerC: 28 },
   { month: "Apr", centerA: 40, centerB: 24, centerC: 32 },
   { month: "May", centerA: 28, centerB: 20, centerC: 25 },
-  { month: "Jun", centerA: 32, centerB: 27, centerC: 30 },
+  { month: "Jun", centerA: 32, centerB: 27, centerC: 38 },
 ];
 
 // Transform to calculate total updates per month

@@ -173,7 +173,7 @@ function ServiceCenters() {
     });
 
   return (
-    <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
+    <div className="tw:p-8 tw:bg-gradient-to-br tw:bg-[var(--primary-light)] tw:to-indigo-100 tw:min-h-screen">
       {/* Header with Button */}
       <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
         <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">

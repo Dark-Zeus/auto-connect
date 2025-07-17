@@ -24,7 +24,7 @@ import {
 const dataTrafficLocation = [
   { name: "AutoFix", value: 400 },
   { name: "QuickServe", value: 300 },
-  { name: "SpeedyAuto", value: 300 },
+  { name: "SpeedyAuto", value: 360 },
   { name: "Center1", value: 200 },
   { name: "Center2", value: 100 },
 ];
@@ -68,6 +68,7 @@ const renderActiveShape = (props) => {
   } = props;
   return (
     <g>
+      {/* Outer glow ring */}
       <Sector
         cx={cx}
         cy={cy}
@@ -77,6 +78,8 @@ const renderActiveShape = (props) => {
         endAngle={endAngle}
         fill={fill}
       />
+
+      {/* Main sector */}
       <Sector
         cx={cx}
         cy={cy}
@@ -86,12 +89,6 @@ const renderActiveShape = (props) => {
         endAngle={endAngle}
         fill={fill}
       />
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill="#333">
-        {payload.name}
-      </text>
-      <text x={cx} y={cy + 20} dy={8} textAnchor="middle" fill="#999">
-        {value} visits ({(percent * 100).toFixed(0)}%)
-      </text>
     </g>
   );
 };
@@ -106,32 +103,32 @@ function DashboardHome() {
       value: 123915,
       progress: 12.3456,
       icon: <People style={{ fontSize: 40 }} />,
-      color: "tw:bg-blue-100",
-      iconBg: "tw:bg-blue-600",
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
       title: "Verified Service Centers",
       value: 61,
       progress: -8.1234,
       icon: <Garage style={{ fontSize: 40 }} />,
-      color: "tw:bg-green-100",
-      iconBg: "tw:bg-green-600",
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
       title: "Income",
       value: "LKR 710,003",
       progress: 2.6789,
       icon: <TrendingUp style={{ fontSize: 40 }} />,
-      color: "tw:bg-purple-100",
-      iconBg: "tw:bg-purple-600",
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
       title: "Verified Insurence Companies",
       value: 18,
       progress: 1.2345,
       icon: <Domain style={{ fontSize: 40 }} />,
-      color: "tw:bg-orange-100",
-      iconBg: "tw:bg-orange-600",
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
   ];
 
@@ -167,7 +164,7 @@ function DashboardHome() {
       </div>
 
       {/* Traffic by Location Pie Chart */}
-      <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
+      <div className="tw:col-span-2 tw:bg-[var(--sky-light)] tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Service Centers</h3>
         <ResponsiveContainer width="100%" height={215}>
           <PieChart>
@@ -192,6 +189,25 @@ function DashboardHome() {
                 />
               ))}
             </Pie>
+                {/* Manual center label */}
+                <text
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="tw:text-lg tw:font-semibold"
+                >
+                  {dataTrafficLocation[activeIndex]?.name}
+                </text>
+                <text
+                  x="50%"
+                  y="60%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="tw:text-sm tw:text-gray-500"
+                >
+                  {dataTrafficLocation[activeIndex]?.value}
+                </text>
           </PieChart>
         </ResponsiveContainer>
         <div className="tw:flex tw:flex-col tw:mt-4 tw:space-y-2 tw:text-sm">
@@ -208,7 +224,7 @@ function DashboardHome() {
       </div>
 
       {/* Line Chart */}
-      <div className="tw:col-span-3 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md">
+      <div className="tw:col-span-3 tw:bg-[var(--sky-light)] tw:p-6 tw:rounded-2xl tw:shadow-md">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Traffic by Users (Last 7 Days)</h3>
         <ResponsiveContainer width="100%" height={340}>
           <LineChart
@@ -232,8 +248,8 @@ function DashboardHome() {
       </div>
 
       {/* Bar Chart */}
-      <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
-        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Monthly Income</h3>
+      <div className="tw:col-span-2 tw:bg-[var(--sky-light)] tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
+        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">User Registration</h3>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={dataTrafficDevice}>
             <XAxis dataKey="device" />
@@ -261,7 +277,7 @@ function DashboardHome() {
       </div>
 
       {/* Latest Updates Table */}
-      <div className="tw:col-span-5 tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
+      <div className="tw:col-span-5 tw:bg-[var(--sky-light)] tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Latest Updates</h3>
         <table className="tw:w-full tw:border-collapse">
           <thead className="tw:bg-blue-50">

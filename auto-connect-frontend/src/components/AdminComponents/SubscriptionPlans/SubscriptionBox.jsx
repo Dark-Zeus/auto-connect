@@ -63,7 +63,7 @@ const PriceBox = ({ plan, onEdit, onDelete }) => (
     <div className="tw:flex tw:justify-between tw:gap-3">
       <button
         onClick={onEdit}
-        className="tw:w-1/2 tw:bg-blue-600 tw:text-white tw:py-2 tw:rounded-lg tw:font-semibold hover:tw:bg-yellow-600"
+        className="tw:w-1/2 tw:bg-green-500 tw:text-white tw:py-2 tw:rounded-lg tw:font-semibold hover:tw:bg-yellow-600"
       >
         Edit
       </button>

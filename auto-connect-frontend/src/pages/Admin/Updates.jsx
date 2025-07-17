@@ -148,7 +148,7 @@ const updates = [
 ];
 const Updates = () => {
 return (
-  <div className="tw:p-8 tw:flex tw:flex-col tw:gap-6">
+  <div className="tw:p-8 tw:flex tw:flex-col tw:gap-6 tw:bg-[var(--primary-light)]">
     {/* Top row: table + pie chart with stat box */}
     <div className="tw:flex tw:gap-6">
       {/* Table - 75% width */}

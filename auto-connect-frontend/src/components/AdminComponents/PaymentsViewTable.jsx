@@ -57,7 +57,7 @@ function PaymentsTable() {
   };
 
   return (
-    <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:from-white tw:to-blue-50">
+    <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:bg-[var(--primary-light)] tw:to-blue-50">
       <div className="tw:flex tw:items-center tw:justify-between tw:mb-8">
         <h2 className="tw:text-3xl tw:font-bold tw:text-blue-800">Payment Records</h2>
         <span className="tw:text-blue-600 tw:font-medium tw:text-lg">

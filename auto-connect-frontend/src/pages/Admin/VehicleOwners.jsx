@@ -95,7 +95,7 @@ function OwnerView() {
   );
 
   return (
-    <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
+    <div className="tw:p-8 tw:bg-gradient-to-br tw:bg-[var(--primary-light)] tw:to-indigo-100 tw:min-h-screen">
       <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-4">Vehicle Owner List</h1>
 
       <SearchFilterSortBox

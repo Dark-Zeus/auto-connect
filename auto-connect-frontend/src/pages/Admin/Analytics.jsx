@@ -6,7 +6,7 @@ import VehicleSalesChart from '@components/AdminComponents/Analytics/VehicleSale
 import ReportSalesChart from '@components/AdminComponents/Analytics/ReportSalesChart';
 const Analytics = () => {
 return (
-  <div className="tw:mt-8 tw:grid tw:grid-cols-2 tw:gap-6">
+  <div className="tw:mt-8 tw:grid tw:grid-cols-2 tw:gap-6 tw:bg-[var(--primary-light)]">
     {/* Left column: Monthly Report */}
     <MonthlyReport />
 

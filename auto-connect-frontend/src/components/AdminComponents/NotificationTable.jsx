@@ -154,7 +154,7 @@ function NotificationTable() {
   };
 
   return (
-    <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:from-white tw:to-blue-50">
+    <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:bg-[var(--primary-light)] tw:to-blue-50">
       <div className="tw:grid tw:grid-cols-3 tw:gap-10">
         <div className="tw:col-span-2">
           {/* Received Notifications Box */}

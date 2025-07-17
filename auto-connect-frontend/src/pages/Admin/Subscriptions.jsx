@@ -18,7 +18,7 @@ export default function Subscriptions() {
 
       <div className="tw:flex tw:justify-end tw:mb-6 tw:max-w-7xl tw:mx-auto">
         <button
-          className="tw:bg-green-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold hover:tw:bg-green-700 tw:transition"
+          className="tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold hover:tw:bg-green-700 tw:transition"
           onClick={() => setShowAddModal(true)}
         >
           Add New Plan
