@@ -23,7 +23,7 @@ const ListedVehiclesPage = () => {
       id: 1,
       manufacturer: 'Toyota',
       model: 'Land Cruiser 150',
-      year: 2018,
+      year: 2015,
       price: 32000000,
       odometer: 135000,
       fuelType: 'Diesel',
