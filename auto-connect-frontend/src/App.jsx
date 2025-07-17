@@ -15,7 +15,8 @@ import Confirm from "@components/atoms/Confirm";
 import AdaptiveTable from "@components/atoms/AdaptiveTable";
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
 import MyBookingServices from "@pages/MyBookingServices";
-
+import BookingDetailsPage from "@pages/BookingDetailsPage";
+import CompletedServicesInvoice from "@pages/CompletedServicesInvioce";
 // New Components
 import LandingPage from "@pages/LandingPage";
 import RegisterForm from "@components/RegisterForm";
@@ -332,6 +333,24 @@ function App() {
                 element={
                   <PublicRoute>
                     <MyBookingServices />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/booking-details"
+                element={
+                  <PublicRoute>
+                    <BookingDetailsPage />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/completed-services-invoice"
+                element={
+                  <PublicRoute>
+                    <CompletedServicesInvoice />
                   </PublicRoute>
                 }
               />

@@ -25,6 +25,8 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import OverlayWindow from "../components/OverlayWindow";
+import BookingDetailsPage from "./BookingDetailsPage";
 
 const serviceCenters = [
   // Your serviceCenters data unchanged
