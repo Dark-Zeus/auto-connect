@@ -52,8 +52,8 @@ const VehicleDetails = ({ vehicle }) => {
     condition: 'Used',
     make: 'Toyota',
     model: 'Land Cruiser 150',
-    year: '2018',
-    registeredYear: '2018',
+    year: '2015',
+    registeredYear: '2015',
     price: '32000000',
     ongoingLease: false,
     transmission: 'Automatic',
@@ -178,7 +178,7 @@ const VehicleDetails = ({ vehicle }) => {
           <div className="tw:block md:tw:hidden tw:space-y-4">
             {/* Price Section */}
             <div className="tw:text-center">
-              <Typography variant="h4" className="tw:font-bold tw:text-purple-600 tw:mb-2">
+              <Typography variant="h4" className="tw:text-bold tw:text-[#4a618a] tw:mb-2">
                 {vehicleData.price ? formatPrice(vehicleData.price) : 'Negotiable'}
               </Typography>
             </div>
@@ -205,7 +205,7 @@ const VehicleDetails = ({ vehicle }) => {
               {/* Email Inquiry */}
               <Button
                 onClick={handleInquireOpen} // Trigger Inquire component
-                className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:rounded-lg tw:shadow-md tw:hover:bg-blue-800 tw:transition-all tw:w-full"
+                className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:p-3 tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:rounded-lg tw:shadow-md tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:transition-all tw:w-full"
                 style={{ textTransform: 'none', color: 'white'}}
               >
                 <Email />

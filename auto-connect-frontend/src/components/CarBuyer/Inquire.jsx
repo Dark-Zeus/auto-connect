@@ -140,7 +140,7 @@ const Inquire = ({ open, onClose, vehicleData, onSubmitSuccess }) => {
         <div className="tw:px-6 tw:pt-6">
           <div className="tw:w-full tw:bg-gray-200 tw:rounded-full tw:h-2.5">
             <div 
-              className="tw:bg-blue-600 tw:h-2.5 tw:rounded-full tw:transition-all tw:duration-300"
+              className="tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:h-2.5 tw:rounded-full tw:transition-all tw:duration-300"
               style={{ width: `${progressValue}%` }}
             />
           </div>
@@ -189,7 +189,7 @@ const Inquire = ({ open, onClose, vehicleData, onSubmitSuccess }) => {
                 </button>
                 <button
                   onClick={handleNext}
-                  className="tw:flex-1 tw:py-2.5 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:font-medium tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-colors tw:flex tw:items-center tw:justify-center tw:gap-2 tw:text-sm"
+                  className="tw:flex-1 tw:py-2.5 tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:rounded-lg tw:font-medium tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-colors tw:flex tw:items-center tw:justify-center tw:gap-2 tw:text-sm"
                 >
                   Next
                 </button>
@@ -272,7 +272,7 @@ const Inquire = ({ open, onClose, vehicleData, onSubmitSuccess }) => {
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="tw:flex-1 tw:py-2.5 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:font-medium tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-colors tw:disabled:tw:opacity-50 tw:disabled:tw:cursor-not-allowed tw:flex tw:items-center tw:justify-center tw:gap-2 tw:text-sm"
+                  className="tw:flex-1 tw:py-2.5 tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:rounded-lg tw:font-medium tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-colors tw:disabled:tw:opacity-50 tw:disabled:tw:cursor-not-allowed tw:flex tw:items-center tw:justify-center tw:gap-2 tw:text-sm"
                 >
                   {isSubmitting ? 'Sending...' : (
                     <>

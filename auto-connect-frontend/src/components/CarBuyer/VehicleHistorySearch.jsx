@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { CheckCircle, AlertTriangle, Car, FileText, Shield, MapPin, Wrench, ArrowRight, Star } from 'lucide-react';
 import elephantImage from '../../assets/images/AutoConnectMascot.png';
 import { useNavigate } from 'react-router-dom';
+import ReportAvailable from '@components/CarBuyer/ReportAvailable';
 
 const VehicleHistoryPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isHovered, setIsHovered] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
 
   return (
@@ -23,7 +26,7 @@ const VehicleHistoryPage = () => {
               <div className="tw:space-y-6">
                 <h1 className="tw:text-5xl lg:tw:text-6xl tw:font-bold tw:text-gray-900 tw:leading-tight">
                   Sri Lanka's most comprehensive{' '}
-                  <span className="tw:text-blue-600">vehicle history report.</span>
+                  <span className="tw:text-[#2448ac]">vehicle history report.</span>
                 </h1>
                 
                 <div className="tw:space-y-2 tw:text-xl tw:text-gray-800">
@@ -38,15 +41,15 @@ const VehicleHistoryPage = () => {
                   <div className="tw:flex-1 tw:text-black">
                     <input
                       type="text"
-                      placeholder="Enter your registration plate"
+                      placeholder="Enter your registration plate (e.g., CAAXXXX, 300XXX, 17XXXX)"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       className="tw:w-full tw:px-6 tw:py-4 tw:text-lg tw:border tw:border-gray-200 tw:rounded-xl tw:focus:tw:outline-none tw:focus:tw:ring-2 tw:focus:tw:ring-blue-500 tw:focus:tw:border-transparent tw:shadow-sm tw:transition-all tw:duration-200"
                     />
                   </div>
                   <button 
-                    className="tw:bg-blue-600 tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:flex tw:items-center tw:justify-center tw:gap-2 tw:group"
-                    onClick={() => navigate('/vehiclehistory')}
+                    className="tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:flex tw:items-center tw:justify-center tw:gap-2 tw:group"
+                    onClick={() => { setShowReport(true); setIsOpen(true); }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                   >
@@ -54,6 +57,15 @@ const VehicleHistoryPage = () => {
                     <ArrowRight className={`tw:w-5 tw:h-5 tw:transition-transform tw:duration-200 ${isHovered ? 'tw:translate-x-1' : ''}`} />
                   </button>
                 </div>
+
+                {showReport && (
+                  <div className="tw:mt-4">
+                    <ReportAvailable
+                      isOpen={isOpen}
+                      onClose={() => { setIsOpen(false); setShowReport(false); }}
+                    />
+                  </div>
+                )}
                 
                 <p className="tw:text-lg tw:text-gray-700">*LKR 1,000 per report</p>
               </div>
@@ -174,7 +186,7 @@ const VehicleHistoryPage = () => {
       {/* CTA Section */}
       <div className="tw:bg-gray-50 tw:py-16">
         <div className="tw:max-w-4xl tw:mx-auto tw:px-4 tw:text-center">
-          <button className="tw:bg-blue-600 tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:mb-8" onClick={() => navigate('/vehiclehistory')}>
+          <button className="tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:px-8 tw:py-4 tw:rounded-xl tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:tw:shadow-xl tw:font-semibold tw:text-lg tw:mb-8" onClick={() => navigate('/vehiclehistory')}>
             View Sample Report
           </button>
           
@@ -196,7 +208,7 @@ const VehicleHistoryPage = () => {
               It's more than records about a vehicle. It's a way to know you're making the right choice, a way to reinforce that your gut was correct. A sign of relief that you know the vehicle's past before you drive away with it. It shows a prospective buyer that it's what you say it is.
             </p>
             <p>
-              The CARFAX Sri Lanka Vehicle History Report has the data you need to help you make the right decision for you and your car.
+              The AUTOCONNECT Sri Lanka Vehicle History Report has the data you need to help you make the right decision for you and your car.
             </p>
           </div>
 

@@ -154,7 +154,7 @@ const OwnershipHistoryCheck = () => {
                     For peace of mind, you can purchase a Vehicle Check with
                     additional checks including accidents recorded, service/repair history, emission tests, previous keepers, mileage, color. Terms and conditions apply.
                   </p>
-                  <button className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:text-base tw:font-semibold tw:hover:bg-blue-800 tw:hover:cursor-pointer tw:transition-colors tw:mt-2" onClick={() => navigate('/vehiclehistory')}>
+                  <button className="tw:w-full tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:text-base tw:font-semibold tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-colors tw:mt-2" onClick={() => navigate('/vehiclehistory')}>
                     Buy a Full Vehicle Check
                   </button>
                 </div>
