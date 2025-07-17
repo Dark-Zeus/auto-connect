@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import { LocationOn, Star, Build, Search } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import OverlayWindow from "@components/OverlayWindow";
+import ServiceBookingForm from "@components/ServiceBookingForm";
 
 const serviceCenters = [
   {
@@ -192,12 +194,14 @@ const categories = [
 const ServiceBookingApp = () => {
   const navigate = useNavigate();
 
+  const [isbookAppointmentOverlayOpen, setIsBookAppointmentOverlayOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
   const handleBookAppointment = (center) => {
-  navigate("/service-booking-form", { state: { center } });
-};
+    //setIsBookAppointmentOverlayOpen(true);
+    navigate("/service-booking-form", { state: { center } });
+  };
 
 
   const handleViewDetails = (center) => {
@@ -225,20 +229,6 @@ const ServiceBookingApp = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", width: "100%", display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <Box sx={{ backgroundColor: "#7AB2D3", p: 1.5, color: "white" }}>
-        <Container maxWidth="xl">
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Build />
-              <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
-                Auto Connect - Service Providers
-              </Typography>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-
       {/* Main Content */}
       <Box sx={{ flex: 1, overflowY: "auto", backgroundColor: "#DFF2EB", p: 3 }}>
         <Container maxWidth="xl">
@@ -319,23 +309,23 @@ const ServiceBookingApp = () => {
                 filteredCenters.map((center) => (
                   <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
                     {filteredCenters.length > 0 ? (
-                    filteredCenters.map((center) => (
-                    <Grid item xs={12} sm={6} md={4} key={center.id}>
-                    <ServiceProviderCard
-                    center={center}
-                    onBookAppointment={handleBookAppointment}
-                    onViewDetails={handleViewDetails}
-                    />
-                    </Grid>
-                    ))
+                      filteredCenters.map((center) => (
+                        <Grid item xs={12} sm={6} md={4} key={center.id}>
+                          <ServiceProviderCard
+                            center={center}
+                            onBookAppointment={handleBookAppointment}
+                            onViewDetails={handleViewDetails}
+                          />
+                        </Grid>
+                      ))
                     ) : (
-                    <Grid item xs={12}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 500, mt: 4, textAlign: "center" }}>
-                    No service providers found matching your criteria.
-                    </Typography>
-                    </Grid>
+                      <Grid item xs={12}>
+                        <Typography sx={{ fontSize: 16, fontWeight: 500, mt: 4, textAlign: "center" }}>
+                          No service providers found matching your criteria.
+                        </Typography>
+                      </Grid>
                     )}
-                    </Grid>
+                  </Grid>
 
                 ))
               ) : (
@@ -349,6 +339,11 @@ const ServiceBookingApp = () => {
           </Box>
         </Container>
       </Box>
+
+      {isbookAppointmentOverlayOpen && <OverlayWindow closeWindowFunction={() => setIsBookAppointmentOverlayOpen(false)} open={isbookAppointmentOverlayOpen}>
+        <ServiceBookingForm />
+      </OverlayWindow>
+      }
     </Box>
   );
 };

@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import SavedVehicleCard from "@components/CarBuyer/SavedVehicleCard";
-import SearchVehicleFilter from "@components/CarBuyer/SearchVehicleFilter";
+import MyVehicleCard from "@components/CarSeller/MyVehicleCard";
 import Pagination from "@components/CarBuyer/Pagination";
 import MarketplaceNavigation from "@components/CarSeller/MarketplaceNavigation";
 
-const SavedVehiclesPage = () => {
+const MyAdsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const vehiclesPerPage = 20;
 
   // Create hardcoded card components as an array
   const allCards = Array(1).fill().map((_, index) => (
-    <SavedVehicleCard key={index} />
+    <MyVehicleCard key={index} />
   ));
 
   const totalPages = Math.ceil(allCards.length / vehiclesPerPage);
@@ -25,9 +24,9 @@ const SavedVehiclesPage = () => {
 
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4 tw:overflow-auto">
-      <MarketplaceNavigation />
+      {/* <MarketplaceNavigation /> */}
         <div className="tw:w-full tw:flex tw:flex-col tw:items-center">
-            <div className="tw:text-xl tw:font-semibold tw:mb-10 tw:text-black tw:items-start">Saved Ads</div>
+            <div className="tw:text-xl tw:font-semibold tw:mb-10 tw:text-black tw:items-start">My Ads</div>
           {currentCards}
 
           <Pagination
@@ -42,4 +41,4 @@ const SavedVehiclesPage = () => {
   );
 };
 
-export default SavedVehiclesPage;
+export default MyAdsPage;

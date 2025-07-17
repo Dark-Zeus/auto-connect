@@ -18,8 +18,8 @@ import {
   MapPin,
   Calendar,
 } from "lucide-react";
-import ServiceListingsTable from "../../components/ServiceProvider/ServiceListingsTable.jsx";
-import { UserContext } from "../../contexts/UserContext.js";
+import ServiceListingsTable from "@components/ServiceProvider/ServiceListingsTable";
+import { UserContext } from "@contexts/UserContext";
 import "./ServiceListingsPage.css";
 
 const ServiceListingsPage = () => {

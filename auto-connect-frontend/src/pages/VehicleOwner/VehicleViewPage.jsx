@@ -7,6 +7,7 @@ import SimilarAds from "@components/CarBuyer/SimilarAds";
 import MarketplaceNavigation from "@components/CarSeller/MarketplaceNavigation";
 import React from "react";
 import OwnershipHistoryCheck from "@components/CarBuyer/OwnershipHistoryCheck";
+import OverlayWindow from "@components/OverlayWindow";
 
 const vehicleData = {
   name: 'lomitha',
@@ -34,7 +35,7 @@ const vehicleData = {
 const VehicleViewPage = () => {
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4 tw:overflow-auto">
-        <MarketplaceNavigation />
+        {/* <MarketplaceNavigation /> */}
         <div className="tw:w-4/5 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-1 tw:items-start tw:bg-gray-50 tw:py-8 tw:rounded-xl">
             <div className="tw:w-2/3 tw:flex tw:flex-col">
                 <VehicleHeader

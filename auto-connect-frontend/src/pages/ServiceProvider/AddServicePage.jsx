@@ -73,7 +73,7 @@ const AddServicePage = () => {
   // Check if user has permission to add services
   if (
     !userContext ||
-    !["service_center", "repair_center"].includes(userContext.role)
+    !["service_center", "repair_center", "system_admin"].includes(userContext.role)
   ) {
     return (
       <div className="add-service-access-denied">
