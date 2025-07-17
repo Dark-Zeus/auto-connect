@@ -2,7 +2,7 @@
   --nav-link-size: 40px;
 }
 
-.nav {
+.dashboard-nav {
   /* position: fixed; */
   display: flex;
   flex-direction: column;
@@ -22,7 +22,7 @@
   z-index: 1001;
 }
 
-.nav__wrapper {
+.dashboard-nav__wrapper {
   height: calc(100% - 120px);
   overflow-y: auto;
   overflow-x: hidden;
@@ -31,19 +31,19 @@
   direction: rtl;
 }
 
-.nav__wrapper * {
+.dashboard-nav__wrapper * {
   direction: ltr;
 }
 
-.nav .nav__wrapper::-webkit-scrollbar {
+.dashboard-nav .dashboard-nav__wrapper::-webkit-scrollbar {
   width: 5px;
 }
 
-.nav .nav__wrapper::-webkit-scrollbar-thumb {
+.dashboard-nav .dashboard-nav__wrapper::-webkit-scrollbar-thumb {
   border-radius: 5px;
 }
 
-.nav ul.nav-links {
+.dashboard-nav ul.dashboard-nav-links {
   list-style: none;
   padding: 0;
   height: fit-content;
@@ -51,7 +51,7 @@
   user-select: none;
 }
 
-.nav ul.nav-links__sub {
+.dashboard-nav ul.dashboard-nav-links__sub {
   list-style: none;
   padding: 0;
   height: fit-content;
@@ -62,11 +62,11 @@
   user-select: none;
 }
 
-.nav ul.nav-links__sub .nav-link{
+.dashboard-nav ul.dashboard-nav-links__sub .dashboard-nav-link{
   border-radius: 4px 0px 0px 4px;
 }
 
-.nav ul.nav-links a.nav-link {
+.dashboard-nav ul.dashboard-nav-links a.dashboard-nav-link {
   text-decoration: none;
   color: var(--color-100);
   display: block;
@@ -75,26 +75,26 @@
   transition: all 0.218s;
 }
 
-.nav ul.nav-links__sub a {
+.dashboard-nav ul.dashboard-nav-links__sub a {
   color: inherit;
   height: 100%;
 }
 
-.nav .nav-links .nav-link {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link {
   height: var(--nav-link-size);
   interpolate-size: allow-keywords;
   overflow: hidden;
   transition: height 0.218s;
 }
 
-.nav .nav-links .nav-link .link {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link {
   display: flex;
   user-select: none;
   flex-direction: row;
   align-items: center;
 }
 
-.nav .nav-links .nav-link .link-label {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label {
   display: flex;
   user-select: none;
   flex-direction: column;
@@ -111,7 +111,7 @@
   transition: all 0.218s;
 }
 
-.nav .nav-links .nav-link .link-label .nav-link__main {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-link__main {
   display: flex;
   flex-direction: row;
   height: var(--nav-link-size);
@@ -120,14 +120,14 @@
   justify-content: space-between;
 }
 
-.nav .nav-links .nav-link .link-label .nav-link__main .nav-link__details{
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-link__main .dashboard-nav-link__details{
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
 }
 
-.nav .nav-links .nav-link .link-label .nav-link__main:not(:has(a)) .nav-link__details::after{
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-link__main:not(:has(a)) .dashboard-nav-link__details::after{
   font-family: "Material Icons";
   font-size: 1.2rem;
   font-weight: 700;
@@ -142,18 +142,18 @@
   transition-behavior: allow-discrete;
 }
 
-.nav .nav-links .nav-link .link-label input[type="checkbox"] {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label input[type="checkbox"] {
   display: none;
 }
 
-.nav .nav-links .nav-link .nav-link__icon {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__icon {
   min-width: var(--nav-link-size);
   font-size: 1.25rem;
   transition-property: width;
   transition-duration: 0.4s;
 }
 
-.nav .nav-links .nav-link .nav-link__text {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__text {
   display: none;
   width: 0;
   text-align: left;
@@ -161,15 +161,15 @@
   transition-behavior: allow-discrete;
 }
 
-.nav:hover {
+.dashboard-nav:hover {
   width: 250px;
 }
 
-.nav:hover .nav-links .nav-link {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link {
   width: calc(100%);
 }
 
-.nav:hover .nav-links .nav-link .nav-link__text {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__text {
   display: flex;
   width: 100%;
 
@@ -179,7 +179,7 @@
   }
 }
 
-.nav:hover .nav-links .nav-link .nav-link__arrow {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__arrow {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -191,30 +191,30 @@
   }
 }
 
-.nav .nav-links .nav-link .link-label .nav-links__sub .nav-link:hover{
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link:hover{
   background-color: var(--color-900);
   font-weight: 400;
   color: var(--color-100);
   transition: all 0.218s;
 }
 
-.nav .nav-links .nav-link .link-label:has(input[type="checkbox"]:checked) {
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:has(input[type="checkbox"]:checked) {
   color: var(--color-100);
   background-color: var(--color-700);
   height: auto;
   transition: all 0.218s;
 }
 
-.nav .nav-links .nav-link .link-label:not(:has(input[type="checkbox"]:checked)) .nav-links__sub{
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:not(:has(input[type="checkbox"]:checked)) .dashboard-nav-links__sub{
   height: 0px;
   transition: all 0.218s;
 }
 
-.nav .nav-links .nav-link .link-label:has(input[type="checkbox"]:checked) .nav-link__main .nav-link__details::after{
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:has(input[type="checkbox"]:checked) .dashboard-nav-link__main .dashboard-nav-link__details::after{
   content: "arrow_drop_down";
 }
 
-.nav:hover .nav-links .nav-link:has(input[type="checkbox"]:checked) {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link:has(input[type="checkbox"]:checked) {
   height: auto;
   interpolate-size: allow-keywords;
   transition: all 0.218s;
@@ -227,51 +227,51 @@
   }
 }
 
-.nav-link.selected{
+.dashboard-nav-link.selected{
   background-color: var(--color-100);
   color: var(--color-800);
   font-weight: 500;
   transition: all 0.218s;
 }
 
-.nav .nav-links a.nav-link.selected {
+.dashboard-nav .dashboard-nav-links a.dashboard-nav-link.selected {
   color: var(--color-800);
 }
 
-.nav .nav-links .nav-link .link-label .nav-links__sub .nav-link.selected{
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link.selected{
   background-color: var(--color-100);
   color: var(--color-700);
   transition: all 0.218s;
 }
 
-.nav .nav-links .nav-link .link-label:has(.nav-links__sub .nav-link.selected){
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:has(.dashboard-nav-links__sub .dashboard-nav-link.selected){
   background-color: var(--color-100);
   border-left: 3px solid var(--color-800);
   color: var(--color-700);
   transition: all 0.218s;
 }
 
-.nav:hover .nav-links .nav-link .link-label:has(.nav-links__sub .nav-link.selected) {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:has(.dashboard-nav-links__sub .dashboard-nav-link.selected) {
   background-color: var(--color-100);
   border-left: 3px solid var(--color-900);
   color: var(--color-700);
   transition: all 0.218s;
 }
 
-.nav:hover .nav-links .nav-link .link-label:has(.nav-links__sub .nav-link.selected):has(input[type="checkbox"]:checked) {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:has(.dashboard-nav-links__sub .dashboard-nav-link.selected):has(input[type="checkbox"]:checked) {
   background-color: var(--color-700);
   border-left: 3px solid var(--color-900);
   color: var(--color-100);
   transition: all 0.218s;
 }
 
-.nav:hover .nav-links .nav-link .link-label:hover:not(:has(.nav-links__sub .nav-link.selected)), .nav:hover .nav-links .nav-link .link-label:hover:has(input[type="checkbox"]:checked) {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:hover:not(:has(.dashboard-nav-links__sub .dashboard-nav-link.selected)), .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:hover:has(input[type="checkbox"]:checked) {
   background-color: var(--color-800) !important;
   color: var(--color-100);
   transition: all 0.218s;
 }
 
-.nav .nav-container {
+.dashboard-nav .dashboard-nav-container {
   display: flex;
   user-select: none;
   flex-direction: row;
@@ -287,17 +287,17 @@
   transition: border 0.2s;
 }
 
-.nav:hover .nav-container {
+.dashboard-nav:hover .dashboard-nav-container {
   /* animation: bounce 0.2s ease-in 0.01s; */
 }
 
-.nav .nav-container .nav__profile {
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile {
   width: 100%;
   display: flex;
   flex-direction: row;
 }
 
-.nav .nav-container .nav__profile-image-container {
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile-image-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -308,14 +308,14 @@
   aspect-ratio: 1/1;
 }
 
-.nav .nav-container .nav__profile-image-container .nav__profile-image {
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile-image-container .dashboard-nav__profile-image {
   width: calc(var(--nav-link-size) - 10px);
   aspect-ratio: 1/1;
   border-radius: 50%;
   background-color: brown;
 }
 
-.nav .nav-container .nav__profile {
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile {
   display: none;
   justify-content: space-between;
   width: 0;
@@ -326,7 +326,7 @@
   transition-behavior: allow-discrete;
 }
 
-.nav .nav-container .nav__profile .nav__profile-details {
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__profile-details {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -335,7 +335,7 @@
   padding-left: 10px;
 }
 
-.nav .nav-container .nav__profile .nav__logout {
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__logout {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -348,13 +348,13 @@
   transition: 0.218s;
 }
 
-.nav:hover .nav-container .nav__profile .nav__logout:hover {
+.dashboard-nav:hover .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__logout:hover {
   border-left-width: 2px;
   background-color: var(--color-900);
   color: var(--color-100);
 }
 
-.nav:hover .nav-container .nav__profile {
+.dashboard-nav:hover .dashboard-nav-container .dashboard-nav__profile {
   display: flex;
   width: 100%;
 
@@ -364,7 +364,7 @@
   }
 }
 
-.nav .nav__logo-container {
+.dashboard-nav .dashboard-nav__logo-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -373,7 +373,7 @@
   height: var(--nav-link-size);
 }
 
-.nav .nav__logo-container .nav__logo {
+.dashboard-nav .dashboard-nav__logo-container .dashboard-nav__logo {
   width: calc(var(--nav-link-size) - 10px);
   aspect-ratio: 1/1;
   background-image: url("https://cdn-icons-png.flaticon.com/512/25/25231.png");
@@ -382,7 +382,7 @@
   background-size: contain;
 }
 
-.nav .nav__name {
+.dashboard-nav .dashboard-nav__name {
   display: none;
   flex-direction: column;
   justify-content: space-between;
@@ -393,7 +393,7 @@
   transition-behavior: allow-discrete;
 }
 
-.nav .nav__name .nav__name-details {
+.dashboard-nav .dashboard-nav__name .dashboard-nav__name-details {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -401,13 +401,13 @@
   padding-left: 10px;
 }
 
-.nav .nav__name .nav__name-version {
+.dashboard-nav .dashboard-nav__name .dashboard-nav__name-version {
   font-size: 10px;
   color: var(--color-400);
   padding-left: 10px;
 }
 
-.nav:hover .nav__name {
+.dashboard-nav:hover .dashboard-nav__name {
   display: flex;
   width: 100%;
 
