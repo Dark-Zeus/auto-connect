@@ -4,7 +4,7 @@ import ServiceCenterUpdatePieChart from '@components/AdminComponents/ServiceCent
 import ServiceCenterUsage from '@components/AdminComponents/ServiceCenterUsage';
 import ServiceCenterStatBox from '@components/AdminComponents/MonthlyUpdations';
 const updates = [
-    {
+  {
     serviceCenter: "CityFix Motors",
     date: "2025-07-09",
     time: "10:30 AM",
@@ -75,7 +75,7 @@ const updates = [
     vehicleNumber: "ANU-8899",
   },
   // ...
-      {
+  {
     serviceCenter: "CityFix Motors",
     date: "2025-07-09",
     time: "10:30 AM",
@@ -147,31 +147,28 @@ const updates = [
   },
 ];
 const Updates = () => {
-return (
-  <div className="tw:p-8 tw:flex tw:flex-col tw:gap-6">
-    {/* Top row: table + pie chart with stat box */}
-    <div className="tw:flex tw:gap-6">
-      {/* Table - 75% width */}
-      <div className="tw:w-3/4">
-        <LatestUpdatesTable latestUpdates={updates} />
+  return (
+    <div className="tw:p-8 tw:flex tw:flex-col tw:gap-6">
+      {/* Top row: table + pie chart with stat box */}
+      <div className="tw:flex tw:gap-6">
+        {/* Table - 75% width */}
+        <div className="tw:w-3/4">
+          <LatestUpdatesTable latestUpdates={updates} />
+        </div>
+
+        {/* Right column - Pie chart + stat box */}
+        <div className="tw:w-1/4 tw:flex tw:flex-col tw:gap-6">
+          <ServiceCenterUpdatePieChart />
+          <ServiceCenterStatBox totalUpdates={130} rateChange="+12%" />
+        </div>
       </div>
 
-      {/* Right column - Pie chart + stat box */}
-      <div className="tw:w-1/4 tw:flex tw:flex-col tw:gap-6">
-        <ServiceCenterUpdatePieChart />
-        <ServiceCenterStatBox totalUpdates={130} rateChange="+12%" />
+      {/* Bar/Line Chart full width below */}
+      <div>
+        <ServiceCenterUsage />
       </div>
     </div>
-
-    {/* Bar/Line Chart full width below */}
-    <div>
-      <ServiceCenterUsage />
-    </div>
-  </div>
-);
-
-
-
+  );
 }
 
 export default Updates;
