@@ -168,7 +168,7 @@ const SimilarAds = () => {
                       {ad.title}
                     </h3>
                     
-                    <div className="tw:text-2xl tw:font-bold tw:text-blue-600 tw:mb-3">
+                    <div className="tw:text-2xl tw:font-bold tw:text-[#4a618a] tw:mb-3">
                       {formatPrice(ad.price)}
                     </div>
 
@@ -194,7 +194,7 @@ const SimilarAds = () => {
 
                     {/* Action Buttons */}
                     <div className="tw:flex tw:gap-2 tw:mt-4">
-                      <button className="tw:flex-1 tw:bg-blue-600 tw:hover:bg-blue-900 tw:text-white tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-blue-700 tw:hover:cursor-pointer">
+                      <button className="tw:flex-1 tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:text-white tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-blue-700 tw:hover:cursor-pointer">
                         View Details
                       </button> {/* 
                       <button className="tw:flex-1 tw:bg-gray-100 tw:hover:bg-gray-400 tw:text-gray-700 tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-gray-200 tw:hover:cursor-pointer">
@@ -216,7 +216,7 @@ const SimilarAds = () => {
               onClick={() => setCurrentIndex(index)}
               className={`tw:w-2 tw:h-2 tw:rounded-full tw:transition-all tw:duration-200 ${
                 index === currentIndex 
-                  ? 'tw:bg-blue-600 tw:w-6' 
+                  ? 'tw:bg-[#001c6c] tw:w-6' 
                   : 'tw:bg-gray-300 hover:tw:bg-gray-400'
               }`}
             />
