@@ -187,7 +187,7 @@ import {
 
                    {/* Services & Gallery Side by Side */}
           <Divider sx={{ my: 4 }} />
-          <Grid container spacing={5}>
+          <Grid container spacing={7}>
             {/* Services List */}
             <Grid item xs={12} md={6}>
               <Typography sx={{ fontSize: 18, fontWeight: 600 }} gutterBottom>
@@ -225,8 +225,8 @@ import {
               <Box
                 sx={{
                   position: "left",
-                  maxWidth: 200,
-                  height: 200,
+                  maxWidth: 190,
+                  height: 190,
                   overflow: "hidden",
                   borderRadius: 2,
                   boxShadow: 1,
@@ -251,10 +251,10 @@ import {
                   sx={{
                     position: "absolute",
                     top: "50%",
-                    left: -55,
+                    left: -45,
                     transform: "translateY(-50%)",
                     minWidth: 0,
-                    borderRadius: "25%",
+                    borderRadius: "50%",
                     zIndex: 1,
                     bgcolor: "#e9f7ef",
                     boxShadow: 2,
@@ -267,10 +267,10 @@ import {
                   sx={{
                     position: "absolute",
                     top: "50%",
-                    right: -55,
+                    right: -45,
                     transform: "translateY(-50%)",
                     minWidth: 0,
-                    borderRadius: "25%",
+                    borderRadius: "50%",
                     zIndex: 1,
                     bgcolor: "#e9f7ef",
                     boxShadow: 2,
