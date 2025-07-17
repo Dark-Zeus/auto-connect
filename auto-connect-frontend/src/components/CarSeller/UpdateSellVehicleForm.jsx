@@ -250,9 +250,9 @@ const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomi
 
       <div className="tw:max-w-4xl tw:mx-auto">
         {/* Header */}
-        <div className="tw:bg-gradient-to-r tw:from-slate-600 tw:to-slate-700 tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
+        <div className="tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:p-8 tw:rounded-t-xl tw:shadow-lg">
           <div className="tw:flex tw:items-center tw:gap-3">
-            <div className="tw:bg-amber-500 tw:p-2 tw:rounded-lg">
+            <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
               <CarFront className="tw:w-6 tw:h-6 tw:text-white" />
             </div>
             <div>
@@ -622,14 +622,14 @@ const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomi
             <button
               type="button"
               onClick={handleCancel}
-              className="tw:px-8 tw:py-3 tw:border tw:bg-gray-500 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-gray-600 tw:transition-colors tw:font-medium tw:cursor-pointer"
+              className="tw:px-8 tw:py-3 tw:border tw:bg-red-700 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-red-800 tw:transition-colors tw:font-medium tw:cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               onClick={handleSubmit}
-              className="tw:px-8 tw:py-3 tw:bg-amber-600 tw:text-white tw:rounded-lg tw:hover:bg-amber-700 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
+              className="tw:px-8 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:hover:bg-blue-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
             >
               Update Vehicle
             </button>
