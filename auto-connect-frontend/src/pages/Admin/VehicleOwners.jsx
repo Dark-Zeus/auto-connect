@@ -1,27 +1,14 @@
 import React, { useState, useMemo } from "react";
 import VehicleOwnerCard from "@components/AdminComponents/VehicleOwners/VehicleOwnerDetailsBox";
 import SearchFilterSortBox from "@components/AdminComponents/VehicleOwners/VehicleOwnerFilterBox";
+import user1 from "@assets/images/vehicleowner1.jpg";
 
 const ownerDataList = [
   {
     name: "Kavindu Perera",
     email: "kavindu@email.com",
     mobile: "0711234567",
-    image: "https://via.placeholder.com/150",
-    nic: "993456789V",
-    gender: "Male",
-    dob: "1999-06-21",
-    address: "No. 42, Rose Garden",
-    city: "Kandy",
-    district: "Kandy",
-    province: "Central",
-    postalCode: "20000",
-  },
-  {
-    name: "Kavindu Perera",
-    email: "kavindu@email.com",
-    mobile: "0711234567",
-    image: "https://via.placeholder.com/150",
+    image: user1,
     nic: "993456789V",
     gender: "Male",
     dob: "1999-06-21",
@@ -35,7 +22,7 @@ const ownerDataList = [
     name: "Kavindu Perera",
     email: "kavindu@email.com",
     mobile: "0711234567",
-    image: "https://via.placeholder.com/150",
+    image: user1,
     nic: "993456789V",
     gender: "Male",
     dob: "1999-06-21",
@@ -45,13 +32,39 @@ const ownerDataList = [
     province: "Central",
     postalCode: "20000",
   },
-  // Add more data if needed
+    {
+    name: "Kavindu Perera",
+    email: "kavindu@email.com",
+    mobile: "0711234567",
+    image: user1,
+    nic: "993456789V",
+    gender: "Male",
+    dob: "1999-06-21",
+    address: "No. 42, Rose Garden",
+    city: "Kandy",
+    district: "Kandy",
+    province: "Central",
+    postalCode: "20000",
+  },
+    {
+    name: "Kavindu Perera",
+    email: "kavindu@email.com",
+    mobile: "0711234567",
+    image: user1,
+    nic: "993456789V",
+    gender: "Male",
+    dob: "1999-06-21",
+    address: "No. 42, Rose Garden",
+    city: "Kandy",
+    district: "Kandy",
+    province: "Central",
+    postalCode: "20000",
+  },
+  // You can add more sample owners here
 ];
 
 function OwnerView() {
-  const [expandedIndex, setExpandedIndex] = useState(null);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
@@ -59,7 +72,7 @@ function OwnerView() {
   const filteredOwners = useMemo(() => {
     let filtered = [...ownerDataList];
 
-    // Search
+    // Search by name or NIC
     if (search.trim()) {
       const query = search.toLowerCase();
       filtered = filtered.filter(
@@ -69,24 +82,15 @@ function OwnerView() {
       );
     }
 
-    // Filter by transmission
-    if (filter) {
-      filtered = filtered.filter((o) => o.transmission === filter);
-    }
-
-    // Sort
+    // Sort logic
     if (sort === "name-asc") {
       filtered.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sort === "name-desc") {
       filtered.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sort === "year-asc") {
-      filtered.sort((a, b) => a.modelYear - b.modelYear);
-    } else if (sort === "year-desc") {
-      filtered.sort((a, b) => b.modelYear - a.modelYear);
     }
 
     return filtered;
-  }, [search, filter, sort]);
+  }, [search, sort]);
 
   const totalPages = Math.ceil(filteredOwners.length / itemsPerPage);
   const paginatedOwners = filteredOwners.slice(
@@ -95,25 +99,25 @@ function OwnerView() {
   );
 
   return (
-    <div className="tw:p-8 tw:bg-gradient-to-br tw:bg-[var(--primary-light)] tw:to-indigo-100 tw:min-h-screen">
+    <div className="tw:p-8 tw:bg-gradient-to-br tw:from-[var(--primary-light)] tw:to-indigo-100 tw:min-h-screen">
       <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-4">Vehicle Owner List</h1>
 
       <SearchFilterSortBox
         search={search}
         onSearch={setSearch}
-        filter={filter}
-        onFilter={setFilter}
+        filter={""} // No filter implemented
+        onFilter={() => {}}
         sort={sort}
         onSort={setSort}
       />
 
-    <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 tw:gap-6 lg:tw:grid-cols-3 tw:mx-auto tw:max-w-7xl">
-    {paginatedOwners.map((owner, index) => (
-      <VehicleOwnerCard key={owner.nic} owner={owner} />
-    ))}
-    </div>
+      <div className="tw:grid tw:grid-cols-3 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-6 tw:max-w-7xl tw:mx-auto">
+        {paginatedOwners.map((owner) => (
+          <VehicleOwnerCard key={owner.nic} owner={owner} />
+        ))}
+      </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div className="tw:mt-6 tw:flex tw:justify-center tw:space-x-2">
         {Array.from({ length: totalPages }, (_, i) => (
           <button

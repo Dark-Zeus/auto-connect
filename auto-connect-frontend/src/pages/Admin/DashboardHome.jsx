@@ -107,7 +107,7 @@ function DashboardHome() {
       iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
-      title: "Verified Service Centers",
+      title: "Verified Automotive Service Hubs",
       value: 61,
       progress: -8.1234,
       icon: <Garage style={{ fontSize: 40 }} />,
@@ -135,7 +135,7 @@ function DashboardHome() {
   return (
     <div className="tw:grid tw:grid-cols-5 tw:gap-8">
       {/* Cards */}
-      <div className="tw:col-span-3 tw:grid tw:grid-cols-2 tw:gap-6">
+      <div className="tw:col-span-3 tw:grid tw:grid-cols-2 tw:gap-6 tw:transition-transform tw:transform hover:tw:-translate-y-1 hover:tw:shadow-xl">
         {cardData.map((card, i) => (
           <div
             key={i}
@@ -156,15 +156,15 @@ function DashboardHome() {
               )}
             </div>
             <div className="tw:mt-auto tw:pl-4">
-              <h4 className="tw:text-xl tw:font-semibold">{card.title}</h4>
-              <p className="tw:!mt-1 tw:!text-3xl tw:font-bold">{card.value.toLocaleString()}</p>
+              <h4 className="tw:text-lg tw:font-semibold">{card.title}</h4>
+              <p className="tw:!mt-1 tw:!text-3xl tw:text-blue-600 tw:font-bold">{card.value.toLocaleString()}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Traffic by Location Pie Chart */}
-      <div className="tw:col-span-2 tw:bg-[var(--sky-light)] tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
+      <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Service Centers</h3>
         <ResponsiveContainer width="100%" height={215}>
           <PieChart>
@@ -224,7 +224,7 @@ function DashboardHome() {
       </div>
 
       {/* Line Chart */}
-      <div className="tw:col-span-3 tw:bg-[var(--sky-light)] tw:p-6 tw:rounded-2xl tw:shadow-md">
+      <div className="tw:col-span-3 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Traffic by Users (Last 7 Days)</h3>
         <ResponsiveContainer width="100%" height={340}>
           <LineChart
@@ -248,7 +248,7 @@ function DashboardHome() {
       </div>
 
       {/* Bar Chart */}
-      <div className="tw:col-span-2 tw:bg-[var(--sky-light)] tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
+      <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">User Registration</h3>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={dataTrafficDevice}>
@@ -277,7 +277,7 @@ function DashboardHome() {
       </div>
 
       {/* Latest Updates Table */}
-      <div className="tw:col-span-5 tw:bg-[var(--sky-light)] tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
+      <div className="tw:col-span-5 tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
         <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Latest Updates</h3>
         <table className="tw:w-full tw:border-collapse">
           <thead className="tw:bg-blue-50">
@@ -287,7 +287,7 @@ function DashboardHome() {
               <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Time</th>
               <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">District</th>
               <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Vehicle Number</th>
-              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Type</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -308,7 +308,11 @@ function DashboardHome() {
                 <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.time}</td>
                 <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.district}</td>
                 <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.vehicleNumber}</td>
-                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.type}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">
+                  <span className="tw:inline-flex tw:items-center tw:gap-1 tw:text-red-600 tw:font-medium">
+                  🔒 Paid Report
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>

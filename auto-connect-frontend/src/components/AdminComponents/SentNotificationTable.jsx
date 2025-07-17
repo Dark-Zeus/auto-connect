@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 function SentNotificationTable({ sentNotifications }) {
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 15;
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedIds, setExpandedIds] = useState([]);
 

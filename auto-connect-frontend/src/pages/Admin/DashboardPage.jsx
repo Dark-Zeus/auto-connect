@@ -37,7 +37,7 @@ function DashboardPage() {
     "/users": "User Management",
         "/users/vehicleowners": "Vehicle Owners",
         "/users/insurancecompanies": "Insurance Companies",
-        "/users/services": "Service & Repair Centers",
+        "/users/services": "Automotive Service Hubs",
     "/notifications": "Notifications",
     "/transactions": "Transactions",
     "/updates": "Updates",
@@ -100,7 +100,7 @@ function DashboardPage() {
                   },
                   {
                     to: "/users/services",
-                    label: "Service & Repair Centers",
+                    label: "Automotive Service Hubs",
                     icon: <Garage className="tw:text-gray-500" fontSize="small" />,
                   },
                 ]}
@@ -133,7 +133,7 @@ function DashboardPage() {
                 to="/systemdata"
                 icon={<SystemSecurityUpdateSharp style={{ fontSize: 30 }} className="tw:text-black" />}
                 text="System Data"
-                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner"
+                className="tw:!text-black hover:tw:text-blue-800 hover:tw:bg-blue-200 hover:tw:shadow-inner tw:hidden"
               />
             </ul>
           </nav>

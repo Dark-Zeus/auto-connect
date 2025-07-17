@@ -29,7 +29,7 @@ function ServiceCenterUpdatePieChart() {
         {new Date().toLocaleString("default", { month: "long" })}
       </h2>
 
-      <div className="tw:relative tw:h-[240px]">
+      <div className="tw:relative tw:h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie

@@ -177,7 +177,7 @@ function ServiceCenters() {
       {/* Header with Button */}
       <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
         <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">
-          Registered Service & Repair Centers
+          Automotive Service Hubs
         </h1>
         <button
           onClick={() => setShowPopup(true)}
