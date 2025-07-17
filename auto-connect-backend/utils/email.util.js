@@ -3,10 +3,10 @@ import nodemailer from "nodemailer";
 import LOG from "../configs/log.config.js";
 
 // Create email transporter
-const createTransporter = () => {
+const createTransport = () => {
   if (process.env.NODE_ENV === "production") {
     // Production - use a service like SendGrid, Mailgun, etc.
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       service: "SendGrid",
       auth: {
         user: process.env.SENDGRID_USERNAME,
@@ -15,7 +15,7 @@ const createTransporter = () => {
     });
   } else {
     // Development - use Ethereal Email or similar
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       host: process.env.EMAIL_HOST || "smtp.ethereal.email",
       port: process.env.EMAIL_PORT || 587,
       secure: false, // true for 465, false for other ports
@@ -31,7 +31,7 @@ const createTransporter = () => {
 export const sendEmail = async (options) => {
   try {
     // 1) Create a transporter
-    const transporter = createTransporter();
+    const transporter = createTransport();
 
     // 2) Define the email options
     const mailOptions = {
@@ -676,7 +676,7 @@ export const validateEmailAddress = (email) => {
 // Test email connectivity
 export const testEmailConnection = async () => {
   try {
-    const transporter = createTransporter();
+    const transporter = createTransport();
     await transporter.verify();
 
     LOG.info({
