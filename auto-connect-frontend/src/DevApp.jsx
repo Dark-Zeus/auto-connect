@@ -341,441 +341,436 @@ function DevApp() {
     return children;
   };
 
-  return (  
+  return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <UserContext.Provider value={{ userContext, setUserContext }}>
         <BrowserRouter>
-            <Routes>
-              {/* ==================== DEVELOPMENT ROUTES - REMOVE IN PRODUCTION ==================== */}
-              {/* Service Provider Development Routes */}
-              <Route
-                path="/dev/service-listings"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="🔧 Service Listings Page"
-                      subtitle="View and manage all services offered by your service center"
-                    >
-                      <ServiceListingsPage />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/add-service"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="➕ Add Service Page"
-                      subtitle="Create new service offerings with pricing and details"
-                    >
-                      <AddServicePage />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/edit-service/:serviceId"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="✏ Edit Service Page"
-                      subtitle="Modify existing service details and pricing (Demo Service ID: 123)"
-                    >
-                      <EditServicePage />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/manage-slots"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="📅 Manage Slots Page"
-                      subtitle="Configure availability and time slots for appointments"
-                    >
-                      <ManageSlotsPage />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              {/* Vehicle & Service Provider Artifacts */}
-              <Route
-                path="/dev/vehicle-passport"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="🚗 Vehicle Passport Page"
-                      subtitle="View and manage vehicle passport details"
-                    >
-                      <VehiclePassportPage />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/vehicle-history-dashboard"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="📜 Vehicle History Dashboard"
-                      subtitle="View the complete service history for a vehicle"
-                    >
-                      <VehicleHistoryDashboard />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/service-update-form"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="🔄 Service Update Form"
-                      subtitle="Update service information for a vehicle"
-                    >
-                      <ServiceUpdateForm />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/service-provider-discovery"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="🔍 Service Provider Discovery"
-                      subtitle="Discover and browse service providers (dev only)"
-                    >
-                      <ServiceProviderDiscovery />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
+          <Routes>
+            {/* ==================== DEVELOPMENT ROUTES - REMOVE IN PRODUCTION ==================== */}
+            {/* Service Provider Development Routes */}
+            <Route
+              path="/dev/service-listings"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="🔧 Service Listings Page"
+                    subtitle="View and manage all services offered by your service center"
+                  >
+                    <ServiceListingsPage />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/add-service"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="➕ Add Service Page"
+                    subtitle="Create new service offerings with pricing and details"
+                  >
+                    <AddServicePage />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/edit-service/:serviceId"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="✏ Edit Service Page"
+                    subtitle="Modify existing service details and pricing (Demo Service ID: 123)"
+                  >
+                    <EditServicePage />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/manage-slots"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="📅 Manage Slots Page"
+                    subtitle="Configure availability and time slots for appointments"
+                  >
+                    <ManageSlotsPage />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            {/* Vehicle & Service Provider Artifacts */}
+            <Route
+              path="/dev/vehicle-passport"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="🚗 Vehicle Passport Page"
+                    subtitle="View and manage vehicle passport details"
+                  >
+                    <VehiclePassportPage />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/vehicle-history-dashboard"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="📜 Vehicle History Dashboard"
+                    subtitle="View the complete service history for a vehicle"
+                  >
+                    <VehicleHistoryDashboard />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/service-update-form"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="🔄 Service Update Form"
+                    subtitle="Update service information for a vehicle"
+                  >
+                    <ServiceUpdateForm />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/service-provider-discovery"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="🔍 Service Provider Discovery"
+                    subtitle="Discover and browse service providers (dev only)"
+                  >
+                    <ServiceProviderDiscovery />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
 
-              {/* Development Landing Page */}
-              <Route
-                path="/dev"
-                element={
+            {/* Development Landing Page */}
+            <Route
+              path="/dev"
+              element={
+                <div
+                  style={{
+                    paddingTop: "60px",
+                    minHeight: "100vh",
+                    background: "#DFF2EB",
+                  }}
+                >
+                  <DevNavigation />
                   <div
                     style={{
-                      paddingTop: "60px",
-                      minHeight: "100vh",
-                      background: "#DFF2EB",
+                      padding: "40px 20px",
+                      textAlign: "center",
+                      maxWidth: "800px",
+                      margin: "0 auto",
                     }}
                   >
-                    <DevNavigation />
-                    <div
+                    <h1 style={{ color: "#4A628A", marginBottom: "20px" }}>
+                      🚗 Service Provider Development Mode
+                    </h1>
+                    <p
                       style={{
-                        padding: "40px 20px",
-                        textAlign: "center",
-                        maxWidth: "800px",
-                        margin: "0 auto",
+                        color: "#666",
+                        marginBottom: "40px",
+                        fontSize: "18px",
                       }}
                     >
-                      <h1 style={{ color: "#4A628A", marginBottom: "20px" }}>
-                        🚗 Service Provider Development Mode
-                      </h1>
+                      Test and view Service Provider components without
+                      authentication
+                    </p>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fit, minmax(200px, 1fr))",
+                        gap: "20px",
+                        marginTop: "30px",
+                      }}
+                    >
+                      {[
+                        {
+                          path: "/dev/service-listings",
+                          title: "Service Listings",
+                          icon: "📋",
+                          desc: "Manage services",
+                        },
+                        {
+                          path: "/dev/add-service",
+                          title: "Add Service",
+                          icon: "➕",
+                          desc: "Create new service",
+                        },
+                        {
+                          path: "/dev/edit-service/123",
+                          title: "Edit Service",
+                          icon: "✏",
+                          desc: "Modify service",
+                        },
+                        {
+                          path: "/dev/manage-slots",
+                          title: "Manage Slots",
+                          icon: "📅",
+                          desc: "Time management",
+                        },
+                        // NEW REVIEW ITEMS
+                        {
+                          path: "/dev/service-provider-reviews",
+                          title: "SP Reviews",
+                          icon: "⭐",
+                          desc: "Provider review dashboard",
+                        },
+                        {
+                          path: "/dev/user-reviews",
+                          title: "User Reviews",
+                          icon: "📝",
+                          desc: "User review interface",
+                        },
+                        {
+                          path: "/dev/review-display",
+                          title: "Review Display",
+                          icon: "📊",
+                          desc: "Review display component",
+                        },
+                        {
+                          path: "/dev/user-review-form",
+                          title: "Review Form",
+                          icon: "✍",
+                          desc: "Review submission form",
+                        },
+                        // VEHICLE & SERVICE PROVIDER ARTIFACTS
+                        {
+                          path: "/dev/vehicle-passport",
+                          title: "Vehicle Passport",
+                          icon: "🚗",
+                          desc: "Vehicle passport details",
+                        },
+                        {
+                          path: "/dev/vehicle-history-dashboard",
+                          title: "Vehicle History",
+                          icon: "📜",
+                          desc: "Service history dashboard",
+                        },
+                        {
+                          path: "/dev/service-update-form",
+                          title: "Service Update",
+                          icon: "🔄",
+                          desc: "Update service info",
+                        },
+                        {
+                          path: "/dev/service-provider-discovery",
+                          title: "SP Discovery",
+                          icon: "🔍",
+                          desc: "Browse service providers",
+                        },
+                      ].map((item, index) => (
+                        <a
+                          key={index}
+                          href={item.path}
+                          style={{
+                            textDecoration: "none",
+                            background: "white",
+                            padding: "20px",
+                            borderRadius: "12px",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                            transition: "transform 0.2s ease",
+                            display: "block",
+                          }}
+                          onMouseOver={(e) =>
+                            (e.target.style.transform = "translateY(-2px)")
+                          }
+                          onMouseOut={(e) =>
+                            (e.target.style.transform = "translateY(0px)")
+                          }
+                        >
+                          <div
+                            style={{ fontSize: "32px", marginBottom: "10px" }}
+                          >
+                            {item.icon}
+                          </div>
+                          <h3 style={{ color: "#4A628A", margin: "0 0 5px 0" }}>
+                            {item.title}
+                          </h3>
+                          <p
+                            style={{
+                              color: "#666",
+                              margin: 0,
+                              fontSize: "14px",
+                            }}
+                          >
+                            {item.desc}
+                          </p>
+                        </a>
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: "40px",
+                        padding: "20px",
+                        background: "#fff3cd",
+                        borderRadius: "8px",
+                        border: "1px solid #ffeaa7",
+                      }}
+                    >
+                      <h4 style={{ color: "#856404", margin: "0 0 10px 0" }}>
+                        ⚠ Development Note
+                      </h4>
                       <p
                         style={{
-                          color: "#666",
-                          marginBottom: "40px",
-                          fontSize: "18px",
+                          color: "#856404",
+                          margin: 0,
+                          fontSize: "14px",
                         }}
                       >
-                        Test and view Service Provider components without
-                        authentication
+                        These routes are for development only. Remove the dev
+                        routes section before production deployment.
                       </p>
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns:
-                            "repeat(auto-fit, minmax(200px, 1fr))",
-                          gap: "20px",
-                          marginTop: "30px",
-                        }}
-                      >
-                        {[
-                          {
-                            path: "/dev/service-listings",
-                            title: "Service Listings",
-                            icon: "📋",
-                            desc: "Manage services",
-                          },
-                          {
-                            path: "/dev/add-service",
-                            title: "Add Service",
-                            icon: "➕",
-                            desc: "Create new service",
-                          },
-                          {
-                            path: "/dev/edit-service/123",
-                            title: "Edit Service",
-                            icon: "✏",
-                            desc: "Modify service",
-                          },
-                          {
-                            path: "/dev/manage-slots",
-                            title: "Manage Slots",
-                            icon: "📅",
-                            desc: "Time management",
-                          },
-                          // NEW REVIEW ITEMS
-                          {
-                            path: "/dev/service-provider-reviews",
-                            title: "SP Reviews",
-                            icon: "⭐",
-                            desc: "Provider review dashboard",
-                          },
-                          {
-                            path: "/dev/user-reviews",
-                            title: "User Reviews",
-                            icon: "📝",
-                            desc: "User review interface",
-                          },
-                          {
-                            path: "/dev/review-display",
-                            title: "Review Display",
-                            icon: "📊",
-                            desc: "Review display component",
-                          },
-                          {
-                            path: "/dev/user-review-form",
-                            title: "Review Form",
-                            icon: "✍",
-                            desc: "Review submission form",
-                          },
-                          // VEHICLE & SERVICE PROVIDER ARTIFACTS
-                          {
-                            path: "/dev/vehicle-passport",
-                            title: "Vehicle Passport",
-                            icon: "🚗",
-                            desc: "Vehicle passport details",
-                          },
-                          {
-                            path: "/dev/vehicle-history-dashboard",
-                            title: "Vehicle History",
-                            icon: "📜",
-                            desc: "Service history dashboard",
-                          },
-                          {
-                            path: "/dev/service-update-form",
-                            title: "Service Update",
-                            icon: "🔄",
-                            desc: "Update service info",
-                          },
-                          {
-                            path: "/dev/service-provider-discovery",
-                            title: "SP Discovery",
-                            icon: "🔍",
-                            desc: "Browse service providers",
-                          },
-                        ].map((item, index) => (
-                          <a
-                            key={index}
-                            href={item.path}
-                            style={{
-                              textDecoration: "none",
-                              background: "white",
-                              padding: "20px",
-                              borderRadius: "12px",
-                              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                              transition: "transform 0.2s ease",
-                              display: "block",
-                            }}
-                            onMouseOver={(e) =>
-                              (e.target.style.transform = "translateY(-2px)")
-                            }
-                            onMouseOut={(e) =>
-                              (e.target.style.transform = "translateY(0px)")
-                            }
-                          >
-                            <div
-                              style={{ fontSize: "32px", marginBottom: "10px" }}
-                            >
-                              {item.icon}
-                            </div>
-                            <h3
-                              style={{ color: "#4A628A", margin: "0 0 5px 0" }}
-                            >
-                              {item.title}
-                            </h3>
-                            <p
-                              style={{
-                                color: "#666",
-                                margin: 0,
-                                fontSize: "14px",
-                              }}
-                            >
-                              {item.desc}
-                            </p>
-                          </a>
-                        ))}
-                      </div>
-                      <div
-                        style={{
-                          marginTop: "40px",
-                          padding: "20px",
-                          background: "#fff3cd",
-                          borderRadius: "8px",
-                          border: "1px solid #ffeaa7",
-                        }}
-                      >
-                        <h4 style={{ color: "#856404", margin: "0 0 10px 0" }}>
-                          ⚠ Development Note
-                        </h4>
-                        <p
-                          style={{
-                            color: "#856404",
-                            margin: 0,
-                            fontSize: "14px",
-                          }}
-                        >
-                          These routes are for development only. Remove the dev
-                          routes section before production deployment.
-                        </p>
-                      </div>
                     </div>
                   </div>
-                }
-              />
-              {/* Review Development Routes */}
-              <Route
-                path="/dev/service-provider-reviews"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="⭐ Service Provider Reviews"
-                      subtitle="View and manage customer reviews for your services"
-                    >
-                      <ServiceProviderReviews />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/user-reviews"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="📝 User Reviews Page"
-                      subtitle="User interface for viewing and writing reviews"
-                    >
-                      <UserReviewsPage />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/review-display"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="📊 Review Display Component"
-                      subtitle="Component for displaying reviews with ratings and feedback"
-                    >
-                      <ReviewDisplayComponent />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              <Route
-                path="/dev/user-review-form"
-                element={
-                  <MockServiceProviderContext>
-                    <DevLayout
-                      title="✍ User Review Form"
-                      subtitle="Form component for users to submit reviews"
-                    >
-                      <UserReviewForm />
-                    </DevLayout>
-                  </MockServiceProviderContext>
-                }
-              />
-              {/* ==================== END DEVELOPMENT ROUTES ==================== */}
+                </div>
+              }
+            />
+            {/* Review Development Routes */}
+            <Route
+              path="/dev/service-provider-reviews"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="⭐ Service Provider Reviews"
+                    subtitle="View and manage customer reviews for your services"
+                  >
+                    <ServiceProviderReviews />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/user-reviews"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="📝 User Reviews Page"
+                    subtitle="User interface for viewing and writing reviews"
+                  >
+                    <UserReviewsPage />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/review-display"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="📊 Review Display Component"
+                    subtitle="Component for displaying reviews with ratings and feedback"
+                  >
+                    <ReviewDisplayComponent />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            <Route
+              path="/dev/user-review-form"
+              element={
+                <MockServiceProviderContext>
+                  <DevLayout
+                    title="✍ User Review Form"
+                    subtitle="Form component for users to submit reviews"
+                  >
+                    <UserReviewForm />
+                  </DevLayout>
+                </MockServiceProviderContext>
+              }
+            />
+            {/* ==================== END DEVELOPMENT ROUTES ==================== */}
 
-              {/* Landing Page */}
-              <Route
-                path="/"
-                element={
-                  <PublicRoute>
-                    <LandingPage />
-                  </PublicRoute>
-                }
-              />
+            {/* Landing Page */}
+            <Route
+              path="/"
+              element={
+                <PublicRoute>
+                  <LandingPage />
+                </PublicRoute>
+              }
+            />
 
-              {/* Authentication Routes */}
-              <Route
-                path="/auth/*"
-                element={
-                  <PublicRoute>
-                    <Routes>
-                      <Route
-                        path="/"
-                        element={<Navigate to="/auth/login" replace />}
-                      />
-                      <Route
-                        path=""
-                        element={
-                          <AuthPage>
-                            <LoginForm />
-                          </AuthPage>
-                        }
-                      />
-                      <Route
-                        path="/login"
-                        element={
-                          <AuthPage>
-                            <LoginForm />
-                          </AuthPage>
-                        }
-                      />
-                      <Route
-                        path="/register"
-                        element={
-                          <AuthPage>
-                            <RegisterForm />
-                          </AuthPage>
-                        }
-                      />
-                      <Route
-                        path="/forgot-password"
-                        element={
-                          <AuthPage>
-                            <div
-                              style={{ textAlign: "center", padding: "2rem" }}
-                            >
-                              <h2>Forgot Password</h2>
-                              <p>This feature is coming soon!</p>
-                            </div>
-                          </AuthPage>
-                        }
-                      />
-                      <Route
-                        path="/verify"
-                        element={
-                          <AuthPage>
-                            <div
-                              style={{ textAlign: "center", padding: "2rem" }}
-                            >
-                              <h2>Email Verification</h2>
-                              <p>
-                                Please check your email for verification
-                                instructions.
-                              </p>
-                            </div>
-                          </AuthPage>
-                        }
-                      />
-                    </Routes>
-                  </PublicRoute>
-                }
-              />
+            {/* Authentication Routes */}
+            <Route
+              path="/auth/*"
+              element={
+                <PublicRoute>
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={<Navigate to="/auth/login" replace />}
+                    />
+                    <Route
+                      path=""
+                      element={
+                        <AuthPage>
+                          <LoginForm />
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/login"
+                      element={
+                        <AuthPage>
+                          <LoginForm />
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/register"
+                      element={
+                        <AuthPage>
+                          <RegisterForm />
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/forgot-password"
+                      element={
+                        <AuthPage>
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
+                            <h2>Forgot Password</h2>
+                            <p>This feature is coming soon!</p>
+                          </div>
+                        </AuthPage>
+                      }
+                    />
+                    <Route
+                      path="/verify"
+                      element={
+                        <AuthPage>
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
+                            <h2>Email Verification</h2>
+                            <p>
+                              Please check your email for verification
+                              instructions.
+                            </p>
+                          </div>
+                        </AuthPage>
+                      }
+                    />
+                    <Route path="/logout" element={<Logout />} />
+                  </Routes>
+                </PublicRoute>
+              }
+            />
 
-              {/* Protected Dashboard Routes */}
-              {/* <Route
+            {/* Protected Dashboard Routes */}
+            {/* <Route
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
@@ -784,33 +779,33 @@ function DevApp() {
                 }
               /> */}
 
-              {/* Fallback routes */}
-              <Route
-                path="/*"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-            {/* Toast Container for notifications */}
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-              toastStyle={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
-              }}
+            {/* Fallback routes */}
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
             />
+          </Routes>
+          {/* Toast Container for notifications */}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            toastStyle={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
+            }}
+          />
         </BrowserRouter>
       </UserContext.Provider>
     </ThemeProvider>

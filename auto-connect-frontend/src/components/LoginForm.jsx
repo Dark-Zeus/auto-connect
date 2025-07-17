@@ -147,129 +147,138 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-form-container">
-      <Fade in={true} timeout={800}>
-        <Paper className="login-form-paper" elevation={0}>
-          <Box className="login-form-header">
-            <Typography variant="h4" className="form-title">
-              Welcome Back
-            </Typography>
-            <Typography variant="body1" className="form-subtitle">
-              Sign in to your account to continue
-            </Typography>
-          </Box>
-
-          <Box component="form" onSubmit={handleSubmit} className="login-form">
-            <TextField
-              fullWidth
-              name="email"
-              label="Email Address"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              error={!!errors.email}
-              helperText={errors.email}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon className="input-icon" />
-                  </InputAdornment>
-                ),
-              }}
-              className="form-input"
-              variant="outlined"
-              placeholder="Enter your email address"
-            />
-
-            <TextField
-              fullWidth
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleInputChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon className="input-icon" />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                      className="visibility-icon"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              className="form-input"
-              variant="outlined"
-              placeholder="Enter your password"
-            />
-
-            <Box className="forgot-password-container">
-              <Link to="/auth/forgot-password" className="forgot-password-link">
-                Forgot your password?
-              </Link>
+    <div className="login-form-bg">
+      <div className="login-form-container">
+        <Fade in={true} timeout={800}>
+          <Paper className="login-form-paper" elevation={0}>
+            <Box className="login-form-header">
+              <Typography variant="h4" className="form-title">
+                Welcome Back
+              </Typography>
+              <Typography variant="body1" className="form-subtitle">
+                Sign in to your account to continue
+              </Typography>
             </Box>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              className="login-button"
-              disabled={isLoading}
-              startIcon={
-                isLoading ? <CircularProgress size={20} /> : <LoginIcon />
-              }
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              className="login-form"
             >
-              {isLoading ? "Signing In..." : "Sign In"}
-            </Button>
+              <TextField
+                fullWidth
+                name="email"
+                label="Email Address"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon className="input-icon" />
+                    </InputAdornment>
+                  ),
+                }}
+                className="form-input"
+                variant="outlined"
+                placeholder="Enter your email address"
+              />
 
-            <Divider className="divider">
-              <Typography variant="body2" className="divider-text">
-                or continue with
+              <TextField
+                fullWidth
+                name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleInputChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon className="input-icon" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                        className="visibility-icon"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                className="form-input"
+                variant="outlined"
+                placeholder="Enter your password"
+              />
+
+              <Box className="forgot-password-container">
+                <Link
+                  to="/auth/forgot-password"
+                  className="forgot-password-link"
+                >
+                  Forgot your password?
+                </Link>
+              </Box>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                className="login-button"
+                disabled={isLoading}
+                startIcon={
+                  isLoading ? <CircularProgress size={20} /> : <LoginIcon />
+                }
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
+              </Button>
+
+              <Divider className="divider">
+                <Typography variant="body2" className="divider-text">
+                  or continue with
+                </Typography>
+              </Divider>
+
+              <Button
+                fullWidth
+                variant="outlined"
+                className="google-button"
+                startIcon={<GoogleIcon />}
+                onClick={handleGoogleAuth}
+                disabled={isLoading}
+              >
+                Continue with Google
+              </Button>
+            </Box>
+
+            <Box className="form-footer">
+              <Typography variant="body2" className="footer-text">
+                Don't have an account?{" "}
+                <Link to="/auth/register" className="register-link">
+                  Sign up here
+                  <ArrowForward className="arrow-icon" />
+                </Link>
               </Typography>
-            </Divider>
+            </Box>
 
-            <Button
-              fullWidth
-              variant="outlined"
-              className="google-button"
-              startIcon={<GoogleIcon />}
-              onClick={handleGoogleAuth}
-              disabled={isLoading}
-            >
-              Continue with Google
-            </Button>
-          </Box>
-
-          <Box className="form-footer">
-            <Typography variant="body2" className="footer-text">
-              Don't have an account?{" "}
-              <Link to="/auth/register" className="register-link">
-                Sign up here
-                <ArrowForward className="arrow-icon" />
+            <Box className="form-bottom-links">
+              <Link to="/terms" className="bottom-link">
+                Terms & Conditions
               </Link>
-            </Typography>
-          </Box>
-
-          <Box className="form-bottom-links">
-            <Link to="/terms" className="bottom-link">
-              Terms & Conditions
-            </Link>
-            <Link to="/help" className="bottom-link">
-              Help Center
-            </Link>
-          </Box>
-        </Paper>
-      </Fade>
+              <Link to="/help" className="bottom-link">
+                Help Center
+              </Link>
+            </Box>
+          </Paper>
+        </Fade>
+      </div>
     </div>
   );
 };
