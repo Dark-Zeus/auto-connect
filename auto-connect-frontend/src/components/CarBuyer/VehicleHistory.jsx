@@ -24,16 +24,16 @@ const VehicleHistory = () => {
 
   const vehicleData = {
     info: {
-      yom: "2016",
-      manufacturer: "Honda",
-      model: "Civic",
-      fuel: "Petrol",
-      engineCapacity: "1500 CC",
+      yom: "2015",
+      manufacturer: "Toyota",
+      model: "Land Cruiser 150 TX",
+      fuel: "Diesel",
+      engineCapacity: "3000 CC",
       transmission: "Automatic",
-      color: "Pearl White",
-      registrationPlate: "CAC-1234",
+      color: "Black",
+      registrationPlate: "CAJ-1234",
       countryOfOrigin: "Japan",
-      lastReportedOdometer: "54,129 KM"
+      lastReportedOdometer: "132,129 KM"
     },
     summary: {
       accidentDamage: { found: true, count: 2 },
@@ -46,80 +46,80 @@ const VehicleHistory = () => {
     accidents: [
       {
         date: "2017 Apr 24",
-        location: "Ontario, Canada",
+        location: "Akuressa, Matara",
         type: "Police Reported Accident",
         description: "Accident reported: minor damage. Involving right front impact with another motor vehicle",
         amount: null
       },
       {
         date: "2017 Apr 25",
-        location: "Pickering, Ontario, Canada",
+        location: "Akuressa, Matara",
         estimate: "Right Front Corner",
         estimateDate: "2017 May 3",
-        estimateAmount: "$1,699.43",
+        estimateAmount: "LKR11,699.43",
         claim: "Collision",
-        claimAmount: "$2,079.00"
+        claimAmount: "LKR12,079.00"
       },
       {
         date: "2017 Dec 1",
-        location: "Pickering, Ontario, Canada",
+        location: "Matara, Matara",
         type: "Police Reported Accident",
         description: "Accident reported: minor damage. Vehicle involved in a sideswipe collision. Involving left front impact with another motor vehicle",
         estimate: "Left Front Side",
         estimateDate: "1 Dec 2017",
-        estimateAmount: "$4,592.84",
+        estimateAmount: "LKR14,592.84",
         claim: "Collision",
-        claimAmount: "$5,324.00"
+        claimAmount: "LKR15,324.00"
       }
     ],
     serviceRecords: [
       {
         date: "2016 Aug 18",
         odometer: null,
-        source: "Service Facility - Pickering, Ontario, Canada",
+        source: "Service Facility - Auto Hub, Godagama, Matara",
         details: "Pre-delivery inspection completed, Recommended maintenance performed"
       },
       {
         date: "2016 Aug 30",
         odometer: null,
-        source: "Service Facility - Pickering, Ontario, Canada",
+        source: "Service Facility - Auto Hub, Godagama, Matara",
         details: "Vehicle washed/detailed"
       },
       {
         date: "2017 Sep 27",
         odometer: "16,995 KM",
-        source: "Service Facility - Pickering, Ontario, Canada",
+        source: "Service Facility - Auto Hub, Godagama, Matara",
         details: "Transmission checked, Computer(s) checked"
       },
       {
         date: "2017 Oct 12",
         odometer: "18,252 KM",
-        source: "Service Facility - Pickering, Ontario, Canada",
+        source: "Service Facility - Auto Hub, Godagama, Matara",
         details: "Wipers/washers checked"
       },
       {
-        date: "2019 Jul 29",
-        odometer: "50,329 KM",
-        source: "Service Facility - Pickering, Ontario, Canada",
+        date: "2022 Jul 29",
+        odometer: "100,329 KM",
+        source: "Service Facility - Auto Hub, Godagama, Matara",
         details: "Two wheel alignment performed"
       },
       {
-        date: "2019 Oct 12",
-        odometer: "54,129 KM",
-        source: "Service Facility - Pickering, Ontario, Canada",
+        date: "2024 Oct 12",
+        odometer: "132,129 KM",
+        source: "Service Facility - Auto Hub, Godagama, Matara",
         details: "Electrical system checked"
       }
     ],
     emissionTests: [
       {
-        date: "2018 Jun 15",
+        date: "2025 Jun 14",
         certificateNo: "CL23-1702073",
         testType: "Initial",
         result: "Pass",
         validTill: "2019 Jun 14"
       },
       {
-        date: "2019 Jun 10",
+        date: "2024 Jun 16",
         certificateNo: "CL23-1903054",
         testType: "Renewal",
         result: "Pass",
