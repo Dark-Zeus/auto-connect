@@ -23,7 +23,7 @@ const Pagination = ({
               {...item}
               sx={{
                 '&.Mui-selected': {
-                  backgroundColor: '#3b82f6',
+                  backgroundColor: '#288aff',
                   color: 'white',
                   fontWeight: 600,
                   '&:hover': {

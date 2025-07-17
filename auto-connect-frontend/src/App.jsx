@@ -8,6 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 // Existing Components
 import { UserContext } from "@contexts/UserContext";
 
+// ADD THIS LINE
+import Logout from "@components/Logout";
+
 import LandingPage from "@pages/LandingPage";
 import AuthPage from "@pages/AuthPage";
 import LoginForm from "@components/LoginForm";
@@ -222,6 +225,7 @@ function App() {
                         </AuthPage>
                       }
                     />
+
                     <Route
                       path="/register"
                       element={
@@ -234,9 +238,7 @@ function App() {
                       path="/forgot-password"
                       element={
                         <AuthPage>
-                          <div
-                            style={{ textAlign: "center", padding: "2rem" }}
-                          >
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
                             <h2>Forgot Password</h2>
                             <p>This feature is coming soon!</p>
                           </div>
@@ -247,9 +249,7 @@ function App() {
                       path="/verify"
                       element={
                         <AuthPage>
-                          <div
-                            style={{ textAlign: "center", padding: "2rem" }}
-                          >
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
                             <h2>Email Verification</h2>
                             <p>
                               Please check your email for verification
@@ -259,11 +259,12 @@ function App() {
                         </AuthPage>
                       }
                     />
+                    {/* ADD THIS LOGOUT ROUTE */}
+                    <Route path="/logout" element={<Logout />} />
                   </Routes>
                 </PublicRoute>
               }
             />
-
 
             {/* Protected Dashboard Routes */}
             <Route

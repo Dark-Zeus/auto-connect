@@ -24,7 +24,7 @@ const VehicleFilterForm = () => {
   ];
 
   const vehicleTypes = [
-    'Car', 'Van', 'Suv', 'Crew Cab', 'Pickup/Double Cab', 'Bus', 'Lorry/Tipper', 
+    'Car', 'Van', 'SUV', 'Crew Cab', 'Pickup/Double Cab', 'Bus', 'Lorry/Tipper', 
     'Tractor', 'Threewheel', 'Heavyduty', 'Other', 'Motorcycle'
   ];
 
@@ -86,7 +86,7 @@ const VehicleFilterForm = () => {
 
   return (
     <div className="tw:max-w-md tw:mx-auto tw:bg-white tw:rounded-2xl tw:shadow-2xl tw:border tw:border-gray-100 tw:overflow-hidden">
-      <div className="tw:bg-gradient-to-r tw:from-blue-600 tw:to-purple-600 tw:p-6 tw:text-white">
+      <div className="tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:p-6 tw:text-white">
         <div className="tw:flex tw:items-center tw:gap-3">
           <svg className="tw:w-6 tw:h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -334,7 +334,7 @@ const VehicleFilterForm = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:bg-gradient-to-r tw:from-blue-600 tw:to-purple-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:font-medium tw:hover:from-blue-700 tw:hover:to-purple-700 tw:transform tw:hover:scale-105 tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer"
+            className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:font-medium tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:transform tw:hover:scale-105 tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer"
           >
             <svg className="tw:w-4 tw:h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>

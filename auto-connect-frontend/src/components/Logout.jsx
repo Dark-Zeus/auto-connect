@@ -1,18 +1,30 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
+import { performLogout } from "../utils/logout.util";
 
 function Logout() {
   const navigate = useNavigate();
+  const { setUserContext } = useContext(UserContext);
 
   useEffect(() => {
-    toast.success('Logged out successfully');
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    navigate('/auth');
-  }, []);
+    performLogout(setUserContext, navigate);
+  }, [setUserContext, navigate]);
 
-  return null;
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        fontSize: "1.1rem",
+        color: "#4A628A",
+      }}
+    >
+      Logging out...
+    </div>
+  );
 }
 
 export default Logout;

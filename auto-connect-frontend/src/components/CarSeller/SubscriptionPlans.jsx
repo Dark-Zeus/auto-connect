@@ -89,7 +89,7 @@ const SubscriptionPlans = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="tw:text-4xl tw:font-bold tw:text-transparent tw:bg-clip-text tw:bg-gradient-to-r tw:from-blue-600 tw:to-purple-600"
+          className="tw:text-4xl tw:font-bold tw:text-transparent tw:bg-clip-text tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] "
         >
           {formatCurrency(data.totalCost)}
         </motion.div>
@@ -132,7 +132,7 @@ const SubscriptionPlans = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="tw:w-full tw:bg-gradient-to-r tw:from-blue-500 tw:to-purple-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer tw:transition-all tw:duration-300"
+        className="tw:w-full tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:py-3 tw:px-6 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer tw:transition-all tw:duration-300"
       >
         Select Plan
       </motion.button>
@@ -184,7 +184,7 @@ const SubscriptionPlans = () => {
                 whileTap={{ scale: 0.95 }}
                 className={`tw:px-8 tw:py-3 tw:rounded-full tw:font-semibold tw:transition-all tw:duration-300 tw:capitalize tw:hover:cursor-pointer ${
                   selectedPlan === plan
-                    ? 'tw:bg-gradient-to-r tw:from-blue-500 tw:to-purple-600 tw:text-white tw:shadow-lg'
+                    ? 'tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:shadow-lg'
                     : 'tw:bg-gray-100 tw:text-gray-600 tw:hover:text-gray-800'
                 }`}
               >
@@ -239,7 +239,7 @@ const SubscriptionPlans = () => {
                 transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                 className="tw:text-center tw:p-6"
               >
-                <div className="tw:w-16 tw:h-16 tw:bg-gradient-to-r tw:from-blue-500 tw:to-purple-600 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:mx-auto tw:mb-4">
+                <div className="tw:w-16 tw:h-16 tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:rounded-full tw:flex tw:items-center tw:justify-center tw:mx-auto tw:mb-4">
                   <Icon className="tw:w-8 tw:h-8 tw:text-white" />
                 </div>
                 <h3 className="tw:text-xl tw:font-semibold tw:text-gray-800 tw:mb-2">{title}</h3>

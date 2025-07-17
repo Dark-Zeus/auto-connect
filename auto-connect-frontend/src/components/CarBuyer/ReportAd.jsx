@@ -103,7 +103,7 @@ const ReportAd = ({
         }}
       >
         <DialogTitle className="tw:p-0 tw:m-0">
-          <div className="tw:bg-gradient-to-br tw:from-blue-400 tw:to-indigo-400 tw:text-white tw:p-3 tw:text-center tw:relative tw:overflow-hidden tw:rounded-2xl">
+          <div className="tw:bg-gradient-to-br tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:p-3 tw:text-center tw:relative tw:overflow-hidden tw:rounded-2xl">
             <div className="tw:absolute tw:inset-0 tw:bg-black tw:opacity-5"></div>
             <div className="tw:relative tw:z-10">
               <div className="tw:inline-flex tw:items-center tw:justify-center tw:w-16 tw:h-16 tw:bg-white tw:bg-opacity-20 tw:rounded-full tw:mb-4">
@@ -128,12 +128,12 @@ const ReportAd = ({
 
           {vehicleData.make && vehicleData.model && (
             <div className="tw:relative tw:overflow-hidden tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-50 tw:rounded-2xl tw:border tw:border-blue-100 tw:shadow-sm">
-              <div className="tw:absolute tw:top-0 tw:left-0 tw:w-full tw:h-1 tw:bg-gradient-to-r tw:from-blue-500 tw:to-indigo-500"></div>
+              <div className="tw:absolute tw:top-0 tw:left-0 tw:w-full tw:h-1 tw:bg-[#001c6c]"></div>
               <div className="tw:p-4">
                 <div className="tw:space-y-4">
                   <div>
                     <div className="tw:flex tw:items-center tw:mb-2">
-                      <div className="tw:w-3 tw:h-3 tw:bg-blue-500 tw:rounded-full tw:mr-3"></div>
+                      <div className="tw:w-3 tw:h-3 tw:text-[#001c6c] tw:rounded-full tw:mr-3"></div>
                       <Typography variant="subtitle1" className="tw:text-slate-700 tw:font-semibold tw:text-lg">
                         Reporting Vehicle
                       </Typography>
@@ -316,12 +316,12 @@ const ReportAd = ({
               sx={{
                 borderRadius: '12px',
                 textTransform: 'none',
-                background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', // blue-600 to blue-700 equivalent
+                background: 'linear-gradient(135deg, var(--sky-blue), var(--navy-blue))', 
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)', // blue-700 to blue-800 equivalent
+                  background: 'linear-gradient(135deg, var(--navy-blue), var(--sky-blue))',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 8px 25px rgba(37, 99, 235, 0.4)' // Adjusted for blue shadow
+                  boxShadow: '0 8px 25px rgba(37, 99, 235, 0.4)' 
                 },
                 '&:disabled': {
                   background: 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)',
