@@ -27,6 +27,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import OverlayWindow from "../components/OverlayWindow";
 import BookingDetailsPage from "./BookingDetailsPage";
+import ServiceBookingForm from "../components/ServiceBookingForm";
 
 const serviceCenters = [
   // Your serviceCenters data unchanged
@@ -216,6 +217,8 @@ const MyBookings = () => {
   const [ratingDialogOpen, setRatingDialogOpen] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
   const [bookingToRate, setBookingToRate] = useState(null);
+  const [overlayBooking, setOverlayBooking] = useState(null);//overlay window
+  const [overlayContent, setOverlayContent] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -243,60 +246,41 @@ const MyBookings = () => {
       })
     : allBookings;
 
-  const handleViewProvider = (booking) => {
-    const matchedProvider = serviceCenters.find(
-      (center) =>
-        center.name === booking.centerName &&
-        center.location === booking.location
+      const handleViewDetails = (booking) => {
+  const matchedProvider = serviceCenters.find(
+    (center) =>
+      center.name === booking.centerName &&
+      center.location === booking.location
+  );
+  if (matchedProvider) {
+    setOverlayContent(
+      <BookingDetailsPage center={matchedProvider} booking={booking} />
     );
-    if (matchedProvider) {
-      navigate("/service-provider-profile", {
-        state: { center: matchedProvider },
-      });
-    } else {
-      alert("Provider not found.");
-    }
-  };
+  } else {
+    alert("Provider not found.");
+  }
+};
 
-  const handleEdit = (booking) => {
-    const matchedProvider = serviceCenters.find(
-      (center) =>
-        center.name === booking.centerName &&
-        center.location === booking.location
+const handleEdit = (booking) => {
+  const matchedProvider = serviceCenters.find(
+    (center) =>
+      center.name === booking.centerName &&
+      center.location === booking.location
+  );
+  if (matchedProvider) {
+    setOverlayContent(
+      <ServiceBookingForm center={matchedProvider} booking={booking} />
     );
-    if (matchedProvider) {
-      navigate("/service-booking-form", {
-        state: {
-          center: matchedProvider,
-          booking,
-        },
-      });
-    } else {
-      alert("Provider not found for edit.");
-    }
-  };
+  } else {
+    alert("Provider not found for edit.");
+  }
+};
 
   const handleCancel = (bookingId) => {
     alert(`Booking ${bookingId} cancelled.`);
   };
 
-  const handleReschedule = (booking) => {
-    const matchedProvider = serviceCenters.find(
-      (center) =>
-        center.name === booking.centerName &&
-        center.location === booking.location
-    );
-    if (matchedProvider) {
-      navigate("/service-booking-form", {
-        state: {
-          center: matchedProvider,
-          booking,
-        },
-      });
-    } else {
-      alert("Provider not found for reschedule.");
-    }
-  };
+const handleReschedule = handleEdit;
 
   // Open rating dialog for selected booking
   const openRatingForBooking = (booking) => {
@@ -485,26 +469,93 @@ const MyBookings = () => {
 
                     {/* Buttons */}
                     <Box
-                        sx={{
-                          mt: 2,
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          gap: 1,
-                          flexWrap: "wrap",
-                          alignItems: "center"
-                        }}
+                      sx={{
+                        mt: 2,
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        gap: 1,
+                        flexWrap: "wrap",
+                        alignItems: "center"
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleViewDetails(booking)}
+                        sx={{ fontSize: 13, fontWeight: 500 }}
                       >
+                        View Details
+                      </Button>
+
+                      {booking.status === "Pending" && (
+                        <>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            color="primary"
+                            onClick={() => handleEdit(booking)}
+                            sx={{ fontSize: 13, fontWeight: 500 }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="error"
+                            onClick={() => handleCancel(booking.id)}
+                            sx={{ fontSize: 13, fontWeight: 500 }}
+                          >
+                            Cancel
+                          </Button>
+                        </>
+                      )}
+
+                      {booking.status === "Confirmed" && (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="error"
+                          onClick={() => handleCancel(booking.id)}
+                          sx={{ fontSize: 13, fontWeight: 500 }}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+
+                      {booking.status === "Completed" && (
+                        <>
+                          {bookingRatings[booking.id] ? (
+                            <Rating
+                              value={bookingRatings[booking.id]}
+                              readOnly
+                              size="small"
+                            />
+                          ) : (
+                            <Button
+                              variant="contained"
+                              size="small"
+                              color="primary"
+                              sx={{ fontSize: 13, fontWeight: 500 }}
+                              onClick={() => openRatingForBooking(booking)}
+                            >
+                              Rate
+                            </Button>
+                          )}
+                        </>
+                      )}
+
+                      {booking.status === "Cancelled" && (
                         <Button
                           variant="contained"
                           size="small"
                           color="primary"
-                          onClick={() => navigate("/booking-details", { state: { booking } })}
+                          onClick={() => handleReschedule(booking)}
                           sx={{ fontSize: 13, fontWeight: 500 }}
                         >
-                          View Details
+                          Reschedule
                         </Button>
-                      </Box>
-                    
+                      )}
+                    </Box>
                   </Paper>
                 </Grid>
               ))
@@ -542,9 +593,16 @@ const MyBookings = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
+
+        {overlayContent && (
+          <OverlayWindow closeWindowFunction={() => setOverlayContent(null)}>
+            {overlayContent}
+          </OverlayWindow>
+)}
+
       </Container>
     </Box>
   );
 };
-
 export default MyBookings;

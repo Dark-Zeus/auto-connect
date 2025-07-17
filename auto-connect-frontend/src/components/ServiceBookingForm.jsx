@@ -33,13 +33,15 @@ const timeSlots = [
   "05:00 PM",
 ];
 
-const ServiceBookingForm = () => {
+const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const center = location.state?.center;
-  const booking = location.state?.booking;
+  // ✅ Use props if passed, else fallback to location.state
+  const center = propCenter || location.state?.center;
+  const booking = propBooking || location.state?.booking;
 
+  // Redirect if no center info
   if (!center) {
     navigate("/service-booking");
     return null;
@@ -135,7 +137,7 @@ const ServiceBookingForm = () => {
       >
         <Box sx={{ textAlign: "center", mb: 4, mt: 3 }}>
           <BuildIcon sx={{ color: "var(--primary-blue)", fontSize: 40, mb: 1 }} />
-          <Typography sx={{ fontSize: 32, fontWeight: 700, color: "var(--primary-blue)" }}>
+          <Typography sx={{ fontSize: 24, fontWeight: 700, color: "var(--primary-blue)" }}>
             {booking ? "Edit Booking" : "Book Service Appointment"}
           </Typography>
           <Typography sx={{ fontSize: 14, fontWeight: 500, color: "var(--gray-medium)" }}>
@@ -144,10 +146,10 @@ const ServiceBookingForm = () => {
         </Box>
 
         <Box sx={{ mb: 2, px: 3 }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 700 }} color="primary">
+          <Typography sx={{ fontSize: 14, fontWeight: 700 }} color="primary">
             Provider: {center.name}
           </Typography>
-          <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
+          <Typography sx={{ fontSize: 12, fontWeight: 500 }} color="text.secondary">
             {center.location}
           </Typography>
         </Box>
@@ -166,11 +168,11 @@ const ServiceBookingForm = () => {
         >
           <DirectionsCarFilledRoundedIcon sx={{ color: "var(--primary-dark)", fontSize: 32 }} />
           <Box>
-            <Typography sx={{ fontSize: 16, fontWeight: 700, color: "var(--primary-dark)" }}>
+            <Typography sx={{ fontSize: 14, fontWeight: 700, color: "var(--primary-dark)" }}>
               Toyota Corolla 2020
             </Typography>
-            <Typography sx={{ fontSize: 14, fontWeight: 500, color: "var(--gray-medium)" }}>
-              ABC-1234 &nbsp;•&nbsp; 45,000 km &nbsp;•&nbsp; Next service due
+            <Typography sx={{ fontSize: 12, fontWeight: 500, color: "var(--gray-medium)" }}>
+              ABC-1234 • 45,000 km • Next service due
             </Typography>
           </Box>
         </Box>
@@ -179,7 +181,7 @@ const ServiceBookingForm = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           {/* Services */}
           <Box>
-            <Typography sx={{ fontSize: 24, fontWeight: 600, mb: 1 }}>
+            <Typography sx={{ fontSize: 16, fontWeight: 600, mb: 1 }}>
               Select Services
             </Typography>
             <FormGroup sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -197,7 +199,7 @@ const ServiceBookingForm = () => {
                     />
                   }
                   label={
-                    <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
                       {service}
                     </Typography>
                   }
@@ -215,7 +217,7 @@ const ServiceBookingForm = () => {
               <Typography
                 color="var(--error-color)"
                 variant="caption"
-                sx={{ mt: 0.5, fontSize: 12, fontWeight: 500 }}
+                sx={{ mt: 0.5, fontSize: 10, fontWeight: 500 }}
               >
                 {errors.services}
               </Typography>
@@ -234,15 +236,9 @@ const ServiceBookingForm = () => {
             InputLabelProps={{ shrink: true }}
             inputProps={{ min: new Date().toISOString().split("T")[0] }}
             error={!!errors.preferredDate}
-            helperText={
-              errors.preferredDate && (
-                <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
-                  {errors.preferredDate}
-                </Typography>
-              )
-            }
+            helperText={errors.preferredDate}
             InputProps={{
-              sx: { fontSize: 16, fontWeight: 500 },
+              sx: { fontSize: 12, fontWeight: 500 },
             }}
           />
 
@@ -256,22 +252,16 @@ const ServiceBookingForm = () => {
             fullWidth
             required
             error={!!errors.preferredTime}
-            helperText={
-              errors.preferredTime && (
-                <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
-                  {errors.preferredTime}
-                </Typography>
-              )
-            }
+            helperText={errors.preferredTime}
             InputProps={{
-              sx: { fontSize: 16, fontWeight: 500 },
+              sx: { fontSize: 12, fontWeight: 500 },
             }}
           >
-            <MenuItem value="" sx={{ fontSize: 16, fontWeight: 500 }}>
+            <MenuItem value="" sx={{ fontSize: 14, fontWeight: 500 }}>
               Select Time
             </MenuItem>
             {timeSlots.map((slot) => (
-              <MenuItem key={slot} value={slot} sx={{ fontSize: 16, fontWeight: 500 }}>
+              <MenuItem key={slot} value={slot} sx={{ fontSize: 14, fontWeight: 500 }}>
                 {slot}
               </MenuItem>
             ))}
@@ -293,9 +283,9 @@ const ServiceBookingForm = () => {
                   <NotesIcon />
                 </InputAdornment>
               ),
-              sx: { fontSize: 16, fontWeight: 500 },
+              sx: { fontSize: 14, fontWeight: 500 },
             }}
-            InputLabelProps={{ sx: { fontSize: 16, fontWeight: 500 } }}
+            InputLabelProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
           />
 
           {/* Submit Button */}
@@ -306,7 +296,7 @@ const ServiceBookingForm = () => {
             startIcon={isSubmitting ? <CircularProgress size={20} /> : <CheckIcon />}
             sx={{
               mt: 2,
-              fontSize: 13,
+              fontSize: 11,
               fontWeight: 500,
             }}
           >

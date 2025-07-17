@@ -12,7 +12,7 @@ import {
   Grid,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import CompletedServicesInvoice from "./CompletedServicesInvioce";
+
 
 const BookingDetailsPage = ({ booking: bookingProp }) => {
   const location = useLocation();
@@ -31,10 +31,9 @@ const BookingDetailsPage = ({ booking: bookingProp }) => {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e6f4f0", py: 5 }}>
-      <Container sx={{ maxWidth: { xs: "95%", sm: 540, md: 600 }, mx: "auto" }}>
+    <Box sx={{ minHeight: "90vh", py: 3 }}>
         <Paper sx={{ p: { xs: 3, sm: 4, md: 5 }, borderRadius: 4, boxShadow: 3 }}>
-          <Typography fontSize={32} fontWeight={700} gutterBottom>
+          <Typography fontSize={24} fontWeight={700} gutterBottom>
             Booking Details
           </Typography>
           <Divider sx={{ my: 2 }} />
@@ -82,76 +81,8 @@ const BookingDetailsPage = ({ booking: bookingProp }) => {
           <Typography fontSize={16} fontWeight={500}>
             <strong>Booking Fee Paid:</strong> Rs. 500
           </Typography>
-
-          {booking.status === "Completed" && (
-            <Box mt={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setOpenInvoice(true)}
-                sx={{ fontSize: 13, fontWeight: 500, mr: 2 }}
-              >
-                View Invoice
-              </Button>
-              <Button variant="outlined" sx={{ fontSize: 13, fontWeight: 500 }}>
-                Rate & Review
-              </Button>
-              <CompletedServicesInvoice
-                open={openInvoice}
-                onClose={() => setOpenInvoice(false)}
-                booking={booking}
-              />
-            </Box>
-          )}
-
-          {booking.status === "Pending" && (
-            <Box mt={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mr: 2, fontSize: 13, fontWeight: 500 }}
-                onClick={() => navigate("/service-booking-form", { state: { booking, isEdit: true } })}
-              >
-                Edit
-              </Button>
-              <Button variant="outlined" sx={{ fontSize: 13, fontWeight: 500 }}>
-                Cancel
-              </Button>
-            </Box>
-          )}
-
-          {booking.status === "Confirmed" && (
-            <Box mt={3}>
-              <Button variant="outlined" sx={{ fontSize: 13, fontWeight: 500 }}>
-                Cancel
-              </Button>
-            </Box>
-          )}
-
-          {booking.status === "Cancelled" && (
-            <Box mt={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ fontSize: 13, fontWeight: 500 }}
-                onClick={() => navigate("/service-booking-form")}
-              >
-                Reschedule
-              </Button>
-            </Box>
-          )}
-
-          <Box mt={3}>
-            <Button
-              variant="outlined"
-              onClick={() => navigate(-1)}
-              sx={{ fontSize: 13, fontWeight: 500 }}
-            >
-              Back to Bookings
-            </Button>
-          </Box>
+         
         </Paper>
-      </Container>
     </Box>
   );
 };

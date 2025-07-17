@@ -1,5 +1,9 @@
 import React, { useState, useMemo } from "react";
 import ServiceProviderCard from "@components/ServiceProviderDetailsCard"; // adjust the path if needed
+import ServiceBookingForm from "@components/ServiceBookingForm";
+import ServiceProviderProfile from "./ServiceProviderProfile";
+import OverlayWindow from "@components/OverlayWindow"; // ✅ NEW IMPORT
+
 
 import {
   Container,
@@ -194,15 +198,24 @@ const ServiceBookingApp = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [overlay, setOverlay] = useState({open: false,type: null,center: null});
 
   const handleBookAppointment = (center) => {
-  navigate("/service-booking-form", { state: { center } });
+  setOverlay({
+    open: true,
+    type: "book",
+    center,
+  });
 };
 
 
   const handleViewDetails = (center) => {
-    navigate("/service-provider-profile", { state: { center } });
-  };
+  setOverlay({
+    open: true,
+    type: "profile",
+    center,
+  });
+};
 
   const filteredCenters = useMemo(() => {
     return serviceCenters.filter((center) => {
@@ -334,6 +347,15 @@ const ServiceBookingApp = () => {
               )}
             </Grid>
           </Box>
+
+          {overlay.open && (
+            <OverlayWindow closeWindowFunction={() => setOverlay({ open: false, type: null, center: null })}>
+              {overlay.type === "book" && <ServiceBookingForm center={overlay.center} />}
+              {overlay.type === "profile" && <ServiceProviderProfile center={overlay.center} />}
+            </OverlayWindow>
+          )}
+
+
         </Container>
       </Box>
     </Box>
