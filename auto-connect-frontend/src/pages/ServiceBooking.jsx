@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from "react";
+import ServiceProviderCard from "@components/ServiceProviderDetailsCard"; // adjust the path if needed
+
 import {
   Container,
   Box,
@@ -315,112 +317,26 @@ const ServiceBookingApp = () => {
             <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
               {filteredCenters.length > 0 ? (
                 filteredCenters.map((center) => (
-                  <Grid item xs={12} sm={6} md={4} key={center.id}>
-                    <Paper
-                      sx={{
-                        p: 3,
-                        minHeight: 450,
-                        width: 350,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: 18,
-                          fontWeight: 700,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        {center.name}
-                        {center.verified && (
-                          <Chip
-                            label="Verified"
-                            size="small"
-                            color="success"
-                            sx={{ ml: 0, fontSize: 12, fontWeight: 500 }}
-                          />
-                        )}
-                        {center.premium && (
-                          <Chip
-                            label="Premium"
-                            size="small"
-                            color="warning"
-                            sx={{ ml: 0, fontSize: 12, fontWeight: 500 }}
-                          />
-                        )}
-                      </Typography>
+                  <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
+                    {filteredCenters.length > 0 ? (
+                    filteredCenters.map((center) => (
+                    <Grid item xs={12} sm={6} md={4} key={center.id}>
+                    <ServiceProviderCard
+                    center={center}
+                    onBookAppointment={handleBookAppointment}
+                    onViewDetails={handleViewDetails}
+                    />
+                    </Grid>
+                    ))
+                    ) : (
+                    <Grid item xs={12}>
+                    <Typography sx={{ fontSize: 16, fontWeight: 500, mt: 4, textAlign: "center" }}>
+                    No service providers found matching your criteria.
+                    </Typography>
+                    </Grid>
+                    )}
+                    </Grid>
 
-                      <Box display="flex" alignItems="center" mt={1}>
-                        <LocationOn fontSize="small" sx={{ mr: 1 }} />
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          {center.location}
-                        </Typography>
-                      </Box>
-
-                      <Box display="flex" alignItems="center" mt={1}>
-                        <Typography sx={{ fontSize: 14, fontWeight: 500, mr: 2 }}>
-                          📞 {center.phone}
-                        </Typography>
-                        <Star fontSize="small" sx={{ color: "#f39c12", mr: 1 }} />
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          {center.rating} ({center.reviews} reviews)
-                        </Typography>
-                      </Box>
-
-                      <Box mt={2}>
-                        <Typography sx={{ fontSize: 14, fontWeight: 600, mb: 0.5 }}>
-                          Service Categories:
-                        </Typography>
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
-                          {center.serviceCategories.join(", ")}
-                        </Typography>
-                      </Box>
-
-                      <Box mt={1}>
-                        <Typography sx={{ fontSize: 14, fontWeight: 600, mb: 0.5 }}>
-                          Services Offered:
-                        </Typography>
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
-                          {center.services.join(", ")}
-                        </Typography>
-                      </Box>
-
-                      <Box mt={2}>
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          <strong>{center.onTime}</strong> On-time
-                        </Typography>
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          <strong>{center.cost}</strong> Avg. Cost
-                        </Typography>
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          <strong>{center.waitTime}</strong> Wait Time
-                        </Typography>
-                      </Box>
-
-                      <Box mt={2} display="flex" gap={1}>
-                        <Button
-                          variant="contained"
-                          onClick={() => handleBookAppointment(center)}
-                          sx={{ fontSize: 13, fontWeight: 500 }}
-                        >
-                          Book Appointment
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          onClick={() => handleViewDetails(center)}
-                          sx={{ fontSize: 13, fontWeight: 500 }}
-                        >
-                          View Details
-                        </Button>
-                      </Box>
-                    </Paper>
-                  </Grid>
                 ))
               ) : (
                 <Grid item xs={12}>
