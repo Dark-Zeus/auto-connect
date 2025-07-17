@@ -69,7 +69,6 @@ const VehicleFilterForm = () => {
 
   const handleReset = () => {
     setFormData({
-      urgency: 'false',
       district: '',
       city: '',
       type: '',
@@ -97,27 +96,6 @@ const VehicleFilterForm = () => {
       </div>
 
       <div className="tw:p-6 tw:space-y-6">
-        {/* Urgent Checkbox */}
-        <div className="tw:space-y-2">
-          <label className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:font-medium tw:text-gray-700">
-            <input
-              type="checkbox"
-              name="urgency"
-              checked={formData.urgency === 'true'}
-              onChange={e =>
-                setFormData(prev => ({
-                  ...prev,
-                  urgency: e.target.checked ? 'true' : 'false'
-                }))
-              }
-              className="tw:w-4 tw:h-4 tw:text-blue-600"
-            />
-            <span className="tw:text-lg tw:px-2 tw:py-1 tw:rounded tw:font-semibold tw:bg-red-500 tw:text-white">
-              Urgent
-            </span>
-          </label>
-        </div>
-
         {/* District */}
         <div className="tw:space-y-2">
           <label className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:font-medium tw:text-gray-700">
@@ -334,7 +312,7 @@ const VehicleFilterForm = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:bg-gradient-to-r tw:from-blue-600 tw:to-purple-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:font-medium tw:hover:from-blue-700 tw:hover:to-purple-700 tw:transform tw:hover:scale-105 tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer"
+            className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:bg-gradient-to-r tw:from-blue-600 tw:to-purple-600 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:font-medium tw:hover:from-blue-700 tw:hover:to-purple-700 tw:transform tw:hover:scale-105 tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:shadow-xl"
           >
             <svg className="tw:w-4 tw:h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
@@ -344,7 +322,7 @@ const VehicleFilterForm = () => {
           <button
             type="button"
             onClick={handleReset}
-            className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:bg-gray-500 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:font-medium tw:hover:bg-gray-600 tw:transform tw:hover:scale-105 tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer"
+            className="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:bg-gray-500 tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:font-medium tw:hover:bg-gray-600 tw:transform tw:hover:scale-105 tw:transition-all tw:duration-200 tw:shadow-lg tw:hover:shadow-xl"
           >
             <svg className="tw:w-4 tw:h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>

@@ -424,7 +424,7 @@ const RegisterForm = () => {
           taxIdentificationNumber: formData.taxIdentificationNumber,
         };
 
-        // Add services for service/repair centers (only if they exist)
+        // Add services for service/repair centers
         if (
           ["service_center", "repair_center"].includes(formData.role) &&
           formData.servicesOffered.length > 0
@@ -442,143 +442,36 @@ const RegisterForm = () => {
         };
       }
 
-      // Debug log (remove in production)
-      console.log("🚀 Sending registration data:", {
-        ...registerData,
-        password: "***", // Hide password in logs
-        passwordConfirm: "***",
-      });
-
       const response = await axios.post("/auth/register", registerData);
 
-      console.log("✅ Registration response:", response.data);
-
       if (response.data?.success === true) {
-        const message = response.data?.message || "Registration successful!";
-        toast.success(message);
+        toast.success(
+          response.data?.message ||
+            "Registration successful! Please check your email for verification."
+        );
 
-        // Handle different response scenarios
-        if (
-          response.data?.requiresVerification ||
-          (response.data?.data?.user && !response.data?.data?.token)
-        ) {
-          // User needs email verification
+        // Check if user was auto-logged in (for system admins) or needs verification
+        if (response.data?.data?.user) {
           navigate("/auth/verify", {
             state: {
               email: formData.email,
               message: response.data.message,
-              userId: response.data.data?.user?.id,
-            },
-          });
-        } else if (
-          response.data?.data?.token ||
-          response.data?.data?.accessToken
-        ) {
-          // User was auto-verified and logged in (like system admin)
-          const token =
-            response.data.data.token || response.data.data.accessToken;
-          const user = response.data.data.user;
-
-          localStorage.setItem("token", token);
-          if (user) {
-            setUserContext(user);
-            localStorage.setItem("user", JSON.stringify(user));
-          }
-
-          toast.success("Welcome to AutoConnect!");
-          navigate("/dashboard", {
-            state: {
-              message: "Registration successful! Welcome to AutoConnect.",
-            },
-          });
-        } else if (response.data?.data?.user) {
-          // User exists but no token - likely needs verification
-          navigate("/auth/verify", {
-            state: {
-              email: formData.email,
-              message:
-                response.data.message ||
-                "Please verify your email to continue.",
-              userId: response.data.data.user.id,
             },
           });
         } else {
-          // Fallback - redirect to login
-          toast.info("Registration successful! Please log in to continue.");
-          navigate("/auth/login", {
-            state: {
-              email: formData.email,
-              message: "Registration successful! Please log in.",
-            },
-          });
+          // User was logged in successfully
+          navigate("/dashboard");
         }
       } else {
-        // Handle API success: false
         toast.error(response.data?.message || "Registration failed");
       }
     } catch (error) {
-      console.error("❌ Registration error:", error);
-
-      let errorMessage = "Registration failed. Please try again.";
-
-      if (error.response?.data) {
-        // Handle validation errors from backend
-        if (
-          error.response.data.errors &&
-          Array.isArray(error.response.data.errors)
-        ) {
-          const errorMessages = error.response.data.errors.map(
-            (err) => err.message
-          );
-          errorMessage = errorMessages.join(", ");
-
-          // Set field-specific errors if available
-          const fieldErrors = {};
-          error.response.data.errors.forEach((err) => {
-            if (err.field) {
-              // Map backend field names to frontend field names if needed
-              let fieldName = err.field;
-              if (fieldName.includes(".")) {
-                // Handle nested field names like 'address.street'
-                const parts = fieldName.split(".");
-                if (parts[0] === "address") {
-                  fieldName = parts[1]; // street, city, etc.
-                } else if (parts[0] === "businessInfo") {
-                  fieldName = parts[1]; // businessName, licenseNumber, etc.
-                }
-              }
-              fieldErrors[fieldName] = err.message;
-            }
-          });
-
-          if (Object.keys(fieldErrors).length > 0) {
-            setErrors(fieldErrors);
-            toast.error("Please check the highlighted fields");
-          } else {
-            toast.error(errorMessage);
-          }
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
-          toast.error(errorMessage);
-        }
-      } else if (error.request) {
-        // Network error
-        toast.error(
-          "Network error. Please check your connection and try again."
-        );
-      } else if (error.message) {
-        toast.error(error.message);
-      } else {
-        toast.error(errorMessage);
-      }
-
-      // If there are field errors, stay on the form
-      // Otherwise, you might want to log additional details
-      console.error("Full error details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
+      console.error("Registration error:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Registration failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

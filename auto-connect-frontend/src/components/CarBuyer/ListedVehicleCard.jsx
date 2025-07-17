@@ -15,9 +15,23 @@ import {
   LocalGasStation 
 } from '@mui/icons-material';
 
-import { useNavigate } from 'react-router-dom';
+import toyotaImage from '../../assets/images/toyota-v8.jpg';
 
-const ListedVehicleCard = ({ vehicle }) => {
+const ListedVehicleCard = ({ vehicle = null }) => {
+  // Use props or fallback to sample data
+  const vehicleData = vehicle || {
+    id: 1,
+    manufacturer: 'Toyota',
+    model: 'Land Cruiser 150',
+    year: 2008,
+    price: 32000000,
+    odometer: 135000,
+    fuelType: 'Diesel',
+    image: toyotaImage,
+    postedDate: '2025-06-20',
+    district: 'Gampaha',
+    city: 'Katana'
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-LK', {
@@ -40,21 +54,20 @@ const ListedVehicleCard = ({ vehicle }) => {
     });
   };
 
-  const navigate = useNavigate();
-
   const handleHeaderClick = () => {
     // Default ref for navigation - will be replaced with actual routing
-    navigate('/vehicleview');
+    console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
   };
 
   return (
     <Card 
-      className="tw:bg-white tw:shadow-lg tw:transition-all tw:mb-1.5"
-      sx={{ 
+      className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 hover:tw:shadow-2xl hover:tw:translate-y-[-4px]"
+      style={{ 
         width: '50vw', 
         height: '15vh',
         minWidth: 500,
         minHeight: 200,
+        
         borderRadius: '12px',
         overflow: 'hidden',
         display: 'flex',
@@ -62,7 +75,7 @@ const ListedVehicleCard = ({ vehicle }) => {
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         '&:hover': {
           boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-          transform: 'translateY(-3px)'
+          transform: 'translateY(-4px)'
         }
       }}
     >
@@ -70,8 +83,8 @@ const ListedVehicleCard = ({ vehicle }) => {
         <Box sx={{ width: '30%', height: '100%', p: 1.5, boxSizing: 'border-box' }}>
           <CardMedia
             component="img"
-            image={vehicle.image}
-            alt={`${vehicle.manufacturer} ${vehicle.model} ${vehicle.year}`}
+            image={vehicleData.image}
+            alt={`${vehicleData.manufacturer} ${vehicleData.model} ${vehicleData.year}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
           />
         </Box>
@@ -89,7 +102,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                 className="tw:font-bold tw:text-lg tw:mb-1 group-hover:tw:underline tw:transition-all"
                 style={{ color: '#4a618a', fontWeight: '600' }}
               >
-                {vehicle.manufacturer} {vehicle.model} {vehicle.year}
+                {vehicleData.manufacturer} {vehicleData.model} {vehicleData.year}
               </Typography>
             </Box>
             {/* Vehicle Details */}
@@ -105,7 +118,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   className="tw:text-gray-700"
                   fontSize={14}
                 >
-                  {vehicle.district}, {vehicle.city}
+                  {vehicleData.district}, {vehicleData.city}
                 </Typography>
               </Box>
               {/* Price */}
@@ -119,7 +132,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   className="tw:font-bold"
                   style={{ color: '#4a618a' }}
                 >
-                  {formatPrice(vehicle.price)}
+                  {formatPrice(vehicleData.price)}
                 </Typography>
               </Box>
               {/* Odometer */}
@@ -134,7 +147,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   fontSize={13}
                   fontWeight={600}
                 >
-                  {formatOdometer(vehicle.odometer)}
+                  {formatOdometer(vehicleData.odometer)}
                 </Typography>
               </Box>
               {/* Fuel Type */}
@@ -144,7 +157,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                   style={{ color: '#7bb1d2' }}
                 />
                 <Chip
-                  label={vehicle.fuelType}
+                  label={vehicleData.fuelType}
                   size="small"
                   className="tw:text-xs"
                   style={{ 
@@ -163,7 +176,7 @@ const ListedVehicleCard = ({ vehicle }) => {
                 className="tw:text-gray-500 tw:text-xs"
                 fontSize={12}
               >
-                Posted: {vehicle.postedDate}
+                Posted: {vehicleData.postedDate}
               </Typography>
             </Box>
           </CardContent>

@@ -12,35 +12,28 @@ import {
   LocationOn, 
   AttachMoney, 
   Speed, 
-  LocalGasStation,
-  Visibility 
+  LocalGasStation 
 } from '@mui/icons-material';
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
 import Confirm from '../atoms/Confirm';
-import { useNavigate } from 'react-router-dom';
 
 const ListedVehicleCard = ({ vehicle = null }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmProps, setConfirmProps] = useState({});
-  const navigate = useNavigate();
 
   const vehicleData = vehicle || {
     id: 1,
     manufacturer: 'Toyota',
     model: 'Land Cruiser 150',
-    vehicleType: 'SUV',
     year: 2008,
     price: 32000000,
     odometer: 135000,
     fuelType: 'Diesel',
-    engineCapacity: 3000,
-    transmission: 'Automatic',
     image: toyotaImage,
     postedDate: '2025-06-20',
     district: 'Gampaha',
-    city: 'Katana',
-    views: 120
+    city: 'Katana'
   };
 
   const formatPrice = (price) => {
@@ -66,7 +59,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
 
   const handleHeaderClick = () => {
     // Default ref for navigation - will be replaced with actual routing
-    //navigate('/vehicleview');
+    console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
   };
 
   const handleConfirm = (type) => {
@@ -77,27 +70,29 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         onOK: () => setConfirmOpen(false),
         onCancel: () => setConfirmOpen(false)
       });
-      setConfirmOpen(true);
     } else if (type === 'edit') {
       setConfirmProps({
         title: 'Edit Vehicle',
         message: 'Do you want to edit this vehicle listing?',
-        onOK: () => {
-          setConfirmOpen(false);
-          navigate('/update-vehicle-ad');
-        },
+        onOK: () => setConfirmOpen(false),
         onCancel: () => setConfirmOpen(false)
       });
-      setConfirmOpen(true);
     } else if (type === 'promote') {
-      navigate('/vehicle-ad-promotion');}
+      setConfirmProps({
+        title: 'Promote Vehicle',
+        message: 'Do you want to promote this vehicle listing?',
+        onOK: () => setConfirmOpen(false),
+        onCancel: () => setConfirmOpen(false)
+      });
+    }
+    setConfirmOpen(true);
   };
 
   return (
     <>
       <Card 
-        className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 tw:mb-1.5"
-        sx={{ 
+        className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 hover:tw:shadow-2xl hover:tw:translate-y-[-4px]"
+        style={{ 
           width: '50vw', 
           height: '15vh',
           minWidth: 500,
@@ -110,7 +105,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           '&:hover': {
             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-            transform: 'translateY(-3px)'
+            transform: 'translateY(-4px)'
           }
         }}
       >
@@ -130,8 +125,8 @@ const ListedVehicleCard = ({ vehicle = null }) => {
               <CardContent className="tw:p-4 tw:h-full tw:flex tw:flex-col" sx={{ height: '100%', boxSizing: 'border-box', padding: '16px !important' }}>
                 {/* Clickable Header */}
                 <Box 
-                  onClick={handleHeaderClick}  
-                  className=" tw:mb-3 tw:group"
+                  onClick={handleHeaderClick}
+                  className="tw:cursor-pointer tw:mb-3 tw:group"
                 >
                   <Typography 
                     variant="h6" 
@@ -211,24 +206,8 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   </Box>
                 </Box>
                 
-                {/* Posted Date and Views */}
-                <Box className="tw:flex tw:justify-between tw:items-center tw:pt-2 tw:border-t tw:border-gray-300">
-                  {/* Views Count */}
-                  <Box className="tw:flex tw:items-center tw:gap-1">
-                    <Visibility 
-                      fontSize="small" 
-                      style={{ color: '#7bb1d2', fontSize: '16px' }}
-                    />
-                    <Typography 
-                      variant="caption" 
-                      className="tw:text-gray-500 tw:text-xs"
-                      fontSize={12}
-                    >
-                      {vehicleData.views || 0} views
-                    </Typography>
-                  </Box>
-
-                  {/* Posted Date */}
+                {/* Posted Date */}
+                <Box className="tw:flex tw:justify-end tw:pt-2 tw:border-t tw:border-gray-300">
                   <Typography 
                     variant="caption" 
                     className="tw:text-gray-500 tw:text-xs"
@@ -253,7 +232,6 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   onMouseEnter={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #b91c1c, #991b1b)';
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.cursor = 'pointer';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
@@ -273,7 +251,6 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   onMouseEnter={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)';
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.cursor = 'pointer';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
@@ -293,7 +270,6 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                   onMouseEnter={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #047857, #065f46)';
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.cursor = 'pointer';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
