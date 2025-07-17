@@ -20,6 +20,7 @@ import {
   Notifications as NotificationsIcon,
 } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { performLogout } from "../utils/logout.util";
 
 import { UserContext } from "../contexts/UserContext";
 import "./Dashboard.css";
@@ -28,12 +29,8 @@ const DashboardNew = () => {
   const navigate = useNavigate();
   const { userContext, setUserContext } = useContext(UserContext);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUserContext(null);
-    toast.success("Logged out successfully");
-    navigate("/");
+  const handleLogout = async () => {
+    await performLogout(setUserContext, navigate);
   };
 
   const dashboardCards = [
