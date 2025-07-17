@@ -483,93 +483,26 @@ const MyBookings = () => {
 
                     {/* Buttons */}
                     <Box
-                      sx={{
-                        mt: 2,
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        gap: 1,
-                        flexWrap: "wrap",
-                        alignItems: "center"
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleViewProvider(booking)}
-                        sx={{ fontSize: 13, fontWeight: 500 }}
+                        sx={{
+                          mt: 2,
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          gap: 1,
+                          flexWrap: "wrap",
+                          alignItems: "center"
+                        }}
                       >
-                        View Provider
-                      </Button>
-
-                      {booking.status === "Pending" && (
-                        <>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            color="primary"
-                            onClick={() => handleEdit(booking)}
-                            sx={{ fontSize: 13, fontWeight: 500 }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            color="error"
-                            onClick={() => handleCancel(booking.id)}
-                            sx={{ fontSize: 13, fontWeight: 500 }}
-                          >
-                            Cancel
-                          </Button>
-                        </>
-                      )}
-
-                      {booking.status === "Confirmed" && (
-                        <Button
-                          variant="contained"
-                          size="small"
-                          color="error"
-                          onClick={() => handleCancel(booking.id)}
-                          sx={{ fontSize: 13, fontWeight: 500 }}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-
-                      {booking.status === "Completed" && (
-                        <>
-                          {bookingRatings[booking.id] ? (
-                            <Rating
-                              value={bookingRatings[booking.id]}
-                              readOnly
-                              size="small"
-                            />
-                          ) : (
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="primary"
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                              onClick={() => openRatingForBooking(booking)}
-                            >
-                              Rate
-                            </Button>
-                          )}
-                        </>
-                      )}
-
-                      {booking.status === "Cancelled" && (
                         <Button
                           variant="contained"
                           size="small"
                           color="primary"
-                          onClick={() => handleReschedule(booking)}
+                          onClick={() => navigate("/booking-details", { state: { booking } })}
                           sx={{ fontSize: 13, fontWeight: 500 }}
                         >
-                          Reschedule
+                          View Details
                         </Button>
-                      )}
-                    </Box>
+                      </Box>
+                    
                   </Paper>
                 </Grid>
               ))
