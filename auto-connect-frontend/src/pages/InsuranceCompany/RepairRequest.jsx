@@ -97,6 +97,15 @@ const RepairRequests = () => {
               <p className="tw:mt-2 tw:text-sm tw:font-semibold tw:text-yellow-700">
                 {req.status}
               </p>
+              {/* two button for accep and decline */}
+              <div className="tw:mt-4 tw:flex tw:gap-4">
+                <button className="tw:bg-[#77AB2D] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-green-600">
+                  Accept
+                </button>
+                <button className="tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-red-600">
+                  Decline
+                </button>
+              </div>
             </div>
           ))}
         </div>
