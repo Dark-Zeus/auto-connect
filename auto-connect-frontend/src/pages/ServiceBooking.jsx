@@ -317,26 +317,13 @@ const ServiceBookingApp = () => {
             <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
               {filteredCenters.length > 0 ? (
                 filteredCenters.map((center) => (
-                  <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
-                    {filteredCenters.length > 0 ? (
-                    filteredCenters.map((center) => (
-                    <Grid item xs={12} sm={6} md={4} key={center.id}>
+                  <Grid item xs={12} sm={6} md={4} key={center.id}>
                     <ServiceProviderCard
-                    center={center}
-                    onBookAppointment={handleBookAppointment}
-                    onViewDetails={handleViewDetails}
+                      center={center}
+                      onBookAppointment={handleBookAppointment}
+                      onViewDetails={handleViewDetails}
                     />
-                    </Grid>
-                    ))
-                    ) : (
-                    <Grid item xs={12}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 500, mt: 4, textAlign: "center" }}>
-                    No service providers found matching your criteria.
-                    </Typography>
-                    </Grid>
-                    )}
-                    </Grid>
-
+                  </Grid>
                 ))
               ) : (
                 <Grid item xs={12}>

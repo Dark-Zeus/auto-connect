@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Existing Components (preserve your imports)
 import IconButton from "@components/atoms/IconButton";
-import Dashboard from "@pages/Dashboard";
 import AuthPage from "@pages/AuthPage";
 import LoginForm from "@components/LoginForm";
 import { UserContext } from "@contexts/UserContext";
@@ -15,10 +14,17 @@ import AdaptiveSubTable from "@components/atoms/AdaptiveSubTable";
 import Confirm from "@components/atoms/Confirm";
 import AdaptiveTable from "@components/atoms/AdaptiveTable";
 import AdaptivePaginatableTable from "@components/atoms/AdaptivePaginatableTable";
+import MyBookingServices from "@pages/MyBookingServices";
 
 // New Components
-import LandingPage from "./pages/LandingPage";
-import RegisterForm from "./components/RegisterForm";
+import LandingPage from "@pages/LandingPage";
+import RegisterForm from "@components/RegisterForm";
+import Dashboard from "@pages/DashboardNew";
+import ServiceBooking from "@pages/ServiceBooking";
+import ServiceBookingForm from "@components/ServiceBookingForm";
+import ServiceProviderProfile from "@pages/ServiceProviderProfile";
+import BookingConfirmationMessage from "@components/BookingConfirmationMessage";
+
 
 // Create Material-UI theme with our color scheme
 const theme = createTheme({
@@ -285,10 +291,51 @@ function App() {
                 path="/"
                 element={
                   <PublicRoute>
-                    <LandingPage />
+                    <ServiceBooking />
                   </PublicRoute>
                 }
               />
+
+              {/* Service Provider Profile - Public Route */}
+              <Route
+                path="/service-provider-profile"
+                element={
+                  <PublicRoute>
+                    <ServiceProviderProfile />
+                  </PublicRoute>
+                }
+              />
+
+
+              {/* Service Booking Form - Public Route */}
+              <Route
+                path="/service-booking-form"
+                element={
+                  <PublicRoute>
+                    <ServiceBookingForm />
+                  </PublicRoute>
+                }
+              />
+              
+              {/* Booking Confirmation Page - Public Route */}
+              <Route
+                path="/booking-confirmation"
+                element={
+                  <PublicRoute>
+                    <BookingConfirmationMessage />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/my-bookings"
+                element={
+                  <PublicRoute>
+                    <MyBookingServices />
+                  </PublicRoute>
+                }
+              />
+              
 
               {/* Authentication Routes */}
               <Route
@@ -561,138 +608,6 @@ function App() {
                               size={30}
                               onClick={() => handleDelete(row.id)}
                             />,
-                          ],
-                        }}
-                        data={[
-                          {
-                            id: "user0001",
-                            name: "John Doe",
-                            email: "a@b.c",
-                            address: "123 Main St",
-                            phone: "123-456-7890",
-                            status: "Active",
-                            created_at: "2023-01-01",
-                            updated_at: "2023-01-02",
-                          },
-                          {
-                            id: "user0002",
-                            name: "Jane Doe",
-                            email: "b@c.d",
-                            address: "456 Elm St",
-                            phone: "234-567-8901",
-                            status: "Inactive",
-                            created_at: "2023-01-03",
-                            updated_at: "2023-01-04",
-                          },
-                          {
-                            id: "user0003",
-                            name: "Alice Smith",
-                            email: "c@d.e",
-                            address: "789 Oak St",
-                            phone: "345-678-9012",
-                            status: "Active",
-                            created_at: "2023-01-05",
-                            updated_at: "2023-01-06",
-                          },
-                          {
-                            id: "user0004",
-                            name: "Bob Johnson",
-                            email: "d@e.f",
-                            address: "321 Pine St",
-                            phone: "456-789-0123",
-                            status: "Inactive",
-                            created_at: "2023-01-07",
-                            updated_at: "2023-01-08",
-                          },
-                          {
-                            id: "user0005",
-                            name: "Charlie Brown",
-                            email: "e@f.g",
-                            address: "654 Maple St",
-                            phone: "567-890-1234",
-                            status: "Active",
-                            created_at: "2023-01-09",
-                            updated_at: "2023-01-10",
-                          },
-                          {
-                            id: "user0006",
-                            name: "David Wilson",
-                            email: "f@g.h",
-                            address: "987 Cedar St",
-                            phone: "678-901-2345",
-                            status: "Inactive",
-                            created_at: "2023-01-11",
-                            updated_at: "2023-01-12",
-                          },
-                          {
-                            id: "user0007",
-                            name: "Eve Davis",
-                            email: "g@h.i",
-                            address: "123 Birch St",
-                            phone: "789-012-3456",
-                            status: "Active",
-                            created_at: "2023-01-13",
-                            updated_at: "2023-01-14",
-                          },
-                          {
-                            id: "user0008",
-                            name: "Frank Miller",
-                            email: "h@i.j",
-                            address: "456 Spruce St",
-                            phone: "890-123-4567",
-                            status: "Inactive",
-                            created_at: "2023-01-15",
-                            updated_at: "2023-01-16",
-                          },
-                          {
-                            id: "user0009",
-                            name: "Grace Lee",
-                            email: "i@j.k",
-                            address: "789 Fir St",
-                            phone: "901-234-5678",
-                            status: "Active",
-                            created_at: "2023-01-17",
-                            updated_at: "2023-01-18",
-                          },
-                          {
-                            id: "user0010",
-                            name: "Hank Taylor",
-                            email: "j@k.l",
-                            address: "321 Willow St",
-                            phone: "012-345-6789",
-                            status: "Inactive",
-                            created_at: "2023-01-19",
-                            updated_at: "2023-01-20",
-                          },
-                        ]}
-                        serverPageSize={10}
-                      />
-
-                      <AdaptiveSubTable
-                        title={"Tenants"}
-                        subtitle={"List of all tenants"}
-                        headers={[
-                          { colKey: "id", icon: "person", label: "ID" },
-                          { colKey: "name", icon: "person", label: "Name" },
-                          { colKey: "email", icon: "email", label: "Email" },
-                        ]}
-                        isSettingsBtn={true}
-                        isExportBtn={true}
-                        isAddBtn={true}
-                        isCollapsible={true}
-                        actions={{
-                          enable: true,
-                          actionHeaderLabel: "Actions",
-                          actionHeaderIcon: "settings",
-                          dataContainerClass: "horizontal-container flex-end",
-                          actions: [
-                            <IconButton icona="add" c="green" size={30} />,
-                            <IconButton icona="edit" c="blue" size={30} />,
-                            <IconButton icona="delete" c="red" size={30} />,
-                          ],
-                          subActions: [
-                            <IconButton icona="edit" c="blue" size={30} />,
-                            <IconButton icona="delete" c="red" size={30} />,
                           ],
                         }}
                         data={[
