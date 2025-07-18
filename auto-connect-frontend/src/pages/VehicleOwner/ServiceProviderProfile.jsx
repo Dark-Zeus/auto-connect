@@ -33,10 +33,16 @@ import {
   ArrowForward,
 } from "@mui/icons-material";
 
-const ServiceProviderProfile = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const center = location.state?.center;
+  const ServiceProviderProfile = ({ center }) => {
+  if (!center) {
+    return (
+      <Container sx={{ py: 5 }}>
+        <Typography sx={{ fontSize: 24, fontWeight: 600, color: "error.main" }}>
+          No service provider data available.
+        </Typography>
+      </Container>
+    );
+  }
 
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
@@ -61,15 +67,7 @@ const ServiceProviderProfile = () => {
     },
   ]);
 
-  if (!center) {
-    return (
-      <Container sx={{ py: 5 }}>
-        <Typography sx={{ fontSize: 24, fontWeight: 600, color: "error.main" }}>
-          No service provider data available.
-        </Typography>
-      </Container>
-    );
-  }
+
 
   const {
     name,
@@ -148,27 +146,11 @@ const ServiceProviderProfile = () => {
             </Avatar>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
+                <Typography sx={{ fontSize: 20, fontWeight: 700 }}>
                   {name}
                 </Typography>
-                {verified && (
-                  <Chip
-                    icon={<Verified />}
-                    label="Verified"
-                    color="success"
-                    size="small"
-                    sx={{ fontSize: 12, fontWeight: 500 }}
-                  />
-                )}
-                {premium && (
-                  <Chip
-                    label="Premium"
-                    color="warning"
-                    size="small"
-                    sx={{ fontSize: 12, fontWeight: 500, ml: 1 }}
-                  />
-                )}
               </Box>
+
               <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 1 }}>
                 <LocationOn color="action" />
                 <Typography sx={{ fontSize: 14, fontWeight: 500 }}>{loc}</Typography>
@@ -196,7 +178,7 @@ const ServiceProviderProfile = () => {
               <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 1 }}>
                 <Star color="warning" />
                 <Rating name="read-only" value={rating} precision={0.1} readOnly size="small" />
-                <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
+                <Typography sx={{ fontSize: 12, fontWeight: 500 }} color="text.secondary">
                   ({reviews} reviews)
                 </Typography>
               </Box>
@@ -205,10 +187,10 @@ const ServiceProviderProfile = () => {
 
                    {/* Services & Gallery Side by Side */}
           <Divider sx={{ my: 4 }} />
-          <Grid container spacing={20}>
+          <Grid container spacing={7}>
             {/* Services List */}
             <Grid item xs={12} md={6}>
-              <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
+              <Typography sx={{ fontSize: 18, fontWeight: 600 }} gutterBottom>
                 Services & Pricing
               </Typography>
               <List dense>
@@ -220,8 +202,8 @@ const ServiceProviderProfile = () => {
                     <ListItemText
                       primary={item.name}
                       secondary={item.price}
-                      primaryTypographyProps={{ sx: { fontSize: 16, fontWeight: 500 } }}
-                      secondaryTypographyProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
+                      primaryTypographyProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
+                      secondaryTypographyProps={{ sx: { fontSize: 12, fontWeight: 500 } }}
                     />
                   </ListItem>
                 ))}
@@ -231,8 +213,8 @@ const ServiceProviderProfile = () => {
             {/* Gallery Carousel */}
           <Grid
               item
-              xs={12}
-              md={6}
+              xs={20}
+              md={0}
               sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -243,9 +225,8 @@ const ServiceProviderProfile = () => {
               <Box
                 sx={{
                   position: "left",
-                  width: "100%",
-                  maxWidth: 300,
-                  height: 250,
+                  maxWidth: 190,
+                  height: 190,
                   overflow: "hidden",
                   borderRadius: 2,
                   boxShadow: 1,
@@ -270,10 +251,10 @@ const ServiceProviderProfile = () => {
                   sx={{
                     position: "absolute",
                     top: "50%",
-                    left: -55,
+                    left: -45,
                     transform: "translateY(-50%)",
                     minWidth: 0,
-                    borderRadius: "25%",
+                    borderRadius: "50%",
                     zIndex: 1,
                     bgcolor: "#e9f7ef",
                     boxShadow: 2,
@@ -286,10 +267,10 @@ const ServiceProviderProfile = () => {
                   sx={{
                     position: "absolute",
                     top: "50%",
-                    right: -55,
+                    right: -45,
                     transform: "translateY(-50%)",
                     minWidth: 0,
-                    borderRadius: "25%",
+                    borderRadius: "50%",
                     zIndex: 1,
                     bgcolor: "#e9f7ef",
                     boxShadow: 2,
@@ -304,7 +285,7 @@ const ServiceProviderProfile = () => {
           {/* Availability */}
           <Divider sx={{ my: 4 }} />
           <Box>
-            <Typography sx={{ fontSize: 24, fontWeight: 600 }} gutterBottom>
+            <Typography sx={{ fontSize: 18, fontWeight: 600 }} gutterBottom>
               Available Time Slots
             </Typography>
             <Grid container spacing={2}>
@@ -324,28 +305,10 @@ const ServiceProviderProfile = () => {
           {/* Reviews */}
           <Divider sx={{ my: 4 }} />
           <Box sx={{ position: "relative" }}>
-            <Typography sx={{ fontSize: 24, fontWeight: 600, mb: 1 }} gutterBottom>
+            <Typography sx={{ fontSize: 18, fontWeight: 600, mb: 1 }} gutterBottom>
               Customer Reviews
             </Typography>
-            {/* "Add Review" button at the top right, inside Paper */}
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => setOpenReviewDialog(true)}
-              sx={{
-                position: "absolute",
-                top: 7,
-                right: 10,
-                mb: 2,
-                fontSize: 10,
-                fontWeight: 500,
-                borderRadius: 5,
-                boxShadow: 1,
-                background: "linear-gradient(90deg, #5c99e2 0%, #5b7dc3 100%)"
-              }}
-            >
-              Add Review
-            </Button>
+           
             <List sx={{ bgcolor: "#f5f5f5", borderRadius: 2, mt: 0, pt: 2, pb: 2, pr: 2, pl: 2 }}>
               {(showAllReviews ? reviewsData : reviewsData.slice(0, 2)).map((review, i) => (
                 <ListItem key={i} alignItems="flex-start" sx={{ mb: 1 }}>
@@ -353,10 +316,10 @@ const ServiceProviderProfile = () => {
                     {review.name.charAt(0)}
                   </Avatar>
                   <Box>
-                    <Typography sx={{ fontSize: 14, fontWeight: 600 }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 600 }}>
                       {review.name}
                     </Typography>
-                    <Typography sx={{ fontSize: 12, fontWeight: 500 }} color="text.secondary">
+                    <Typography sx={{ fontSize: 10, fontWeight: 500 }} color="text.secondary">
                       {review.comment}
                     </Typography>
                   </Box>
@@ -369,72 +332,15 @@ const ServiceProviderProfile = () => {
                 <Button
                   size="small"
                   onClick={() => setShowAllReviews((prev) => !prev)}
-                  sx={{ fontSize: 13, fontWeight: 500 }}
+                  sx={{ fontSize: 12, fontWeight: 500 }}
                 >
                   {showAllReviews ? "Hide Reviews" : "View All Reviews"}
                 </Button>
               </Box>
             )}
           </Box>
-
-          {/* Footer Buttons */}
-          <Box
-            sx={{
-              mt: 4,
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-              gap: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => navigate(-1)}
-              sx={{ fontSize: 13, fontWeight: 500 }}
-            >
-              Back
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={() => navigate("/service-booking-form", { state: { center } })}
-              sx={{ fontSize: 13, fontWeight: 500 }}
-            >
-              Book Appointment
-            </Button>
-          </Box>
         </Paper>
-
-        {/* Add Review Dialog */}
-        <Dialog
-          open={openReviewDialog}
-          onClose={() => setOpenReviewDialog(false)}
-          fullWidth
-          maxWidth="sm"
-        >
-          <DialogTitle>Add a Review</DialogTitle>
-          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
-              label="Your Name"
-              value={newReview.name}
-              onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Your Review"
-              value={newReview.comment}
-              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-              fullWidth
-              multiline
-              rows={4}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenReviewDialog(false)}>Cancel</Button>
-            <Button variant="contained" onClick={handleAddReview}>Submit</Button>
-          </DialogActions>
-        </Dialog>
+   
       </Container>
     </Box>
   );
