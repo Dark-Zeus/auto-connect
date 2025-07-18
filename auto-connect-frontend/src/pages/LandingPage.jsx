@@ -48,7 +48,10 @@ import {
   useScrollAnimation,
   useStaggeredAnimation,
 } from "../hooks/useScrollAnimation";
+
+// CSS Imports - Typography system imported after component styles
 import "./LandingPage.css";
+
 
 // Import the HeroSection component
 import HeroSection from "../components/HeroSection";
@@ -319,21 +322,24 @@ const LandingPage = () => {
       <header className={`header ${isScrolled ? "scrolled" : ""}`}>
         <div className="header-container">
           <div className="header-content">
-            {/* Logo */}
-            <div className="logo">
-              <div className="logo-icon">
-                <img
-                  src="/logo.png"
-                  alt="AutoConnect Logo"
-                  className="w-8 h-8" // Adjust size as needed
-                />
-              </div>
-              <span className="logo-text">
-                Auto<span className="logo-accent">Connect</span>
-              </span>
-            </div>
+         
+                  <div className="logo">
+                    <div className="logo-icon">
+                    <img
+                      src="/logo.png"
+                      alt="AutoConnect Logo"
+                      className="w-8 h-8"
+                    />
+                    </div>
+                    <span
+                    className="logo-text font-display font-bold"
+                    style={{ fontSize: "2rem" }}
+                    >
+                    Auto<span className="logo-accent">Connect</span>
+                    </span>
+                  </div>
 
-            {/* Desktop Navigation */}
+                  {/* Desktop Navigation */}
             <nav className="nav-desktop">
               {[
                 "Home",
@@ -346,7 +352,7 @@ const LandingPage = () => {
                 <a
                   key={item}
                   href={`#${item.toLowerCase().replace(" ", "-")}`}
-                  className="nav-link"
+                  className="nav-link font-primary font-medium"
                 >
                   {item}
                 </a>
@@ -354,7 +360,9 @@ const LandingPage = () => {
             </nav>
 
             {/* CTA Button */}
-            <button className="cta-button-header">Join Platform</button>
+            <button className="cta-button-header button-text font-semibold">
+              Join Platform
+            </button>
 
             {/* Mobile Menu Button */}
             <button
@@ -385,13 +393,15 @@ const LandingPage = () => {
                 <a
                   key={item}
                   href={`#${item.toLowerCase().replace(" ", "-")}`}
-                  className="mobile-menu-link"
+                  className="mobile-menu-link body-regular font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item}
                 </a>
               ))}
-              <button className="mobile-cta-button">Join Platform</button>
+              <button className="mobile-cta-button button-text font-semibold">
+                Join Platform
+              </button>
             </div>
           </div>
         )}
@@ -415,13 +425,17 @@ const LandingPage = () => {
             <div className="section-header">
               <div className="platform-badge">
                 <Server className="w-4 h-4" />
-                <span>Technical Infrastructure</span>
+                <span className="caption uppercase tracking-wide font-semibold">
+                  Technical Infrastructure
+                </span>
               </div>
-              <h2 className="section-title">
-                <span style={{ color: "var(--charcoal)" }}>Platform </span>
-                <span className="title-gradient">Capabilities</span>
+              <h2 className="section-title display-2 text-center font-display">
+                <span className="text-primary">Platform </span>
+                <span className="title-gradient text-gradient">
+                  Capabilities
+                </span>
               </h2>
-              <p className="section-description">
+              <p className="section-description body-large text-secondary text-center leading-relaxed">
                 Built on enterprise-grade technology infrastructure with
                 advanced security, AI-powered analytics, and scalable cloud
                 architecture designed for mission-critical automotive
@@ -441,7 +455,9 @@ const LandingPage = () => {
                   {/* Technical Badge */}
                   <div className="tech-badge">
                     <Zap className="w-3 h-3" />
-                    <span>Enterprise</span>
+                    <span className="caption uppercase tracking-wide font-semibold">
+                      Enterprise
+                    </span>
                   </div>
 
                   {/* Enhanced Icon */}
@@ -455,18 +471,23 @@ const LandingPage = () => {
 
                   {/* Content */}
                   <div className="platform-feature-content">
-                    <div className="text-sm font-semibold platform-highlight mb-2">
+                    <div className="label text-accent font-semibold mb-2">
                       {feature.highlight}
                     </div>
-                    <h3 className="platform-feature-title">{feature.title}</h3>
-                    <p className="platform-feature-description">
+                    <h3 className="platform-feature-title heading-3 text-primary font-secondary">
+                      {feature.title}
+                    </h3>
+                    <p className="platform-feature-description body-regular text-secondary leading-relaxed">
                       {feature.description}
                     </p>
 
                     {/* Technical Benefits */}
                     <div className="tech-benefits">
                       {feature.benefits.map((benefit, idx) => (
-                        <span key={idx} className="tech-benefit-tag">
+                        <span
+                          key={idx}
+                          className="tech-benefit-tag body-small font-medium"
+                        >
                           <CheckCircle className="w-3 h-3" />
                           {benefit}
                         </span>
@@ -481,19 +502,27 @@ const LandingPage = () => {
             <div className="platform-stats">
               <div className="platform-stat-item">
                 <Cloud className="w-5 h-5 platform-stat-icon" />
-                <span>99.9% Uptime SLA</span>
+                <span className="button-text-small font-semibold">
+                  99.9% Uptime SLA
+                </span>
               </div>
               <div className="platform-stat-item">
                 <Lock className="w-5 h-5 platform-stat-icon" />
-                <span>256-bit Encryption</span>
+                <span className="button-text-small font-semibold">
+                  256-bit Encryption
+                </span>
               </div>
               <div className="platform-stat-item">
                 <Brain className="w-5 h-5 platform-stat-icon" />
-                <span>AI-Powered Analytics</span>
+                <span className="button-text-small font-semibold">
+                  AI-Powered Analytics
+                </span>
               </div>
               <div className="platform-stat-item">
                 <Code className="w-5 h-5 platform-stat-icon" />
-                <span>RESTful APIs</span>
+                <span className="button-text-small font-semibold">
+                  RESTful APIs
+                </span>
               </div>
             </div>
           </div>
@@ -509,13 +538,11 @@ const LandingPage = () => {
           <div className="section-container">
             {/* Header */}
             <div className="section-header">
-              <h2 className="section-title">
-                <span style={{ color: "var(--charcoal)" }}>
-                  Platform Impact &{" "}
-                </span>
-                <span className="title-gradient">Growth</span>
+              <h2 className="section-title display-3 text-center font-display">
+                <span className="text-primary">Platform Impact & </span>
+                <span className="title-gradient text-gradient">Growth</span>
               </h2>
-              <p className="section-description">
+              <p className="section-description body-large text-secondary text-center leading-relaxed">
                 Real numbers demonstrating our platform's success in
                 transforming Sri Lanka's automotive sector
               </p>
@@ -531,9 +558,15 @@ const LandingPage = () => {
               {stats.map((stat, index) => (
                 <div key={index} className="stat-card-large hover-lift">
                   <div className="stat-content">
-                    <div className="stat-number-large">{stat.number}</div>
-                    <div className="stat-label-large">{stat.label}</div>
-                    <div className="stat-subtext">{stat.subtext}</div>
+                    <div className="stat-number-large display-1 text-primary font-display font-black">
+                      {stat.number}
+                    </div>
+                    <div className="stat-label-large heading-4 text-primary font-secondary font-semibold">
+                      {stat.label}
+                    </div>
+                    <div className="stat-subtext body-small text-secondary">
+                      {stat.subtext}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -553,13 +586,15 @@ const LandingPage = () => {
             <div className="section-header">
               <div className="services-badge">
                 <Users className="w-4 h-4" />
-                <span>User Experience</span>
+                <span className="caption uppercase tracking-wide font-semibold">
+                  User Experience
+                </span>
               </div>
-              <h2 className="section-title">
-                <span style={{ color: "var(--charcoal)" }}>How it </span>
-                <span className="title-gradient">Works</span>
+              <h2 className="section-title display-2 text-center font-display">
+                <span className="text-primary">How it </span>
+                <span className="title-gradient text-gradient">Works</span>
               </h2>
-              <p className="section-description">
+              <p className="section-description body-large text-secondary text-center leading-relaxed">
                 Step-by-step user journey from registration to service
                 completion. Experience our intuitive workflow designed for
                 vehicle owners, service providers, and all automotive
@@ -577,7 +612,9 @@ const LandingPage = () => {
                 <div key={index} className="workflow-timeline-item">
                   <div className="timeline-connector">
                     <div className={`timeline-dot timeline-dot-${step.color}`}>
-                      <span className="timeline-number">{step.number}</span>
+                      <span className="timeline-number font-bold">
+                        {step.number}
+                      </span>
                     </div>
                     {index < userWorkflowSteps.length - 1 && (
                       <div className="timeline-line"></div>
@@ -595,13 +632,17 @@ const LandingPage = () => {
                       </div>
                       <div className="workflow-stats">
                         <Clock className="w-4 h-4" />
-                        <span>{step.stats}</span>
+                        <span className="body-small font-medium">
+                          {step.stats}
+                        </span>
                       </div>
                     </div>
 
                     <div className="workflow-card-body">
-                      <h3 className="workflow-step-title">{step.title}</h3>
-                      <p className="workflow-step-description">
+                      <h3 className="workflow-step-title heading-3 text-primary font-secondary font-semibold">
+                        {step.title}
+                      </h3>
+                      <p className="workflow-step-description body-regular text-secondary leading-relaxed">
                         {step.description}
                       </p>
 
@@ -609,7 +650,9 @@ const LandingPage = () => {
                         {step.features.map((feature, idx) => (
                           <div key={idx} className="workflow-feature">
                             <CheckCircle className="w-4 h-4 workflow-check" />
-                            <span>{feature}</span>
+                            <span className="body-small font-medium">
+                              {feature}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -626,8 +669,12 @@ const LandingPage = () => {
                   <UserPlus className="w-6 h-6" />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-number">2 min</div>
-                  <div className="stat-label">Average Signup</div>
+                  <div className="stat-number text-2xl font-bold text-primary">
+                    2 min
+                  </div>
+                  <div className="stat-label body-small text-secondary">
+                    Average Signup
+                  </div>
                 </div>
               </div>
               <div className="ux-stat-item">
@@ -635,8 +682,12 @@ const LandingPage = () => {
                   <Calendar className="w-6 h-6" />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-number">95%</div>
-                  <div className="stat-label">Booking Success</div>
+                  <div className="stat-number text-2xl font-bold text-primary">
+                    95%
+                  </div>
+                  <div className="stat-label body-small text-secondary">
+                    Booking Success
+                  </div>
                 </div>
               </div>
               <div className="ux-stat-item">
@@ -644,8 +695,12 @@ const LandingPage = () => {
                   <ThumbsUp className="w-6 h-6" />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-number">4.9/5</div>
-                  <div className="stat-label">User Satisfaction</div>
+                  <div className="stat-number text-2xl font-bold text-primary">
+                    4.9/5
+                  </div>
+                  <div className="stat-label body-small text-secondary">
+                    User Satisfaction
+                  </div>
                 </div>
               </div>
             </div>
@@ -664,13 +719,15 @@ const LandingPage = () => {
             <div className="section-header">
               <div className="pricing-badge">
                 <Crown className="w-4 h-4" />
-                <span>Pricing Plans</span>
+                <span className="caption uppercase tracking-wide font-semibold">
+                  Pricing Plans
+                </span>
               </div>
-              <h2 className="section-title">
-                <span style={{ color: "var(--charcoal)" }}>Choose Your </span>
-                <span className="title-gradient">Plan</span>
+              <h2 className="section-title display-2 text-center font-display">
+                <span className="text-primary">Choose Your </span>
+                <span className="title-gradient text-gradient">Plan</span>
               </h2>
-              <p className="section-description">
+              <p className="section-description body-large text-secondary text-center leading-relaxed">
                 Unlock premium features including complete vehicle passport
                 access, advanced bidding capabilities, and comprehensive vehicle
                 history for enhanced marketplace experience.
@@ -698,29 +755,36 @@ const LandingPage = () => {
                         alignItems: "center",
                         gap: "0.8rem",
                       }}
-                    >
-                      <Star className="w-4 h-4" />
-                      <span>Most Popular</span>
-                    </div>
+                    ></div>
                   )}
 
                   <div className="pricing-card-header">
                     <div className={`pricing-icon pricing-icon-${plan.color}`}>
                       {plan.icon}
                     </div>
-                    <h3 className="pricing-plan-name">{plan.name}</h3>
+                    <h3 className="pricing-plan-name heading-2 text-primary font-secondary font-bold">
+                      {plan.name}
+                    </h3>
                     <div className="pricing-amount">
-                      <span className="price">{plan.price}</span>
-                      <span className="period">/{plan.period}</span>
+                      <span className="price text-4xl font-bold text-primary">
+                        {plan.price}
+                      </span>
+                      <span className="period body-regular text-secondary">
+                        /{plan.period}
+                      </span>
                     </div>
-                    <p className="pricing-description">{plan.description}</p>
+                    <p className="pricing-description body-regular text-secondary leading-relaxed">
+                      {plan.description}
+                    </p>
                   </div>
 
                   <div className="pricing-features">
                     {plan.features.map((feature, idx) => (
                       <div key={idx} className="pricing-feature">
                         <Check className="w-4 h-4 pricing-check" />
-                        <span>{feature}</span>
+                        <span className="body-regular text-primary">
+                          {feature}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -728,7 +792,7 @@ const LandingPage = () => {
                   <button
                     className={`pricing-button pricing-button-${plan.color} ${
                       plan.popular ? "pricing-button-popular" : ""
-                    }`}
+                    } button-text font-semibold`}
                   >
                     {plan.buttonText}
                     <ArrowRight className="w-4 h-4" />
@@ -739,7 +803,7 @@ const LandingPage = () => {
 
             <div className="pricing-note">
               <Shield className="w-5 h-5" />
-              <span>
+              <span className="body-small text-secondary font-medium">
                 All plans include SSL security, 24/7 monitoring, and data backup
               </span>
             </div>
@@ -757,13 +821,11 @@ const LandingPage = () => {
           <div className="section-container">
             {/* Header */}
             <div className="section-header">
-              <h2 className="section-title">
-                <span style={{ color: "var(--charcoal)" }}>
-                  Success{" "}
-                </span>
-                <span className="title-gradient">Stories</span>
+              <h2 className="section-title display-2 text-center font-display">
+                <span className="text-primary">Success </span>
+                <span className="title-gradient text-gradient">Stories</span>
               </h2>
-              <p className="section-description">
+              <p className="section-description body-large text-secondary text-center leading-relaxed">
                 Real experiences from vehicle owners, service providers, and
                 insurance companies who transformed their operations with our
                 comprehensive automotive platform
@@ -797,12 +859,16 @@ const LandingPage = () => {
                     </div>
 
                     <div className="testimonial-info">
-                      <h4 className="testimonial-name">{testimonial.name}</h4>
-                      <p className="testimonial-role">{testimonial.role}</p>
-                      <p className="testimonial-company">
+                      <h4 className="testimonial-name heading-4 text-primary font-secondary font-semibold">
+                        {testimonial.name}
+                      </h4>
+                      <p className="testimonial-role body-small text-accent font-medium">
+                        {testimonial.role}
+                      </p>
+                      <p className="testimonial-company body-small text-secondary">
                         {testimonial.company}
                       </p>
-                      <p className="testimonial-location">
+                      <p className="testimonial-location caption text-tertiary">
                         {testimonial.location}
                       </p>
                     </div>
@@ -818,15 +884,21 @@ const LandingPage = () => {
                   {/* Enhanced Quote */}
                   <blockquote className="testimonial-quote">
                     <div className="quote-mark">"</div>
-                    <p className="quote-text">{testimonial.comment}</p>
+                    <p className="quote-text body-regular text-primary leading-relaxed italic">
+                      {testimonial.comment}
+                    </p>
                   </blockquote>
 
                   {/* Additional Elements */}
                   <div className="testimonial-footer">
                     <div className="testimonial-metrics">
-                      <span className="metric">Verified Review</span>
+                      <span className="metric caption text-secondary">
+                        Verified Review
+                      </span>
                       <span className="metric-separator">•</span>
-                      <span className="metric">Platform User Since 2023</span>
+                      <span className="metric caption text-secondary">
+                        Platform User Since 2023
+                      </span>
                     </div>
                   </div>
 
@@ -838,16 +910,28 @@ const LandingPage = () => {
             {/* Additional Social Proof */}
             <div className="testimonials-stats">
               <div className="testimonial-stat">
-                <div className="stat-number">98%</div>
-                <div className="stat-label">Customer Satisfaction</div>
+                <div className="stat-number text-3xl font-bold text-primary">
+                  98%
+                </div>
+                <div className="stat-label body-small text-secondary">
+                  Customer Satisfaction
+                </div>
               </div>
               <div className="testimonial-stat">
-                <div className="stat-number">2,500+</div>
-                <div className="stat-label">Happy Customers</div>
+                <div className="stat-number text-3xl font-bold text-primary">
+                  2,500+
+                </div>
+                <div className="stat-label body-small text-secondary">
+                  Happy Customers
+                </div>
               </div>
               <div className="testimonial-stat">
-                <div className="stat-number">4.9/5</div>
-                <div className="stat-label">Average Rating</div>
+                <div className="stat-number text-3xl font-bold text-primary">
+                  4.9/5
+                </div>
+                <div className="stat-label body-small text-secondary">
+                  Average Rating
+                </div>
               </div>
             </div>
           </div>
@@ -870,10 +954,13 @@ const LandingPage = () => {
             <div className="cta-content">
               {/* Main Content */}
               <div className="cta-text">
-                <h2 className="cta-title">
+                <h2 className="cta-title display-3 text-center text-primary font-display font-bold">
                   Ready to Transform Your Vehicle Management?
                 </h2>
-                <p className="cta-description">
+                <p
+                  className="cta-description body-large text-center leading-relaxed"
+                  style={{ color: "#263238" }} // darker than #546e7a
+                >
                   Join thousands of satisfied users across Sri Lanka and
                   experience the future of comprehensive vehicle lifecycle
                   management. Start your digital transformation today.
@@ -882,11 +969,11 @@ const LandingPage = () => {
 
               {/* CTA Buttons */}
               <div className="cta-buttons">
-                <button className="cta-primary-button">
+                <button className="cta-primary-button button-text font-bold">
                   <span>Join the Platform</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="cta-secondary-button">
+                <button className="cta-secondary-button button-text font-semibold">
                   <span>Schedule Demo</span>
                 </button>
               </div>
@@ -894,7 +981,10 @@ const LandingPage = () => {
               {/* Features List */}
               <div className="cta-features">
                 {ctaFeatures.map((feature, index) => (
-                  <div key={index} className="cta-feature">
+                  <div
+                    key={index}
+                    className="cta-feature body-regular text-primary font-medium"
+                  >
                     {feature}
                   </div>
                 ))}
@@ -917,11 +1007,11 @@ const LandingPage = () => {
                       className="w-6 h-6"
                     />
                   </div>
-                  <span className="footer-logo-text">
+                  <span className="footer-logo-text font-display font-bold">
                     Auto<span className="logo-accent">Connect</span>
                   </span>
                 </div>
-                <p className="footer-description">
+                <p className="footer-description body-regular text-secondary leading-relaxed">
                   Sri Lanka's most comprehensive vehicle lifecycle management
                   platform. Connecting vehicle owners, service providers, and
                   insurance companies through transparent, efficient, and secure
@@ -940,7 +1030,9 @@ const LandingPage = () => {
 
               {/* Platform Services */}
               <div className="footer-section">
-                <h4 className="footer-section-title">Platform Services</h4>
+                <h4 className="footer-section-title heading-4 text-primary font-secondary font-semibold">
+                  Platform Services
+                </h4>
                 <ul className="footer-links">
                   {[
                     "Vehicle Registry",
@@ -950,7 +1042,10 @@ const LandingPage = () => {
                     "Analytics Dashboard",
                   ].map((item, index) => (
                     <li key={index}>
-                      <a href="#" className="footer-link">
+                      <a
+                        href="#"
+                        className="footer-link body-regular text-secondary"
+                      >
                         {item}
                       </a>
                     </li>
@@ -960,19 +1055,27 @@ const LandingPage = () => {
 
               {/* Contact */}
               <div className="footer-section">
-                <h4 className="footer-section-title">Contact Us</h4>
+                <h4 className="footer-section-title heading-4 text-primary font-secondary font-semibold">
+                  Contact Us
+                </h4>
                 <div className="footer-contact">
                   <div className="contact-item">
                     <Mail className="w-5 h-5 contact-icon" />
-                    <span>platform@autoconnect.lk</span>
+                    <span className="body-regular text-secondary">
+                      platform@autoconnect.lk
+                    </span>
                   </div>
                   <div className="contact-item">
                     <Phone className="w-5 h-5 contact-icon" />
-                    <span>+94 11 234 5678</span>
+                    <span className="body-regular text-secondary">
+                      +94 11 234 5678
+                    </span>
                   </div>
                   <div className="contact-item">
                     <MapPin className="w-5 h-5 contact-icon" />
-                    <span>Colombo 03, Sri Lanka</span>
+                    <span className="body-regular text-secondary">
+                      Colombo 03, Sri Lanka
+                    </span>
                   </div>
                 </div>
               </div>
@@ -980,7 +1083,7 @@ const LandingPage = () => {
 
             {/* Bottom */}
             <div className="footer-bottom">
-              <p className="footer-copyright">
+              <p className="footer-copyright body-small text-tertiary text-center">
                 © 2025 AutoConnect. All rights reserved. Revolutionizing Sri
                 Lanka's automotive ecosystem through comprehensive digital
                 transformation.

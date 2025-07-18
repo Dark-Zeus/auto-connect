@@ -15,6 +15,8 @@ import UpdateVehicleAd from "@pages/VehicleOwner/UpdateVehicleAd";
 import ServiceBooking from "@pages/VehicleOwner/ServiceBooking";
 import MyBookingServices from "@pages/VehicleOwner/MyBookingServices";
 
+import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage";
+
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 
@@ -54,41 +56,41 @@ function getNavLinks(userContext) {
       page: "Dashboard",
     });
 
-    // nav.push({
-    //   title: "My Vehicles",
-    //   icon: "directions_car",
-    //   page: "My Vehicles",
-    //   defLinkSettings: {
-    //     title: "Vehicle List",
-    //     icon: "directions_car",
-    //   },
-    //   sub: [
-    //     {
-    //       path: [`/vehicles`],
-    //       title: "Vehicle List",
-    //       icon: "directions_car",
-    //       page: "ListedVehiclesPage",
-    //     },
-    //     {
-    //       path: [`/vehicles/add`],
-    //       title: "Add New Vehicle",
-    //       icon: "add_circle",
-    //       page: "SellVehiclePage",
-    //     },
-    //     {
-    //       path: [`/vehicles/:vehicleId`],
-    //       title: "Vehicle Details",
-    //       icon: "info",
-    //       page: "", // TODO: Hide from navigation, only for direct access
-    //     },
-    //     {
-    //       path: [`/vehicles/:vehicleId/history`],
-    //       title: "Vehicle History",
-    //       icon: "history",
-    //       page: <VehicleHistorySearchPage />,
-    //     }
-    //   ]
-    // });
+    nav.push({
+    title: "My Vehicles",
+    icon: "directions_car",
+    page: "My Vehicles",
+    defLinkSettings: {
+    title: "Vehicle List",
+    icon: "directions_car",
+     },
+    sub: [
+     {
+    path: [`/vehicles`],
+    title: "Vehicle List",
+    icon: "directions_car",
+    page: "ListedVehiclesPage",
+    },
+    {
+      path: [`/vehicles/add`],
+      title: "Add New Vehicle",
+      icon: "add_circle",
+      page: <VehicleRegistrationPage />,
+    },
+    {
+      path: [`/vehicles/:vehicleId`],
+      title: "Vehicle Details",
+      icon: "info",
+      page: "", // TODO: Hide from navigation, only for direct access
+    },
+    {
+      path: [`/vehicles/:vehicleId/history`],
+      title: "Vehicle History",
+      icon: "history",
+      page: <VehicleHistorySearchPage />,
+    }
+    ]
+  });
 
     nav.push({
       title: "Service Management",
