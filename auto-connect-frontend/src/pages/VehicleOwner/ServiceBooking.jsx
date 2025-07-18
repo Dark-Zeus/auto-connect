@@ -313,7 +313,7 @@ const ServiceBookingApp = () => {
 
           {/* Cards Grid */}
           <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
-            <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
+            <Grid container spacing={1} justifyContent="center" sx={{ maxWidth: 1200 }}>
               {filteredCenters.length > 0 ? (
                 filteredCenters.map((center) => (
                   <Grid item xs={12} sm={6} md={4} key={center.id}>
