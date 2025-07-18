@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -6,6 +6,20 @@ const InsuranceClaims = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const formData = location.state;
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  const handleViewClick = () => {
+    // Simulate checking registration (you can replace this with an API call)
+    const userRegistered = Math.random() > 0.5; // Just for demonstration
+    setIsRegistered(userRegistered);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
 
   const sampleClaims = [
     {
@@ -36,7 +50,7 @@ const InsuranceClaims = () => {
       uploadedImages: [
         "/insurance-claims/honda-civic-1.jpg",
         "/insurance-claims/honda-civic-2.jpeg",
-        ],
+      ],
     },
     {
       vehicleName: "Nissan Leaf",
@@ -54,7 +68,7 @@ const InsuranceClaims = () => {
   const claims = formData ? [formData] : sampleClaims;
 
   return (
-    <div className=" tw:mx-auto tw:p-6 tw:bg-[#DFF2EB] tw:shadow-xl tw:rounded-2xl tw:space-y-10">
+    <div className="tw:mx-auto tw:p-6 tw:bg-[#DFF2EB] tw:shadow-xl tw:rounded-2xl tw:space-y-10">
       <div className="tw:flex tw:items-center tw:space-x-3">
         <button
           className="tw:text-[#4A628A] tw:hover:text-[#7AB2D3] tw:transition"
@@ -77,21 +91,11 @@ const InsuranceClaims = () => {
           </h2>
 
           <div className="tw:text-[#4A628A] tw:space-y-2">
-            <p>
-              <strong>Date:</strong> {claim.date}
-            </p>
-            <p>
-              <strong>Time:</strong> {claim.time}
-            </p>
-            <p>
-              <strong>Location:</strong> {claim.location}
-            </p>
-            <p>
-              <strong>Incident Type:</strong> {claim.incidentType}
-            </p>
-            <p>
-              <strong>Description:</strong> {claim.description}
-            </p>
+            <p><strong>Date:</strong> {claim.date}</p>
+            <p><strong>Time:</strong> {claim.time}</p>
+            <p><strong>Location:</strong> {claim.location}</p>
+            <p><strong>Incident Type:</strong> {claim.incidentType}</p>
+            <p><strong>Description:</strong> {claim.description}</p>
             <p>
               <strong>Damage Severity:</strong>{" "}
               <span className="tw:text-white tw:px-2 tw:py-0.5 tw:rounded tw:bg-[#4A628A]">
@@ -105,15 +109,19 @@ const InsuranceClaims = () => {
               {claim.uploadedImages.map((imgUrl, idx) => (
                 <img
                   key={idx}
-                  src={imgUrl} // direct path from public folder
+                  src={imgUrl}
                   alt={`uploaded-${idx}`}
                   className="tw:w-full tw:h-60 tw:object-cover tw:rounded-lg tw:border tw:border-[#B9E5E8]"
                 />
               ))}
             </div>
           )}
+
           <div className="tw:flex tw:space-x-4 tw:mt-4">
-            <button className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-[#7AB2D3]">
+            <button
+              onClick={handleViewClick}
+              className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-[#7AB2D3]"
+            >
               View
             </button>
             <button className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw-rounded tw:hover:bg-[#7AB2D3]">
@@ -125,6 +133,28 @@ const InsuranceClaims = () => {
           </div>
         </div>
       ))}
+
+      {/* Popup Modal */}
+      {showPopup && (
+        <div className="tw:fixed tw:inset-0 tw:flex tw:items-center tw:justify-center tw:z-50">
+          <div className="tw:bg-[#B9E5E8] tw:p-6 tw:rounded-xl tw:shadow-lg tw:space-y-4 tw:max-w-md tw:w-full">
+            <h2 className="tw:text-xl tw:font-semibold tw:text-[#4A628A]">
+              {isRegistered ? "User is Registered ✅" : "User is Not Registered ❌"}
+            </h2>
+            <p className="tw:text-[#4A628A]">
+              {isRegistered
+                ? "You can proceed with viewing the full claim details."
+                : "This user must register before proceeding further."}
+            </p>
+            <button
+              onClick={handleClosePopup}
+              className="tw:mt-4 tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-red-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
