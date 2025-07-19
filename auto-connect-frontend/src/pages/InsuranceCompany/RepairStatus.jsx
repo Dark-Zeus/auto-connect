@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import Sidebar from "@components/InsuranceCompany/Sidebar";
 
 const repairData = [
   {
@@ -43,71 +44,81 @@ const getStatusColor = (status) => {
 };
 
 const RepairStatus = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
   return (
-    <div className="tw:p-6 tw:bg-[#DFF2EB] tw:min-h-screen">
-      <h2 className="tw:text-3xl tw:font-bold tw:text-[#4A628A] tw:mb-6">
-        Vehicle Repair Tracking
-      </h2>
+    <div className="tw:flex tw:flex-grow tw:w-full tw:min-h-screen">
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <main
+        className={`tw:flex-grow tw:transition-all tw:duration-300 tw:min-h-screen tw:w-full tw:p-7 tw:bg-gray-100 tw:overflow-auto ${
+          isOpen ? "tw:ml-80" : "tw:ml-20"
+        }`}
+      >
+        <h2 className="tw:text-3xl tw:font-bold tw:text-[#4A628A] tw:mb-6">
+          Vehicle Repair Tracking
+        </h2>
 
-      <div className="tw:grid tw:gap-6 tw:p-8">
-        {repairData.map((item) => (
-          <div
-            key={item.id}
-            className="tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:border-l-8 tw:border-[#77AB2D]"
-          >
-            <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
-              <div>
-                <h3 className="tw:text-xl tw:font-semibold tw:text-[#4A628A]">
-                  <DirectionsCarIcon className="tw:mr-2" />
-                  {item.vehicle}
-                </h3>
-                <p className="tw:text-sm tw:text-gray-500">
-                  Owner: {item.owner}
-                </p>
+        <div className="tw:grid tw:gap-6 tw:p-8">
+          {repairData.map((item) => (
+            <div
+              key={item.id}
+              className="tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:border-l-8 tw:border-[#77AB2D]"
+            >
+              <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
+                <div>
+                  <h3 className="tw:text-xl tw:font-semibold tw:text-[#4A628A]">
+                    <DirectionsCarIcon className="tw:mr-2" />
+                    {item.vehicle}
+                  </h3>
+                  <p className="tw:text-sm tw:text-gray-500">
+                    Owner: {item.owner}
+                  </p>
+                </div>
+                <div
+                  className={`tw:px-4 tw:py-1 tw:rounded-full tw:text-sm tw:font-medium ${getStatusColor(
+                    item.status
+                  )}`}
+                >
+                  {item.status}
+                </div>
               </div>
-              <div
-                className={`tw:px-4 tw:py-1 tw:rounded-full tw:text-sm tw:font-medium ${getStatusColor(
-                  item.status
-                )}`}
-              >
-                {item.status}
-              </div>
-            </div>
 
-            <div className="tw:flex tw:items-center tw:justify-between tw:mt-4 tw:space-x-4">
-              {allStages.map((stage, idx) => {
-                const completed = item.stages.includes(stage);
-                return (
-                  <div
-                    key={stage}
-                    className="tw:flex tw:flex-col tw:items-center"
-                  >
+              <div className="tw:flex tw:items-center tw:justify-between tw:mt-4 tw:space-x-4">
+                {allStages.map((stage, idx) => {
+                  const completed = item.stages.includes(stage);
+                  return (
                     <div
-                      className={`tw:w-10 tw:h-10 tw:flex tw:items-center tw:justify-center tw:rounded-full ${
-                        completed
-                          ? "tw:bg-[#77AB2D] tw:text-white"
-                          : "tw:bg-gray-300 tw:text-gray-600"
-                      }`}
+                      key={stage}
+                      className="tw:flex tw:flex-col tw:items-center"
                     >
-                      {completed ? (
-                        <CheckCircleIcon fontSize="small" />
-                      ) : (
-                        <HourglassBottomIcon fontSize="small" />
+                      <div
+                        className={`tw:w-10 tw:h-10 tw:flex tw:items-center tw:justify-center tw:rounded-full ${
+                          completed
+                            ? "tw:bg-[#77AB2D] tw:text-white"
+                            : "tw:bg-gray-300 tw:text-gray-600"
+                        }`}
+                      >
+                        {completed ? (
+                          <CheckCircleIcon fontSize="small" />
+                        ) : (
+                          <HourglassBottomIcon fontSize="small" />
+                        )}
+                      </div>
+                      <span className="tw:mt-1 tw:text-xs tw:text-gray-700">
+                        {stage}
+                      </span>
+                      {idx < allStages.length - 1 && (
+                        <div className="tw:w-12 tw:h-1 tw:my-2 tw:bg-gray-300"></div>
                       )}
                     </div>
-                    <span className="tw:mt-1 tw:text-xs tw:text-gray-700">
-                      {stage}
-                    </span>
-                    {idx < allStages.length - 1 && (
-                      <div className="tw:w-12 tw:h-1 tw:my-2 tw:bg-gray-300"></div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Sidebar from "@components/InsuranceCompany/Sidebar";
 
 const InsuranceClaims = () => {
   const navigate = useNavigate();
@@ -66,95 +67,117 @@ const InsuranceClaims = () => {
   ];
 
   const claims = formData ? [formData] : sampleClaims;
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
-    <div className="tw:mx-auto tw:p-6 tw:bg-[#DFF2EB] tw:shadow-xl tw:rounded-2xl tw:space-y-10">
-      <div className="tw:flex tw:items-center tw:space-x-3">
-        <button
-          className="tw:text-[#4A628A] tw:hover:text-[#7AB2D3] tw:transition"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowBackIcon fontSize="tw:medium" />
-        </button>
-        <h1 className="tw:text-3xl tw:font-bold tw:text-[#4A628A]">
-          Insurance Claims
-        </h1>
-      </div>
-
-      {claims.map((claim, index) => (
-        <div
-          key={index}
-          className="tw:bg-white tw:p-6 tw:rounded-xl tw:shadow-md tw:border tw:border-[#B9E5E8] tw:space-y-4"
-        >
-          <h2 className="tw:text-xl tw:font-semibold tw:text-[#7AB2D3]">
-            Claim #{index + 1} - {claim.vehicleName} ({claim.modelYear})
-          </h2>
-
-          <div className="tw:text-[#4A628A] tw:space-y-2">
-            <p><strong>Date:</strong> {claim.date}</p>
-            <p><strong>Time:</strong> {claim.time}</p>
-            <p><strong>Location:</strong> {claim.location}</p>
-            <p><strong>Incident Type:</strong> {claim.incidentType}</p>
-            <p><strong>Description:</strong> {claim.description}</p>
-            <p>
-              <strong>Damage Severity:</strong>{" "}
-              <span className="tw:text-white tw:px-2 tw:py-0.5 tw:rounded tw:bg-[#4A628A]">
-                {claim.damageSeverity}
-              </span>
-            </p>
-          </div>
-
-          {claim.uploadedImages && claim.uploadedImages.length > 0 && (
-            <div className="tw:mt-4 tw:grid tw:grid-cols-1 tw:sm:grid-cols-2 tw:md:grid-cols-3 tw:gap-4">
-              {claim.uploadedImages.map((imgUrl, idx) => (
-                <img
-                  key={idx}
-                  src={imgUrl}
-                  alt={`uploaded-${idx}`}
-                  className="tw:w-full tw:h-60 tw:object-cover tw:rounded-lg tw:border tw:border-[#B9E5E8]"
-                />
-              ))}
-            </div>
-          )}
-
-          <div className="tw:flex tw:space-x-4 tw:mt-4">
-            <button
-              onClick={handleViewClick}
-              className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-[#7AB2D3]"
-            >
-              View
-            </button>
-            <button className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw-rounded tw:hover:bg-[#7AB2D3]">
-              Accept
-            </button>
-            <button className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-[#7AB2D3]">
-              Decline
-            </button>
-          </div>
+    <div className="tw:flex tw:flex-grow tw:w-full tw:min-h-screen">
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <main
+        className={`tw:flex-grow tw:transition-all tw:duration-300 tw:min-h-screen tw:w-full tw:p-7 tw:bg-gray-100 tw:overflow-auto ${
+          isOpen ? "tw:ml-80" : "tw:ml-20"
+        }`}
+      >
+        <div className="tw:flex tw:items-center tw:space-x-3">
+          <button
+            className="tw:text-[#4A628A] tw:hover:text-[#7AB2D3] tw:transition"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowBackIcon fontSize="tw:medium" />
+          </button>
+          <h1 className="tw:text-3xl tw:pb-5 tw:font-bold tw:text-[#4A628A]">
+            Insurance Claims
+          </h1>
         </div>
-      ))}
 
-      {/* Popup Modal */}
-      {showPopup && (
-        <div className="tw:fixed tw:inset-0 tw:flex tw:items-center tw:justify-center tw:z-50">
-          <div className="tw:bg-[#B9E5E8] tw:p-6 tw:rounded-xl tw:shadow-lg tw:space-y-4 tw:max-w-md tw:w-full">
-            <h2 className="tw:text-xl tw:font-semibold tw:text-[#4A628A]">
-              {isRegistered ? "User is Registered ✅" : "User is Not Registered ❌"}
+        {claims.map((claim, index) => (
+          <div
+            key={index}
+            className="tw:bg-[#DFF2EB] tw:p-8 tw:mb-5 tw:rounded-xl tw:shadow-md tw:border tw:border-[#B9E5E8] tw:space-y-4"
+          >
+            <h2 className="tw:text-xl tw:font-semibold tw:text-[#7AB2D3]">
+              Claim #{index + 1} - {claim.vehicleName} ({claim.modelYear})
             </h2>
-            <p className="tw:text-[#4A628A]">
-              {isRegistered
-                ? "You can proceed with viewing the full claim details."
-                : "This user must register before proceeding further."}
-            </p>
-            <button
-              onClick={handleClosePopup}
-              className="tw:mt-4 tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-red-700"
-            >
-              Close
-            </button>
+
+            <div className="tw:text-[#4A628A] tw:space-y-2">
+              <p>
+                <strong>Date:</strong> {claim.date}
+              </p>
+              <p>
+                <strong>Time:</strong> {claim.time}
+              </p>
+              <p>
+                <strong>Location:</strong> {claim.location}
+              </p>
+              <p>
+                <strong>Incident Type:</strong> {claim.incidentType}
+              </p>
+              <p>
+                <strong>Description:</strong> {claim.description}
+              </p>
+              <p>
+                <strong>Damage Severity:</strong>{" "}
+                <span className="tw:text-white tw:px-2 tw:py-0.5 tw:rounded tw:bg-[#4A628A]">
+                  {claim.damageSeverity}
+                </span>
+              </p>
+            </div>
+
+            {claim.uploadedImages && claim.uploadedImages.length > 0 && (
+              <div className="tw:mt-8 tw:grid tw:grid-cols-1 tw:sm:grid-cols-2 tw:md:grid-cols-3 tw:gap-4">
+                {claim.uploadedImages.map((imgUrl, idx) => (
+                  <img
+                    key={idx}
+                    src={imgUrl}
+                    alt={`uploaded-${idx}`}
+                    className="tw:w-full tw:h-60 tw:object-cover tw:rounded-lg tw:border tw:border-[#B9E5E8]"
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className="tw:flex tw:space-x-4 tw:mt-8">
+              <button
+                onClick={handleViewClick}
+                className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-[#7AB2D3] tw:transition tw:cursor-pointer"
+              >
+                View
+              </button>
+              <button className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw-rounded tw:hover:bg-[#7AB2D3] tw:transition tw:cursor-pointer">
+                Accept
+              </button>
+              <button className="tw:bg-[#4A628A] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-[#7AB2D3] tw:transition tw:cursor-pointer">
+                Decline
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        ))}
+
+        {/* Popup Modal */}
+        {showPopup && (
+          <div className="tw:fixed tw:inset-0 tw:flex tw:items-center tw:justify-center tw:z-50">
+            <div className="tw:bg-[#B9E5E8] tw:p-6 tw:rounded-xl tw:shadow-lg tw:space-y-4 tw:max-w-md tw:w-full">
+              <h2 className="tw:text-xl tw:font-semibold tw:text-[#4A628A]">
+                {isRegistered
+                  ? "User is Registered ✅"
+                  : "User is Not Registered ❌"}
+              </h2>
+              <p className="tw:text-[#4A628A]">
+                {isRegistered
+                  ? "You can proceed with viewing the full claim details."
+                  : "This user must register before proceeding further."}
+              </p>
+              <button
+                onClick={handleClosePopup}
+                className="tw:mt-4 tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-red-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 };
