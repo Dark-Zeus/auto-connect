@@ -16,15 +16,15 @@ import {
 } from "recharts";
 import {
   People,
-  Settings,
-  BarChart as BarIcon,
-  Download,
+  Domain,
+  TrendingUp,
+  Garage,
 } from "@mui/icons-material";
 
 const dataTrafficLocation = [
   { name: "AutoFix", value: 400 },
   { name: "QuickServe", value: 300 },
-  { name: "SpeedyAuto", value: 300 },
+  { name: "SpeedyAuto", value: 360 },
   { name: "Center1", value: 200 },
   { name: "Center2", value: 100 },
 ];
@@ -68,6 +68,7 @@ const renderActiveShape = (props) => {
   } = props;
   return (
     <g>
+      {/* Outer glow ring */}
       <Sector
         cx={cx}
         cy={cy}
@@ -77,6 +78,8 @@ const renderActiveShape = (props) => {
         endAngle={endAngle}
         fill={fill}
       />
+
+      {/* Main sector */}
       <Sector
         cx={cx}
         cy={cy}
@@ -86,12 +89,6 @@ const renderActiveShape = (props) => {
         endAngle={endAngle}
         fill={fill}
       />
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill="#333">
-        {payload.name}
-      </text>
-      <text x={cx} y={cy + 20} dy={8} textAnchor="middle" fill="#999">
-        {value} visits ({(percent * 100).toFixed(0)}%)
-      </text>
     </g>
   );
 };
@@ -102,43 +99,43 @@ function DashboardHome() {
 
   const cardData = [
     {
-      title: "New Users",
+      title: "Users",
       value: 123915,
       progress: 12.3456,
       icon: <People style={{ fontSize: 40 }} />,
-      color: "tw:bg-blue-100",
-      iconBg: "tw:bg-blue-600",
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
-      title: "Total Orders",
-      value: 61313,
+      title: "Verified Automotive Service Hubs",
+      value: 61,
       progress: -8.1234,
-      icon: <BarIcon style={{ fontSize: 40 }} />,
-      color: "tw:bg-green-100",
-      iconBg: "tw:bg-green-600",
+      icon: <Garage style={{ fontSize: 40 }} />,
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
-      title: "New Product",
-      value: 71003,
-      progress: 5.6789,
-      icon: <Settings style={{ fontSize: 40 }} />,
-      color: "tw:bg-purple-100",
-      iconBg: "tw:bg-purple-600",
+      title: "Income",
+      value: "LKR 710,003",
+      progress: 2.6789,
+      icon: <TrendingUp style={{ fontSize: 40 }} />,
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
     {
-      title: "Total Downloads",
-      value: 161888,
+      title: "Verified Insurence Companies",
+      value: 18,
       progress: 1.2345,
-      icon: <Download style={{ fontSize: 40 }} />,
-      color: "tw:bg-orange-100",
-      iconBg: "tw:bg-orange-600",
+      icon: <Domain style={{ fontSize: 40 }} />,
+      color: "tw:bg-[var(--sky-light)]",
+      iconBg: "tw:bg-[var(--primary-dark)]",
     },
   ];
 
   return (
     <div className="tw:grid tw:grid-cols-5 tw:gap-8">
       {/* Cards */}
-      <div className="tw:col-span-3 tw:grid tw:grid-cols-2 tw:gap-6">
+      <div className="tw:col-span-3 tw:grid tw:grid-cols-2 tw:gap-6 tw:transition-transform tw:transform hover:tw:-translate-y-1 hover:tw:shadow-xl">
         {cardData.map((card, i) => (
           <div
             key={i}
@@ -160,7 +157,7 @@ function DashboardHome() {
             </div>
             <div className="tw:mt-auto tw:pl-4">
               <h4 className="tw:text-lg tw:font-semibold">{card.title}</h4>
-              <p className="tw:text-3xl tw:font-bold">{card.value.toLocaleString()}</p>
+              <p className="tw:!mt-1 tw:!text-3xl tw:text-blue-600 tw:font-bold">{card.value.toLocaleString()}</p>
             </div>
           </div>
         ))}
@@ -192,6 +189,25 @@ function DashboardHome() {
                 />
               ))}
             </Pie>
+                {/* Manual center label */}
+                <text
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="tw:text-lg tw:font-semibold"
+                >
+                  {dataTrafficLocation[activeIndex]?.name}
+                </text>
+                <text
+                  x="50%"
+                  y="60%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="tw:text-sm tw:text-gray-500"
+                >
+                  {dataTrafficLocation[activeIndex]?.value}
+                </text>
           </PieChart>
         </ResponsiveContainer>
         <div className="tw:flex tw:flex-col tw:mt-4 tw:space-y-2 tw:text-sm">
@@ -233,7 +249,7 @@ function DashboardHome() {
 
       {/* Bar Chart */}
       <div className="tw:col-span-2 tw:bg-white tw:p-6 tw:rounded-2xl tw:shadow-md tw:flex tw:flex-col">
-        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">Monthly Income</h3>
+        <h3 className="tw:text-2xl tw:font-bold tw:mb-4">User Registration</h3>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={dataTrafficDevice}>
             <XAxis dataKey="device" />
@@ -271,7 +287,7 @@ function DashboardHome() {
               <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Time</th>
               <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">District</th>
               <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Vehicle Number</th>
-              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Type</th>
+              <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -292,7 +308,11 @@ function DashboardHome() {
                 <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.time}</td>
                 <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.district}</td>
                 <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.vehicleNumber}</td>
-                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">{row.type}</td>
+                <td className="tw:py-4 tw:px-6 tw:border-b tw:border-blue-100">
+                  <span className="tw:inline-flex tw:items-center tw:gap-1 tw:text-red-600 tw:font-medium">
+                  🔒 Paid Report
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>

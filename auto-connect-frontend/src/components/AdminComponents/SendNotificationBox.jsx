@@ -39,12 +39,26 @@ function SendNotificationBox({ onSend }) {
           <option value="Insurance Company">Insurance Companies</option>
           <option value="Service Center">Service Centers</option>
         </select>
+
+        <label className="tw:block tw:font-semibold tw:text-blue-800 tw:mb-2 tw:mt-2">
+          Select Type
+        </label>
+        <select
+          value={receiver}
+          onChange={(e) => setReceiver(e.target.value)}
+          className="tw:w-full tw:p-3 tw:border tw:border-blue-300 tw:rounded-lg tw:bg-blue-50 tw:text-blue-800"
+        >
+          <option value="Announcement">Announcement</option>
+          <option value="Reminder">Reminder</option>
+          <option value="Alert">Alert</option>
+          <option value="Offer">Offer</option>
+        </select>
       </div>
 
       {/* Message Input */}
       <textarea
         rows={5}
-        className="tw:w-full tw:p-3 tw:border tw:border-blue-300 tw:rounded-lg tw:bg-blue-50 tw:text-blue-800"
+        className="tw:w-full tw:h-80 tw:p-3 tw:border tw:border-blue-300 tw:rounded-lg tw:bg-blue-50 tw:text-blue-800"
         placeholder="Enter your notification message..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}

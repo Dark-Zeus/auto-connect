@@ -7,7 +7,7 @@ const sources = ["Insurance Company", "System", "User", "Service Center"];
 
 const initialNotifications = Array.from({ length: 34 }, (_, i) => ({
   id: i + 1,
-  message: `Notification message number ${i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
+  message: `Notification message number ${i + 1}. This is a sample notification to demonstrate the notification table functionality. It can be expanded to show more details.`,
   read: i % 3 === 0,
   date: `2025-07-${(i % 30) + 1}`,
   time: `${(9 + (i % 9)).toString().padStart(2, "0")}:00 AM`,
@@ -154,7 +154,7 @@ function NotificationTable() {
   };
 
   return (
-    <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:from-white tw:to-blue-50">
+    <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:bg-[var(--primary-light)] tw:to-blue-50">
       <div className="tw:grid tw:grid-cols-3 tw:gap-10">
         <div className="tw:col-span-2">
           {/* Received Notifications Box */}
@@ -200,7 +200,7 @@ function NotificationTable() {
               </div>
             </div>
 
-            <div className="tw:grid tw:grid-cols-2 tw:gap-6">
+            <div className="tw:grid tw:grid-cols-1 tw:gap-6">
               {currentNotifications.map((n) => (
                 <div
                   key={n.id}
@@ -211,7 +211,7 @@ function NotificationTable() {
                 >
                   <h3 className="tw:text-lg tw:font-semibold tw:mb-2">
                     {n.message.length > 100 && expandedId !== n.id
-                      ? `${n.message.slice(0, 100)}...`
+                      ? `${n.message.slice(0, 200)}...`
                       : n.message}
                   </h3>
 
