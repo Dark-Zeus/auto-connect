@@ -18,13 +18,21 @@ const sortOptions = [
   { label: "Most Recent", value: "date_desc", icon: "🕒" },
 ];
 
+const categoriesList = [
+  "Service Centers",
+  "Repair Centers",
+  "Emission Testing Centers"
+];
+
 function ServiceCenterFilterBox({
   searchQuery = "",
   selectedDistrict = "",
   sortBy = "",
+  selectedCategory = "", // <-- NEW PROP
   onSearchChange,
   onDistrictChange,
   onSortChange,
+  onCategoryChange, // <-- NEW PROP
   onReset,
   totalResults = 0,
   isLoading = false
@@ -35,8 +43,10 @@ function ServiceCenterFilterBox({
 
   // Check if any filters are active
   useEffect(() => {
-    setHasActiveFilters(searchQuery || selectedDistrict || sortBy);
-  }, [searchQuery, selectedDistrict, sortBy]);
+    setHasActiveFilters(
+      searchQuery || selectedDistrict || sortBy || selectedCategory // <-- include category
+    );
+  }, [searchQuery, selectedDistrict, sortBy, selectedCategory]);
 
   // Clear search function
   const clearSearch = () => {
@@ -55,7 +65,7 @@ function ServiceCenterFilterBox({
   };
 
   return (
-    <div className="tw:max-w-7xl tw:mx-auto">
+    <div className="tw:max-w-350 tw:mx-auto">
       <div className="tw:mb-8 tw:bg-white tw:border tw:border-gray-200 tw:rounded-2xl tw:shadow-lg hover:tw:shadow-xl tw:transition-all tw:duration-300 tw:overflow-hidden">
         {/* Header with toggle and results count */}
         <div className="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gradient-to-r tw:from-blue-50 tw:to-indigo-50 tw:border-b tw:border-gray-100">
@@ -158,6 +168,27 @@ function ServiceCenterFilterBox({
                 </div>
               </div>
 
+              {/* Enhanced Category Filter - 25% width */}
+              <div className="lg:tw:col-span-3">
+                <label className="tw:block tw:mb-2 tw:text-gray-700 tw:font-semibold tw:text-sm">
+                  Category
+                </label>
+                <div className="tw:relative">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => onCategoryChange(e.target.value)}
+                    className="tw:w-full tw:pl-4 tw:pr-4 tw:py-3 tw:border tw:border-gray-300 tw:rounded-xl tw:bg-white tw:text-gray-800 tw:font-medium focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:transition-all tw:duration-200 hover:tw:border-gray-400 tw:appearance-none tw:cursor-pointer"
+                  >
+                    <option value="">All Categories</option>
+                    {categoriesList.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {/* Enhanced Sort - 25% width */}
               <div className="lg:tw:col-span-3">
                 <label className="tw:block tw:mb-2 tw:text-gray-700 tw:font-semibold tw:text-sm">
@@ -201,6 +232,15 @@ function ServiceCenterFilterBox({
                     <MapPin size={14} />
                     <span>{selectedDistrict}</span>
                     <button onClick={() => onDistrictChange("")} className="hover:tw:bg-green-200 tw:rounded-full tw:p-0.5 tw:transition-colors">
+                      <X size={12} />
+                    </button>
+                  </div>
+                )}
+                {selectedCategory && (
+                  <div className="tw:flex tw:items-center tw:gap-2 tw:px-3 tw:py-1 tw:bg-yellow-100 tw:text-yellow-800 tw:text-sm tw:rounded-full">
+                    <span>🏷️</span>
+                    <span>{selectedCategory}</span>
+                    <button onClick={() => onCategoryChange("")} className="hover:tw:bg-yellow-200 tw:rounded-full tw:p-0.5 tw:transition-colors">
                       <X size={12} />
                     </button>
                   </div>

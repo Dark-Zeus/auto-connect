@@ -21,7 +21,7 @@ function ServiceCenterDetailCard({ data, onClose }) {
         {/* Enhanced Close Button */}
         <button
           onClick={onClose}
-          className="tw:absolute tw:top-6 tw:right-6 tw:z-10 tw:flex tw:items-center tw:justify-center tw:w-12 tw:h-12 tw:bg-red-500/10 tw:hover:bg-red-500 tw:text-red-600 tw:hover:text-white tw:rounded-full tw:transition-all tw:duration-300 tw:backdrop-blur-sm tw:border tw:border-red-200 tw:hover:border-red-500 tw:shadow-lg tw:hover:shadow-red-200/50"
+          className="tw:absolute tw:top-6 tw:mt-10 tw:right-6 tw:z-10 tw:flex tw:items-center tw:justify-center tw:w-12 tw:h-12 tw:bg-red-500/10 tw:hover:bg-red-500 tw:text-red-600 tw:hover:text-white tw:rounded-full tw:transition-all tw:duration-300 tw:backdrop-blur-sm tw:border tw:border-red-200 tw:hover:border-red-500 tw:shadow-lg tw:hover:shadow-red-200/50"
         >
           <X className="tw:w-5 tw:h-5" />
         </button>
@@ -58,7 +58,7 @@ function ServiceCenterDetailCard({ data, onClose }) {
           </div>
 
           {/* Main Content Grid */}
-          <div className="tw:grid tw:grid-cols-1 lg:tw:grid-cols-2 tw:gap-8 tw:mb-8">
+          <div className="tw:grid tw:grid-cols-2 lg:tw:grid-cols-2 tw:gap-8 tw:mb-8">
 
             {/* Personal Info Card */}
             <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50/50 tw:p-8 tw:rounded-2xl tw:border-2 tw:border-blue-200/50 tw:shadow-lg tw:shadow-blue-100/50 tw:backdrop-blur-sm tw:transition-all tw:duration-300 hover:tw:shadow-xl hover:tw:shadow-blue-200/30 hover:tw:-translate-y-1">
@@ -82,7 +82,9 @@ function ServiceCenterDetailCard({ data, onClose }) {
                     <Mail className="tw:w-4 tw:h-4" />
                     Email Address
                   </label>
-                  <a href={`mailto:${email}`} className="tw:block tw:text-lg tw:!text-blue-800 tw:bg-blue-50 tw:px-4 tw:py-3 tw:rounded-xl tw:border tw:border-blue-200 tw:transition-colors tw:duration-200 hover:tw:bg-blue-100 hover:tw:text-blue-900">{email}</a>
+                  <p className="tw:text-lg tw:!text-blue-800 tw:bg-blue-50 tw:px-4 tw:py-3 tw:rounded-xl tw:border tw:border-blue-200">
+                    {email}
+                  </p>
                 </div>
                 
                 <div className="tw:group">
@@ -90,7 +92,9 @@ function ServiceCenterDetailCard({ data, onClose }) {
                     <Phone className="tw:w-4 tw:h-4" />
                     Phone Number
                   </label>
-                  <a href={`tel:${phone}`} className="tw:block tw:text-lg tw:font-semibold tw:!text-blue-900 tw:bg-blue-50 tw:px-4 tw:py-3 tw:rounded-xl tw:border tw:border-blue-200 tw:transition-colors tw:duration-200 hover:tw:bg-blue-100">{phone}</a>
+                  <p className="tw:text-lg tw:font-semibold tw:!text-blue-900 tw:bg-blue-50 tw:px-4 tw:py-3 tw:rounded-xl tw:border tw:border-blue-200">
+                    {phone}
+                  </p>
                 </div>
               </div>
             </div>

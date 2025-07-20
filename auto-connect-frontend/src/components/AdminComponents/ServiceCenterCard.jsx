@@ -12,7 +12,8 @@ function ServiceCenterCard({
   phone = "",
   hours = "",
   isVerified = false,
-  distance = null
+  distance = null,
+  category = "Service Center" // NEW PROP
 }) {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -53,12 +54,21 @@ function ServiceCenterCard({
     return stars;
   };
 
-  const handleImageError = () => {
-    setImageError(true);
+  const getCategoryColor = (cat) => {
+    switch (cat.toLowerCase()) {
+      case "repair center":
+        return "tw:bg-orange-100 tw:text-orange-700";
+      case "emission testing center":
+        return "tw:bg-green-100 tw:text-green-700";
+      default:
+        return "tw:bg-blue-100 tw:text-blue-700";
+    }
   };
 
+  const handleImageError = () => setImageError(true);
+
   const handleCardClick = () => {
-    onView({ name, description, icon, district, rating, services, phone, hours, isVerified, distance });
+    onView({ name, description, icon, district, rating, services, phone, hours, isVerified, distance, category });
   };
 
   return (
@@ -83,7 +93,12 @@ function ServiceCenterCard({
         </div>
       )}
 
-      {/* Top Section: Image and Name */}
+      {/* Category Badge */}
+      <div className={`tw:absolute tw:top-4 tw:right-4 tw:px-2 tw:py-1 tw:rounded-full tw:text-xs tw:font-semibold ${getCategoryColor(category)}`}>
+        {category}
+      </div>
+
+      {/* Top Section */}
       <div className="tw:flex tw:items-start tw:gap-4 tw:mb-4">
         <div className="tw:relative tw:flex-shrink-0">
           {!imageError ? (
@@ -100,21 +115,18 @@ function ServiceCenterCard({
               </span>
             </div>
           )}
-          
-          {/* Hover overlay on image */}
           <div className={`tw:absolute tw:inset-0 tw:bg-black tw:bg-opacity-20 tw:rounded-xl tw:flex tw:items-center tw:justify-center tw:transition-opacity tw:duration-300 ${
             isHovered ? 'tw:opacity-100' : 'tw:opacity-0'
           }`}>
             <Eye className="tw:text-white" size={20} />
           </div>
         </div>
-        
+
         <div className="tw:flex-1">
           <h3 className="tw:text-lg tw:font-bold tw:text-gray-800 tw:leading-tight tw:mb-1 group-hover:tw:text-blue-600 tw:transition-colors">
             {name}
           </h3>
-          
-          {/* Rating and Reviews */}
+
           <div className="tw:flex tw:items-center tw:gap-2 tw:mb-2">
             <div className="tw:flex tw:items-center tw:gap-1">
               {renderStars()}
@@ -123,8 +135,7 @@ function ServiceCenterCard({
               {rating.toFixed(1)}
             </span>
           </div>
-          
-          {/* District */}
+
           <div className="tw:flex tw:items-center tw:gap-1 tw:text-sm tw:text-gray-600">
             <MapPin size={14} className="tw:text-gray-400" />
             <span>{district}</span>
@@ -132,12 +143,10 @@ function ServiceCenterCard({
         </div>
       </div>
 
-      {/* Middle Section: Description */}
       <p className="tw:text-sm tw:text-gray-700 tw:mb-4 tw:leading-relaxed tw:line-clamp-2 tw:min-h-[2.5rem]">
         {description}
       </p>
 
-      {/* Services Tags */}
       {services.length > 0 && (
         <div className="tw:flex tw:flex-wrap tw:gap-2 tw:mb-4">
           {services.slice(0, 3).map((service, index) => (
@@ -156,7 +165,6 @@ function ServiceCenterCard({
         </div>
       )}
 
-      {/* Contact Info */}
       <div className="tw:space-y-2 tw:mb-4">
         {phone && (
           <div className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:text-gray-600">
@@ -173,7 +181,6 @@ function ServiceCenterCard({
         )}
       </div>
 
-      {/* Bottom Section: Action Button */}
       <div className="tw:mt-auto">
         <button
           onClick={(e) => {
@@ -187,10 +194,7 @@ function ServiceCenterCard({
         </button>
       </div>
 
-      {/* Hover effect overlay */}
-      <div className={`tw:absolute tw:inset-0 tw:bg-gradient-to-t tw:from-blue-600/5 tw:to-transparent tw:rounded-2xl tw:pointer-events-none tw:transition-opacity tw:duration-300 ${
-        isHovered ? 'tw:opacity-100' : 'tw:opacity-0'
-      }`} />
+      <div className={`tw:absolute tw:inset-0 tw:bg-gradient-to-t tw:from-blue-600/5 tw:to-transparent tw:rounded-2xl tw:pointer-events-none tw:transition-opacity tw:duration-300 ${isHovered ? 'tw:opacity-100' : 'tw:opacity-0'}`} />
     </div>
   );
 }

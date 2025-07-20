@@ -24,7 +24,7 @@ async function fetchMonthlyData(monthIndex, year) {
     setTimeout(() => {
       const currentData = {
         totalNewUsers: Math.floor(Math.random() * 100) + 50,
-        totalRevenue: (Math.random() * 10000 + 5000).toFixed(2),
+        totalRevenue: (Math.random() * 1000000 + 5000).toFixed(2),
         totalUpdations: Math.floor(Math.random() * 50) + 20,
         totalServiceCenters: Math.floor(Math.random() * 10) + 5,
         totalInsuranceCompanies: Math.floor(Math.random() * 8) + 3,
@@ -36,7 +36,7 @@ async function fetchMonthlyData(monthIndex, year) {
       // Simulate previous month data for growth calculation
       const previousData = {
         totalNewUsers: Math.floor(Math.random() * 100) + 30,
-        totalRevenue: (Math.random() * 8000 + 3000).toFixed(2),
+        totalRevenue: (Math.random() * 800000 + 3000).toFixed(2),
         totalUpdations: Math.floor(Math.random() * 40) + 15,
         totalServiceCenters: Math.floor(Math.random() * 8) + 3,
         totalInsuranceCompanies: Math.floor(Math.random() * 6) + 2,
@@ -103,7 +103,7 @@ function generatePDFContent(data, month, year) {
   ];
 
   const formatValue = (value, format) => {
-    if (format === 'currency') return `$${parseFloat(value).toLocaleString()}`;
+    if (format === 'currency') return `LKR ${parseFloat(value).toLocaleString()}`;
     return parseInt(value).toLocaleString();
   };
 
@@ -298,7 +298,7 @@ function MetricCard({ title, current, previous, icon: Icon, format = "number" })
   const isPositive = growth >= 0;
   
   const formatValue = (value) => {
-    if (format === "currency") return `$${parseFloat(value).toLocaleString()}`;
+    if (format === "currency") return `LKR ${parseFloat(value).toLocaleString()}`;
     return parseInt(value).toLocaleString();
   };
   
