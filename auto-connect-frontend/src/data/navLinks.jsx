@@ -15,8 +15,9 @@ import UpdateVehicleAd from "@pages/VehicleOwner/UpdateVehicleAd";
 import ServiceBooking from "@pages/VehicleOwner/ServiceBooking";
 import MyBookingServices from "@pages/VehicleOwner/MyBookingServices";
 
-import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
-import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
+import ServiceBookingForm from "@components/ServiceBookingForm"; 
+import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile";
+import AllVehiclesPage from "@pages/VehicleOwner/AllVehiclesPage";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -54,7 +55,14 @@ function getNavLinks(userContext) {
       page: "Dashboard",
     });
 
-    // nav.push({
+    nav.push({
+      path: [`/all-vehicles`],
+      title: "Vehicles",
+      icon: "directions_car",
+      page: <AllVehiclesPage/>,
+    });
+
+    //nav.push({
     //   title: "My Vehicles",
     //   icon: "directions_car",
     //   page: "My Vehicles",
