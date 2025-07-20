@@ -28,6 +28,7 @@ import Notifications from "@pages/Admin/Notifications";
 import Updates from "@pages/Admin/Updates";
 import Analytics from "@pages/Admin/Analytics";
 import Transactions from "@pages/Admin/Transactions";
+import UserContacts from "@pages/Admin/UserContacts";
 
 // Service Provider
 import AddServicePage from "@pages/ServiceProvider/AddServicePage";
@@ -1211,7 +1212,7 @@ function getNavLinks(userContext) {
           path: [`/support/helpdesk`],
           title: "Help Desk",
           icon: "help_center",
-          page: "Help Desk",
+          page: <UserContacts />,
         },
         {
           path: [`/support/users`],
