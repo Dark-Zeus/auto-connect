@@ -88,20 +88,34 @@ const HeroSection = () => {
               </span>
             </h1>
 
-            <p className="hero-description-modern">
+            <p
+              className="hero-description-modern"
+              style={{
+                fontSize: "1.35rem",
+                lineHeight: "1.7",
+                fontWeight: 500,
+              }}
+            >
               Revolutionary digital ecosystem connecting vehicle owners, service
               providers, and insurance companies through transparent, efficient,
               and secure platform operations across Sri Lanka.
             </p>
 
-            {/* Feature List */}
             <div className="hero-features-modern">
               {heroFeatures.map((feature, index) => (
                 <div key={index} className="hero-feature-modern">
                   <div className="feature-icon-wrapper">
                     <CheckCircle className="w-5 h-5 text-emerald-500" />
                   </div>
-                  <span>{feature}</span>
+                  <span
+                    style={{
+                      fontSize: "1.1rem",
+                      lineHeight: "1.5",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {feature}
+                  </span>
                 </div>
               ))}
             </div>
@@ -192,8 +206,6 @@ const HeroSection = () => {
                   ></div>
                 ))}
               </div>
-
-
             </div>
 
             {/* Background Effects */}

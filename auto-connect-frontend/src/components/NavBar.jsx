@@ -7,8 +7,6 @@ import { useContext } from "react"; // Add useContext
 import { UserContext } from "../contexts/UserContext"; // Add UserContext
 import { performLogout } from "../utils/logout.util"; // Add logout utility
 
-
-
 function NavBar({ navLinks, version, icon, userId }) {
   const location = useLocation();
   const path = location.pathname;
@@ -134,6 +132,9 @@ function NavBar({ navLinks, version, icon, userId }) {
       <div className="dashboard-nav-container">
         <div className="dashboard-nav__profile-image-container">
           <div className="dashboard-nav__profile-image"></div>
+        </div>
+        <div className="dashboard-nav__notification" title="Notifications">
+          Notifications
         </div>
         <div className="dashboard-nav__profile">
           <div className="dashboard-nav__profile-details">John Doe</div>

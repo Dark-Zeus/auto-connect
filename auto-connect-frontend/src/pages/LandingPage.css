@@ -188,6 +188,14 @@
   height: 100%; /* Take full height */
 }
 
+/* Navbar Font Size Adjustment */
+.nav-desktop .nav-link {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
 @media (min-width: 1024px) {
   .nav-desktop {
     display: flex;
@@ -212,9 +220,16 @@
 }
 
 .logo-text {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--charcoal);
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-size: 1.5rem;           /* Increase size for readability */
+  font-weight: 800;            /* Strong branding look */
+  letter-spacing: -0.5px;      /* Slight tightening for modern aesthetic */
+  color: var(--charcoal);      /* Dark text for solid contrast */
+}
+
+.logo-accent {
+  font-weight: 600;            /* Slightly lighter for accent */
+  color: var(--sky-blue);      /* Accent color for emphasis */
 }
 
 @media (min-width: 1024px) {
