@@ -19,8 +19,7 @@ import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage
 
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
-
- import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
+import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
