@@ -89,7 +89,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
-    maxWidth: '780px',
     marginLeft: 'auto',
     marginRight: 'auto',
     border: '1px solid #DFF2EB',
@@ -108,14 +107,15 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minWidth: 170,
+    minWidth: 100,
+    minHeight: 100,
     boxShadow: '0 2px 8px rgba(122, 178, 211, 0.07)',
   },
   appointmentIconBox: (bg) => ({
     background: bg,
     borderRadius: '50%',
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -124,7 +124,7 @@ const styles = {
   }),
   appointmentLabel: {
     fontWeight: 600,
-    fontSize: 15,
+    fontSize: 10,
     color: '#323a47',
     marginTop: '.5rem',
     marginBottom: '0',
@@ -132,7 +132,7 @@ const styles = {
     textAlign: 'center',
   },
   appointmentNumber: (color) => ({
-    fontSize: 32,
+    fontSize: 20,
     fontWeight: 800,
     color,
     lineHeight: 1,
@@ -231,6 +231,117 @@ const AppointmentOverview = ({ completed, upcoming, pending }) => (
   </div>
 );
 
+  const dashboardStats = {
+    vehicles: 3,
+    activeListings: 2,
+    totalAppointments: 8,
+    completedAppointments: 5,
+    upcomingAppointments: 2,
+    pendingAppointments: 1,
+    insuranceClaims: 1,
+    totalEarnings: 45000,
+    avgRating: 4.8,
+  };
+
+  const quickActions = [
+    { label: 'Add New Vehicle', icon: <Plus color="white" size={20} />, color: '#3B82F6' },
+    { label: 'Book Appointment', icon: <Calendar color="white" size={20} />, color: '#8B5CF6' },
+    { label: 'Request Valuation', icon: <TrendingUp color="white" size={20} />, color: '#6366F1' },
+    { label: 'Vehicle History Report', icon: <FileText color="white" size={20} />, color: '#14B8A6' },
+    { label: 'Find Service Providers', icon: <Search color="white" size={20} />, color: '#10B981' },
+    { label: 'List Vehicle for Sale', icon: <Store color="white" size={20} />, color: '#F97316' },
+    { label: 'Claim Insurance', icon: <Shield color="white" size={20} />, color: '#EF4444' },
+    { label: 'Rate Service Provider', icon: <Star color="white" size={20} />, color: '#FACC15' },
+  ];
+
+  const activities = [
+  { status: 'completed', message: 'Service appointment completed for Honda Civic', time: '2 hours ago' },
+  { status: 'new', message: 'New inquiry for your Outlander listing', time: '5 hours ago' },
+  { status: 'updated', message: 'Vehicle valuation updated for Premio', time: '1 day ago' },
+  { status: 'completed', message: 'Insurance claim processed successfully', time: '2 days ago' },
+];
+
+const statusDotColor = (status) => {
+  switch (status) {
+    case 'completed': return '#22c55e'; // green
+    case 'new': return '#3b82f6';      // blue
+    case 'updated': return '#facc15';  // yellow
+    default: return '#9ca3af';         // gray
+  }
+};
+
+const RecentActivity = () => (
+  <div style={{
+    marginTop: '2.5rem',
+    background: '#fff',
+    borderRadius: '1rem',
+    padding: '2rem 2rem 1.5rem 2rem',
+    boxShadow: '0 4px 24px rgba(74, 98, 138, 0.08)',
+    border: '1px solid #DFF2EB',
+    minWidth: 340,
+    maxWidth: 700,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    position: 'relative',
+  }}>
+    
+    {/* Title row */}
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+      <span style={{ fontWeight: 700, fontSize: 22, color: '#1a2637' }}>Recent Activity</span>
+      {/* Refresh/history icon */}
+      <Clock style={{ color: '#8893a6', opacity: 0.8 }} size={22} />
+    </div>
+    {/* Activity List */}
+    <div style={{ marginTop: 12, marginBottom: 20 }}>
+      {activities.map((a, idx) => (
+        <div key={idx} style={{
+          display: 'flex', alignItems: 'flex-start', marginBottom: 22, gap: 13
+        }}>
+          {/* Colored dot */}
+          <div style={{
+            width: 10, height: 10, borderRadius: '50%',
+            background: statusDotColor(a.status),
+            marginTop: 6,
+            flexShrink: 0
+          }} />
+          <div>
+            <div style={{
+              color: '#182737', fontWeight: 600, fontSize: 17,
+              marginBottom: 2, lineHeight: 1
+            }}>
+              {a.message}
+            </div>
+            <div style={{
+              fontSize: 13, color: '#8491af', marginTop: 1, fontWeight: 400
+            }}>
+              {a.time}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {/* View all link */}
+    <div
+      style={{
+        width: '100%', textAlign: 'center',
+        marginTop: 24
+      }}
+    >
+      <a
+        href="#"
+        style={{
+          color: '#2563eb', fontWeight: 600, fontSize: 18,
+          textDecoration: 'none', letterSpacing: '0.01em',
+          transition: 'color 0.18s', cursor: 'pointer'
+        }}
+        onClick={e => { e.preventDefault(); alert('View All Activities'); }}
+      >
+        View All Activities
+      </a>
+    </div>
+  </div>
+);
+
 const UserDashboard = () => {
   const dashboardStats = {
     vehicles: 3,
@@ -255,7 +366,7 @@ const UserDashboard = () => {
     { label: 'Rate Service Provider', icon: <Star color="white" size={20} />, color: '#FACC15' },
   ];
 
-  return (
+return (
     <div style={styles.page}>
       {/* Stat Cards */}
       <div style={styles.statGrid}>
@@ -308,12 +419,15 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Appointment Overview (New Section) */}
+      {/* Appointment Overview */}
       <AppointmentOverview
         completed={dashboardStats.completedAppointments}
         upcoming={dashboardStats.upcomingAppointments}
         pending={dashboardStats.pendingAppointments}
       />
+
+      {/* Recent Activity (NEW) */}
+      <RecentActivity />
     </div>
   );
 };
