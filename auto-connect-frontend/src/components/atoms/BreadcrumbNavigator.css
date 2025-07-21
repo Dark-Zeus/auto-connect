@@ -41,7 +41,7 @@
 .breadcrumb-container {
   padding: 8px 0;
   width: 100%;
-  background-color: var(--color-100);
+  background-color: #DFF2EB;
   border-bottom: 1px solid var(--color-gray-200);
   z-index: 997;
   font-family: var(--font-family);
@@ -55,7 +55,7 @@
   align-items: center;
   height: 100%;
   padding: 0 24px;
-  background-color: var(--accent-color-7);
+  background-color: #DFF2EB;
   user-select: none;
   overflow-x: auto;
   gap: 8px;
