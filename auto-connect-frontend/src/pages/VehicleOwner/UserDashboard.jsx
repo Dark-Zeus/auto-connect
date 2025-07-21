@@ -11,6 +11,7 @@ import {
   Plus,
   ChevronRight,
   Clock,
+  Eye,
 } from 'lucide-react';
 
 const styles = {
@@ -79,7 +80,6 @@ const styles = {
     color: '#374151',
     fontWeight: 500,
   },
-  // Appointment Overview styles below
   appointmentOverview: {
     marginTop: '2.5rem',
     background: '#fff',
@@ -141,30 +141,147 @@ const styles = {
   }),
 };
 
-const StatCard = ({ title, value, subtitle, icon, trend, color }) => (
-  <div style={styles.statCard}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div>
-        <div style={styles.quickActionIconBox(color)}>{icon}</div>
-        <h3 style={{ color: '#4B5563', fontSize: '0.875rem', fontWeight: 500, marginTop: '1rem' }}>{title}</h3>
-        <p style={{ fontSize: '1.875rem', fontWeight: 700, color: '#111827', margin: '0.25rem 0' }}>{value}</p>
-        {subtitle && <p style={{ fontSize: '0.875rem', color: '#6B7280' }}>{subtitle}</p>}
-      </div>
-      {trend !== undefined && (
-        <div
-          style={{
-            padding: '0.25rem 0.5rem',
-            borderRadius: '0.5rem',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            backgroundColor: trend > 0 ? '#D1FAE5' : '#FEE2E2',
-            color: trend > 0 ? '#065F46' : '#991B1B',
-          }}
-        >
-          {trend > 0 ? '+' : ''}
-          {trend}%
+// --- Insurance Status Card ---
+const insuranceStyles = {
+  root: {
+      background: '#fff',
+      borderRadius: '1rem',
+      padding: '2rem 2rem 1.5rem 2rem',
+      boxShadow: '0 4px 24px rgba(74, 98, 138, 0.08)',
+      border: '1px solid #DFF2EB',
+      minWidth: 600,
+      minHeight: 320,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      position: 'relative',
+      alignItems: 'left',
+  },
+  title: {
+    fontSize: '1.22rem',
+    fontWeight: 700,
+    color: '#19213b',
+    marginBottom: '1.8rem',
+  },
+  claimActiveBox: {
+    background: '#ecfdf5',
+    borderRadius: '1rem',
+    padding: '1.2rem 1.6rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '.6rem',
+  },
+  left: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+  shieldIcon: {
+    color: '#059669',
+    width: 33,
+    height: 33,
+  },
+  claimActiveTitle: {
+    fontWeight: 700,
+    fontSize: 18,
+    color: '#11402D',
+    marginBottom: 2,
+  },
+  claimActiveNote: {
+    color: '#11402D',
+    fontSize: '14px',
+    marginTop: 2,
+    fontWeight: 500,
+    opacity: 0.8,
+  },
+  right: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 33,
+  },
+  eyeIcon: {
+    color: '#059669',
+    width: 23,
+    height: 23,
+  },
+  fileBtn: {
+    margin: '0.2rem 0 0 0',
+    width: '100%',
+    background: 'linear-gradient(90deg, #EF4444 0%, #DC2626 100%)',
+    color: 'white',
+    fontWeight: 600,
+    padding: '1rem 0',
+    border: 'none',
+    borderRadius: '1rem',
+    fontSize: 14,
+    cursor: 'pointer',
+    letterSpacing: '.03em',
+    boxShadow: '0 3px 6px 0 #fdecec',
+    transition: 'background 0.17s',
+  },
+  viewBtn: {
+    width: '100%',
+    background: 'none',
+    color: '#183552',
+    fontWeight: 600,
+    border: '1px solid #e5e7eb',
+    borderRadius: '1rem',
+    fontSize: 14,
+    boxShadow: 'none',
+    padding: '1rem 0',
+    marginTop: 11,
+    cursor: 'pointer',
+    transition: 'border 0.17s, color 0.17s',
+  },
+};
+
+function InsuranceStatusCard() {
+  return (
+    <div style={insuranceStyles.root}>
+      <div style={insuranceStyles.title}>Insurance Status</div>
+      <div style={insuranceStyles.claimActiveBox}>
+        <div style={insuranceStyles.left}>
+          <Shield style={insuranceStyles.shieldIcon} />
+          <div>
+            <div style={insuranceStyles.claimActiveTitle}>Active Claims</div>
+            <div style={insuranceStyles.claimActiveNote}>1 in progress</div>
+          </div>
         </div>
-      )}
+        <div style={insuranceStyles.right}>
+          <Eye style={insuranceStyles.eyeIcon} />
+        </div>
+      </div>
+      <button style={insuranceStyles.fileBtn}>File New Claim</button>
+      <button style={insuranceStyles.viewBtn}>View Claim History</button>
+    </div>
+  );
+}
+
+// Add these before UserDashboard
+const StatCard = ({ title, value, subtitle, icon, color, trend }) => (
+  <div style={{
+    ...styles.statCard,
+    borderLeft: `8px solid ${color}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div style={{
+        background: color,
+        borderRadius: '0.5rem',
+        width: 40,
+        height: 40,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>{icon}</div>
+      <div style={{ fontWeight: 700, fontSize: 18 }}>{title}</div>
+    </div>
+    <div style={{ fontSize: 28, fontWeight: 800 }}>{value}</div>
+    <div style={{ color: '#64748b', fontSize: 13 }}>{subtitle}</div>
+    <div style={{ color: trend >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600, fontSize: 13 }}>
+      {trend >= 0 ? `▲ ${trend}%` : `▼ ${Math.abs(trend)}%`}
     </div>
   </div>
 );
@@ -175,169 +292,35 @@ const QuickActionButton = ({ label, icon, color }) => (
       <div style={styles.quickActionIconBox(color)}>{icon}</div>
       <span style={styles.quickActionLabel}>{label}</span>
     </div>
-    <ChevronRight style={{ color: '#9CA3AF' }} />
+    <ChevronRight color="#64748b" size={20} />
   </div>
 );
 
 const AppointmentOverview = ({ completed, upcoming, pending }) => (
   <div style={styles.appointmentOverview}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-      <h2 style={{ fontWeight: 700, fontSize: 20, color: '#3a4d60', margin: 0 }}>
-        Appointment Overview
-      </h2>
-      <button
-        style={{
-          color: '#3272d5',
-          background: 'none',
-          border: 'none',
-          fontWeight: 600,
-          fontSize: 15,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6
-        }}
-        onClick={() => alert('View All Appointments')}
-      >
-        View All <ChevronRight size={17} />
-      </button>
-    </div>
+    <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>Appointment Overview</div>
     <div style={styles.appointmentGrid}>
-      {/* Completed */}
       <div style={styles.appointmentCard}>
-        <div style={styles.appointmentIconBox('#41d884')}>
-          <Clock color="white" size={30} />
+        <div style={styles.appointmentIconBox('#22c55e')}>
+          <Calendar color="white" size={22} />
         </div>
-        <div style={styles.appointmentNumber('#16a34a')}>{completed}</div>
         <div style={styles.appointmentLabel}>Completed</div>
+        <div style={styles.appointmentNumber('#22c55e')}>{completed}</div>
       </div>
-      {/* Upcoming */}
       <div style={styles.appointmentCard}>
-        <div style={styles.appointmentIconBox('#4F8DFD')}>
-          <Calendar color="white" size={30} />
+        <div style={styles.appointmentIconBox('#3b82f6')}>
+          <Calendar color="white" size={22} />
         </div>
-        <div style={styles.appointmentNumber('#2563eb')}>{upcoming}</div>
         <div style={styles.appointmentLabel}>Upcoming</div>
+        <div style={styles.appointmentNumber('#3b82f6')}>{upcoming}</div>
       </div>
-      {/* Pending */}
       <div style={styles.appointmentCard}>
-        <div style={styles.appointmentIconBox('#FBBF24')}>
-          <Clock color="white" size={30} />
+        <div style={styles.appointmentIconBox('#facc15')}>
+          <Calendar color="white" size={22} />
         </div>
-        <div style={styles.appointmentNumber('#d97706')}>{pending}</div>
         <div style={styles.appointmentLabel}>Pending</div>
+        <div style={styles.appointmentNumber('#facc15')}>{pending}</div>
       </div>
-    </div>
-  </div>
-);
-
-  const dashboardStats = {
-    vehicles: 3,
-    activeListings: 2,
-    totalAppointments: 8,
-    completedAppointments: 5,
-    upcomingAppointments: 2,
-    pendingAppointments: 1,
-    insuranceClaims: 1,
-    totalEarnings: 45000,
-    avgRating: 4.8,
-  };
-
-  const quickActions = [
-    { label: 'Add New Vehicle', icon: <Plus color="white" size={20} />, color: '#3B82F6' },
-    { label: 'Book Appointment', icon: <Calendar color="white" size={20} />, color: '#8B5CF6' },
-    { label: 'Request Valuation', icon: <TrendingUp color="white" size={20} />, color: '#6366F1' },
-    { label: 'Vehicle History Report', icon: <FileText color="white" size={20} />, color: '#14B8A6' },
-    { label: 'Find Service Providers', icon: <Search color="white" size={20} />, color: '#10B981' },
-    { label: 'List Vehicle for Sale', icon: <Store color="white" size={20} />, color: '#F97316' },
-    { label: 'Claim Insurance', icon: <Shield color="white" size={20} />, color: '#EF4444' },
-    { label: 'Rate Service Provider', icon: <Star color="white" size={20} />, color: '#FACC15' },
-  ];
-
-  const activities = [
-  { status: 'completed', message: 'Service appointment completed for Honda Civic', time: '2 hours ago' },
-  { status: 'new', message: 'New inquiry for your Outlander listing', time: '5 hours ago' },
-  { status: 'updated', message: 'Vehicle valuation updated for Premio', time: '1 day ago' },
-  { status: 'completed', message: 'Insurance claim processed successfully', time: '2 days ago' },
-];
-
-const statusDotColor = (status) => {
-  switch (status) {
-    case 'completed': return '#22c55e'; // green
-    case 'new': return '#3b82f6';      // blue
-    case 'updated': return '#facc15';  // yellow
-    default: return '#9ca3af';         // gray
-  }
-};
-
-const RecentActivity = () => (
-  <div style={{
-    marginTop: '2.5rem',
-    background: '#fff',
-    borderRadius: '1rem',
-    padding: '2rem 2rem 1.5rem 2rem',
-    boxShadow: '0 4px 24px rgba(74, 98, 138, 0.08)',
-    border: '1px solid #DFF2EB',
-    minWidth: 340,
-    maxWidth: 700,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    position: 'relative',
-  }}>
-    
-    {/* Title row */}
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-      <span style={{ fontWeight: 700, fontSize: 22, color: '#1a2637' }}>Recent Activity</span>
-      {/* Refresh/history icon */}
-      <Clock style={{ color: '#8893a6', opacity: 0.8 }} size={22} />
-    </div>
-    {/* Activity List */}
-    <div style={{ marginTop: 12, marginBottom: 20 }}>
-      {activities.map((a, idx) => (
-        <div key={idx} style={{
-          display: 'flex', alignItems: 'flex-start', marginBottom: 22, gap: 13
-        }}>
-          {/* Colored dot */}
-          <div style={{
-            width: 10, height: 10, borderRadius: '50%',
-            background: statusDotColor(a.status),
-            marginTop: 6,
-            flexShrink: 0
-          }} />
-          <div>
-            <div style={{
-              color: '#182737', fontWeight: 600, fontSize: 17,
-              marginBottom: 2, lineHeight: 1
-            }}>
-              {a.message}
-            </div>
-            <div style={{
-              fontSize: 13, color: '#8491af', marginTop: 1, fontWeight: 400
-            }}>
-              {a.time}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-    {/* View all link */}
-    <div
-      style={{
-        width: '100%', textAlign: 'center',
-        marginTop: 24
-      }}
-    >
-      <a
-        href="#"
-        style={{
-          color: '#2563eb', fontWeight: 600, fontSize: 18,
-          textDecoration: 'none', letterSpacing: '0.01em',
-          transition: 'color 0.18s', cursor: 'pointer'
-        }}
-        onClick={e => { e.preventDefault(); alert('View All Activities'); }}
-      >
-        View All Activities
-      </a>
     </div>
   </div>
 );
@@ -366,7 +349,91 @@ const UserDashboard = () => {
     { label: 'Rate Service Provider', icon: <Star color="white" size={20} />, color: '#FACC15' },
   ];
 
-return (
+  const activities = [
+    { status: 'completed', message: 'Service appointment completed for Honda Civic', time: '2 hours ago' },
+    { status: 'new', message: 'New inquiry for your Outlander listing', time: '5 hours ago' },
+    { status: 'updated', message: 'Vehicle valuation updated for Premio', time: '1 day ago' },
+    { status: 'completed', message: 'Insurance claim processed successfully', time: '2 days ago' },
+  ];
+  const statusDotColor = (status) => {
+    switch (status) {
+      case 'completed': return '#22c55e';
+      case 'new': return '#3b82f6';
+      case 'updated': return '#facc15';
+      default: return '#9ca3af';
+    }
+  };
+  const RecentActivity = () => (
+    <div style={{
+      background: '#fff',
+      borderRadius: '1rem',
+      padding: '2rem 2rem 1.5rem 2rem',
+      boxShadow: '0 4px 24px rgba(74, 98, 138, 0.08)',
+      border: '1px solid #DFF2EB',
+      minWidth: 600,
+      minHeight: 320,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      position: 'relative',
+      alignItems: 'left',
+    }}>
+      {/* Title row */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+        <span style={{ fontWeight: 700, fontSize: 16, color: '#1a2637' }}>Recent Activity</span>
+        <Clock style={{ color: '#8893a6', opacity: 0.8 }} size={22} />
+      </div>
+      {/* Activity List */}
+      <div style={{ marginTop: 12, marginBottom: 20 }}>
+        {activities.map((a, idx) => (
+          <div key={idx} style={{
+            display: 'flex', alignItems: 'flex-start', marginBottom: 22, gap: 13
+          }}>
+            {/* Colored dot */}
+            <div style={{
+              width: 5, height: 5, borderRadius: '50%',
+              background: statusDotColor(a.status),
+              marginTop: 6,
+              flexShrink: 0
+            }} />
+            <div>
+              <div style={{
+                color: '#182737', fontWeight: 600, fontSize: 13,
+                marginBottom: 2, lineHeight: 1
+              }}>
+                {a.message}
+              </div>
+              <div style={{
+                fontSize: 11, color: '#8491af', marginTop: 1, fontWeight: 400
+              }}>
+                {a.time}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* View all link */}
+      <div
+        style={{
+          width: '100%', textAlign: 'center',
+          marginTop: 24
+        }}
+      >
+        <a
+          href="#"
+          style={{
+            color: '#2563eb', fontWeight: 600, fontSize: 12,
+            textDecoration: 'none', letterSpacing: '0.01em',
+            transition: 'color 0.18s', cursor: 'pointer'
+          }}
+          onClick={e => { e.preventDefault(); alert('View All Activities'); }}
+        >
+          View All Activities
+        </a>
+      </div>
+    </div>
+  );
+
+  return (
     <div style={styles.page}>
       {/* Stat Cards */}
       <div style={styles.statGrid}>
@@ -426,8 +493,22 @@ return (
         pending={dashboardStats.pendingAppointments}
       />
 
-      {/* Recent Activity (NEW) */}
-      <RecentActivity />
+      {/* Recent Activity & Insurance Status: 2 column grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '2.5rem',
+        marginTop: '2.5rem',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        maxWidth: 1200,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: '100%',
+      }}>
+        <RecentActivity />
+        <InsuranceStatusCard />
+      </div>
     </div>
   );
 };
