@@ -1,6 +1,7 @@
 import { resolveExample } from "./paramResolvers/exampleResolver"
 
 // Vehicle Owner
+import UserDashboard from "@pages/VehicleOwner/UserDashboard";
 import ListedVehiclesPage from "@pages/VehicleOwner/ListedVehiclesPage";
 import SellVehiclePage from "@pages/VehicleOwner/SellVehiclePage";
 import VehicleHistorySearchPage from "@pages/VehicleOwner/VehicleHistorySearchPage";
@@ -14,9 +15,7 @@ import VehicleAdPromotionPage from "@pages/VehicleOwner/VehicleAdPromotionPage";
 import UpdateVehicleAd from "@pages/VehicleOwner/UpdateVehicleAd";
 import ServiceBooking from "@pages/VehicleOwner/ServiceBooking";
 import MyBookingServices from "@pages/VehicleOwner/MyBookingServices";
-
 import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage";
-
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
@@ -57,7 +56,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <UserDashboard />,
     });
 
     nav.push({
