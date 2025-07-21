@@ -113,7 +113,7 @@ function getNavLinks(userContext) {
           icon: "business",
           page: <ServiceBooking />
         },
-        {
+        /*{
           path: [`/service-booking-form`],
           title: "Book Service",
           icon: "book_online",
@@ -124,7 +124,7 @@ function getNavLinks(userContext) {
           title: "Book Service",
           icon: "book_online",
           page: <ServiceProviderProfile />, // TODO: Hide from navigation, only for direct access
-        },
+        },*/
         {
           path: [`/services/appointments`],
           title: "My Bookings",
