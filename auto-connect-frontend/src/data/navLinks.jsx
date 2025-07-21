@@ -15,10 +15,11 @@ import UpdateVehicleAd from "@pages/VehicleOwner/UpdateVehicleAd";
 import ServiceBooking from "@pages/VehicleOwner/ServiceBooking";
 import MyBookingServices from "@pages/VehicleOwner/MyBookingServices";
 
-import ServiceBookingForm from "@components/ServiceBookingForm"; 
-import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile";
-import AllVehiclesPage from "@pages/VehicleOwner/AllVehiclesPage";
-import UserDashboard from "@pages/VehicleOwner/UserDashboard";
+import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage";
+
+import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
+import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
+import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -38,6 +39,7 @@ import ManageSlotsPage from "@pages/ServiceProvider/ManageSlotsPage";
 import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashboard";
 import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
+import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 
 // Insurance Agent
 import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
@@ -53,51 +55,44 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: <UserDashboard/>,
+      page: "Dashboard",
     });
 
     nav.push({
-      path: [`/all-vehicles`],
-      title: "Vehicles",
+      title: "My Vehicles",
       icon: "directions_car",
-      page: <AllVehiclesPage/>,
+      page: "My Vehicles",
+      defLinkSettings: {
+        title: "Vehicle List",
+        icon: "directions_car",
+      },
+      sub: [
+        {
+          path: [`/vehicles`],
+          title: "Vehicle List",
+          icon: "directions_car",
+          page: "ListedVehiclesPage",
+        },
+        {
+          path: [`/vehicles/add`],
+          title: "Add New Vehicle",
+          icon: "add_circle",
+          page: <VehicleRegistrationPage />,
+        },
+        {
+          path: [`/vehicles/:vehicleId`],
+          title: "Vehicle Details",
+          icon: "info",
+          page: "", // TODO: Hide from navigation, only for direct access
+        },
+        {
+          path: [`/vehicles/:vehicleId/history`],
+          title: "Vehicle History",
+          icon: "history",
+          page: <VehicleHistorySearchPage />,
+        },
+      ],
     });
-
-    //nav.push({
-    //   title: "My Vehicles",
-    //   icon: "directions_car",
-    //   page: "My Vehicles",
-    //   defLinkSettings: {
-    //     title: "Vehicle List",
-    //     icon: "directions_car",
-    //   },
-    //   sub: [
-    //     {
-    //       path: [`/vehicles`],
-    //       title: "Vehicle List",
-    //       icon: "directions_car",
-    //       page: "ListedVehiclesPage",
-    //     },
-    //     {
-    //       path: [`/vehicles/add`],
-    //       title: "Add New Vehicle",
-    //       icon: "add_circle",
-    //       page: "SellVehiclePage",
-    //     },
-    //     {
-    //       path: [`/vehicles/:vehicleId`],
-    //       title: "Vehicle Details",
-    //       icon: "info",
-    //       page: "", // TODO: Hide from navigation, only for direct access
-    //     },
-    //     {
-    //       path: [`/vehicles/:vehicleId/history`],
-    //       title: "Vehicle History",
-    //       icon: "history",
-    //       page: <VehicleHistorySearchPage />,
-    //     }
-    //   ]
-    // });
 
     nav.push({
       title: "Service Management",
@@ -112,9 +107,9 @@ function getNavLinks(userContext) {
           path: [`/services`],
           title: "Service Providers",
           icon: "business",
-          page: <ServiceBooking />
+          page: <ServiceBooking />,
         },
-        /*{
+        {
           path: [`/service-booking-form`],
           title: "Book Service",
           icon: "book_online",
@@ -125,7 +120,7 @@ function getNavLinks(userContext) {
           title: "Book Service",
           icon: "book_online",
           page: <ServiceProviderProfile />, // TODO: Hide from navigation, only for direct access
-        },*/
+        },
         {
           path: [`/services/appointments`],
           title: "My Bookings",
@@ -151,7 +146,7 @@ function getNavLinks(userContext) {
         //   icon: "notifications",
         //   page: "Maintenance Reminders",
         // }
-      ]
+      ],
     });
 
     nav.push({
@@ -228,8 +223,8 @@ function getNavLinks(userContext) {
           title: "Update Vehicle Ad",
           icon: "edit",
           page: <UpdateVehicleAd />, // TODO: Hide from navigation, only for direct access
-        }
-      ]
+        },
+      ],
     });
 
     nav.push({
@@ -271,9 +266,18 @@ function getNavLinks(userContext) {
           title: "Accident Reports",
           icon: "warning",
           page: "Accident Reports",
-        }
-      ]
+        },
+      ],
     });
+
+    nav.push({
+      path: [`/dashboardVehiclePassport`],
+      title: "Vehicle Passport",
+      icon: "assignment",
+      page: <VehiclePassportDashboard />,
+    });
+
+
 
     // nav.push({
     //   title: "Documents",
@@ -456,12 +460,12 @@ function getNavLinks(userContext) {
           icon: "history",
           page: <VehicleHistoryDashboard />,
         },
-        // {
-        //   path: [`/services/quality`],
-        //   title: "Quality Control",
-        //   icon: "verified",
-        //   page: "Quality Control",
-        // }
+        {
+          path: [`/services/quality`],
+          title: "Update Vehicle Passport",
+          icon: "verified",
+          page: <VehicleServiceUpdatePage />, // TODO: Create this page
+        },
       ]
     });
 
