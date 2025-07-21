@@ -1,6 +1,7 @@
 import { resolveExample } from "./paramResolvers/exampleResolver"
 
 // Vehicle Owner
+import UserDashboard from "@pages/VehicleOwner/UserDashboard";
 import ListedVehiclesPage from "@pages/VehicleOwner/ListedVehiclesPage";
 import SellVehiclePage from "@pages/VehicleOwner/SellVehiclePage";
 import VehicleHistorySearchPage from "@pages/VehicleOwner/VehicleHistorySearchPage";
@@ -14,14 +15,12 @@ import VehicleAdPromotionPage from "@pages/VehicleOwner/VehicleAdPromotionPage";
 import UpdateVehicleAd from "@pages/VehicleOwner/UpdateVehicleAd";
 import ServiceBooking from "@pages/VehicleOwner/ServiceBooking";
 import MyBookingServices from "@pages/VehicleOwner/MyBookingServices";
-
 import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage";
-
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
-import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
+import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
 
- import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
+
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -57,7 +56,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <UserDashboard />,
     });
 
     nav.push({
@@ -85,13 +84,14 @@ function getNavLinks(userContext) {
           path: [`/vehicles/:vehicleId`],
           title: "Vehicle Details",
           icon: "info",
-          page: "", // TODO: Hide from navigation, only for direct access
+          page: "",
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
           path: [`/vehicles/:vehicleId/history`],
           title: "Vehicle History",
           icon: "history",
-          page: <VehicleHistorySearchPage />,
+          page: <VehicleHistoryPage />,
         },
       ],
     });
@@ -115,19 +115,22 @@ function getNavLinks(userContext) {
           path: [`/service-booking-form`],
           title: "Book Service",
           icon: "book_online",
-          page: <ServiceBookingForm />, // TODO: Hide from navigation, only for direct access
+          page: <ServiceBookingForm />,
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
           path: [`/service-provider-profile`],
-          title: "Book Service",
+          title: "Profile",
           icon: "book_online",
-          page: <ServiceProviderProfile />, // TODO: Hide from navigation, only for direct access
+          page: <ServiceProviderProfile />,
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
           path: [`/services/appointments`],
           title: "My Bookings",
           icon: "event_available",
           page: <MyBookingServices />,
+          
         },
         // {
         //   path: [`/services/history`],
@@ -206,25 +209,29 @@ function getNavLinks(userContext) {
           path: [`/vehicleview`],
           title: "Vehicle View",
           icon: "info",
-          page: <VehicleViewPage />, // TODO: Hide from navigation, only for direct access
+          page: <VehicleViewPage />,
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
           path: [`/vehiclehistory`],
           title: "Vehicle History",
           icon: "history",
-          page: <VehicleHistoryPage />, // TODO: Hide from navigation, only for direct access
+          page: <VehicleHistoryPage />,
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
           path: [`/vehicle-ad-promotion`],
           title: "Ad Promotion",
           icon: "trending_up",
-          page: <VehicleAdPromotionPage />, // TODO: Hide from navigation, only for direct access
+          page: <VehicleAdPromotionPage />,
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
           path: [`/update-vehicle-ad`],
           title: "Update Vehicle Ad",
           icon: "edit",
-          page: <UpdateVehicleAd />, // TODO: Hide from navigation, only for direct access
+          page: <UpdateVehicleAd />,
+          hidden: true, // TODO: Hide from navigation, only for direct access
         },
       ],
     });
@@ -981,7 +988,6 @@ function getNavLinks(userContext) {
           title: "Vehicle Owners",
           icon: "directions_car",
           page: <VehicleOwners />,
-          subNav: [{}]
         },
         {
           path: [`/users/insurancecompanies`],
@@ -1221,32 +1227,32 @@ function getNavLinks(userContext) {
         title: "Help Desk",
         icon: "help_center",
       },
-      sub: [
-        {
-          path: [`/support/helpdesk`],
-          title: "Help Desk",
-          icon: "help_center",
-          page: "Help Desk",
-        },
-        {
-          path: [`/support/users`],
-          title: "User Support",
-          icon: "support_agent",
-          page: "User Support",
-        },
-        {
-          path: [`/support/docs`],
-          title: "Documentation",
-          icon: "description",
-          page: "Documentation",
-        },
-        {
-          path: [`/support/training`],
-          title: "Training Materials",
-          icon: "school",
-          page: "Training Materials",
-        }
-      ]
+      // sub: [
+      //   {
+      //     path: [`/support/helpdesk`],
+      //     title: "Help Desk",
+      //     icon: "help_center",
+      //     page: "Help Desk",
+      //   },
+      //   {
+      //     path: [`/support/users`],
+      //     title: "User Support",
+      //     icon: "support_agent",
+      //     page: "User Support",
+      //   },
+      //   {
+      //     path: [`/support/docs`],
+      //     title: "Documentation",
+      //     icon: "description",
+      //     page: "Documentation",
+      //   },
+      //   {
+      //     path: [`/support/training`],
+      //     title: "Training Materials",
+      //     icon: "school",
+      //     page: "Training Materials",
+      //   }
+      // ]
     });
   }
 

@@ -7,6 +7,8 @@ import { useContext } from "react"; // Add useContext
 import { UserContext } from "../contexts/UserContext"; // Add UserContext
 import { performLogout } from "../utils/logout.util"; // Add logout utility
 
+
+
 function NavBar({ navLinks, version, icon, userId }) {
   const location = useLocation();
   const path = location.pathname;
@@ -55,8 +57,14 @@ function NavBar({ navLinks, version, icon, userId }) {
     icon = "";
   }
 
-  const navLinkElements = navLinks.map((link, index) => {
+  // Filter out hidden links before mapping
+  const visibleNavLinks = navLinks.filter(link => !link.hidden);
+
+  const navLinkElements = visibleNavLinks.map((link, index) => {
     const ContainerType = link.sub ? "span" : Link;
+
+    // Filter out hidden sublinks
+    const visibleSubLinks = link.sub ? link.sub.filter(subLink => !subLink.hidden) : null;
 
     return (
       <li
@@ -79,14 +87,14 @@ function NavBar({ navLinks, version, icon, userId }) {
                 {link.icon}
               </span>
               <span className="dashboard-nav-link__text">{link.title}</span>
-              {link.sub && (
+              {visibleSubLinks && visibleSubLinks.length > 0 && (
                 <input type="checkbox" id={index} name="dashboard-nav-link" />
               )}
             </ContainerType>
           </span>
 
           <ul className="dashboard-nav-links__sub">
-            {link.sub?.map((subLink, subIndex) => (
+            {visibleSubLinks?.map((subLink, subIndex) => (
               <li
                 key={`index-sub-li-${index}-${subIndex}`}
                 className={`dashboard-nav-link ${
@@ -132,9 +140,6 @@ function NavBar({ navLinks, version, icon, userId }) {
       <div className="dashboard-nav-container">
         <div className="dashboard-nav__profile-image-container">
           <div className="dashboard-nav__profile-image"></div>
-        </div>
-        <div className="dashboard-nav__notification" title="Notifications">
-          Notifications
         </div>
         <div className="dashboard-nav__profile">
           <div className="dashboard-nav__profile-details">John Doe</div>
