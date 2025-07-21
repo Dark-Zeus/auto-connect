@@ -1,6 +1,6 @@
 /* ============================================================================
-   NAVBAR.CSS - Simple & Professional Sidebar Navigation
-   Clean design with excellent readability and proper spacing
+   NAVBAR.CSS - Simple & Professional Sidebar Navigation with Simple Gradient
+   Clean design with excellent readability, proper spacing, and fixed padding issues
    ============================================================================ */
 
 :root {
@@ -17,12 +17,14 @@
   --color-gray-400: #94A3B8;
   --color-gray-500: #64748B;
   
-  /* Navigation Colors */
-  --navbar-color: var(--color-navy);
+  /* Navigation Colors - Simple Gradient System */
+  --navbar-color: #384A68;
+  --navbar-hover: #4A5F7A;
+  --navbar-light: #5C748C;
   --color-100: var(--color-white);
   --color-400: var(--color-gray-400);
-  --color-700: var(--color-sky);
-  --color-800: var(--color-navy);
+  --color-700: var(--navbar-hover);
+  --color-800: var(--navbar-color);
   --color-900: var(--color-charcoal);
   --text-color-2: var(--color-gray-200);
   --text-color-4: var(--color-gray-400);
@@ -43,7 +45,7 @@
 }
 
 /* ============================================================================
-   MAIN SIDEBAR
+   MAIN SIDEBAR - Simple Gradient Design
    ============================================================================ */
 .dashboard-nav {
   display: flex;
@@ -51,7 +53,7 @@
   justify-content: space-between;
   width: var(--navbar-collapsed-width);
   height: 100%;
-  background-color: var(--navbar-color);
+  background: linear-gradient(180deg, #384A68 0%, #4A5F7A 33%, #5C748C 66%, #7AB2D3 100%);
   color: var(--color-100);
   text-align: center;
   font-family: var(--font-family);
@@ -59,12 +61,16 @@
   text-wrap: nowrap;
   overflow: hidden;
   transition: width var(--transition);
-  border-right: 1px solid var(--color-gray-300);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 1001;
+  box-shadow: 4px 0 15px rgba(56, 74, 104, 0.1);
+  
+
 }
 
 .dashboard-nav:hover {
   width: var(--navbar-expanded-width);
+  box-shadow: 4px 0 20px rgba(56, 74, 104, 0.2);
 }
 
 /* ============================================================================
@@ -77,6 +83,7 @@
   margin-top: var(--nav-link-size);
   margin-bottom: var(--nav-link-size);
   direction: rtl;
+  padding-top: 10px;
 }
 
 .dashboard-nav__wrapper * {
@@ -92,12 +99,16 @@
   border-radius: 2px;
 }
 
+.dashboard-nav .dashboard-nav__wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* ============================================================================
-   NAVIGATION LINKS
+   NAVIGATION LINKS - Fixed Padding Issues
    ============================================================================ */
 .dashboard-nav ul.dashboard-nav-links {
   list-style: none;
-  padding: 0 8px;
+  padding: 0 6px;
   margin: 0;
   user-select: none;
 }
@@ -106,8 +117,8 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-left: 20px;
-  margin-right: 10px;
+  margin-left: 16px;
+  margin-right: 6px;
   font-size: 13px;
   font-weight: var(--font-weight-normal);
   user-select: none;
@@ -155,7 +166,7 @@
 }
 
 /* ============================================================================
-   LINK LABELS
+   LINK LABELS - Fixed Border and Padding Issues
    ============================================================================ */
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label {
   display: flex;
@@ -163,10 +174,10 @@
   flex-direction: column;
   text-decoration: none;
   color: var(--color-100);
-  margin: 0 4px;
+  margin: 0 2px;
   height: var(--nav-link-size);
   min-height: var(--nav-link-size);
-  width: calc(100% - 8px);
+  width: calc(100% - 4px);
   font-size: 13px;
   font-weight: var(--font-weight-medium);
   border-radius: 6px;
@@ -188,7 +199,7 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 0 6px;
+  padding: 0 4px;
   transition: all var(--transition);
   justify-content: flex-start;
   border-radius: 6px;
@@ -250,19 +261,19 @@
 }
 
 /* ============================================================================
-   HOVER EFFECTS
+   HOVER EFFECTS - Fixed Padding
    ============================================================================ */
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link {
   width: calc(100%);
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label {
-  margin: 0 8px;
-  width: calc(100% - 16px);
+  margin: 0 6px;
+  width: calc(100% - 12px);
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__details {
-  padding: 0 20px;
+  padding: 0 16px;
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__text {
@@ -279,11 +290,17 @@
   opacity: 1;
 }
 
+/* Link hover effects */
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:hover:not(.selected) {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(1px);
+}
+
 /* ============================================================================
    SUB-NAVIGATION
    ============================================================================ */
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   font-weight: var(--font-weight-normal);
   color: var(--color-100);
   transition: all var(--transition);
@@ -291,7 +308,7 @@
 
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:has(input[type="checkbox"]:checked) {
   color: var(--color-100);
-  background-color: var(--color-700);
+  background-color: rgba(255, 255, 255, 0.1);
   height: auto;
   transition: all var(--transition);
 }
@@ -313,49 +330,112 @@
 }
 
 /* ============================================================================
-   SELECTED STATES
+   SELECTED STATES - Fixed Border Padding
    ============================================================================ */
 .dashboard-nav-link.selected .link-label {
-  background-color: var(--color-aqua);
-  color: var(--color-800);
+  background-color: var(--color-white);
+  color: #E67E22 !important;
   font-weight: var(--font-weight-bold);
   transition: all var(--transition);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  margin: 0 2px !important;
+  width: calc(100% - 4px) !important;
 }
 
 .dashboard-nav ul.dashboard-nav-links a.dashboard-nav-link.selected {
-  color: var(--color-800);
+  color: #E67E22 !important;
+}
+
+.dashboard-nav-link.selected .link-label .dashboard-nav-link__icon {
+  color: #E67E22 !important;
+}
+
+.dashboard-nav-link.selected .link-label .dashboard-nav-link__text {
+  color: #E67E22 !important;
+}
+
+/* Additional targeting for main nav link details */
+.dashboard-nav-link.selected .link-label .dashboard-nav-link__main {
+  color: #E67E22 !important;
+}
+
+.dashboard-nav-link.selected .link-label .dashboard-nav-link__main .dashboard-nav-link__details {
+  color: #E67E22 !important;
+}
+
+/* Target any nested elements */
+.dashboard-nav-link.selected .link-label * {
+  color: #E67E22 !important;
+}
+
+/* Specifically target the span elements that might contain the text */
+.dashboard-nav-link.selected .link-label span {
+  color: #E67E22 !important;
+}
+
+.dashboard-nav-link.selected .link-label .dashboard-nav-link__icon {
+  color: var(--navbar-color);
+}
+
+.dashboard-nav-link.selected .link-label .dashboard-nav-link__text {
+  color: var(--navbar-color);
 }
 
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link.selected {
-  background-color: var(--color-mint);
-  color: var(--color-700);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #E67E22;
   transition: all var(--transition);
 }
 
+
+/* Ensure the link inside also gets the orange color */
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link.selected .link {
+  color: #E67E22 !important;
+}
+
+/* Ensure the anchor tag inside also gets the orange color */
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link.selected a {
+  color: #E67E22 !important;
+}
+
+/* Target the icon specifically */
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link.selected .dashboard-nav-link__icon {
+  color: #E67E22 !important;
+}
+
+/* Target the text specifically */
+.dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-links__sub .dashboard-nav-link.selected .dashboard-nav-link__text {
+  color: #E67E22 !important;
+}
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:has(.dashboard-nav-links__sub .dashboard-nav-link.selected) {
-  background-color: var(--color-aqua);
-  border-left: 4px solid var(--color-800);
-  color: var(--color-700);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--color-white);
+  color: var(--color-100);
   transition: all var(--transition);
+  margin: 0 2px !important;
+  width: calc(100% - 4px) !important;
+  padding-left: 1px;
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:has(.dashboard-nav-links__sub .dashboard-nav-link.selected) {
-  background-color: var(--color-aqua);
-  border-left: 4px solid var(--color-900);
-  color: var(--color-700);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--color-white);
+  color: var(--color-100);
   transition: all var(--transition);
+  margin: 0 6px !important;
+  width: calc(100% - 12px) !important;
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:has(.dashboard-nav-links__sub .dashboard-nav-link.selected):has(input[type="checkbox"]:checked) {
-  background-color: var(--color-700);
-  border-left: 4px solid var(--color-900);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid var(--color-white);
   color: var(--color-100);
   transition: all var(--transition);
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:hover:not(:has(.dashboard-nav-links__sub .dashboard-nav-link.selected)),
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label:hover:has(input[type="checkbox"]:checked) {
-  background-color: var(--color-800);
+  background-color: rgba(255, 255, 255, 0.2);
   color: var(--color-100);
   transition: all var(--transition);
 }
@@ -390,7 +470,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -398,18 +478,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 32px;
-  max-width: 32px;
+  min-width: 30px;
+  max-width: 30px;
   transition: all var(--transition);
   aspect-ratio: 1/1;
 }
 
 .dashboard-nav .dashboard-nav-container .dashboard-nav__profile-image-container .dashboard-nav__profile-image {
-  width: 32px;
+  width: 30px;
   aspect-ratio: 1/1;
   border-radius: 50%;
-  background-color: var(--color-aqua);
-  border: 2px solid var(--color-white);
+  background-color: var(--color-white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Notification Icon */
@@ -417,21 +497,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 28px;
-  height: 28px;
-  background-color: var(--color-sky);
-  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   color: var(--color-white);
   font-size: 16px;
   cursor: pointer;
   transition: all var(--transition);
   position: relative;
   font-family: 'Material Symbols Outlined';
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dashboard-nav .dashboard-nav-container .dashboard-nav__notification:hover {
-  background-color: var(--color-aqua);
-  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
 /* Notification Badge */
@@ -469,7 +550,7 @@
   justify-content: center;
   align-items: flex-start;
   font-weight: var(--font-weight-medium);
-  padding-left: 20px;
+  padding-left: 16px;
 }
 
 .dashboard-nav .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__logout {
@@ -484,11 +565,12 @@
   height: var(--nav-link-size);
   transition: all var(--transition);
   cursor: pointer;
+  border-radius: 0 6px 6px 0;
 }
 
 .dashboard-nav:hover .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__logout:hover {
   border-left-width: 2px;
-  background-color: var(--color-900);
+  background-color: rgba(255, 255, 255, 0.1);
   color: var(--color-100);
 }
 
@@ -509,19 +591,26 @@
   width: var(--navbar-collapsed-width);
   height: var(--nav-link-size);
   padding: 8px;
+  margin-top: 8px;
 }
 
 .dashboard-nav .dashboard-nav__logo-container .dashboard-nav__logo {
   width: calc(var(--nav-link-size) - 10px);
   aspect-ratio: 1/1;
-  background-color: var(--color-sky);
-  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-white);
   font-weight: var(--font-weight-bold);
   font-size: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition);
+}
+
+.dashboard-nav:hover .dashboard-nav__logo-container .dashboard-nav__logo {
+  transform: scale(1.02);
 }
 
 .dashboard-nav .dashboard-nav__name {
@@ -540,7 +629,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding-left: 20px;
+  padding-left: 16px;
   font-weight: var(--font-weight-bold);
   font-size: 14px;
 }
@@ -548,7 +637,7 @@
 .dashboard-nav .dashboard-nav__name .dashboard-nav__name-version {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
-  padding-left: 20px;
+  padding-left: 16px;
   font-weight: var(--font-weight-normal);
 }
 
@@ -570,6 +659,7 @@
     top: 0;
     left: 0;
     width: var(--navbar-expanded-width);
+    margin-top: 0;
   }
   
   .dashboard-nav.mobile-open {
@@ -581,7 +671,8 @@
    ACCESSIBILITY
    ============================================================================ */
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label:focus-visible,
-.dashboard-nav .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__logout:focus-visible {
-  outline: 2px solid var(--color-aqua);
+.dashboard-nav .dashboard-nav-container .dashboard-nav__profile .dashboard-nav__logout:focus-visible,
+.dashboard-nav .dashboard-nav-container .dashboard-nav__notification:focus-visible {
+  outline: 2px solid var(--color-white);
   outline-offset: 2px;
 }

@@ -133,9 +133,6 @@ function NavBar({ navLinks, version, icon, userId }) {
         <div className="dashboard-nav__profile-image-container">
           <div className="dashboard-nav__profile-image"></div>
         </div>
-        <div className="dashboard-nav__notification" title="Notifications">
-          Notifications
-        </div>
         <div className="dashboard-nav__profile">
           <div className="dashboard-nav__profile-details">John Doe</div>
           <Link to="/auth/logout">
