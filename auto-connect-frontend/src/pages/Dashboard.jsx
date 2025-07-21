@@ -12,23 +12,35 @@ import SubNavBar from "@components/SubNavBar";
 import { useSelector } from "react-redux";
 
 import "@components/TwoColContainer.css";
+import { UserContext } from "@contexts/UserContext";
 
 function Dashboard({ children }) {
     const location = useLocation();
-        // DEV MODE: Replace this with your actual user state management
-    const [devUser, setDevUser] = useState({
-        userName: "sunera",
-        role: "service_center"
-    });
     
-    // In production, uncomment this line and remove devUser:
+    // Use the context
+    const { userContext, setUserContext } = useContext(UserContext);
+    
+    // DEV MODE: Initialize with default user if not set
+    const [isDevMode] = useState(true); // You can control this with an environment variable
+    
+    // In production, uncomment this line and remove dev logic:
     // const { user } = useSelector((state) => state.auth);
-    const user = devUser; // Use devUser for development
+    
+    // Initialize dev user if not set
+    if (isDevMode && !userContext) {
+        setUserContext({
+            userName: "sunera",
+            role: "service_center"
+        });
+    }
+
+    const user = userContext; // For compatibility with existing code
 
     if (!user) {
         toast.error("You must be logged in to access the dashboard.");
         return null; // or redirect to login page
     }
+    
     const navLinks = getNavLinks(user);
 
     const allRoutes = [
@@ -110,7 +122,7 @@ function Dashboard({ children }) {
 
     return (
         <>
-            <DevUserSwitcher currentUser={user} onUserChange={setDevUser} />
+            {isDevMode && <DevUserSwitcher currentUser={user} onUserChange={setUserContext} />}
             <NavBar navLinks={navLinks} />
             <div className="main-container">
                 <Header route={matchedRoute} />
@@ -170,7 +182,7 @@ const DevUserSwitcher = ({ currentUser, onUserChange }) => {
 
     const handleRoleChange = (newRole, newUserName) => {
         const newUser = { userName: newUserName, role: newRole };
-        onUserChange(newUser);
+        onUserChange(newUser); // This now directly calls setUserContext
         setIsOpen(false);
         
         // Log the change for development

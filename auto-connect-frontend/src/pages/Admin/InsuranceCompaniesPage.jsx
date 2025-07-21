@@ -119,8 +119,7 @@ const pendingInsuranceRequests = [
   // You can add more sample requests here
 ];
 
-
-function InsurancePage() {
+function InsuaranceCompaniesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [sortValue, setSortValue] = useState("");
@@ -232,4 +231,4 @@ useEffect(() => {
 
 }
 
-export default InsurancePage;
+export default InsuaranceCompaniesPage;

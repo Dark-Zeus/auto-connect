@@ -1,5 +1,9 @@
 import React, { useState, useMemo } from "react";
 import ServiceProviderCard from "@components/ServiceProviderDetailsCard"; // adjust the path if needed
+import ServiceBookingForm from "@components/ServiceBookingForm";
+import ServiceProviderProfile from "./ServiceProviderProfile";
+import OverlayWindow from "@components/OverlayWindow"; // ✅ NEW IMPORT
+
 
 import {
   Container,
@@ -194,15 +198,24 @@ const ServiceBookingApp = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [overlay, setOverlay] = useState({open: false,type: null,center: null});
 
   const handleBookAppointment = (center) => {
-  navigate("/service-booking-form", { state: { center } });
+  setOverlay({
+    open: true,
+    type: "book",
+    center,
+  });
 };
 
 
   const handleViewDetails = (center) => {
-    navigate("/service-provider-profile", { state: { center } });
-  };
+  setOverlay({
+    open: true,
+    type: "profile",
+    center,
+  });
+};
 
   const filteredCenters = useMemo(() => {
     return serviceCenters.filter((center) => {
@@ -225,20 +238,6 @@ const ServiceBookingApp = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", width: "100%", display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <Box sx={{ backgroundColor: "#7AB2D3", p: 1.5, color: "white" }}>
-        <Container maxWidth="xl">
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Build />
-              <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
-                Auto Connect - Service Providers
-              </Typography>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-
       {/* Main Content */}
       <Box sx={{ flex: 1, overflowY: "auto", backgroundColor: "#DFF2EB", p: 3 }}>
         <Container maxWidth="xl">
@@ -265,7 +264,7 @@ const ServiceBookingApp = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate("/my-bookings")}
+              onClick={() => navigate("/services/appointments")}
               sx={{ whiteSpace: "nowrap", fontSize: 13, fontWeight: 500 }}
             >
               My Bookings
@@ -314,29 +313,16 @@ const ServiceBookingApp = () => {
 
           {/* Cards Grid */}
           <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
-            <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
+            <Grid container spacing={1} justifyContent="center" sx={{ maxWidth: 1200 }}>
               {filteredCenters.length > 0 ? (
                 filteredCenters.map((center) => (
-                  <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200 }}>
-                    {filteredCenters.length > 0 ? (
-                    filteredCenters.map((center) => (
-                    <Grid item xs={12} sm={6} md={4} key={center.id}>
+                  <Grid item xs={12} sm={6} md={4} key={center.id}>
                     <ServiceProviderCard
-                    center={center}
-                    onBookAppointment={handleBookAppointment}
-                    onViewDetails={handleViewDetails}
+                      center={center}
+                      onBookAppointment={handleBookAppointment}
+                      onViewDetails={handleViewDetails}
                     />
-                    </Grid>
-                    ))
-                    ) : (
-                    <Grid item xs={12}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 500, mt: 4, textAlign: "center" }}>
-                    No service providers found matching your criteria.
-                    </Typography>
-                    </Grid>
-                    )}
-                    </Grid>
-
+                  </Grid>
                 ))
               ) : (
                 <Grid item xs={12}>
@@ -347,6 +333,15 @@ const ServiceBookingApp = () => {
               )}
             </Grid>
           </Box>
+
+          {overlay.open && (
+            <OverlayWindow closeWindowFunction={() => setOverlay({ open: false, type: null, center: null })}>
+              {overlay.type === "book" && <ServiceBookingForm center={overlay.center} />}
+              {overlay.type === "profile" && <ServiceProviderProfile center={overlay.center} />}
+            </OverlayWindow>
+          )}
+
+
         </Container>
       </Box>
     </Box>

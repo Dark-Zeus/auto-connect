@@ -17,7 +17,6 @@
     min-height: 100vh;
     position: relative;
     background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-medium) 50%, var(--primary-blue) 100%);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
   }

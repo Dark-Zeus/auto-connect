@@ -82,23 +82,23 @@ const VehicleHistoryPage = () => {
                     className="tw:w-80 tw:h-auto tw:object-contain"
                   />
                 </div>
-                {/* Floating icons */}
+                {/* Floating icons 
                 <div className="tw:absolute tw:top-4 tw:right-4 tw:w-12 tw:h-12 tw:bg-white tw:rounded-lg tw:shadow-lg tw:flex tw:items-center tw:justify-center tw:animate-bounce">
                   <Car className="tw:w-6 tw:h-6 tw:text-blue-600" />
                 </div>
                 <div className="tw:absolute tw:bottom-4 tw:left-4 tw:w-12 tw:h-12 tw:bg-white tw:rounded-lg tw:shadow-lg tw:flex tw:items-center tw:justify-center tw:animate-bounce tw:animation-delay-300">
                   <Shield className="tw:w-6 tw:h-6 tw:text-green-600" />
-                </div>
+                </div>*/}
               </div>
 
               {/* Stats */}
               <div className="tw:grid tw:grid-cols-2 tw:gap-8 tw:text-center">
                 <div className="tw:bg-white tw:rounded-2xl tw:p-6 tw:shadow-lg tw:border tw:border-gray-100">
-                  <div className="tw:text-3xl tw:font-bold tw:text-green-600 tw:mb-2">5+ Million</div>
+                  <div className="tw:text-3xl tw:font-bold tw:text-green-600 tw:mb-2">100000+</div>
                   <div className="tw:text-sm tw:text-gray-600">reports sold/year</div>
                 </div>
                 <div className="tw:bg-white tw:rounded-2xl tw:p-6 tw:shadow-lg tw:border tw:border-gray-100">
-                  <div className="tw:text-3xl tw:font-bold tw:text-green-600 tw:mb-2">30+ Billion</div>
+                  <div className="tw:text-3xl tw:font-bold tw:text-green-600 tw:mb-2">10+ million</div>
                   <div className="tw:text-sm tw:text-gray-600">data records</div>
                 </div>
               </div>
@@ -112,7 +112,7 @@ const VehicleHistoryPage = () => {
         <div className="tw:max-w-7xl tw:mx-auto tw:px-4">
           <div className="tw:text-center tw:mb-12">
             <h2 className="tw:text-3xl tw:font-bold tw:text-gray-900 tw:mb-4">
-              Every Vehicle History Report + Lien Check Searches For...
+              Every Vehicle History Report Searches For...
             </h2>
             <p className="tw:text-lg tw:text-gray-600">Comprehensive data to help you make informed decisions</p>
           </div>
