@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Car,
   Calendar,
@@ -7,74 +7,231 @@ import {
   Shield,
   Star,
   TrendingUp,
-  Users,
-  Clock,
-  DollarSign,
-  Eye,
-  Plus,
   Search,
-  History,
+  Plus,
   ChevronRight,
-  Bell,
-  Settings,
-  User,
+  Clock,
 } from 'lucide-react';
 
-// (Use Heroicons if you don't have lucide-react)
+const styles = {
+  page: {
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #DFF2EB 0%, #f8f9fa 100%)',
+    animation: 'fadeInUp 0.6s ease-out',
+    padding: '2rem',
+    fontFamily: 'Arial, sans-serif',
+  },
+  statGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '2rem',
+    marginTop: '2rem',
+  },
+  statCard: {
+    backgroundColor: '#fff',
+    borderRadius: '1rem',
+    padding: '1.5rem',
+    border: '1px solid #DFF2EB',
+    boxShadow: '0 4px 24px rgba(74, 98, 138, 0.1)',
+    transition: 'all 0.3s ease',
+  },
+  quickActionSection: {
+    marginTop: '2rem',
+  },
+  quickActionTitle: {
+    fontSize: '1.25rem',
+    fontWeight: 600,
+    color: '#2c3e50',
+    marginBottom: '1rem',
+  },
+  quickActionsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: '1rem',
+  },
+  quickActionCard: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem',
+    backgroundColor: '#fff',
+    borderRadius: '1rem',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+    border: '1px solid #E2E8F0',
+    cursor: 'pointer',
+    transition: 'box-shadow 0.3s ease',
+  },
+  quickActionLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+  quickActionIconBox: (color) => ({
+    width: '40px',
+    height: '40px',
+    borderRadius: '0.5rem',
+    backgroundColor: color,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }),
+  quickActionLabel: {
+    color: '#374151',
+    fontWeight: 500,
+  },
+  // Appointment Overview styles below
+  appointmentOverview: {
+    marginTop: '2.5rem',
+    background: '#fff',
+    borderRadius: '1rem',
+    padding: '2rem',
+    boxShadow: '0 4px 24px rgba(74, 98, 138, 0.08)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    maxWidth: '780px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    border: '1px solid #DFF2EB',
+  },
+  appointmentGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+    gap: '2rem',
+    justifyContent: 'center',
+  },
+  appointmentCard: {
+    background: '#f7fafc',
+    borderRadius: '1rem',
+    border: '1px solid #e5e7eb',
+    padding: '2rem 1rem 1.25rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minWidth: 170,
+    boxShadow: '0 2px 8px rgba(122, 178, 211, 0.07)',
+  },
+  appointmentIconBox: (bg) => ({
+    background: bg,
+    borderRadius: '50%',
+    width: 60,
+    height: 60,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '1rem',
+    boxShadow: '0 2px 6px 0 rgba(122, 178, 211,0.08)',
+  }),
+  appointmentLabel: {
+    fontWeight: 600,
+    fontSize: 15,
+    color: '#323a47',
+    marginTop: '.5rem',
+    marginBottom: '0',
+    letterSpacing: 0.2,
+    textAlign: 'center',
+  },
+  appointmentNumber: (color) => ({
+    fontSize: 32,
+    fontWeight: 800,
+    color,
+    lineHeight: 1,
+    letterSpacing: 1,
+    margin: 0,
+  }),
+};
 
 const StatCard = ({ title, value, subtitle, icon, trend, color }) => (
-  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-    <div className="flex items-start justify-between">
-      <div className="flex-1">
-        <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl ${color} mb-4`}>
-          {icon}
-        </div>
-        <h3 className="text-gray-600 text-sm font-medium mb-1">{title}</h3>
-        <p className="text-3xl font-bold text-gray-900 mb-1">{value}</p>
-        {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+  <div style={styles.statCard}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div>
+        <div style={styles.quickActionIconBox(color)}>{icon}</div>
+        <h3 style={{ color: '#4B5563', fontSize: '0.875rem', fontWeight: 500, marginTop: '1rem' }}>{title}</h3>
+        <p style={{ fontSize: '1.875rem', fontWeight: 700, color: '#111827', margin: '0.25rem 0' }}>{value}</p>
+        {subtitle && <p style={{ fontSize: '0.875rem', color: '#6B7280' }}>{subtitle}</p>}
       </div>
-      {trend && (
-        <div className={`px-2 py-1 rounded-lg text-xs font-semibold ${trend > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-          {trend > 0 ? '+' : ''}{trend}%
+      {trend !== undefined && (
+        <div
+          style={{
+            padding: '0.25rem 0.5rem',
+            borderRadius: '0.5rem',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            backgroundColor: trend > 0 ? '#D1FAE5' : '#FEE2E2',
+            color: trend > 0 ? '#065F46' : '#991B1B',
+          }}
+        >
+          {trend > 0 ? '+' : ''}
+          {trend}%
         </div>
       )}
     </div>
   </div>
 );
 
-const QuickActionCard = ({ title, icon, color, action }) => (
-  <button
-    className="w-full bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group"
-    onClick={() => console.log(`Action: ${action}`)}
-  >
-    <div className="flex items-center space-x-3">
-      <div className={`${color} p-2 rounded-lg text-white group-hover:scale-110 transition-transform`}>
-        {icon}
-      </div>
-      <span className="text-gray-700 font-medium text-left">{title}</span>
-      <ChevronRight className="w-4 h-4 text-gray-400 ml-auto group-hover:text-gray-600" />
+const QuickActionButton = ({ label, icon, color }) => (
+  <div style={styles.quickActionCard}>
+    <div style={styles.quickActionLeft}>
+      <div style={styles.quickActionIconBox(color)}>{icon}</div>
+      <span style={styles.quickActionLabel}>{label}</span>
     </div>
-  </button>
+    <ChevronRight style={{ color: '#9CA3AF' }} />
+  </div>
 );
 
-const ActivityItem = ({ activity }) => (
-  <div className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-    <div className={`w-2 h-2 rounded-full mt-2 ${
-      activity.status === 'completed' ? 'bg-green-400' :
-      activity.status === 'new' ? 'bg-blue-400' :
-      activity.status === 'updated' ? 'bg-yellow-400' : 'bg-gray-400'
-    }`}></div>
-    <div className="flex-1">
-      <p className="text-sm text-gray-800">{activity.message}</p>
-      <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+const AppointmentOverview = ({ completed, upcoming, pending }) => (
+  <div style={styles.appointmentOverview}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <h2 style={{ fontWeight: 700, fontSize: 20, color: '#3a4d60', margin: 0 }}>
+        Appointment Overview
+      </h2>
+      <button
+        style={{
+          color: '#3272d5',
+          background: 'none',
+          border: 'none',
+          fontWeight: 600,
+          fontSize: 15,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6
+        }}
+        onClick={() => alert('View All Appointments')}
+      >
+        View All <ChevronRight size={17} />
+      </button>
+    </div>
+    <div style={styles.appointmentGrid}>
+      {/* Completed */}
+      <div style={styles.appointmentCard}>
+        <div style={styles.appointmentIconBox('#41d884')}>
+          <Clock color="white" size={30} />
+        </div>
+        <div style={styles.appointmentNumber('#16a34a')}>{completed}</div>
+        <div style={styles.appointmentLabel}>Completed</div>
+      </div>
+      {/* Upcoming */}
+      <div style={styles.appointmentCard}>
+        <div style={styles.appointmentIconBox('#4F8DFD')}>
+          <Calendar color="white" size={30} />
+        </div>
+        <div style={styles.appointmentNumber('#2563eb')}>{upcoming}</div>
+        <div style={styles.appointmentLabel}>Upcoming</div>
+      </div>
+      {/* Pending */}
+      <div style={styles.appointmentCard}>
+        <div style={styles.appointmentIconBox('#FBBF24')}>
+          <Clock color="white" size={30} />
+        </div>
+        <div style={styles.appointmentNumber('#d97706')}>{pending}</div>
+        <div style={styles.appointmentLabel}>Pending</div>
+      </div>
     </div>
   </div>
 );
 
 const UserDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  // Sample data for dashboard
   const dashboardStats = {
     vehicles: 3,
     activeListings: 2,
@@ -87,213 +244,76 @@ const UserDashboard = () => {
     avgRating: 4.8,
   };
 
-  const recentActivities = [
-    { id: 1, type: 'appointment', message: 'Service appointment completed for Honda Civic', time: '2 hours ago', status: 'completed' },
-    { id: 2, type: 'listing', message: 'New inquiry for your Outlander listing', time: '5 hours ago', status: 'new' },
-    { id: 3, type: 'valuation', message: 'Vehicle valuation updated for Premio', time: '1 day ago', status: 'updated' },
-    { id: 4, type: 'insurance', message: 'Insurance claim processed successfully', time: '2 days ago', status: 'completed' },
-  ];
-
   const quickActions = [
-    { title: 'Add New Vehicle', icon: <Plus className="w-5 h-5" />, action: 'add-vehicle', color: 'bg-blue-500' },
-    { title: 'Find Service Providers', icon: <Search className="w-5 h-5" />, action: 'find-providers', color: 'bg-green-500' },
-    { title: 'Book Appointment', icon: <Calendar className="w-5 h-5" />, action: 'book-appointment', color: 'bg-purple-500' },
-    { title: 'List Vehicle for Sale', icon: <Store className="w-5 h-5" />, action: 'list-vehicle', color: 'bg-orange-500' },
-    { title: 'Request Valuation', icon: <TrendingUp className="w-5 h-5" />, action: 'request-valuation', color: 'bg-indigo-500' },
-    { title: 'Claim Insurance', icon: <Shield className="w-5 h-5" />, action: 'claim-insurance', color: 'bg-red-500' },
-    { title: 'Vehicle History Report', icon: <FileText className="w-5 h-5" />, action: 'history-report', color: 'bg-teal-500' },
-    { title: 'Rate Service Provider', icon: <Star className="w-5 h-5" />, action: 'rate-provider', color: 'bg-yellow-500' },
+    { label: 'Add New Vehicle', icon: <Plus color="white" size={20} />, color: '#3B82F6' },
+    { label: 'Book Appointment', icon: <Calendar color="white" size={20} />, color: '#8B5CF6' },
+    { label: 'Request Valuation', icon: <TrendingUp color="white" size={20} />, color: '#6366F1' },
+    { label: 'Vehicle History Report', icon: <FileText color="white" size={20} />, color: '#14B8A6' },
+    { label: 'Find Service Providers', icon: <Search color="white" size={20} />, color: '#10B981' },
+    { label: 'List Vehicle for Sale', icon: <Store color="white" size={20} />, color: '#F97316' },
+    { label: 'Claim Insurance', icon: <Shield color="white" size={20} />, color: '#EF4444' },
+    { label: 'Rate Service Provider', icon: <Star color="white" size={20} />, color: '#FACC15' },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-100">
-      {/* Header start */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-10 py-1">
-          <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-sm text-gray-500">Welcome back, manage your automotive needs</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100">
-                <Bell className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-              </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100">
-                <Settings className="w-5 h-5" />
-              </button>
-              <div className="flex items-center bg-gray-100 rounded-full px-4 py-1.5 shadow-sm">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                <div className="mx-2 text-left">
-                  <p className="text-sm font-medium text-gray-900 leading-4">John Doe</p>
-                  <p className="text-xs text-gray-500 leading-4">Vehicle Owner</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      {/* Header end */}
+    <div style={styles.page}>
+      {/* Stat Cards */}
+      <div style={styles.statGrid}>
+        <StatCard
+          title="My Vehicles"
+          value={dashboardStats.vehicles}
+          subtitle="Active vehicles"
+          icon={<Car size={24} color="white" />}
+          color="#3B82F6"
+          trend={12}
+        />
+        <StatCard
+          title="Active Listings"
+          value={dashboardStats.activeListings}
+          subtitle={`${dashboardStats.totalEarnings.toLocaleString()} LKR potential`}
+          icon={<Store size={24} color="white" />}
+          color="#10B981"
+          trend={8}
+        />
+        <StatCard
+          title="Appointments"
+          value={dashboardStats.upcomingAppointments}
+          subtitle={`${dashboardStats.completedAppointments} completed this month`}
+          icon={<Calendar size={24} color="white" />}
+          color="#8B5CF6"
+          trend={-5}
+        />
+        <StatCard
+          title="Service Rating"
+          value={dashboardStats.avgRating}
+          subtitle="Average rating received"
+          icon={<Star size={24} color="white" />}
+          color="#FACC15"
+          trend={15}
+        />
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-10 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <StatCard
-            title="My Vehicles"
-            value={dashboardStats.vehicles}
-            subtitle="Active vehicles"
-            icon={<Car className="w-8 h-8 text-white" />}
-            color="bg-blue-500"
-            trend={12}
-          />
-          <StatCard
-            title="Active Listings"
-            value={dashboardStats.activeListings}
-            subtitle={`${dashboardStats.totalEarnings.toLocaleString()} LKR potential`}
-            icon={<Store className="w-8 h-8 text-white" />}
-            color="bg-green-500"
-            trend={8}
-          />
-          <StatCard
-            title="Appointments"
-            value={dashboardStats.upcomingAppointments}
-            subtitle={`${dashboardStats.completedAppointments} completed this month`}
-            icon={<Calendar className="w-8 h-8 text-white" />}
-            color="bg-purple-500"
-            trend={-5}
-          />
-          <StatCard
-            title="Service Rating"
-            value={dashboardStats.avgRating}
-            subtitle="Average rating received"
-            icon={<Star className="w-8 h-8 text-white" />}
-            color="bg-yellow-500"
-            trend={15}
-          />
-        </div>
-
-        {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Quick Actions and Appointments */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Quick Actions</h2>
-                <span className="text-sm text-gray-500">Choose an action to get started</span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {quickActions.map((action, index) => (
-                  <QuickActionCard key={index} {...action} />
-                ))}
-              </div>
-            </div>
-
-            {/* Appointment Overview */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Appointment Overview</h2>
-                <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1">
-                  <span>View All</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-green-50 rounded-xl border border-green-100">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Clock className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="text-2xl font-bold text-green-600">{dashboardStats.completedAppointments}</p>
-                  <p className="text-sm text-gray-600">Completed</p>
-                </div>
-                <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Calendar className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="text-2xl font-bold text-blue-600">{dashboardStats.upcomingAppointments}</p>
-                  <p className="text-sm text-gray-600">Upcoming</p>
-                </div>
-                <div className="text-center p-4 bg-orange-50 rounded-xl border border-orange-100">
-                  <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Clock className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="text-2xl font-bold text-orange-600">{dashboardStats.pendingAppointments}</p>
-                  <p className="text-sm text-gray-600">Pending</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Activities & Aside */}
-          <div className="space-y-8">
-            {/* Recent Activities */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
-                <History className="w-5 h-5 text-gray-400" />
-              </div>
-              <div className="space-y-1">
-                {recentActivities.map((activity) => (
-                  <ActivityItem key={activity.id} activity={activity} />
-                ))}
-              </div>
-              <button className="w-full mt-4 text-blue-600 hover:text-blue-700 text-sm font-medium py-2">
-                View All Activities
-              </button>
-            </div>
-
-            {/* Insurance Status */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Insurance Status</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="w-8 h-8 text-green-600" />
-                    <div>
-                      <p className="font-semibold text-gray-900">Active Claims</p>
-                      <p className="text-sm text-gray-600">1 in progress</p>
-                    </div>
-                  </div>
-                  <button className="text-green-600 hover:text-green-700">
-                    <Eye className="w-5 h-5" />
-                  </button>
-                </div>
-                <button className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl py-3 px-4 font-medium transition-all duration-200 transform hover:scale-105">
-                  File New Claim
-                </button>
-                <button className="w-full border border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl py-3 px-4 font-medium transition-colors">
-                  View Claim History
-                </button>
-              </div>
-            </div>
-
-            {/* Vehicle Valuations Summary */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Vehicle Values</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Outlander</span>
-                  <span className="text-green-600 font-bold">3.2M LKR</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Civic</span>
-                  <span className="text-green-600 font-bold">2.8M LKR</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Premio</span>
-                  <span className="text-green-600 font-bold">2.5M LKR</span>
-                </div>
-              </div>
-              <button className="w-full mt-4 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl py-3 font-medium transition-all duration-200 transform hover:scale-105">
-                Update Valuations
-              </button>
-            </div>
-          </div>
+      {/* Quick Actions */}
+      <div style={styles.quickActionSection}>
+        <h2 style={styles.quickActionTitle}>Quick Actions</h2>
+        <div style={styles.quickActionsGrid}>
+          {quickActions.map((action, idx) => (
+            <QuickActionButton
+              key={idx}
+              label={action.label}
+              icon={action.icon}
+              color={action.color}
+            />
+          ))}
         </div>
       </div>
+
+      {/* Appointment Overview (New Section) */}
+      <AppointmentOverview
+        completed={dashboardStats.completedAppointments}
+        upcoming={dashboardStats.upcomingAppointments}
+        pending={dashboardStats.pendingAppointments}
+      />
     </div>
   );
 };
