@@ -4,6 +4,7 @@
   --sky-blue: #7AB2D3;
   --navy-blue: #4A628A;
   --charcoal: #1A1A1A;
+  --success: #22c55e;
 }
 
 /* Base Hero Section */
@@ -138,8 +139,9 @@
 
 .hero-feature-modern:hover {
   transform: translateX(8px);
-  color: var(--sky-blue);
+  color: var(--success); /* Brings in a safe, vibrant green */
 }
+
 
 /* CTA Buttons */
 .hero-buttons-modern {
