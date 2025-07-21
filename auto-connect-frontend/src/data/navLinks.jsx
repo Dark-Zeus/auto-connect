@@ -18,6 +18,7 @@ import MyBookingServices from "@pages/VehicleOwner/MyBookingServices";
 import ServiceBookingForm from "@components/ServiceBookingForm"; 
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile";
 import AllVehiclesPage from "@pages/VehicleOwner/AllVehiclesPage";
+import UserDashboard from "@pages/VehicleOwner/UserDashboard";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -52,7 +53,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <UserDashboard/>,
     });
 
     nav.push({
