@@ -9,48 +9,48 @@ const SubscriptionPlans = () => {
   const planData = {
     plus: {
       monthly: {
-        costPerAd: 1090,
-        totalCost: 21800,
+        costPerAd: 700,
+        totalCost: 14000,
         validity: '1 Month',
         adsPerMonth: 20,
-        promotionVoucher: 13500
+        promotionVoucher: '3 Days Bump Up'
       },
       quarterly: {
-        costPerAd: 1035,
-        totalCost: 62130,
+        costPerAd: 550,
+        totalCost: 33000,
         validity: '3 Months',
         adsPerMonth: 20,
-        promotionVoucher: 40500
+        promotionVoucher: '5 Days Bump Up'
       },
       yearly: {
-        costPerAd: 872,
-        totalCost: 209280,
+        costPerAd: 400,
+        totalCost: 96000,
         validity: '12 Months',
         adsPerMonth: 20,
-        promotionVoucher: 162000
+        promotionVoucher: '7 Days Bump Up'
       }
     },
     premium: {
       monthly: {
-        costPerAd: 172,
-        totalCost: 34500,
+        costPerAd: 150,
+        totalCost: 30000,
         validity: '1 Month',
         adsPerMonth: 200,
-        promotionVoucher: 27000
+        promotionVoucher: '5 Days Bump Up'
       },
       quarterly: {
-        costPerAd: 163,
-        totalCost: 98325,
+        costPerAd: 115,
+        totalCost: 69000,
         validity: '3 Months',
         adsPerMonth: 200,
-        promotionVoucher: 81000
+        promotionVoucher: '7 Days Bump Up'
       },
       yearly: {
-        costPerAd: 138,
-        totalCost: 331200,
+        costPerAd: 80,
+        totalCost: 192000,
         validity: '12 Months',
         adsPerMonth: 200,
-        promotionVoucher: 324000
+        promotionVoucher: '9 Days Bump Up'
       }
     }
   };
@@ -123,8 +123,8 @@ const SubscriptionPlans = () => {
         <div className="tw:flex tw:items-center tw:text-gray-600">
           <Star className="tw:w-5 tw:h-5 tw:mr-3 tw:text-yellow-500" />
           <div>
-            <span className="tw:text-sm tw:text-gray-500">Free Promotion Voucher</span>
-            <div className="tw:font-semibold">LKR {data.promotionVoucher.toLocaleString()}</div>
+            <span className="tw:text-sm tw:text-gray-500">Free Promotion</span>
+            <div className="tw:font-semibold">{data.promotionVoucher.toLocaleString()}</div>
           </div>
         </div>
       </div>
