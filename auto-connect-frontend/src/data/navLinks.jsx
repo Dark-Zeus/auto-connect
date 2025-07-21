@@ -21,8 +21,6 @@ import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to chan
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
 
- import VehiclePassportDashboard from "../pages/VehicleOwner/VehiclePassportDashboard";
-
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
 import Subscriptions from "@pages/Admin/Subscriptions";
