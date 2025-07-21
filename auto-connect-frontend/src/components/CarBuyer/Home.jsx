@@ -156,7 +156,7 @@ const Home = () => {
                 className="tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:px-10 tw:py-5 tw:rounded-full tw:text-xl tw:font-semibold tw:shadow-xl tw:flex tw:items-center tw:gap-4 tw:hover:shadow-2xl tw:transition-all tw:duration-400"
                 whileHover={{ scale: 1.08, backgroundColor: "#002830", cursor: "pointer" }}
                 whileTap={{ scale: 0.92 }}
-                onClick={() => navigate('/buyvehicles')}
+                onClick={() => navigate('/marketplace/buy')}
               >
                 Get Started Today
                 <ArrowRight className="tw:w-6 tw:h-6" />
@@ -176,7 +176,7 @@ const Home = () => {
             variants={itemVariants}
             whileHover="hover"
             className="tw:group tw:cursor-pointer"
-            onClick={() => navigate('/buyvehicles')}
+            onClick={() => navigate('/marketplace/buy')}
           >
             <motion.div
               variants={cardHoverVariants}
@@ -201,7 +201,7 @@ const Home = () => {
             variants={itemVariants}
             whileHover="hover"
             className="tw:group tw:cursor-pointer"
-            onClick={() => navigate('/sell')}
+            onClick={() => navigate('/marketplace/sell')}
           >
             <motion.div
               variants={cardHoverVariants}
@@ -226,7 +226,7 @@ const Home = () => {
             variants={itemVariants}
             whileHover="hover"
             className="tw:group tw:cursor-pointer"
-            onClick={() => navigate('/checkreports')}
+            onClick={() => navigate('/marketplace/checkreports')}
           >
             <motion.div
               variants={cardHoverVariants}

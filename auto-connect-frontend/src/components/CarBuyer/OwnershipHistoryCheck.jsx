@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, Check, Info, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import OverlayWindow from '@components/OverlayWindow';
+import ReportAvailable from '@components/CarBuyer/ReportAvailable';
 
 const OwnershipHistoryCheck = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -10,6 +11,9 @@ const OwnershipHistoryCheck = () => {
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
   };
+
+  const [showReport, setShowReport] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const historyChecks = [
     { label: 'Not recorded as stolen', passed: true },
@@ -154,10 +158,20 @@ const OwnershipHistoryCheck = () => {
                   For peace of mind, you can purchase a Vehicle Check with
                   additional checks including accidents recorded, service/repair history, emission tests, previous keepers, mileage, color. Terms and conditions apply.
                 </p>
-                <button className="tw:w-full tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:text-base tw:font-semibold tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-colors tw:mt-2" onClick={() => navigate('/vehiclehistory')}>
+                <button className="tw:w-full tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:py-3 tw:px-4 tw:rounded-lg tw:text-base tw:font-semibold tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:hover:cursor-pointer tw:transition-colors tw:mt-2" 
+                onClick={() => { setShowReport(true); setIsOpen(true); }}>
                   Buy a Full Vehicle Check
                 </button>
               </div>
+
+              {showReport && (
+                <div className="tw:mt-4">
+                  <ReportAvailable
+                    isOpen={isOpen}
+                    onClose={() => { setIsOpen(false); setShowReport(false); }}
+                  />
+                </div>
+              )}
 
               <div className="tw:mt-6">
                 <p className="tw:text-base tw:text-gray-600 tw:font-medium">

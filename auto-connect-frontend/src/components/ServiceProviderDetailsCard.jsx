@@ -29,23 +29,15 @@ const ServiceProviderCard = ({
           flexWrap: "wrap",
         }}
       >
-        {center.name}
-        {center.verified && (
-          <Chip
-            label="Verified"
-            size="small"
-            color="success"
-            sx={{ ml: 0, fontSize: 12, fontWeight: 500 }}
-          />
-        )}
-        {center.premium && (
-          <Chip
-            label="Premium"
-            size="small"
-            color="warning"
-            sx={{ ml: 0, fontSize: 12, fontWeight: 500 }}
-          />
-        )}
+        <Typography sx={{ fontSize:18, fontWeight: 1000 }}>
+          {center.name}
+        </Typography>
+        
+        <Typography sx={{ fontSize: 10, fontWeight: 500 }}>
+          {center.rating} ({center.reviews} reviews)
+        </Typography>
+        <Star fontSize="small" sx={{ color: "#f39c12", mr: 0 }} />
+       
       </Typography>
       <Box display="flex" alignItems="center" mt={1}>
         <LocationOn fontSize="small" sx={{ mr: 1 }} />
@@ -57,10 +49,8 @@ const ServiceProviderCard = ({
         <Typography sx={{ fontSize: 14, fontWeight: 500, mr: 2 }}>
           📞 {center.phone}
         </Typography>
-        <Star fontSize="small" sx={{ color: "#f39c12", mr: 1 }} />
-        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-          {center.rating} ({center.reviews} reviews)
-        </Typography>
+        
+        
       </Box>
       <Box mt={2}>
         <Typography sx={{ fontSize: 14, fontWeight: 600, mb: 0.5 }}>
