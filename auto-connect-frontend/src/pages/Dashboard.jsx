@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import { Route, Routes, useLocation } from "react-router";
 import { toast } from "react-toastify";
 
@@ -28,10 +28,10 @@ function Dashboard({ children }) {
     
     // Initialize dev user if not set
     if (isDevMode && !userContext) {
-        setUserContext({
-            userName: "sunera",
-            role: "service_center"
-        });
+        // setUserContext({
+        //     userName: "sunera",
+        //     role: "vehicle_owner"
+        // });
     }
 
     const user = userContext; // For compatibility with existing code
@@ -40,6 +40,10 @@ function Dashboard({ children }) {
         toast.error("You must be logged in to access the dashboard.");
         return null; // or redirect to login page
     }
+
+    useEffect(() => {
+        console.log("Current user:", user);
+    }, [user]);
     
     const navLinks = getNavLinks(user);
 
@@ -181,7 +185,7 @@ const DevUserSwitcher = ({ currentUser, onUserChange }) => {
     ];
 
     const handleRoleChange = (newRole, newUserName) => {
-        const newUser = { userName: newUserName, role: newRole };
+        const newUser = { ...currentUser, role: newRole };
         onUserChange(newUser); // This now directly calls setUserContext
         setIsOpen(false);
         

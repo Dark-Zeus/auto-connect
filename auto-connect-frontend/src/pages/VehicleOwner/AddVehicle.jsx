@@ -67,7 +67,7 @@ import "./AddVehicle.css";
 
 const AddVehicles = () => {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { userContext: user } = useContext(UserContext);
 
   // State management
   const [vehicles, setVehicles] = useState([]);
@@ -95,15 +95,16 @@ const AddVehicles = () => {
 
   // Check if user is vehicle owner
   useEffect(() => {
+    console.log("User context:", user);
     if (!user) {
       toast.error("Please log in to access this page.");
-      navigate("/auth");
+    //  navigate("/auth");
       return;
     }
 
     if (user.role !== "vehicle_owner") {
       toast.error("Access denied. Only vehicle owners can access this page.");
-      navigate("/dashboard");
+     // navigate("/dashboard");
       return;
     }
 
@@ -111,7 +112,7 @@ const AddVehicles = () => {
       toast.error(
         "NIC number is required to manage vehicles. Please complete your profile."
       );
-      navigate("/profile");
+    //  navigate("/profile");
       return;
     }
 
