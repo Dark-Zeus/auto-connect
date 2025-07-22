@@ -1,4 +1,4 @@
-import { resolveExample } from "./paramResolvers/exampleResolver"
+import { resolveExample } from "./paramResolvers/exampleResolver";
 
 // Vehicle Owner
 import UserDashboard from "@pages/VehicleOwner/UserDashboard";
@@ -19,8 +19,8 @@ import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
-
-
+import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
+import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -32,6 +32,7 @@ import Notifications from "@pages/Admin/Notifications";
 import Updates from "@pages/Admin/Updates";
 import Analytics from "@pages/Admin/Analytics";
 import Transactions from "@pages/Admin/Transactions";
+import UserContacts from "@pages/Admin/UserContacts";
 
 // Service Provider
 import AddServicePage from "@pages/ServiceProvider/AddServicePage";
@@ -41,11 +42,15 @@ import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashbo
 import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
+import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
 // Insurance Agent
-import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
-import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
 
+import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
+import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
+import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
+import VehicleList from "@pages/InsuranceCompany/VehicleList";
+import { Add } from "@mui/icons-material";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -78,7 +83,7 @@ function getNavLinks(userContext) {
           path: [`/vehicles/add`],
           title: "Add New Vehicle",
           icon: "add_circle",
-          page: <VehicleRegistrationPage />,
+          page: <AddVehicles  />,
         },
         {
           path: [`/vehicles/:vehicleId`],
@@ -130,7 +135,6 @@ function getNavLinks(userContext) {
           title: "My Bookings",
           icon: "event_available",
           page: <MyBookingServices />,
-          
         },
         // {
         //   path: [`/services/history`],
@@ -246,36 +250,42 @@ function getNavLinks(userContext) {
       },
       sub: [
         {
+          path: [`/insurance`],
+          title: "My Insurance",
+          icon: "security",
+          page: <InsuranceDetails />,
+        },
+        {
           path: [`/insurance/claims/new`],
           title: "File New Claim",
           icon: "report_problem",
           page: <InsuranceClaimPage />,
         },
-        {
-          path: [`/insurance`],
-          title: "Insurance Dashboard",
-          icon: "security",
-          page: <InsuranceClaims />,
-        },
-        {
-          path: [`/insurance/policies`],
-          title: "Policy Management",
-          icon: "policy",
-          page: "Policy Management",
-        },
+        // {
+        //   path: [`/insurance`],
+        //   title: "Insurance Dashboard",
+        //   icon: "security",
+        //   page: <InsuranceClaims />,
+        // },
+        // {
+        //   path: [`/insurance/policies`],
+        //   title: "Policy Management",
+        //   icon: "policy",
+        //   page: "Policy Management",
+        // },
 
-        {
-          path: [`/insurance/claims/history`],
-          title: "Claim History",
-          icon: "history",
-          page: "Claim History",
-        },
-        {
-          path: [`/insurance/accidents`],
-          title: "Accident Reports",
-          icon: "warning",
-          page: "Accident Reports",
-        },
+        // {
+        //   path: [`/insurance/claims/history`],
+        //   title: "Claim History",
+        //   icon: "history",
+        //   page: "Claim History",
+        // },
+        // {
+        //   path: [`/insurance/accidents`],
+        //   title: "Accident Reports",
+        //   icon: "warning",
+        //   page: "Accident Reports",
+        // },
       ],
     });
 
@@ -285,8 +295,6 @@ function getNavLinks(userContext) {
       icon: "assignment",
       page: <VehiclePassportDashboard />,
     });
-
-
 
     // nav.push({
     //   title: "Documents",
@@ -374,12 +382,15 @@ function getNavLinks(userContext) {
   }
 
   // SERVICE PROVIDER Navigation
-  if (userContext.role === "service_center" || userContext.role === "repair_center") {
+  if (
+    userContext.role === "service_center" ||
+    userContext.role === "repair_center"
+  ) {
     nav.push({
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <ServiceProviderDashboard />,
     });
 
     // nav.push({
@@ -475,14 +486,14 @@ function getNavLinks(userContext) {
           icon: "verified",
           page: <VehicleServiceUpdatePage />, // TODO: Create this page
         },
-      ]
+      ],
     });
 
     nav.push({
       title: "Reviews & Feedback",
       icon: "feedback",
       page: <ServiceProviderReviews />,
-    })
+    });
 
     // nav.push({
     //   title: "Inventory",
@@ -654,7 +665,14 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <InsuranceDashboard />,
+    });
+
+    nav.push({
+      path: [`/vehicles`],
+      title: "Vehicle List",
+      icon: "directions_car",
+      page: <VehicleList />,
     });
 
     nav.push({
@@ -666,31 +684,31 @@ function getNavLinks(userContext) {
         icon: "assignment",
       },
       sub: [
-        {
-          path: [`/claims`],
-          title: "Claims Dashboard",
-          icon: "assignment",
-          page: "Claims Dashboard",
-        },
+        // {
+        //   path: [`/claims`],
+        //   title: "Claims Dashboard",
+        //   icon: "assignment",
+        //   page: "Claims Dashboard",
+        // },
         {
           path: [`/claims/active`],
           title: "Active Claims",
           icon: "pending_actions",
-          page: "Active Claims",
+          page: <InsuranceClaims />,
         },
-        {
-          path: [`/claims/processing`],
-          title: "Claim Processing",
-          icon: "process",
-          page: "Claim Processing",
-        },
-        {
-          path: [`/claims/assessment`],
-          title: "Damage Assessment",
-          icon: "assessment",
-          page: "Damage Assessment",
-        }
-      ]
+        // {
+        //   path: [`/claims/processing`],
+        //   title: "Claim Processing",
+        //   icon: "process",
+        //   page: "Claim Processing",
+        // },
+        // {
+        //   path: [`/claims/assessment`],
+        //   title: "Damage Assessment",
+        //   icon: "assessment",
+        //   page: "Damage Assessment",
+        // }
+      ],
     });
 
     nav.push({
@@ -708,212 +726,212 @@ function getNavLinks(userContext) {
           icon: "policy",
           page: "Policy Dashboard",
         },
-        {
-          path: [`/policies/create`],
-          title: "Create New Policy",
-          icon: "add_circle",
-          page: "Create New Policy",
-        },
-        {
-          path: [`/policies/premium`],
-          title: "Premium Management",
-          icon: "attach_money",
-          page: "Premium Management",
-        },
-        {
-          path: [`/policies/analytics`],
-          title: "Policy Analytics",
-          icon: "analytics",
-          page: "Policy Analytics",
-        }
-      ]
+        // {
+        //   path: [`/policies/create`],
+        //   title: "Create New Policy",
+        //   icon: "add_circle",
+        //   page: "Create New Policy",
+        // },
+        // {
+        //   path: [`/policies/premium`],
+        //   title: "Premium Management",
+        //   icon: "attach_money",
+        //   page: "Premium Management",
+        // },
+        // {
+        //   path: [`/policies/analytics`],
+        //   title: "Policy Analytics",
+        //   icon: "analytics",
+        //   page: "Policy Analytics",
+        // }
+      ],
     });
 
-    nav.push({
-      title: "Vehicle Assessment",
-      icon: "assessment",
-      page: "Vehicle Assessment",
-      defLinkSettings: {
-        title: "Assessment Dashboard",
-        icon: "assessment",
-      },
-      sub: [
-        {
-          path: [`/assessment`],
-          title: "Assessment Dashboard",
-          icon: "assessment",
-          page: "Assessment Dashboard",
-        },
-        {
-          path: [`/assessment/damage-reports`],
-          title: "Damage Reports",
-          icon: "report_problem",
-          page: "Damage Reports",
-        },
-        {
-          path: [`/assessment/valuation`],
-          title: "Valuation Tools",
-          icon: "calculate",
-          page: "Valuation Tools",
-        },
-        {
-          path: [`/assessment/inspections`],
-          title: "Inspection Records",
-          icon: "search",
-          page: "Inspection Records",
-        }
-      ]
-    });
+    // nav.push({
+    //   title: "Vehicle Assessment",
+    //   icon: "assessment",
+    //   page: "Vehicle Assessment",
+    //   defLinkSettings: {
+    //     title: "Assessment Dashboard",
+    //     icon: "assessment",
+    //   },
+    //   sub: [
+    //     {
+    //       path: [`/assessment`],
+    //       title: "Assessment Dashboard",
+    //       icon: "assessment",
+    //       page: "Assessment Dashboard",
+    //     },
+    //     {
+    //       path: [`/assessment/damage-reports`],
+    //       title: "Damage Reports",
+    //       icon: "report_problem",
+    //       page: "Damage Reports",
+    //     },
+    //     {
+    //       path: [`/assessment/valuation`],
+    //       title: "Valuation Tools",
+    //       icon: "calculate",
+    //       page: "Valuation Tools",
+    //     },
+    //     {
+    //       path: [`/assessment/inspections`],
+    //       title: "Inspection Records",
+    //       icon: "search",
+    //       page: "Inspection Records",
+    //     }
+    //   ]
+    // });
 
-    nav.push({
-      title: "Service Authorization",
-      icon: "verified_user",
-      page: "Service Authorization",
-      defLinkSettings: {
-        title: "Authorization Dashboard",
-        icon: "verified_user",
-      },
-      sub: [
-        {
-          path: [`/authorization`],
-          title: "Authorization Dashboard",
-          icon: "verified_user",
-          page: "Authorization Dashboard",
-        },
-        {
-          path: [`/authorization/repairs`],
-          title: "Repair Approvals",
-          icon: "check_circle",
-          page: "Repair Approvals",
-        },
-        {
-          path: [`/authorization/verification`],
-          title: "Service Verification",
-          icon: "verified",
-          page: "Service Verification",
-        },
-        {
-          path: [`/authorization/history`],
-          title: "Authorization History",
-          icon: "history",
-          page: "Authorization History",
-        }
-      ]
-    });
+    // nav.push({
+    //   title: "Service Authorization",
+    //   icon: "verified_user",
+    //   page: "Service Authorization",
+    //   defLinkSettings: {
+    //     title: "Authorization Dashboard",
+    //     icon: "verified_user",
+    //   },
+    //   sub: [
+    //     {
+    //       path: [`/authorization`],
+    //       title: "Authorization Dashboard",
+    //       icon: "verified_user",
+    //       page: "Authorization Dashboard",
+    //     },
+    //     {
+    //       path: [`/authorization/repairs`],
+    //       title: "Repair Approvals",
+    //       icon: "check_circle",
+    //       page: "Repair Approvals",
+    //     },
+    //     {
+    //       path: [`/authorization/verification`],
+    //       title: "Service Verification",
+    //       icon: "verified",
+    //       page: "Service Verification",
+    //     },
+    //     {
+    //       path: [`/authorization/history`],
+    //       title: "Authorization History",
+    //       icon: "history",
+    //       page: "Authorization History",
+    //     }
+    //   ]
+    // });
 
-    nav.push({
-      title: "Financial Management",
-      icon: "account_balance",
-      page: "Financial Management",
-      defLinkSettings: {
-        title: "Financial Dashboard",
-        icon: "account_balance",
-      },
-      sub: [
-        {
-          path: [`/financial`],
-          title: "Financial Dashboard",
-          icon: "account_balance",
-          page: "Financial Dashboard",
-        },
-        {
-          path: [`/financial/settlements`],
-          title: "Settlements",
-          icon: "handshake",
-          page: "Settlements",
-        },
-        {
-          path: [`/financial/payments`],
-          title: "Payment Processing",
-          icon: "payment",
-          page: "Payment Processing",
-        },
-        {
-          path: [`/financial/reports`],
-          title: "Financial Reports",
-          icon: "trending_up",
-          page: "Financial Reports",
-        },
-        {
-          path: [`/financial/budget`],
-          title: "Budget Management",
-          icon: "account_balance_wallet",
-          page: "Budget Management",
-        }
-      ]
-    });
+    // nav.push({
+    //   title: "Financial Management",
+    //   icon: "account_balance",
+    //   page: "Financial Management",
+    //   defLinkSettings: {
+    //     title: "Financial Dashboard",
+    //     icon: "account_balance",
+    //   },
+    //   sub: [
+    //     {
+    //       path: [`/financial`],
+    //       title: "Financial Dashboard",
+    //       icon: "account_balance",
+    //       page: "Financial Dashboard",
+    //     },
+    //     {
+    //       path: [`/financial/settlements`],
+    //       title: "Settlements",
+    //       icon: "handshake",
+    //       page: "Settlements",
+    //     },
+    //     {
+    //       path: [`/financial/payments`],
+    //       title: "Payment Processing",
+    //       icon: "payment",
+    //       page: "Payment Processing",
+    //     },
+    //     {
+    //       path: [`/financial/reports`],
+    //       title: "Financial Reports",
+    //       icon: "trending_up",
+    //       page: "Financial Reports",
+    //     },
+    //     {
+    //       path: [`/financial/budget`],
+    //       title: "Budget Management",
+    //       icon: "account_balance_wallet",
+    //       page: "Budget Management",
+    //     }
+    //   ]
+    // });
 
-    nav.push({
-      title: "Risk Management",
-      icon: "shield",
-      page: "Risk Management",
-      defLinkSettings: {
-        title: "Risk Dashboard",
-        icon: "shield",
-      },
-      sub: [
-        {
-          path: [`/risk`],
-          title: "Risk Dashboard",
-          icon: "shield",
-          page: "Risk Dashboard",
-        },
-        {
-          path: [`/risk/assessment`],
-          title: "Risk Assessment",
-          icon: "assessment",
-          page: "Risk Assessment",
-        },
-        {
-          path: [`/risk/fraud`],
-          title: "Fraud Detection",
-          icon: "gavel",
-          page: "Fraud Detection",
-        },
-        {
-          path: [`/risk/compliance`],
-          title: "Compliance Monitoring",
-          icon: "rule",
-          page: "Compliance Monitoring",
-        }
-      ]
-    });
+    // nav.push({
+    //   title: "Risk Management",
+    //   icon: "shield",
+    //   page: "Risk Management",
+    //   defLinkSettings: {
+    //     title: "Risk Dashboard",
+    //     icon: "shield",
+    //   },
+    //   sub: [
+    //     {
+    //       path: [`/risk`],
+    //       title: "Risk Dashboard",
+    //       icon: "shield",
+    //       page: "Risk Dashboard",
+    //     },
+    //     {
+    //       path: [`/risk/assessment`],
+    //       title: "Risk Assessment",
+    //       icon: "assessment",
+    //       page: "Risk Assessment",
+    //     },
+    //     {
+    //       path: [`/risk/fraud`],
+    //       title: "Fraud Detection",
+    //       icon: "gavel",
+    //       page: "Fraud Detection",
+    //     },
+    //     {
+    //       path: [`/risk/compliance`],
+    //       title: "Compliance Monitoring",
+    //       icon: "rule",
+    //       page: "Compliance Monitoring",
+    //     }
+    //   ]
+    // });
 
-    nav.push({
-      title: "Network Management",
-      icon: "hub",
-      page: "Network Management",
-      defLinkSettings: {
-        title: "Network Dashboard",
-        icon: "hub",
-      },
-      sub: [
-        {
-          path: [`/network`],
-          title: "Network Dashboard",
-          icon: "hub",
-          page: "Network Dashboard",
-        },
-        {
-          path: [`/network/partners`],
-          title: "Partner Management",
-          icon: "people",
-          page: "Partner Management",
-        },
-        {
-          path: [`/network/performance`],
-          title: "Performance Monitoring",
-          icon: "speed",
-          page: "Performance Monitoring",
-        },
-        {
-          path: [`/network/contracts`],
-          title: "Contract Management",
-          icon: "description",
-          page: "Contract Management",
-        }
-      ]
-    });
+    // nav.push({
+    //   title: "Network Management",
+    //   icon: "hub",
+    //   page: "Network Management",
+    //   defLinkSettings: {
+    //     title: "Network Dashboard",
+    //     icon: "hub",
+    //   },
+    //   sub: [
+    //     {
+    //       path: [`/network`],
+    //       title: "Network Dashboard",
+    //       icon: "hub",
+    //       page: "Network Dashboard",
+    //     },
+    //     {
+    //       path: [`/network/partners`],
+    //       title: "Partner Management",
+    //       icon: "people",
+    //       page: "Partner Management",
+    //     },
+    //     {
+    //       path: [`/network/performance`],
+    //       title: "Performance Monitoring",
+    //       icon: "speed",
+    //       page: "Performance Monitoring",
+    //     },
+    //     {
+    //       path: [`/network/contracts`],
+    //       title: "Contract Management",
+    //       icon: "description",
+    //       page: "Contract Management",
+    //     }
+    //   ]
+    // });
 
     nav.push({
       title: "Profile",
@@ -942,19 +960,19 @@ function getNavLinks(userContext) {
           icon: "contact_phone",
           page: "Contact Details",
         },
-        {
-          path: [`/profile/preferences`],
-          title: "Preferences",
-          icon: "settings",
-          page: "Preferences",
-        },
-        {
-          path: [`/profile/security`],
-          title: "Security Settings",
-          icon: "lock",
-          page: "Security Settings",
-        }
-      ]
+        // {
+        //   path: [`/profile/preferences`],
+        //   title: "Preferences",
+        //   icon: "settings",
+        //   page: "Preferences",
+        // },
+        // {
+        //   path: [`/profile/security`],
+        //   title: "Security Settings",
+        //   icon: "lock",
+        //   page: "Security Settings",
+        // }
+      ],
     });
   }
 
@@ -971,7 +989,7 @@ function getNavLinks(userContext) {
       path: [`/subscriptions`],
       title: "Subscriptions",
       icon: "subscriptions",
-      page: <Subscriptions />
+      page: <Subscriptions />,
     });
 
     nav.push({
@@ -1000,8 +1018,8 @@ function getNavLinks(userContext) {
           title: "Service Centers",
           icon: "build",
           page: <ServiceCenters />,
-        }
-      ]
+        },
+      ],
     });
 
     nav.push({
@@ -1016,7 +1034,7 @@ function getNavLinks(userContext) {
       title: "Transaction Management",
       icon: "account_balance_wallet",
       page: <Transactions />,
-    })
+    });
 
     nav.push({
       path: [`/updates`],
@@ -1220,9 +1238,10 @@ function getNavLinks(userContext) {
     // });
 
     nav.push({
+      path: [`/usercontacts`],
       title: "Support & Help",
       icon: "help",
-      page: "Support & Help",
+      page: <UserContacts />,
       defLinkSettings: {
         title: "Help Desk",
         icon: "help_center",
@@ -1260,7 +1279,7 @@ function getNavLinks(userContext) {
 }
 
 function processNavLinks(nav) {
-  nav.forEach(navItem => {
+  nav.forEach((navItem) => {
     // Check main nav items for subNav
     if (navItem.subNav && Array.isArray(navItem.subNav)) {
       const defaultItem = {
@@ -1268,21 +1287,21 @@ function processNavLinks(nav) {
         title: navItem.defLinkSettings?.title || navItem.title || "Default",
         page: navItem.page,
         icon: navItem.defLinkSettings?.icon || navItem.icon || "home",
-        paramResolvers: navItem.paramResolvers
+        paramResolvers: navItem.paramResolvers,
       };
       navItem.subNav.unshift(defaultItem);
     }
 
     // Check sub items for subNav
     if (navItem.sub) {
-      navItem.sub.forEach(subItem => {
+      navItem.sub.forEach((subItem) => {
         if (subItem.subNav && Array.isArray(subItem.subNav)) {
           const defaultItem = {
             path: subItem.path,
             title: "Default",
             page: subItem.page,
             icon: subItem.icon,
-            paramResolvers: subItem.paramResolvers
+            paramResolvers: subItem.paramResolvers,
           };
           subItem.subNav.unshift(defaultItem);
         }

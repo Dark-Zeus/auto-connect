@@ -55,15 +55,15 @@ import {
   CloudDownload as ExportIcon,
   Info as InfoIcon,
 } from "@mui/icons-material";
-import { UserContext } from "../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import {
   vehicleAPI,
   handleVehicleError,
   handleVehicleSuccess,
   apiDownloadFile,
-} from "../utils/axios";
-import VehicleRegistrationForm from "../components/VehicleRegistrationForm";
-import "./AddVehicles.css";
+} from "../../utils/axios";
+import VehicleRegistrationForm from "../../components/VehicleRegistrationForm";
+import "./AddVehicle.css";
 
 const AddVehicles = () => {
   const navigate = useNavigate();
