@@ -1,16 +1,39 @@
 import React, { useState } from "react";
 import PaymentFilterBox from "@components/AdminComponents/PaymentFilterBox"; // adjust path as needed
 
+const fromNames = ["Rashmika Dilmin", "Kasun Jayasuriya", "Nimasha Fernando", "Tharindu Perera", "Dilshan Silva", "Saman Kumara", "Chathura Bandara", "Nadeesha Perera", "Kavindu Perera", "Sahan Jayasinghe"];
+const toNames = ["Super Wheels Service Center", "City Auto Service", "AutoTech Garage", "QuickFix Motors", "Speedy Repairs", "Elite Auto Care", "Precision Mechanics", "Pro Auto Solutions", "Rapid Repairs", "Expert Auto Service"];
+const dates = [
+  "2025-07-01",
+  "2025-07-02",
+  "2025-07-03",
+  "2025-07-04",
+  "2025-07-05",
+  "2025-07-06",
+  "2025-07-07",
+  "2025-07-08",
+];
+const times = [
+  "09:00 AM",
+  "10:30 AM",
+  "12:00 PM",
+  "01:30 PM",
+  "03:00 PM",
+  "04:30 PM",
+  "06:00 PM",
+];
+
 const paymentData = Array.from({ length: 47 }, (_, i) => ({
   id: i + 1,
-  date: "2025-07-08",
-  time: "10:30 AM",
-  amount: `LKR ${(3000 + i * 50).toLocaleString()}.00`,
-  from: i % 2 === 0 ? "Rashmika Dilmin" : "Kasun Jayasuriya",
-  to: i % 3 === 0 ? "Super Wheels Service Center" : "City Auto Service",
+  date: dates[i % dates.length],
+  time: times[i % times.length],
+  amount: `LKR ${(3000 + i * 200).toLocaleString()}.00`,
+  from: fromNames[i % fromNames.length],
+  to: toNames[i % toNames.length],
   method: i % 2 === 0 ? "Credit Card" : "Bank Transfer",
   status: i % 4 === 0 ? "Pending" : "Completed",
 }));
+
 
 const ITEMS_PER_PAGE = 20;
 

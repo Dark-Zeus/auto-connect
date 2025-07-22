@@ -9,7 +9,7 @@ export default function AddPlanModal({ onSave, onClose }) {
     costPerAd: "",
     validityPeriod: "",
     adsPerMonth: "",
-    promotionVoucher: "",
+    freePromotion: "",
   });
 
   const handleChange = (e) => {
@@ -30,7 +30,7 @@ export default function AddPlanModal({ onSave, onClose }) {
     costPerAd: <Check className="tw:w-5 tw:h-5 tw:text-green-600" />,
     validityPeriod: <Shield className="tw:w-5 tw:h-5 tw:text-blue-500" />,
     adsPerMonth: <Users className="tw:w-5 tw:h-5 tw:text-indigo-500" />,
-    promotionVoucher: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
+    freePromotion: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
   };
 
   // Field definitions as a variable (not inline)
@@ -57,9 +57,9 @@ export default function AddPlanModal({ onSave, onClose }) {
       placeholder: "Enter ads per month",
     },
     {
-      label: "Promotion Voucher",
+      label: "Free Promotion",
       name: "promotionVoucher",
-      placeholder: "Enter voucher value",
+      placeholder: "Enter promotion days",
     },
   ];
 

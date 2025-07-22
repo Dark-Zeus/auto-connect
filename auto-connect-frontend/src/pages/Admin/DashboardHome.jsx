@@ -26,15 +26,16 @@ const dataTrafficLocation = [
   { name: "AutoFix", value: 400 },
   { name: "QuickServe", value: 300 },
   { name: "SpeedyAuto", value: 360 },
-  { name: "Center1", value: 200 },
-  { name: "Center2", value: 100 },
+  { name: "CarFix", value: 200 },
+  { name: "GreenGrage", value: 100 },
 ];
 
 const dataTrafficDevice = [
-  { device: "June", users: 300 },
-  { device: "May", users: 500 },
+  { device: "March", users: 200 },
   { device: "April", users: 300 },
-  { device: "March", users: 100 },
+  { device: "May", users: 500 },
+  { device: "June", users: 300 },
+  { device: "July", users: 100 },
 ];
 
 const COLORS = ["#4F46E5", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"];
@@ -43,13 +44,13 @@ const latestUpdates = [
   { serviceCenter: "AutoFix", date: "2025-06-20", time: "10:30 AM", district: "Colombo", vehicleNumber: "WP AB 1234", type: "Repair" },
   { serviceCenter: "QuickServe", date: "2025-06-19", time: "02:15 PM", district: "Kandy", vehicleNumber: "WP XY 9876", type: "Maintenance" },
   { serviceCenter: "SpeedyAuto", date: "2025-06-18", time: "09:00 AM", district: "Galle", vehicleNumber: "WP CD 5678", type: "Inspection" },
-  { serviceCenter: "AutoFix", date: "2025-06-17", time: "11:45 AM", district: "Matara", vehicleNumber: "WP EF 4321", type: "Repair" },
-  { serviceCenter: "QuickServe", date: "2025-06-16", time: "03:20 PM", district: "Colombo", vehicleNumber: "WP GH 8765", type: "Maintenance" },
-  { serviceCenter: "SpeedyAuto", date: "2025-06-15", time: "08:30 AM", district: "Kandy", vehicleNumber: "WP IJ 3456", type: "Inspection" },
-  { serviceCenter: "AutoFix", date: "2025-06-14", time: "10:10 AM", district: "Galle", vehicleNumber: "WP KL 7890", type: "Repair" },
-  { serviceCenter: "QuickServe", date: "2025-06-13", time: "01:00 PM", district: "Matara", vehicleNumber: "WP MN 2345", type: "Maintenance" },
-  { serviceCenter: "SpeedyAuto", date: "2025-06-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OP 6789", type: "Inspection" },
-  { serviceCenter: "AutoFix", date: "2025-06-11", time: "11:25 AM", district: "Kandy", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoHub", date: "2025-06-17", time: "11:45 AM", district: "Matara", vehicleNumber: "WP EF 4321", type: "Repair" },
+  { serviceCenter: "CarZone", date: "2025-06-16", time: "03:20 PM", district: "Moratuwa", vehicleNumber: "WP GH 8765", type: "Maintenance" },
+  { serviceCenter: "GreenGrage", date: "2025-06-15", time: "08:30 AM", district: "Panadura", vehicleNumber: "WP IJ 3456", type: "Inspection" },
+  { serviceCenter: "AutoExpress", date: "2025-06-14", time: "10:10 AM", district: "Galle", vehicleNumber: "WP KL 7890", type: "Repair" },
+  { serviceCenter: "QuickFix", date: "2025-06-13", time: "01:00 PM", district: "Anuradapura", vehicleNumber: "WP MN 2345", type: "Maintenance" },
+  { serviceCenter: "EliteAuto", date: "2025-06-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OP 6789", type: "Inspection" },
+  { serviceCenter: "GrageHub", date: "2025-06-11", time: "11:25 AM", district: "Badulla", vehicleNumber: "WP QR 1234", type: "Repair" },
 ];
 
 const renderActiveShape = (props) => {

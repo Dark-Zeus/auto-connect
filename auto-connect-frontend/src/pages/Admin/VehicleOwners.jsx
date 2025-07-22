@@ -2,13 +2,14 @@ import React, { useState, useMemo } from "react";
 import VehicleOwnerCard from "@components/AdminComponents/VehicleOwners/VehicleOwnerDetailsBox";
 import SearchFilterSortBox from "@components/AdminComponents/VehicleOwners/VehicleOwnerFilterBox";
 import user1 from "@assets/images/vehicleowner1.jpg";
-
+import user2 from "@assets/images/vehicleowner2.jpg";
+import user3 from "@assets/images/vehicleowner.jpg";
 const ownerDataList = [
   {
     name: "Kavindu Perera",
     email: "kavindu@email.com",
     mobile: "0711234567",
-    image: "https://via.placeholder.com/150",
+    image: user2,
     nic: "993456789V",
     gender: "Male",
     dob: "1999-06-21",
@@ -33,18 +34,18 @@ const ownerDataList = [
     postalCode: "22343",
   },
     {
-    name: "Kavindu Perera",
+    name: "Kavindu Silva",
     email: "kavindu@email.com",
-    mobile: "0711234567",
-    image: "https://via.placeholder.com/150",
+    mobile: "0745234964",
+    image: user3,
     nic: "993456789V",
     gender: "Male",
-    dob: "1999-06-21",
-    address: "No. 42, Rose Garden",
-    city: "Kandy",
-    district: "Kandy",
-    province: "Central",
-    postalCode: "20000",
+    dob: "1999-05-21",
+    address: "Galle Road, No 12",
+    city: "Bambalapitiya",
+    district: "Colombo",
+    province: "Western",
+    postalCode: "27644",
   },
   {
     name: "Nimal Perera",

@@ -12,16 +12,34 @@ const sourceIcons = {
   "Service Center": <Users className="tw:w-4 tw:h-4 tw:text-orange-700" />,
 };
 
+const messages = [
+  "New service center registration request received.",
+  "A user submitted a new support ticket.",
+  "Payment report from July has been generated.",
+  "New insurance company application submitted.",
+  "A service center updated their business profile.",
+  "A user has reported an issue with a booking.",
+  "Monthly analytics summary is now available.",
+  "Subscription payment received from Kasun Jayasuriya.",
+  "New user complaint logged in the system.",
+  "Rashmika Dilmin submitted a plan change request.",
+  "A service provider requested account verification.",
+  "You received a message from Super Wheels Service Center.",
+  "New contact request received via the help center.",
+  "System backup completed successfully.",
+  "A new route proposal was submitted by City Auto.",
+];
+
 const initialNotifications = Array.from({ length: 34 }, (_, i) => ({
   id: i + 1,
-  message: `Notification message number ${i + 1}. This is a sample notification to demonstrate the notification table functionality. It can be expanded to show more details.`,
+  message: `${messages[i % messages.length]}`,
   read: i % 3 === 0,
-  date: `2025-07-${(i % 30) + 1}`,
+  date: `2025-07-${(i % 30 + 1).toString().padStart(2, "0")}`,
   time: `${(9 + (i % 9)).toString().padStart(2, "0")}:00 AM`,
   source: sources[i % sources.length],
 }));
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 9;
 
 function NotificationTable() {
   const [notifications, setNotifications] = useState(initialNotifications);

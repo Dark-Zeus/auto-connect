@@ -11,7 +11,7 @@ const initialPlans = {
     costPerAd: "1090",
     validityPeriod: "1 Month",
     adsPerMonth: "20",
-    promotionVoucher: "13,500",
+    freePromotion: "5 Days Bump Up",
   },
   quarterly: {
     title: "Quarterly",
@@ -20,7 +20,7 @@ const initialPlans = {
     costPerAd: "1035",
     validityPeriod: "3 Months",
     adsPerMonth: "20",
-    promotionVoucher: "40,500",
+    freePromotion: "7 Days Bump Up",
   },
   yearly: {
     title: "Yearly",
@@ -29,8 +29,8 @@ const initialPlans = {
     costPerAd: "872",
     validityPeriod: "12 Months",
     adsPerMonth: "20",
-    promotionVoucher: "162,000",
-  },
+    freePromotion: "9 Days Bump Up",
+  }
 };
 
 // Feature row with Lucide icon
@@ -76,8 +76,8 @@ const PriceBox = ({ plan, onEdit, onDelete }) => (
         icon={<Users className="tw:w-5 tw:h-5 tw:text-indigo-500" />}
       />
       <FeatureRow
-        label="Promotion Voucher"
-        value={`${plan.currency} ${plan.promotionVoucher}`}
+        label="Free Promotion"
+        value={plan.freePromotion}
         icon={<Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />}
       />
     </div>

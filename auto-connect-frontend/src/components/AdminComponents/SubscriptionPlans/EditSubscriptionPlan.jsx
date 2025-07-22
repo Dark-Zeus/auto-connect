@@ -26,7 +26,7 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
     costPerAd: <Check className="tw:w-5 tw:h-5 tw:text-green-600" />,
     validityPeriod: <Shield className="tw:w-5 tw:h-5 tw:text-blue-500" />,
     adsPerMonth: <Users className="tw:w-5 tw:h-5 tw:text-indigo-500" />,
-    promotionVoucher: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
+    freePromotion: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
   };
 
   const fields = [
@@ -35,7 +35,7 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
     { label: "Cost Per Ad (LKR)", name: "costPerAd", placeholder: "Enter cost per ad" },
     { label: "Validity Period (Days)", name: "validityPeriod", placeholder: "e.g. 30, 90, 365" },
     { label: "Ads Per Month", name: "adsPerMonth", placeholder: "Enter ads per month" },
-    { label: "Promotion Voucher (LKR)", name: "promotionVoucher", placeholder: "Enter voucher value" },
+    { label: "Free Promotion", name: "freePromotion", placeholder: "Enter promotion days" },
   ];
 
   return (
