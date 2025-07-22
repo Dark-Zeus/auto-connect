@@ -76,6 +76,7 @@ export const createSendToken = (user, statusCode, res, message = "Success") => {
         profileImage: user.profileImage,
         businessInfo: user.businessInfo,
         rating: user.rating,
+        nicNumber: user.nicNumber,
         lastLogin: user.lastLogin,
       },
     },
