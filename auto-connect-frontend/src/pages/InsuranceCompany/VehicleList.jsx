@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const vehicles = [
   {
@@ -112,15 +112,32 @@ const VehicleCard = ({ vehicle }) => (
 );
 
 const VehicleList = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredVehicles = vehicles.filter((v) =>
+    v.plateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    v.id.includes(searchTerm)
+  );
+
   return (
     <div className="tw:min-h-screen tw:bg-[#B9E5E8] tw:flex tw:flex-col tw:items-center tw:p-4 tw:space-y-6 tw:w-full">
-      <h1 className="tw:text-3xl tw:font-bold tw:text-[#4A628A] tw:pb-8 tw:pt-3">
-        Registered Vehicles
-      </h1>
-      <div className="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:xl:grid-cols-3 tw:gap-8">
-        {vehicles.map((v) => (
-          <VehicleCard key={v.id} vehicle={v} />
-        ))}
+      
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search by Plate Number or Policy ID"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="tw:w-full tw:p-3 tw:border tw:border-blue-200 tw:rounded-xl tw:bg-blue-50 tw:text-blue-800 tw:font-medium"
+      />
+
+      {/* Vehicle Cards Grid */}
+      <div className="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:xl:grid-cols-3 tw:gap-8 tw:pt-4">
+        {filteredVehicles.length > 0 ? (
+          filteredVehicles.map((v) => <VehicleCard key={v.id} vehicle={v} />)
+        ) : (
+          <p className="tw:text-[#4A628A] tw:text-lg">No vehicles found.</p>
+        )}
       </div>
     </div>
   );

@@ -47,6 +47,8 @@ import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdat
 
 import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
 import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
+import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
+import VehicleList from "@pages/InsuranceCompany/VehicleList";
 
 
 function getNavLinks(userContext) {
@@ -251,7 +253,7 @@ function getNavLinks(userContext) {
           path: [`/insurance`],
           title: "My Insurance",
           icon: "security",
-          page: "My Insurance",
+          page: <InsuranceDetails />,
         },
         {
           path: [`/insurance/claims/new`],
@@ -663,6 +665,13 @@ function getNavLinks(userContext) {
       title: "Dashboard",
       icon: "dashboard",
       page: <InsuranceDashboard/>,
+    });
+
+nav.push({
+      path: [`/vehicles`],
+      title: "Vehicle List",
+      icon: "directions_car",
+      page: <VehicleList/>,
     });
 
     nav.push({
