@@ -33,6 +33,7 @@ import Notifications from "@pages/Admin/Notifications";
 import Updates from "@pages/Admin/Updates";
 import Analytics from "@pages/Admin/Analytics";
 import Transactions from "@pages/Admin/Transactions";
+import UserContacts from "@pages/Admin/UserContacts";
 
 // Service Provider
 import AddServicePage from "@pages/ServiceProvider/AddServicePage";
@@ -1239,9 +1240,10 @@ nav.push({
     // });
 
     nav.push({
+      path: [`/usercontacts`],
       title: "Support & Help",
       icon: "help",
-      page: "Support & Help",
+      page: <UserContacts />,
       defLinkSettings: {
         title: "Help Desk",
         icon: "help_center",

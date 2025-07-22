@@ -15,13 +15,13 @@ function ServiceCenterDetailCard({ data, onClose }) {
   } = data;
 
   return (
-    <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-50 tw:p-4">
+    <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-999 tw:p-4">
       <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:max-w-6xl tw:w-full tw:rounded-3xl tw:shadow-2xl tw:shadow-blue-200/30 tw:relative tw:overflow-hidden tw:max-h-[95vh] tw:border-2 tw:border-blue-200/50">
         
         {/* Enhanced Close Button */}
         <button
           onClick={onClose}
-          className="tw:absolute tw:top-6 tw:mt-10 tw:right-6 tw:z-10 tw:flex tw:items-center tw:justify-center tw:w-12 tw:h-12 tw:bg-red-500/10 tw:hover:bg-red-500 tw:text-red-600 tw:hover:text-white tw:rounded-full tw:transition-all tw:duration-300 tw:backdrop-blur-sm tw:border tw:border-red-200 tw:hover:border-red-500 tw:shadow-lg tw:hover:shadow-red-200/50"
+          className="tw:absolute tw:top-6 tw:mt-5 tw:right-6 tw:z-10 tw:flex tw:items-center tw:justify-center tw:w-12 tw:h-12 tw:bg-red-500/10 tw:hover:bg-red-500 tw:text-red-600 tw:hover:text-white tw:rounded-full tw:transition-all tw:duration-300 tw:backdrop-blur-sm tw:border tw:border-red-200 tw:hover:border-red-500 tw:shadow-lg tw:hover:shadow-red-200/50"
         >
           <X className="tw:w-5 tw:h-5" />
         </button>
@@ -248,7 +248,7 @@ function ServiceCenterDetailCard({ data, onClose }) {
             
             <button
               onClick={onClose}
-              className="tw:flex tw:items-center tw:gap-2 tw:px-8 tw:py-3 tw:bg-gradient-to-r tw:from-blue-600 tw:to-blue-700 tw:text-white tw:font-semibold tw:rounded-xl tw:shadow-lg tw:shadow-blue-200/50 tw:transition-all tw:duration-300 hover:tw:from-blue-700 hover:tw:to-blue-800 hover:tw:shadow-xl hover:tw:shadow-blue-300/50 hover:tw:-translate-y-0.5 active:tw:translate-y-0"
+              className="tw:flex tw:items-center tw:gap-2 tw:px-3 tw:py-3 tw:bg-gradient-to-r tw:from-blue-600 tw:to-blue-700 tw:text-white tw:font-semibold tw:rounded-xl tw:shadow-lg tw:shadow-blue-200/50 tw:transition-all tw:duration-300 hover:tw:from-blue-700 hover:tw:to-blue-800 hover:tw:shadow-xl hover:tw:shadow-blue-300/50 hover:tw:-translate-y-0.5 active:tw:translate-y-0"
             >
               <X className="tw:w-4 tw:h-4" />
               Close Details

@@ -98,7 +98,7 @@ function PaymentFilterBox({ filters, setFilters }) {
                 <div className={`tw:relative tw:group tw:transition-all tw:duration-200 ${
                   searchFocused ? 'tw:transform tw:scale-[1.02]' : ''
                 }`}>
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <Search className={`tw:h-5 tw:w-5 tw:transition-colors tw:duration-200 ${
                       searchFocused ? 'tw:text-blue-500' : 'tw:text-gray-400'
                     }`} />
@@ -110,7 +110,7 @@ function PaymentFilterBox({ filters, setFilters }) {
                     onChange={(e) => handleChange("search", e.target.value)}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
-                    className="tw:w-full tw:pl-10 tw:pr-10 tw:py-3 tw:border tw:border-gray-300 tw:rounded-xl tw:bg-white tw:text-gray-800 tw:font-medium tw:placeholder-gray-500 focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:transition-all tw:duration-200 hover:tw:border-gray-400"
+                    className="tw:w-full tw:pr-10 tw:py-3 tw:border tw:border-gray-300 tw:rounded-xl tw:bg-white tw:text-gray-800 tw:font-medium tw:placeholder-gray-500 focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:transition-all tw:duration-200 hover:tw:border-gray-400"
                   />
                   {filters.search && (
                     <button
@@ -129,7 +129,7 @@ function PaymentFilterBox({ filters, setFilters }) {
                   Date
                 </label>
                 <div className="tw:relative">
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <Calendar className="tw:h-5 tw:w-5 tw:text-gray-400" />
                   </div>
                   <select
@@ -152,7 +152,7 @@ function PaymentFilterBox({ filters, setFilters }) {
                   Method
                 </label>
                 <div className="tw:relative">
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <CreditCard className="tw:h-5 tw:w-5 tw:text-gray-400" />
                   </div>
                   <select
@@ -175,7 +175,7 @@ function PaymentFilterBox({ filters, setFilters }) {
                   Status
                 </label>
                 <div className="tw:relative">
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <ArrowUpDown className="tw:h-5 tw:w-5 tw:text-gray-400" />
                   </div>
                   <select

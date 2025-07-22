@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react";
 import VehicleOwnerCard from "@components/AdminComponents/VehicleOwners/VehicleOwnerDetailsBox";
 import SearchFilterSortBox from "@components/AdminComponents/VehicleOwners/VehicleOwnerFilterBox";
-import user1 from "@assets/images/vehicleowner1.jpg";
-import user2 from "@assets/images/vehicleowner2.jpg";
-import user3 from "@assets/images/vehicleowner.jpg";
+import user1 from "@assets/images/users/user1.jpg";
+import user2 from "@assets/images/users/user2.jpg";
+import user3 from "@assets/images/users/user3.jpg";
+import user4 from "@assets/images/users/user4.jpg";
 const ownerDataList = [
   {
     name: "Kavindu Perera",
@@ -51,7 +52,7 @@ const ownerDataList = [
     name: "Nimal Perera",
     email: "nimalperera@email.com",
     mobile: "0781534432",
-    image: user1,
+    image: user4,
     nic: "200345328",
     gender: "Male",
     dob: "2003-05-15",

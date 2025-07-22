@@ -62,7 +62,7 @@ const contactRequests = [
   }
 ];
 
-export default function UserContacts() {
+function UserContacts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -398,3 +398,5 @@ export default function UserContacts() {
     </div>
   );
 }
+
+export default UserContacts;

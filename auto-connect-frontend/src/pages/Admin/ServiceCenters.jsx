@@ -133,6 +133,7 @@ const allCenters = [
 function ServiceCenters() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -141,6 +142,7 @@ function ServiceCenters() {
   const handleReset = () => {
     setSearchQuery("");
     setSelectedDistrict("");
+    setSelectedCategory("");
     setSortBy("");
   };
 
@@ -161,9 +163,9 @@ function ServiceCenters() {
   const filteredCenters = allCenters
     .filter((center) => {
       return (
-        (!searchQuery ||
-          center.name.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (!selectedDistrict || center.district === selectedDistrict)
+        (!searchQuery || center.name.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (!selectedDistrict || center.district === selectedDistrict) &&
+        (!selectedCategory || center.category === selectedCategory)
       );
     })
     .sort((a, b) => {
@@ -199,9 +201,11 @@ function ServiceCenters() {
       <ServiceCenterFilterBox
         searchQuery={searchQuery}
         selectedDistrict={selectedDistrict}
+        selectedCategory={selectedCategory}
         sortBy={sortBy}
         onSearchChange={setSearchQuery}
         onDistrictChange={setSelectedDistrict}
+        onCategoryChange={setSelectedCategory}
         onSortChange={setSortBy}
         onReset={handleReset}
       />

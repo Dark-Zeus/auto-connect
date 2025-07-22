@@ -102,7 +102,7 @@ function InsuranceCompanyFilterBox({
                 <div className={`tw:relative tw:group tw:transition-all tw:duration-200 ${
                   searchFocused ? 'tw:transform tw:scale-[1.02]' : ''
                 }`}>
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <Search className={`tw:h-5 tw:w-5 tw:transition-colors tw:duration-200 ${
                       searchFocused ? 'tw:text-blue-500' : 'tw:text-gray-400'
                     }`} />
@@ -133,7 +133,7 @@ function InsuranceCompanyFilterBox({
                   Established Year
                 </label>
                 <div className="tw:relative">
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <Calendar className="tw:h-5 tw:w-5 tw:text-gray-400" />
                   </div>
                   <select
@@ -156,7 +156,7 @@ function InsuranceCompanyFilterBox({
                   Sort By
                 </label>
                 <div className="tw:relative">
-                  <div className="tw:absolute tw:inset-y-0 tw:left-0 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
+                  <div className="tw:absolute tw:inset-y-0 tw:right-2 tw:pl-3 tw:flex tw:items-center tw:pointer-events-none">
                     <ArrowUpDown className="tw:h-5 tw:w-5 tw:text-gray-400" />
                   </div>
                   <select

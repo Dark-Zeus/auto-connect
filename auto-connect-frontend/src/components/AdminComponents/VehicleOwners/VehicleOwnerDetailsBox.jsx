@@ -25,7 +25,7 @@ function VehicleOwnerCard({ owner }) {
           <img
             src={owner.image}
             alt={owner.name}
-            className="tw:w-16 tw:h-16 tw:rounded-xl tw:object-cover tw:border tw:border-blue-100"
+            className="tw:w-35 tw:h-35 tw:rounded-xl tw:object-cover tw:border tw:border-blue-100"
           />
           <div>
             <h2 className="tw:font-bold tw:text-lg">{owner.name}</h2>
@@ -53,7 +53,7 @@ function VehicleOwnerCard({ owner }) {
 
       {/* Modal */}
       {showPopup && (
-        <div className="tw:fixed tw:inset-0 tw:bg-black/50 tw:flex tw:items-center tw:justify-center tw:z-50">
+        <div className="tw:fixed tw:inset-0 tw:bg-black/50 tw:flex tw:items-center tw:justify-center tw:z-999">
           <div className="tw:bg-white tw:p-6 tw:rounded-xl tw:shadow-xl tw:max-w-xl tw:w-full tw:relative">
             <button
               onClick={() => setShowPopup(false)}
@@ -65,7 +65,7 @@ function VehicleOwnerCard({ owner }) {
               <img
                 src={owner.image}
                 alt={owner.name}
-                className="tw:w-20 tw:h-20 tw:rounded-xl tw:object-cover"
+                className="tw:w-40 tw:h-40 tw:rounded-xl tw:object-cover"
               />
               <div>
                 <h2 className="tw:text-2xl tw:font-bold">{owner.name}</h2>
