@@ -24,7 +24,7 @@ function SearchFilterSortBox({ search, onSearch, filter, onFilter, sort, onSort,
           
           {/* Search Section */}
           <div className="tw:space-y-2">
-            <label className="tw:flex tw:items-center tw:gap-2 tw:text-blue-900 tw:font-semibold tw:text-sm tw:uppercase tw:tracking-wide">
+            <label className="tw:flex tw:items-center tw:gap-2 tw:text-blue-900 tw:font-semibold tw:text-sm tw:tracking-wide">
               <Search className="tw:w-4 tw:h-4" />
               Search by Name or NIC
             </label>
@@ -43,29 +43,38 @@ function SearchFilterSortBox({ search, onSearch, filter, onFilter, sort, onSort,
           {/* Filter and Sort Row */}
           <div className="tw:grid tw:grid-cols-2 md:tw:grid-cols-2 tw:gap-6">
             
-            {/* Filter Section */}
-            <div className="tw:space-y-2">
-              <label className="tw:flex tw:items-center tw:gap-2 tw:text-blue-900 tw:font-semibold tw:text-sm tw:uppercase tw:tracking-wide">
-                <Filter className="tw:w-4 tw:h-4" />
-                Filter by Transmission
-              </label>
-              <div className="tw:relative">
-                <select
-                  value={filter}
-                  onChange={(e) => onFilter(e.target.value)}
-                  className="tw:w-full tw:p-4 tw:pr-12 tw:border-2 tw:border-blue-200 tw:rounded-xl tw:bg-white/80 tw:backdrop-blur-sm tw:text-blue-900 tw:font-medium tw:transition-all tw:duration-300 focus:tw:border-blue-500 focus:tw:ring-4 focus:tw:ring-blue-200 focus:tw:bg-white tw:shadow-sm hover:tw:shadow-md tw:appearance-none tw:cursor-pointer"
-                >
-                  <option value="">All Transmissions</option>
-                  <option value="Automatic">🔄 Automatic</option>
-                  <option value="Manual">⚙️ Manual</option>
-                </select>
-                <Filter className="tw:absolute tw:right-4 tw:top-1/2 tw:-translate-y-1/2 tw:w-5 tw:h-5 tw:text-blue-400 tw:pointer-events-none" />
-              </div>
+          {/* Filter Section - Districts */}
+          <div className="tw:space-y-2">
+            <label className="tw:flex tw:items-center tw:gap-2 tw:text-blue-900 tw:font-semibold tw:text-sm tw:tracking-wide">
+              <Filter className="tw:w-4 tw:h-4" />
+              Filter by District
+            </label>
+            <div className="tw:relative">
+              <select
+                value={filter}
+                onChange={(e) => onFilter(e.target.value)}
+                className="tw:w-full tw:p-4 tw:pr-12 tw:border-2 tw:border-blue-200 tw:rounded-xl tw:bg-white/80 tw:backdrop-blur-sm tw:text-blue-900 tw:font-medium tw:transition-all tw:duration-300 focus:tw:border-blue-500 focus:tw:ring-4 focus:tw:ring-blue-200 focus:tw:bg-white tw:shadow-sm hover:tw:shadow-md tw:appearance-none tw:cursor-pointer"
+              >
+                <option value="">All Districts</option>
+                {[
+                  "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya",
+                  "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar",
+                  "Vavuniya", "Mullaitivu", "Batticaloa", "Ampara", "Trincomalee",
+                  "Kurunegala", "Puttalam", "Anuradhapura", "Polonnaruwa",
+                  "Badulla", "Monaragala", "Ratnapura", "Kegalle"
+                ].map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+              <Filter className="tw:absolute tw:right-4 tw:top-1/2 tw:-translate-y-1/2 tw:w-5 tw:h-5 tw:text-blue-400 tw:pointer-events-none" />
             </div>
+          </div>
 
             {/* Sort Section */}
             <div className="tw:space-y-2">
-              <label className="tw:flex tw:items-center tw:gap-2 tw:text-blue-900 tw:font-semibold tw:text-sm tw:uppercase tw:tracking-wide">
+              <label className="tw:flex tw:items-center tw:gap-2 tw:text-blue-900 tw:font-semibold tw:text-sm tw:tracking-wide">
                 <SortAsc className="tw:w-4 tw:h-4" />
                 Sort Options
               </label>
@@ -116,7 +125,7 @@ function SearchFilterSortBox({ search, onSearch, filter, onFilter, sort, onSort,
               )}
               {filter && (
                 <div className="tw:flex tw:items-center tw:gap-2">
-                  <span className="tw:font-medium">Transmission:</span>
+                  <span className="tw:font-medium">District:</span>
                   <span className="tw:px-2 tw:py-1 tw:bg-green-200 tw:rounded-md tw:text-green-800 tw:font-medium">{filter}</span>
                 </div>
               )}

@@ -407,7 +407,7 @@ function MonthlyAnalysisDashboard() {
                   type="number"
                   min="2000"
                   max={today.getFullYear()}
-                  className="tw:border tw:border-gray-300 tw:rounded-lg tw:px-4 tw:py-3 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:bg-white tw:shadow-sm tw:w-24"
+                  className="tw:border tw:border-gray-300 tw:rounded-lg tw:px-4 tw:py-3 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:bg-white tw:shadow-sm"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
                   aria-label="Select year"
