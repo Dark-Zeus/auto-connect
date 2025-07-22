@@ -56,6 +56,21 @@ export const registerValidation = Joi.object({
       "any.required": "Role is required",
     }),
 
+  // NIC Number validation - conditional based on role
+  nicNumber: Joi.when("role", {
+    is: "vehicle_owner",
+    then: Joi.string()
+      .pattern(/^([0-9]{9}[vVxX]|[0-9]{12})$/)
+      .required()
+      .messages({
+        "string.pattern.base": "NIC must be either 9 digits + V/X or 12 digits",
+        "any.required": "NIC number is required for vehicle owners",
+      }),
+    otherwise: Joi.forbidden().messages({
+      "any.unknown": "NIC number is only applicable for vehicle owners",
+    }),
+  }),
+
   password: Joi.string()
     .min(8)
     .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"))
@@ -346,6 +361,20 @@ export const updateUserValidation = Joi.object({
     .messages({
       "any.only": "Please select a valid role",
     }),
+
+  // NIC Number validation for admin updates
+  nicNumber: Joi.when("role", {
+    is: "vehicle_owner",
+    then: Joi.string()
+      .pattern(/^([0-9]{9}[vVxX]|[0-9]{12})$/)
+      .optional()
+      .messages({
+        "string.pattern.base": "NIC must be either 9 digits + V/X or 12 digits",
+      }),
+    otherwise: Joi.forbidden().messages({
+      "any.unknown": "NIC number is only applicable for vehicle owners",
+    }),
+  }),
 
   // Admin-specific fields
   isActive: Joi.boolean().optional().messages({
