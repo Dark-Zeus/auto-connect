@@ -29,6 +29,7 @@ export const register = catchAsync(async (req, res, next) => {
     email,
     phone,
     role,
+    nicNumber,
     password,
     passwordConfirm,
     address,
@@ -58,7 +59,51 @@ export const register = catchAsync(async (req, res, next) => {
     return next(new AppError("User with this email already exists", 400));
   }
 
-  // 3) Validate role-specific required fields
+  // 3) For vehicle owners, check if NIC already exists
+  if (role === "vehicle_owner" && nicNumber) {
+    const existingNic = await User.findOne({
+      nicNumber: nicNumber.toUpperCase(),
+    });
+    if (existingNic) {
+      console.log("❌ NIC already exists:", nicNumber);
+      LOG.warn({
+        message: "Registration attempt with existing NIC",
+        nicNumber,
+        ip: req.ip,
+        userAgent: req.get("user-agent"),
+      });
+      return next(
+        new AppError("A user with this NIC number already exists", 400)
+      );
+    }
+  }
+
+  // 4) Validate NIC for vehicle owners
+  if (role === "vehicle_owner") {
+    if (!nicNumber || !nicNumber.trim()) {
+      console.log("❌ Missing NIC for vehicle owner");
+      return next(
+        new AppError("NIC number is required for vehicle owners", 400)
+      );
+    }
+
+    // Additional NIC format validation
+    const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+    const newNicPattern = /^[0-9]{12}$/;
+    const nicValue = nicNumber.trim().toUpperCase();
+
+    if (!oldNicPattern.test(nicValue) && !newNicPattern.test(nicValue)) {
+      console.log("❌ Invalid NIC format:", nicValue);
+      return next(
+        new AppError(
+          "Please enter a valid NIC number (9 digits + V/X or 12 digits)",
+          400
+        )
+      );
+    }
+  }
+
+  // 5) Validate role-specific required fields
   if (["service_center", "repair_center", "insurance_agent"].includes(role)) {
     if (
       !businessInfo ||
@@ -94,7 +139,7 @@ export const register = catchAsync(async (req, res, next) => {
     }
   }
 
-  // 4) Create user data object
+  // 6) Create user data object
   const userData = {
     firstName,
     lastName,
@@ -112,12 +157,18 @@ export const register = catchAsync(async (req, res, next) => {
     businessInfo: businessInfo || {},
   };
 
+  // ⭐ FIXED: Add NIC number only for vehicle owners
+  if (role === "vehicle_owner" && nicNumber) {
+    userData.nicNumber = nicNumber.toUpperCase();
+    console.log("✅ Adding NIC number for vehicle owner:", userData.nicNumber);
+  }
+
   console.log("✅ User data prepared:", {
     ...userData,
     password: "***", // Hide password in logs
   });
 
-  // 5) System admin can only be created by another system admin (or if no admins exist)
+  // 7) System admin can only be created by another system admin (or if no admins exist)
   if (role === "system_admin") {
     const adminCount = await User.countDocuments({ role: "system_admin" });
     console.log("👑 Admin count:", adminCount);
@@ -144,12 +195,17 @@ export const register = catchAsync(async (req, res, next) => {
   }
 
   try {
-    // 6) Create new user
+    // 8) Create new user
     console.log("💾 Creating user in database...");
     const newUser = await User.create(userData);
-    console.log("✅ User created successfully:", newUser._id);
+    console.log("✅ User created successfully:", {
+      id: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+      nicNumber: newUser.nicNumber || "N/A",
+    });
 
-    // 7) Generate email verification token (unless auto-verified)
+    // 9) Generate email verification token (unless auto-verified)
     let verificationToken;
     if (!newUser.isVerified && !newUser.emailVerified) {
       console.log("📧 Generating verification token...");
@@ -158,19 +214,20 @@ export const register = catchAsync(async (req, res, next) => {
       console.log("✅ Verification token generated");
     }
 
-    // 8) Log successful registration
+    // 10) Log successful registration
     LOG.info({
       message: "New user registered",
       userId: newUser._id,
       email: newUser.email,
       role: newUser.role,
+      nicNumber: newUser.nicNumber || null,
       isVerified: newUser.isVerified,
       emailVerified: newUser.emailVerified,
       ip: req.ip,
       userAgent: req.get("user-agent"),
     });
 
-    // 9) Send verification email (if needed)
+    // 11) Send verification email (if needed)
     if (verificationToken) {
       try {
         console.log("📧 Sending verification email...");
@@ -220,7 +277,7 @@ export const register = catchAsync(async (req, res, next) => {
       }
     }
 
-    // 10) Send response (auto-login if verified, otherwise require verification)
+    // 12) Send response (auto-login if verified, otherwise require verification)
     if (newUser.isVerified || newUser.emailVerified) {
       console.log("✅ Auto-logging in verified user");
       createSendToken(
@@ -242,6 +299,7 @@ export const register = catchAsync(async (req, res, next) => {
             firstName: newUser.firstName,
             lastName: newUser.lastName,
             role: newUser.role,
+            nicNumber: newUser.nicNumber || null,
             isVerified: newUser.isVerified,
             emailVerified: newUser.emailVerified,
           },
@@ -257,7 +315,14 @@ export const register = catchAsync(async (req, res, next) => {
 
     // Handle specific MongoDB errors
     if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0];
+      if (error.keyPattern?.email) {
+        return next(new AppError("Email already exists", 400));
+      }
+      if (error.keyPattern?.nicNumber) {
+        return next(new AppError("NIC number already exists", 400));
+      }
+      // Handle other duplicate fields
+      const field = Object.keys(error.keyPattern)[0];
       const message = `${
         field.charAt(0).toUpperCase() + field.slice(1)
       } already exists`;
@@ -682,6 +747,11 @@ export const updateMe = catchAsync(async (req, res, next) => {
     "address",
     "profileImage"
   );
+
+  // Allow NIC updates for vehicle owners only
+  if (req.user.role === "vehicle_owner" && req.body.nicNumber) {
+    filteredBody.nicNumber = req.body.nicNumber.toUpperCase();
+  }
 
   // 3) Allow business info updates for service providers
   if (

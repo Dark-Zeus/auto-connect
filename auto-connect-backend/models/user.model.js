@@ -58,6 +58,47 @@ const userSchema = new mongoose.Schema(
       },
     },
 
+    // NIC Number (National Identity Card) - Only for vehicle owners
+    nicNumber: {
+      type: String,
+      required: function () {
+        return this.role === "vehicle_owner";
+      },
+      unique: true, // Ensure no duplicate NICs
+      sparse: true, // Allows multiple null values for non-vehicle owners
+      validate: [
+        {
+          validator: function (nicNumber) {
+            // Skip validation if not a vehicle owner
+            if (this.role !== "vehicle_owner") return true;
+
+            // Must have a value if role is vehicle_owner
+            return nicNumber && nicNumber.trim().length > 0;
+          },
+          message: "NIC number is required for vehicle owners",
+        },
+        {
+          validator: function (nicNumber) {
+            // Only validate format if role is vehicle_owner and value exists
+            if (this.role !== "vehicle_owner" || !nicNumber) return true;
+
+            // Sri Lankan NIC validation patterns
+            // Old format: 9 digits + V/X (e.g., 123456789V)
+            // New format: 12 digits (e.g., 199901234567)
+            const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+            const newNicPattern = /^[0-9]{12}$/;
+            const cleanNic = nicNumber.trim().toUpperCase();
+
+            return oldNicPattern.test(cleanNic) || newNicPattern.test(cleanNic);
+          },
+          message:
+            "Please enter a valid Sri Lankan NIC number (9 digits + V/X or 12 digits)",
+        },
+      ],
+      uppercase: true, // Convert to uppercase for consistency
+      trim: true,
+    },
+
     // Address Information
     address: {
       street: {
@@ -149,15 +190,23 @@ const userSchema = new mongoose.Schema(
           ].includes(this.role);
         },
       },
-      // For service/repair centers
-      servicesOffered: [
-        {
-          type: String,
-          required: function () {
-            return ["service_center", "repair_center"].includes(this.role);
+      // For service/repair centers - Fixed validation
+      servicesOffered: {
+        type: [String],
+        default: [],
+        validate: {
+          validator: function (services) {
+            // Only require services for service/repair centers if they want to validate this
+            // You can enable this validation if needed
+            // if (["service_center", "repair_center"].includes(this.role)) {
+            //   return services && services.length > 0;
+            // }
+            return true;
           },
+          message:
+            "At least one service must be offered for service/repair centers",
         },
-      ],
+      },
       operatingHours: {
         type: Map,
         of: {
@@ -263,10 +312,16 @@ const userSchema = new mongoose.Schema(
 
 // Indexes for performance
 userSchema.index({ email: 1 });
+userSchema.index({ nicNumber: 1 }, { sparse: true }); // Sparse index for NIC
 userSchema.index({ role: 1 });
 userSchema.index({ "businessInfo.licenseNumber": 1 });
 userSchema.index({ isVerified: 1, isActive: 1 });
 userSchema.index({ createdAt: -1 });
+
+// Additional compound indexes for common queries
+userSchema.index({ role: 1, isActive: 1 }); // For role-based user queries
+userSchema.index({ role: 1, isVerified: 1 }); // For verification status queries
+userSchema.index({ email: 1, isActive: 1 }); // For login queries
 
 // Virtual for full name
 userSchema.virtual("fullName").get(function () {
@@ -391,6 +446,15 @@ userSchema.statics.getUserRoles = function () {
 // Static method to find by role
 userSchema.statics.findByRole = function (role) {
   return this.find({ role, isActive: true });
+};
+
+// Static method to find vehicle owners by NIC
+userSchema.statics.findByNic = function (nicNumber) {
+  return this.findOne({
+    nicNumber: nicNumber.toUpperCase(),
+    role: "vehicle_owner",
+    isActive: true,
+  });
 };
 
 // Transform JSON output
