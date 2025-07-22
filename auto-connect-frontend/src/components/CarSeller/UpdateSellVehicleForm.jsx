@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Camera, X, CarFront, User, Logs } from 'lucide-react';
+import { Camera, X, CarFront, User, Logs, ClipboardCheckIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
 import lc150_1 from '../../assets/images/lc150_1.jpg';
