@@ -33,18 +33,68 @@ import {
 } from "recharts";
 
 const kpiData = [
-  { icon: <CheckCircleOutline/>, title: "Total Bookings", value: 120, color: "#4caf50", subtitle: "Last 30 days", trend: 15 },
-  { icon: <PendingActions/>, title: "Ongoing", value: 18, color: "#ffc107", subtitle: "Current", trend: -5 },
-  { icon: <CheckCircleOutline/>, title: "Completed", value: 70, color: "#2196f3", subtitle: "Last 30 days", trend: 10 },
-  { icon: <CancelOutlined/>, title: "Cancelled", value: 6, color: "#f44336", subtitle: "Last 30 days", trend: -2 },
-  { icon: <CalendarToday/>, title: "Upcoming", value: 15, color: "#2196f3", subtitle: "Next 7 days", trend: 20 },
+  { 
+    icon: <CheckCircleOutline/>, 
+    title: "Total Bookings", 
+    value: 120, color: "#4caf50", 
+    subtitle: "Last 30 days", 
+    trend: 15 
+  },
+  { 
+    icon: <PendingActions/>, 
+    title: "Ongoing", 
+    value: 18, 
+    color: "#ffc107", 
+    subtitle: "Current", 
+    trend: -5 
+  },
+  { 
+    icon: <CheckCircleOutline/>, 
+    title: "Completed", 
+    value: 70, 
+    color: "#2196f3", 
+    subtitle: "Last 30 days", 
+    trend: 10 
+  },
+  { 
+    icon: <CancelOutlined/>, 
+    title: "Cancelled", 
+    value: 6, 
+    color: "#f44336", 
+    subtitle: "Last 30 days", 
+    trend: -2 
+  },
+  { 
+    icon: <CalendarToday/>, 
+    title: "Upcoming", 
+    value: 15, 
+    color: "#2196f3", 
+    subtitle: "Next 7 days", 
+    trend: 20 
+  },
 ];
 
 const pieData = [
-  { name: "Completed", value: 70, color: "#4caf50" },
-  { name: "Ongoing", value: 18, color: "#ffc107" },
-  { name: "Cancelled", value: 6, color: "#f44336" },
-  { name: "Pending", value: 26, color: "#2196f3" },
+  { 
+    name: "Completed", 
+    value: 70, 
+    color: "#4caf50" 
+  },
+  { 
+    name: "Ongoing", 
+    value: 18, 
+    color: "#ffc107" 
+  },
+  { 
+    name: "Cancelled", 
+    value: 6, 
+    color: "#f44336" 
+  },
+  { 
+    name: "Pending", 
+    value: 26, 
+    color: "#2196f3" 
+  },
 ];
 
 const monthlyBookingData = [
@@ -85,11 +135,27 @@ const upcomingAppointments = [
 ];
 
 const topServices = [
-  { rank: 1, service: "Oil Change", times: 35 },
-  { rank: 2, service: "Engine Repair", times: 30 },
-  { rank: 3, service: "Battery Replacement", times: 18 },
-  { rank: 4, service: "AC Service", times: 14 },
-  { rank: 5, service: "Suspension Repair", times: 12 },
+  { 
+    rank: 1, 
+    service: "Oil Change", 
+    times: 35 
+  },
+  { rank: 2, 
+    service: "Engine Repair", 
+    times: 30 
+  },
+  { rank: 3, 
+    service: "Battery Replacement", 
+    times: 18 
+  },
+  { rank: 4, 
+    service: "AC Service", 
+    times: 14 
+  },
+  { rank: 5, 
+    service: "Suspension Repair", 
+    times: 12 
+  },
 ];
 
 const reviews = [
