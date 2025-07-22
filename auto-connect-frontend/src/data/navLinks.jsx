@@ -19,6 +19,7 @@ import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
+import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 
 
 
@@ -43,8 +44,9 @@ import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 
 // Insurance Agent
-import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
+
 import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
+import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
 
 
 function getNavLinks(userContext) {
@@ -654,7 +656,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <InsuranceDashboard/>,
     });
 
     nav.push({
@@ -676,20 +678,20 @@ function getNavLinks(userContext) {
           path: [`/claims/active`],
           title: "Active Claims",
           icon: "pending_actions",
-          page: "Active Claims",
+          page: <InsuranceClaims />,
         },
-        {
-          path: [`/claims/processing`],
-          title: "Claim Processing",
-          icon: "process",
-          page: "Claim Processing",
-        },
-        {
-          path: [`/claims/assessment`],
-          title: "Damage Assessment",
-          icon: "assessment",
-          page: "Damage Assessment",
-        }
+        // {
+        //   path: [`/claims/processing`],
+        //   title: "Claim Processing",
+        //   icon: "process",
+        //   page: "Claim Processing",
+        // },
+        // {
+        //   path: [`/claims/assessment`],
+        //   title: "Damage Assessment",
+        //   icon: "assessment",
+        //   page: "Damage Assessment",
+        // }
       ]
     });
 
