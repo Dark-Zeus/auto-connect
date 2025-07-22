@@ -155,7 +155,6 @@
   height: var(--nav-link-size);
   overflow: hidden;
   transition: height var(--transition);
-  margin-bottom: 4px;
 }
 
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link {
@@ -196,12 +195,12 @@
 
 .dashboard-nav .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-link__main .dashboard-nav-link__details {
   display: flex;
+  box-sizing: border-box;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 0 4px;
   transition: all var(--transition);
-  justify-content: flex-start;
+  justify-content: center;
   border-radius: 6px;
 }
 
@@ -268,12 +267,13 @@
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label {
-  margin: 0 6px;
-  width: calc(100% - 12px);
+  margin: 0 0;
+  width: 100%;
 }
 
-.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__details {
+.dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .link-label .dashboard-nav-link__main .dashboard-nav-link__details {
   padding: 0 16px;
+  justify-content: flex-start;
 }
 
 .dashboard-nav:hover .dashboard-nav-links .dashboard-nav-link .dashboard-nav-link__text {
@@ -333,13 +333,14 @@
    SELECTED STATES - Fixed Border Padding
    ============================================================================ */
 .dashboard-nav-link.selected .link-label {
+  box-sizing: border-box;
   background-color: var(--color-white);
   color: #E67E22 !important;
   font-weight: var(--font-weight-bold);
   transition: all var(--transition);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
-  margin: 0 2px !important;
-  width: calc(100% - 4px) !important;
+  margin: 0 0px !important;
+  width: 100% !important;
 }
 
 .dashboard-nav ul.dashboard-nav-links a.dashboard-nav-link.selected {
