@@ -1,13 +1,35 @@
 import React from "react";
 import {
-  Box, Grid, Paper, Typography, Table, TableHead, TableBody, TableRow,
-  TableCell, Rating, Chip
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Rating,
+  Chip,
+  Container,
 } from "@mui/material";
 import {
-  CalendarToday, CheckCircleOutline, PendingActions, CancelOutlined,
+  CalendarToday,
+  CheckCircleOutline,
+  PendingActions,
+  CancelOutlined,
 } from "@mui/icons-material";
 import {
-  PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
 } from "recharts";
 
 const kpiData = [
@@ -87,55 +109,41 @@ const reviews = [
 const ServiceProviderDashboard = () => {
   return (
     <Box
-      p={4}
-      bgcolor="#f9fafb"
-      minHeight="100vh"
-      sx={{ boxSizing: "border-box" }}
+      sx={{
+        maxWidth: "1440px",
+        margin: "0 auto",
+        background: "linear-gradient(135deg, #DFF2EB 0%, #f8f9fa 100%)",
+        minHeight: "100vh",
+        fontFamily: "Arial, sans-serif",
+        padding: 4,
+        boxSizing: "border-box",
+      }}
     >
-      <Typography
-        variant="h4"
-        fontWeight={700}
-        mb={4}
-        color="primary"
-        sx={{ userSelect: "none" }}
-      >
-        Service Provider Dashboard
-      </Typography>
 
       {/* KPI Cards */}
-      <Grid
-        container
-        spacing={3}
-        mb={5}
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Grid container spacing={3} mb={5} justifyContent="center">
         {kpiData.map(({ icon, title, value }, i) => (
           <Grid item xs={12} sm={6} md={3} key={i}>
             <Paper
-              elevation={3}
               sx={{
-                p: 3,
+                p: 7,
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
                 gap: 2,
-                borderRadius: 3,
-                boxShadow: "0 6px 20px rgba(0,0,0,0.10)",
-                minWidth: 220,
-                justifyContent: "flex-start",
-                backgroundColor: "white",
+                borderRadius: "1rem",
+                border: "1px solid #DFF2EB",
+                boxShadow: "0 4px 24px rgba(74, 98, 138, 0.1)",
+                height: "100%",
               }}
             >
-              <Box sx={{ fontSize: 45 }}>{icon}</Box>
+              <Box sx={{ fontSize: 20 }}>{icon}</Box>
               <Box>
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  sx={{ fontWeight: 600 }}
-                >
+                <Typography variant="subtitle2" fontWeight={600} color="#374151" fontSize={24}>
                   {title}
                 </Typography>
-                <Typography variant="h5" fontWeight={700}>
+                <Typography variant="h5" fontWeight={800} color="#1a2637" fontSize={16}>
                   {value}
                 </Typography>
               </Box>
@@ -145,23 +153,20 @@ const ServiceProviderDashboard = () => {
       </Grid>
 
       {/* Charts Row */}
-      <Grid container spacing={4} mb={5} alignItems="stretch">
-        <Grid item xs={12} md={4}>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            gutterBottom
-            sx={{ userSelect: "none" }}
-          >
+      <Grid container spacing={4} mb={5} justifyContent="center">
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" fontWeight={700} mb={1} color="#1a2637">
             Booking Status Breakdown
           </Typography>
           <Paper
-            elevation={3}
             sx={{
-              height: 320,
-              p: 2,
-              borderRadius: 3,
+              height: 350,
+              width: 500,
+              p: 4,
+              borderRadius: "1rem",
               backgroundColor: "white",
+              border: "1px solid #DFF2EB",
+              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
@@ -177,29 +182,26 @@ const ServiceProviderDashboard = () => {
                     <Cell key={index} fill={entry.color} />
                   ))}
                 </Pie>
-                <Legend verticalAlign="bottom" height={36} />
                 <Tooltip />
+                <Legend verticalAlign="bottom" />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={8}>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            gutterBottom
-            sx={{ userSelect: "none" }}
-          >
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" fontWeight={700} mb={1} color="#1a2637">
             Monthly Bookings Trend
           </Typography>
           <Paper
-            elevation={3}
             sx={{
-              height: 320,
-              p: 2,
-              borderRadius: 3,
+              height: 350,
+              width: 500,
+              p: 4,
+              borderRadius: "1rem",
               backgroundColor: "white",
+              border: "1px solid #DFF2EB",
+              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
@@ -220,26 +222,21 @@ const ServiceProviderDashboard = () => {
       </Grid>
 
       {/* Tables Row */}
-      <Grid container spacing={4} mb={5} alignItems="stretch">
-        {/* Upcoming Appointments */}
+      <Grid container spacing={4}>
+        {/* Appointments */}
         <Grid item xs={12} md={4}>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            mb={2}
-            sx={{ userSelect: "none" }}
-          >
+          <Typography variant="h6" fontWeight={700} mb={2} color="#1a2637">
             Upcoming Appointments
           </Typography>
           <Paper
-            elevation={3}
             sx={{
               p: 2,
-              borderRadius: 3,
-              height: "100%",
+              borderRadius: "1rem",
               minHeight: 380,
-              overflowX: "auto",
               backgroundColor: "white",
+              border: "1px solid #DFF2EB",
+              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
+              overflowX: "auto",
             }}
           >
             <Table size="small" stickyHeader>
@@ -253,33 +250,29 @@ const ServiceProviderDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {upcomingAppointments.map(
-                  ({ date, time, customer, service, status }, i) => (
-                    <TableRow key={i} hover>
-                      <TableCell>
-                        {new Date(date).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{time}</TableCell>
-                      <TableCell>{customer}</TableCell>
-                      <TableCell>{service}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={status}
-                          color={
-                            status === "Completed"
-                              ? "success"
-                              : status === "Ongoing"
-                              ? "primary"
-                              : status === "Pending"
-                              ? "warning"
-                              : "default"
-                          }
-                          size="small"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )
-                )}
+                {upcomingAppointments.map((a, i) => (
+                  <TableRow key={i} hover>
+                    <TableCell>{new Date(a.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{a.time}</TableCell>
+                    <TableCell>{a.customer}</TableCell>
+                    <TableCell>{a.service}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={a.status}
+                        color={
+                          a.status === "Completed"
+                            ? "success"
+                            : a.status === "Ongoing"
+                            ? "primary"
+                            : a.status === "Pending"
+                            ? "warning"
+                            : "default"
+                        }
+                        size="small"
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Paper>
@@ -287,23 +280,18 @@ const ServiceProviderDashboard = () => {
 
         {/* Top Services */}
         <Grid item xs={12} md={4}>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            mb={2}
-            sx={{ userSelect: "none" }}
-          >
+          <Typography variant="h6" fontWeight={700} mb={2} color="#1a2637">
             Top Services
           </Typography>
           <Paper
-            elevation={3}
             sx={{
               p: 2,
-              borderRadius: 3,
-              height: "100%",
+              borderRadius: "1rem",
               minHeight: 380,
-              overflowX: "auto",
               backgroundColor: "white",
+              border: "1px solid #DFF2EB",
+              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
+              overflowX: "auto",
             }}
           >
             <Table size="small" stickyHeader>
@@ -315,11 +303,11 @@ const ServiceProviderDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {topServices.map(({ rank, service, times }) => (
-                  <TableRow key={rank} hover>
-                    <TableCell>{rank}</TableCell>
-                    <TableCell>{service}</TableCell>
-                    <TableCell>{times}</TableCell>
+                {topServices.map((s) => (
+                  <TableRow key={s.rank} hover>
+                    <TableCell>{s.rank}</TableCell>
+                    <TableCell>{s.service}</TableCell>
+                    <TableCell>{s.times}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -327,25 +315,20 @@ const ServiceProviderDashboard = () => {
           </Paper>
         </Grid>
 
-        {/* Customer Reviews */}
+        {/* Reviews */}
         <Grid item xs={12} md={4}>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            mb={2}
-            sx={{ userSelect: "none" }}
-          >
+          <Typography variant="h6" fontWeight={700} mb={2} color="#1a2637">
             Customer Reviews
           </Typography>
           <Paper
-            elevation={3}
             sx={{
               p: 2,
-              borderRadius: 3,
-              height: "100%",
+              borderRadius: "1rem",
               minHeight: 380,
-              overflowX: "auto",
               backgroundColor: "white",
+              border: "1px solid #DFF2EB",
+              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
+              overflowX: "auto",
             }}
           >
             <Table size="small" stickyHeader>
@@ -357,13 +340,13 @@ const ServiceProviderDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reviews.map(({ customer, rating, comment }, i) => (
+                {reviews.map((r, i) => (
                   <TableRow key={i} hover>
-                    <TableCell>{customer}</TableCell>
+                    <TableCell>{r.customer}</TableCell>
                     <TableCell>
-                      <Rating value={rating} readOnly size="small" />
+                      <Rating value={r.rating} readOnly size="small" />
                     </TableCell>
-                    <TableCell>{comment}</TableCell>
+                    <TableCell>{r.comment}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
