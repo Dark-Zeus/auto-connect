@@ -42,6 +42,7 @@ import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashbo
 import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
+import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
 // Insurance Agent
 
@@ -49,6 +50,7 @@ import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
 import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
 import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
 import VehicleList from "@pages/InsuranceCompany/VehicleList";
+
 
 
 function getNavLinks(userContext) {
@@ -389,7 +391,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: "Dashboard",
+      page: <ServiceProviderDashboard/>,
     });
 
     // nav.push({
