@@ -1,4 +1,4 @@
-// src/pages/AddVehicles.jsx (Final Complete Version)
+// src/pages/AddVehicles.jsx (Final Corrected Version)
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -15,9 +15,6 @@ import {
   InputAdornment,
   Fab,
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   CircularProgress,
   Alert,
   Tabs,
@@ -35,7 +32,6 @@ import {
 import {
   Add as AddIcon,
   Search as SearchIcon,
-  FilterList as FilterIcon,
   DirectionsCar as CarIcon,
   Verified as VerifiedIcon,
   HourglassEmpty as PendingIcon,
@@ -44,7 +40,6 @@ import {
   Edit as EditIcon,
   Visibility as ViewIcon,
   Delete as DeleteIcon,
-  Download as DownloadIcon,
   MoreVert as MoreVertIcon,
   InsertDriveFile as DocumentIcon,
   PhotoCamera as PhotoIcon,
@@ -53,7 +48,6 @@ import {
   Speed as SpeedIcon,
   Refresh as RefreshIcon,
   CloudDownload as ExportIcon,
-  Info as InfoIcon,
 } from "@mui/icons-material";
 import { UserContext } from "../../contexts/UserContext";
 import {
@@ -61,7 +55,7 @@ import {
   handleVehicleError,
   handleVehicleSuccess,
   apiDownloadFile,
-} from "../../utils/axios";
+} from "../../services/vehicleApiService";
 import VehicleRegistrationForm from "../../components/VehicleRegistrationForm";
 import "./AddVehicle.css";
 
