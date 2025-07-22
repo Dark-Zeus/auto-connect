@@ -156,7 +156,7 @@ function InsuranceCompanyCard({ company }) {
 
       {/* Popup */}
       {showPopup && (
-        <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-50 tw:px-4">
+        <div className="tw:fixed tw:inset-0 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:z-999 tw:px-4">
           <div className="tw:bg-white tw:rounded-3xl tw:shadow-2xl tw:p-0 tw:max-w-3xl tw:w-full tw:relative tw:overflow-y-auto tw:max-h-[90vh] tw:border tw:border-blue-100 tw:animate-fadeIn">
             {/* Decorative gradient top bar */}
             <div className="tw:h-3 tw:w-full tw:bg-gradient-to-r tw:from-blue-500 tw:via-indigo-400 tw:to-blue-300 tw:rounded-t-3xl"></div>

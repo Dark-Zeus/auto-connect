@@ -98,7 +98,7 @@ export default function ServiceCenterRequestBox() {
   };
 
   return (
-    <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:rounded-3xl tw:shadow-2xl tw:p-8 tw:border-2 tw:border-blue-200/50 tw:max-w-6xl tw:w-full tw:max-h-[85vh] tw:overflow-y-auto tw:space-y-8">
+    <div className="tw:bg-gradient-to-br tw:mt-50 tw:from-white tw:to-blue-50 tw:rounded-3xl tw:shadow-2xl tw:p-8 tw:border-2 tw:border-blue-200/50 tw:w-6xl tw:h-[65vh] tw:overflow-y-auto tw:space-y-8">
       <h2 className="tw:text-3xl tw:font-bold tw:text-blue-900 tw:mb-6 text-center tw:tracking-tight">
         Pending Service Center Requests
       </h2>

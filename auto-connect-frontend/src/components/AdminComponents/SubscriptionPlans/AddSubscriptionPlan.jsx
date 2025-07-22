@@ -64,7 +64,7 @@ export default function AddPlanModal({ onSave, onClose }) {
   ];
 
   return (
-    <div className="tw:fixed tw:inset-0 tw:z-50 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:p-4">
+    <div className="tw:fixed tw:inset-0 tw:z-999 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:p-4">
       <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:rounded-2xl tw:p-8 tw:w-full tw:max-w-2xl tw:shadow-2xl tw:relative tw:animate-fadeIn tw:border-2 tw:border-blue-200/50">
         {/* Header */}
         <div className="tw:flex tw:justify-between tw:items-center tw:mb-6">
