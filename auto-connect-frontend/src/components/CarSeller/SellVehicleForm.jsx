@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, X , CarFront, User, Logs} from 'lucide-react';
+import { Camera, X , CarFront, User, Logs, ClipboardCheckIcon, Clipboard} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
 
@@ -19,7 +19,8 @@ const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomith
     fuelType: '',
     engineCapacity: '',
     mileage: '',
-    description: ''
+    description: '',
+    registrationNumber: ''
   });
 
   const [photos, setPhotos] = useState(Array(6).fill(null));
@@ -470,6 +471,32 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                 {formData.description.length}/5000 characters
               </ div>
             </div>
+          </div>
+
+          {/* Vehicle Report */}
+          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+            <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
+              <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
+                <ClipboardCheckIcon className="tw:w-5 tw:h-5 tw:text-white" />
+              </div>
+              <h2 className="tw:text-xl tw:font-semibold tw:text-slate-700">Vehicle Report</h2>
+            </div>
+              <div>
+                <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
+                  Vehicle Registration Number <span className="tw:text-red-500">*</span>
+                </label>
+                <input
+                  ref={fieldRefs.registrationNumber}
+                  type="text"
+                  name="registrationNumber"
+                  value={formData.registrationNumber}
+                  onChange={handleInputChange}
+                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.registrationNumber ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
+                  placeholder="e.g., CAAXXXX, 300XXX, 17XXXX"
+                  required
+                />
+                {errors.registrationNumber && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.registrationNumber}</p>}
+              </div>
           </div>
 
           {/* Photos */}
