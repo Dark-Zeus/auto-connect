@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import galleryImages from "@components/ServiceProvider/ServiceProviderImages";
+import serviceCenterImg from "../../assets/images/service_center1.jpg"; // Make sure this file exists
 import {
   Container,
   Box,
@@ -33,6 +33,13 @@ import {
   ArrowBack,
   ArrowForward,
 } from "@mui/icons-material";
+
+const galleryImages = [
+  {
+    img: serviceCenterImg || "https://via.placeholder.com/190x190?text=Service+Center",
+    title: "Service Center",
+  },
+];
 
 const ServiceProviderProfile = ({ center }) => {
   if (!center) {
