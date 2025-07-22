@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import EditPlanModal from "./EditSubscriptionPlan"; // Adjust import path as needed
+import { Check, Star, Zap, Shield, Users, TrendingUp } from "lucide-react";
 
 // Initial pricing data
 const initialPlans = {
@@ -10,7 +11,7 @@ const initialPlans = {
     costPerAd: "1090",
     validityPeriod: "1 Month",
     adsPerMonth: "20",
-    promotionVoucher: "13,500",
+    freePromotion: "5 Days Bump Up",
   },
   quarterly: {
     title: "Quarterly",
@@ -19,7 +20,7 @@ const initialPlans = {
     costPerAd: "1035",
     validityPeriod: "3 Months",
     adsPerMonth: "20",
-    promotionVoucher: "40,500",
+    freePromotion: "7 Days Bump Up",
   },
   yearly: {
     title: "Yearly",
@@ -28,14 +29,14 @@ const initialPlans = {
     costPerAd: "872",
     validityPeriod: "12 Months",
     adsPerMonth: "20",
-    promotionVoucher: "162,000",
-  },
+    freePromotion: "9 Days Bump Up",
+  }
 };
 
-// Feature row with emoji
-const FeatureRow = ({ label, value, emoji }) => (
-  <div className="tw:flex tw:items-start tw:gap-2 tw:text-sm">
-    <span className="tw:text-xl">{emoji}</span>
+// Feature row with Lucide icon
+const FeatureRow = ({ label, value, icon }) => (
+  <div className="tw:flex tw:items-start tw:gap-3 tw:text-sm">
+    <span className="tw:mt-0.5">{icon}</span>
     <div className="tw:flex-1">
       <div className="tw:text-gray-600">{label}</div>
       <div className="tw:font-semibold tw:text-gray-800">{value}</div>
@@ -47,6 +48,11 @@ const FeatureRow = ({ label, value, emoji }) => (
 const PriceBox = ({ plan, onEdit, onDelete }) => (
   <div className="tw:bg-white tw:rounded-2xl tw:p-6 tw:shadow-xl tw:border tw:border-gray-200 tw:transition-all tw:duration-300 tw:transform tw:hover:scale-[1.03]">
     <div className="tw:text-center tw:mb-6">
+      <div className="tw:flex tw:justify-center tw:mb-2">
+        {plan.title === "Monthly" && <Zap className="tw:w-8 tw:h-8 tw:text-yellow-500" />}
+        {plan.title === "Quarterly" && <TrendingUp className="tw:w-8 tw:h-8 tw:text-blue-500" />}
+        {plan.title === "Yearly" && <Star className="tw:w-8 tw:h-8 tw:text-purple-500" />}
+      </div>
       <h3 className="tw:text-xl tw:font-bold tw:text-blue-900">{plan.title}</h3>
       <p className="tw:!text-3xl tw:font-bold tw:text-blue-700 tw:mt-2">
         {plan.currency} {plan.price}
@@ -54,10 +60,26 @@ const PriceBox = ({ plan, onEdit, onDelete }) => (
     </div>
 
     <div className="tw:space-y-4 tw:mb-6">
-      <FeatureRow label="Cost Per Ad" value={`${plan.currency} ${plan.costPerAd}`} emoji="💰" />
-      <FeatureRow label="Validity Period" value={plan.validityPeriod} emoji="📅" />
-      <FeatureRow label="Ads Per Month" value={plan.adsPerMonth} emoji="📢" />
-      <FeatureRow label="Promotion Voucher" value={`${plan.currency} ${plan.promotionVoucher}`} emoji="🎁" />
+      <FeatureRow
+        label="Cost Per Ad"
+        value={`${plan.currency} ${plan.costPerAd}`}
+        icon={<Check className="tw:w-5 tw:h-5 tw:text-green-600" />}
+      />
+      <FeatureRow
+        label="Validity Period"
+        value={plan.validityPeriod}
+        icon={<Shield className="tw:w-5 tw:h-5 tw:text-blue-500" />}
+      />
+      <FeatureRow
+        label="Ads Per Month"
+        value={plan.adsPerMonth}
+        icon={<Users className="tw:w-5 tw:h-5 tw:text-indigo-500" />}
+      />
+      <FeatureRow
+        label="Free Promotion"
+        value={plan.freePromotion}
+        icon={<Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />}
+      />
     </div>
 
     <div className="tw:flex tw:justify-between tw:gap-3">

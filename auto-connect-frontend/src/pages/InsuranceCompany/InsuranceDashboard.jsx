@@ -14,7 +14,6 @@ const InsuranceDashboard = () => {
 
   return (
     <div className="tw:flex tw:flex-grow tw:w-full tw:min-h-screen">
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
       <main
         className={`tw:flex-grow tw:transition-all tw:duration-300 tw:min-h-screen tw:w-full tw:p-7 tw:bg-gray-100 tw:overflow-auto ${
           isOpen ? "tw:ml-80" : "tw:ml-20"

@@ -29,6 +29,7 @@ import {
   LocationOn as LocationIcon,
   Business as BusinessIcon,
   Badge as BadgeIcon,
+  ContactPage as NicIcon,
   Visibility,
   VisibilityOff,
   PersonAdd as RegisterIcon,
@@ -53,6 +54,7 @@ const RegisterForm = () => {
     email: "",
     phone: "",
     role: "",
+    nicNumber: "",
     password: "",
     confirmPassword: "",
     // Address fields
@@ -144,21 +146,29 @@ const RegisterForm = () => {
     "insurance_agent",
   ].includes(formData.role);
   const requiresPoliceInfo = formData.role === "police";
+  const requiresNic = formData.role === "vehicle_owner";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    let processedValue = value;
+
+    // Format NIC number (convert to uppercase for old format)
+    if (name === "nicNumber") {
+      processedValue = value.toUpperCase().trim();
+    }
 
     // If province changes, clear the district
     if (name === "province") {
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: processedValue,
         district: "", // Clear district when province changes
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: processedValue,
       }));
     }
 
@@ -234,6 +244,23 @@ const RegisterForm = () => {
       newErrors.role = "Please select a user role";
     }
 
+    // NIC validation - only for vehicle owners
+    if (formData.role === "vehicle_owner") {
+      if (!formData.nicNumber.trim()) {
+        newErrors.nicNumber = "NIC number is required for vehicle owners";
+      } else {
+        // Sri Lankan NIC validation
+        const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+        const newNicPattern = /^[0-9]{12}$/;
+        const nicValue = formData.nicNumber.trim().toUpperCase();
+
+        if (!oldNicPattern.test(nicValue) && !newNicPattern.test(nicValue)) {
+          newErrors.nicNumber =
+            "Please enter a valid NIC number (9 digits + V/X or 12 digits)";
+        }
+      }
+    }
+
     // Step 1: Address
     if (!formData.street.trim()) {
       newErrors.street = "Street address is required";
@@ -306,7 +333,10 @@ const RegisterForm = () => {
   const handleNext = () => {
     // Validate current step before proceeding
     const stepValidations = {
-      0: ["firstName", "lastName", "email", "phone", "role"],
+      0:
+        formData.role === "vehicle_owner"
+          ? ["firstName", "lastName", "email", "phone", "role", "nicNumber"]
+          : ["firstName", "lastName", "email", "phone", "role"],
       1: ["street", "city", "district", "province", "postalCode"],
       2: requiresBusinessInfo
         ? [
@@ -340,6 +370,18 @@ const RegisterForm = () => {
       }
       if (formData.phone && !/^[0-9+\-\s()]+$/.test(formData.phone)) {
         stepErrors.phone = "Please enter a valid phone number";
+      }
+
+      // NIC validation for vehicle owners
+      if (formData.role === "vehicle_owner" && formData.nicNumber) {
+        const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+        const newNicPattern = /^[0-9]{12}$/;
+        const nicValue = formData.nicNumber.trim().toUpperCase();
+
+        if (!oldNicPattern.test(nicValue) && !newNicPattern.test(nicValue)) {
+          stepErrors.nicNumber =
+            "Please enter a valid NIC number (9 digits + V/X or 12 digits)";
+        }
       }
     }
 
@@ -414,6 +456,11 @@ const RegisterForm = () => {
           postalCode: formData.postalCode,
         },
       };
+
+      // Add NIC number only for vehicle owners
+      if (formData.role === "vehicle_owner" && formData.nicNumber) {
+        registerData.nicNumber = formData.nicNumber.toUpperCase();
+      }
 
       // Add business info if required
       if (requiresBusinessInfo) {
@@ -748,6 +795,34 @@ const RegisterForm = () => {
                 </MenuItem>
               ))}
             </TextField>
+
+            {/* NIC Field - Only for Vehicle Owners */}
+            {requiresNic && (
+              <Fade in={requiresNic} timeout={300}>
+                <TextField
+                  fullWidth
+                  name="nicNumber"
+                  label="NIC Number"
+                  value={formData.nicNumber}
+                  onChange={handleInputChange}
+                  error={!!errors.nicNumber}
+                  helperText={
+                    errors.nicNumber ||
+                    "Enter your National Identity Card number"
+                  }
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <NicIcon className="input-icon" />
+                      </InputAdornment>
+                    ),
+                  }}
+                  className="form-input"
+                  variant="outlined"
+                  placeholder="e.g., 123456789V or 199901234567"
+                />
+              </Fade>
+            )}
           </Box>
         );
 

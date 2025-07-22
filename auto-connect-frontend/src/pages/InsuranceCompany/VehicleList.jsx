@@ -8,9 +8,6 @@ const vehicles = [
     owner: "John Doe",
     insuranceType: "Comprehensive",
     registeredDate: "2025-01-15",
-    engineCapacity: "1800cc",
-    valuation: "$22,000",
-    image: "../../../public/insurance-claims/toyota-rius.jpg",
   },
   {
     id: "2",
@@ -86,11 +83,8 @@ const vehicles = [
   },
 ];
 
-const VehicleCard = ({ vehicle, isFirst, onClick }) => (
-  <div
-    className="tw:bg-[#DFF2EB] tw:rounded-2xl tw:p-5 tw:shadow-md tw:hover:shadow-lg tw:w-[400px] tw:cursor-pointer"
-    onClick={isFirst ? onClick : null}
-  >
+const VehicleCard = ({ vehicle }) => (
+  <div className="tw:bg-[#DFF2EB] tw:rounded-2xl tw:p-5 tw:shadow-md tw:hover:shadow-lg tw:w-[400px]">
     <div className="tw:flex tw:items-center tw:justify-between">
       <h2 className="tw:text-xl tw:font-bold tw:text-[#4A628A]">
         {vehicle.plateNumber}
@@ -117,80 +111,34 @@ const VehicleCard = ({ vehicle, isFirst, onClick }) => (
   </div>
 );
 
-const VehicleModal = ({ vehicle, onClose }) => (
-  <div className="tw:fixed tw:inset-0 tw:bg-black/50 tw:flex tw:items-center tw:justif:-center tw:z-50 tw:pl-24">
-    <div className="tw:bg-white tw:rounded-2xl tw:p-6 tw:w-[500px] tw:shadow-lg tw:relative">
-      <button
-        onClick={onClose}
-        className="tw:absolute tw:top-2 tw:right-3 tw:text-red-500 tw:hover:text-black tw:text-3xl tw:font-bold "
-      >
-        &times;
-      </button>
-      <img
-        src={vehicle.image}
-        alt="Vehicle"
-        className="tw:rounded-xl tw:mb-4 tw:w-full tw:h-64 tw:object-cover tw:mt-4"
-      />
-      <h2 className="tw:text-2xl tw:font-bold tw:text-[#4A628A] tw:mb-2">
-        {vehicle.model} - {vehicle.plateNumber}
-      </h2>
-      <p className="tw:text-[#4A628A]">
-        <strong>Owner:</strong> {vehicle.owner}
-      </p>
-      <p className="tw:text-[#4A628A]">
-        <strong>Engine Capacity:</strong> {vehicle.engineCapacity}
-      </p>
-      <p className="tw:text-[#4A628A]">
-        <strong>Valuation:</strong> {vehicle.valuation}
-      </p>
-      <p className="tw:text-[#4A628A] tw:mb-4">
-        <strong>Insurance Type:</strong> {vehicle.insuranceType}
-      </p>
-      <p className="tw:text-[#4A628A] tw:mb-4">
-        <strong>Registered Date:</strong> {vehicle.registeredDate}
-      </p>
-
-      <div className="tw:flex tw:justify-between tw:mt-7">
-        <button className="tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg tw:hover:bg-red-600">
-          Stolen Mark
-        </button>
-        <button className="tw:bg-yellow-500 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg tw:hover:bg-yellow-600">
-          Scrap Mark
-        </button>
-        <button className="tw:bg-blue-500 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg tw:hover:bg-blue-600">
-          Insurance Write-off
-        </button>
-      </div>
-    </div>
-  </div>
-);
-
 const VehicleList = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const filteredVehicles = vehicles.filter((v) =>
+    v.plateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    v.id.includes(searchTerm)
+  );
 
   return (
     <div className="tw:min-h-screen tw:bg-[#B9E5E8] tw:flex tw:flex-col tw:items-center tw:p-4 tw:space-y-6 tw:w-full">
-      <h1 className="tw:text-3xl tw:font-bold tw:text-[#4A628A] tw:pb-8 tw:pt-3">
-        Registered Vehicles
-      </h1>
+      
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search by Plate Number or Policy ID"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="tw:w-full tw:p-3 tw:border tw:border-blue-200 tw:rounded-xl tw:bg-blue-50 tw:text-blue-800 tw:font-medium"
+      />
 
-      <div className="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:xl:grid-cols-3 tw:gap-8">
-        {vehicles.map((v, idx) => (
-          <VehicleCard
-            key={v.id}
-            vehicle={v}
-            isFirst={idx === 0}
-            onClick={handleOpenModal}
-          />
-        ))}
+      {/* Vehicle Cards Grid */}
+      <div className="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:xl:grid-cols-3 tw:gap-8 tw:pt-4">
+        {filteredVehicles.length > 0 ? (
+          filteredVehicles.map((v) => <VehicleCard key={v.id} vehicle={v} />)
+        ) : (
+          <p className="tw:text-[#4A628A] tw:text-lg">No vehicles found.</p>
+        )}
       </div>
-
-      {showModal && (
-        <VehicleModal vehicle={vehicles[0]} onClose={handleCloseModal} />
-      )}
     </div>
   );
 };

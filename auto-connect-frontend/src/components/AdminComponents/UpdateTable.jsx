@@ -94,7 +94,7 @@ const LatestUpdatesTable = ({ latestUpdates }) => {
   }, [searchTerm, districtFilter, sortBy, sortAscending]);
 
   return (
-    <div className="tw:col-span-5 tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
+    <div className="tw:col-span-5 tw:h-189 tw:bg-white tw:rounded-2xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
       <h3 className="tw:text-2xl tw:font-bold tw:mb-4 tw:text-blue-800">
         Latest Service Updates
       </h3>
