@@ -24,23 +24,25 @@ async function fetchMonthlyData(monthIndex, year) {
     setTimeout(() => {
       const currentData = {
         totalNewUsers: Math.floor(Math.random() * 100) + 50,
-        totalRevenue: (Math.random() * 10000 + 5000).toFixed(2),
+        totalRevenue: (Math.random() * 1000000 + 5000).toFixed(2),
         totalUpdations: Math.floor(Math.random() * 50) + 20,
         totalServiceCenters: Math.floor(Math.random() * 10) + 5,
         totalInsuranceCompanies: Math.floor(Math.random() * 8) + 3,
         totalVehicleSellings: Math.floor(Math.random() * 120) + 60,
         totalAdvertisements: Math.floor(Math.random() * 20) + 10,
+        totalReportsSales: Math.floor(Math.random() * 30) + 15,
       };
       
       // Simulate previous month data for growth calculation
       const previousData = {
         totalNewUsers: Math.floor(Math.random() * 100) + 30,
-        totalRevenue: (Math.random() * 8000 + 3000).toFixed(2),
+        totalRevenue: (Math.random() * 800000 + 3000).toFixed(2),
         totalUpdations: Math.floor(Math.random() * 40) + 15,
         totalServiceCenters: Math.floor(Math.random() * 8) + 3,
         totalInsuranceCompanies: Math.floor(Math.random() * 6) + 2,
         totalVehicleSellings: Math.floor(Math.random() * 100) + 40,
         totalAdvertisements: Math.floor(Math.random() * 15) + 8,
+        totalReportsSales: Math.floor(Math.random() * 25) + 10,
       };
       
       resolve({ currentData, previousData });
@@ -65,6 +67,7 @@ function convertToCSV(data, month, year) {
     ["Insurance Companies", data.currentData.totalInsuranceCompanies, data.previousData.totalInsuranceCompanies],
     ["Vehicle Sellings", data.currentData.totalVehicleSellings, data.previousData.totalVehicleSellings],
     ["Advertisements", data.currentData.totalAdvertisements, data.previousData.totalAdvertisements],
+    ["Reports Sales", data.currentData.totalReportsSales, data.previousData.totalReportsSales],
   ];
   
   let csv = headers.join(",") + "\n";
@@ -96,10 +99,11 @@ function generatePDFContent(data, month, year) {
     { key: 'totalInsuranceCompanies', title: 'Insurance Companies', format: 'number' },
     { key: 'totalVehicleSellings', title: 'Vehicle Sales', format: 'number' },
     { key: 'totalAdvertisements', title: 'Advertisements', format: 'number' },
+    { key: 'totalReportsSales', title: 'Reports Sales', format: 'number' },
   ];
 
   const formatValue = (value, format) => {
-    if (format === 'currency') return `$${parseFloat(value).toLocaleString()}`;
+    if (format === 'currency') return `LKR ${parseFloat(value).toLocaleString()}`;
     return parseInt(value).toLocaleString();
   };
 
@@ -294,7 +298,7 @@ function MetricCard({ title, current, previous, icon: Icon, format = "number" })
   const isPositive = growth >= 0;
   
   const formatValue = (value) => {
-    if (format === "currency") return `$${parseFloat(value).toLocaleString()}`;
+    if (format === "currency") return `LKR ${parseFloat(value).toLocaleString()}`;
     return parseInt(value).toLocaleString();
   };
   
@@ -372,6 +376,7 @@ function MonthlyAnalysisDashboard() {
     { key: 'totalInsuranceCompanies', title: 'Insurance Companies', icon: Shield, format: 'number' },
     { key: 'totalVehicleSellings', title: 'Vehicle Sales', icon: Car, format: 'number' },
     { key: 'totalAdvertisements', title: 'Advertisements', icon: Megaphone, format: 'number' },
+    { key: 'totalReportsSales', title: 'Reports Sales', icon: FileText, format: 'number' },
   ];
 
   return (

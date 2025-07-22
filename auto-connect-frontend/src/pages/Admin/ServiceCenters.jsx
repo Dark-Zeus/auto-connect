@@ -15,6 +15,7 @@ const allCenters = [
     icon: center1,
     district: "Colombo",
     rating: 4.7,
+    category: "Service Center",
     details: {
       firstName: "Rashmika",
       lastName: "Dilmin",
@@ -59,6 +60,7 @@ const allCenters = [
     icon: center2,
     district: "Gampaha",
     rating: 4.5,
+    category: "Repair Center",
     details: {
       firstName: "Nimal",
       lastName: "Perera",
@@ -103,6 +105,7 @@ const allCenters = [
     icon: center3,
     district: "Kandy",
     rating: 4.2,
+    category: "Emission Testing Center",
     details: {
       firstName: "Kasun",
       lastName: "Jayasuriya",
@@ -141,7 +144,6 @@ function ServiceCenters() {
     setSortBy("");
   };
 
-  //close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -151,7 +153,7 @@ function ServiceCenters() {
     if (showPopup) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-  return () => {
+    return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showPopup]);
@@ -174,7 +176,6 @@ function ServiceCenters() {
 
   return (
     <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
-      {/* Header with Button */}
       <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
         <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800">
           Registered Service & Repair Centers
@@ -195,7 +196,6 @@ function ServiceCenters() {
         </div>
       )}
 
-      {/* Filter Box */}
       <ServiceCenterFilterBox
         searchQuery={searchQuery}
         selectedDistrict={selectedDistrict}
@@ -206,22 +206,21 @@ function ServiceCenters() {
         onReset={handleReset}
       />
 
-      {/* Cards */}
       <div className="tw:flex tw:flex-wrap tw:gap-6 tw:justify-center">
-          {filteredCenters.map((center, index) => (
-            <ServiceCenterCard
-              key={index}
-              name={center.name}
-              description={center.description}
-              icon={center.icon}
-              district={center.district}
-              rating={center.rating}
-              onView={() => setSelectedCenter(center.details)}
-            />
-          ))}
+        {filteredCenters.map((center, index) => (
+          <ServiceCenterCard
+            key={index}
+            name={center.name}
+            description={center.description}
+            icon={center.icon}
+            district={center.district}
+            rating={center.rating}
+            category={center.category}
+            onView={() => setSelectedCenter(center.details)}
+          />
+        ))}
       </div>
 
-      {/* Detail Modal */}
       {selectedCenter && (
         <ServiceCenterDetailCard
           data={selectedCenter}
@@ -233,4 +232,3 @@ function ServiceCenters() {
 }
 
 export default ServiceCenters;
-

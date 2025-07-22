@@ -3,6 +3,9 @@ import InsuranceCompanyCard from "@components/AdminComponents/InsurenceCompany/I
 import InsuranceCompanyFilterBox from "@components/AdminComponents/InsurenceCompany/InsuranceCompanyFilterBox";
 import insurence1 from "@assets/images/insurense.jpg";
 import InsuranceCompanyRequestPopup from "@components/AdminComponents/InsurenceCompaniesRequestsBox";
+import insurance1 from "@assets/images/insurancelogos/insurencelogo1.jpg";
+import insurance2 from "@assets/images/insurancelogos/insurencelogo2.jpg";
+import insurance3 from "@assets/images/insurancelogos/insurencelogo3.jpg";
 
 const sampleCompanies = [
   {
@@ -15,7 +18,7 @@ const sampleCompanies = [
     address: "No. 45, Park Street, Colombo 02",
     website: "www.safelife.lk",
     establishedDate: "2008-04-10",
-    image: insurence1,
+    image: insurance1,
     rating: 4.5,
     certifications: [
       {
@@ -44,7 +47,7 @@ const sampleCompanies = [
     address: "No. 101, Marine Drive, Colombo 06",
     website: "www.trustshield.lk",
     establishedDate: "2015-09-20",
-    image: insurence1,
+    image: insurance2,
     rating: 4.5,
     certifications: [
       {
@@ -66,7 +69,7 @@ const sampleCompanies = [
     address: "No. 88, Lake Road, Kandy",
     website: "www.lifeguard.lk",
     establishedDate: "2005-03-15",
-    image: insurence1,
+    image: insurance3,
     rating: 4.5,
     certifications: [
       {
