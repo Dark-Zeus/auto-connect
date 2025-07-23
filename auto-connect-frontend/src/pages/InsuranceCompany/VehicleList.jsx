@@ -114,10 +114,9 @@ const VehicleCard = ({ vehicle }) => (
 const VehicleList = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredVehicles = vehicles.filter(
-    (v) =>
-      v.plateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.id.includes(searchTerm)
+  const filteredVehicles = vehicles.filter((v) =>
+    v.plateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    v.id.includes(searchTerm)
   );
 
   return (

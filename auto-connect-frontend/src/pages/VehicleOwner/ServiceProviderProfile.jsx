@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import serviceCenterImg from "../../assets/images/service_center1.jpg"; // Make sure this file exists
 import {
   Container,
   Box,
@@ -33,7 +34,14 @@ import {
   ArrowForward,
 } from "@mui/icons-material";
 
-  const ServiceProviderProfile = ({ center }) => {
+const galleryImages = [
+  {
+    img: serviceCenterImg || "https://via.placeholder.com/190x190?text=Service+Center",
+    title: "Service Center",
+  },
+];
+
+const ServiceProviderProfile = ({ center }) => {
   if (!center) {
     return (
       <Container sx={{ py: 5 }}>
@@ -67,8 +75,6 @@ import {
     },
   ]);
 
-
-
   const {
     name,
     location: loc,
@@ -92,21 +98,6 @@ import {
     "01:00 PM - 02:00 PM",
     "03:00 PM - 04:00 PM",
     "04:30 PM - 05:30 PM",
-  ];
-
-  const galleryImages = [
-    {
-      img: "https://picsum.photos/id/1015/600/400",
-      title: "Mechanic at Work",
-    },
-    {
-      img: "https://picsum.photos/id/1016/600/400",
-      title: "Workshop Interior",
-    },
-    {
-      img: "https://picsum.photos/id/1018/600/400",
-      title: "Customer Lounge",
-    },
   ];
 
   const handleAddReview = () => {
@@ -187,7 +178,7 @@ import {
 
                    {/* Services & Gallery Side by Side */}
           <Divider sx={{ my: 4 }} />
-          <Grid container spacing={7}>
+          <Grid container spacing={10}>
             {/* Services List */}
             <Grid item xs={12} md={6}>
               <Typography sx={{ fontSize: 18, fontWeight: 600 }} gutterBottom>
@@ -225,8 +216,7 @@ import {
               <Box
                 sx={{
                   position: "left",
-                  maxWidth: 190,
-                  height: 190,
+                  maxWidth: 240,
                   overflow: "hidden",
                   borderRadius: 2,
                   boxShadow: 1,

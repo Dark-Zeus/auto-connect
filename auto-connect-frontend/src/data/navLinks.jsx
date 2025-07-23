@@ -44,7 +44,6 @@ import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
-// Insurance Agent
 
 import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
 import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
@@ -665,7 +664,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: <InsuranceDashboard />,
+      page: <InsuranceDashboard/>,
     });
 
     nav.push({
@@ -708,7 +707,7 @@ function getNavLinks(userContext) {
         //   icon: "assessment",
         //   page: "Damage Assessment",
         // }
-      ],
+      ]
     });
 
     nav.push({
@@ -744,7 +743,7 @@ function getNavLinks(userContext) {
         //   icon: "analytics",
         //   page: "Policy Analytics",
         // }
-      ],
+      ]
     });
 
     // nav.push({
@@ -972,7 +971,7 @@ function getNavLinks(userContext) {
         //   icon: "lock",
         //   page: "Security Settings",
         // }
-      ],
+      ]
     });
   }
 

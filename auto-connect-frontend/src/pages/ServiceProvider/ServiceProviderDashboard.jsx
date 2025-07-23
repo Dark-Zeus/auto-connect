@@ -33,68 +33,67 @@ import {
 } from "recharts";
 
 const kpiData = [
-  {
-    icon: <CheckCircleOutline />,
-    title: "Total Bookings",
-    value: 120,
-    color: "#4caf50",
-    subtitle: "Last 30 days",
-    trend: 15,
+  { 
+    icon: <CheckCircleOutline/>, 
+    title: "Total Bookings", 
+    value: 120, color: "#4caf50", 
+    subtitle: "Last 30 days", 
+    trend: 15 
   },
-  {
-    icon: <PendingActions />,
-    title: "Ongoing",
-    value: 18,
-    color: "#ffc107",
-    subtitle: "Current",
-    trend: -5,
+  { 
+    icon: <PendingActions/>, 
+    title: "Ongoing", 
+    value: 18, 
+    color: "#ffc107", 
+    subtitle: "Current", 
+    trend: -5 
   },
-  {
-    icon: <CheckCircleOutline />,
-    title: "Completed",
-    value: 70,
-    color: "#2196f3",
-    subtitle: "Last 30 days",
-    trend: 10,
+  { 
+    icon: <CheckCircleOutline/>, 
+    title: "Completed", 
+    value: 70, 
+    color: "#2196f3", 
+    subtitle: "Last 30 days", 
+    trend: 10 
   },
-  {
-    icon: <CancelOutlined />,
-    title: "Cancelled",
-    value: 6,
-    color: "#f44336",
-    subtitle: "Last 30 days",
-    trend: -2,
+  { 
+    icon: <CancelOutlined/>, 
+    title: "Cancelled", 
+    value: 6, 
+    color: "#f44336", 
+    subtitle: "Last 30 days", 
+    trend: -2 
   },
-  {
-    icon: <CalendarToday />,
-    title: "Upcoming",
-    value: 15,
-    color: "#2196f3",
-    subtitle: "Next 7 days",
-    trend: 20,
+  { 
+    icon: <CalendarToday/>, 
+    title: "Upcoming", 
+    value: 15, 
+    color: "#2196f3", 
+    subtitle: "Next 7 days", 
+    trend: 20 
   },
 ];
 
 const pieData = [
-  {
-    name: "Completed",
-    value: 70,
-    color: "#4caf50",
+  { 
+    name: "Completed", 
+    value: 70, 
+    color: "#4caf50" 
   },
-  {
-    name: "Ongoing",
-    value: 18,
-    color: "#ffc107",
+  { 
+    name: "Ongoing", 
+    value: 18, 
+    color: "#ffc107" 
   },
-  {
-    name: "Cancelled",
-    value: 6,
-    color: "#f44336",
+  { 
+    name: "Cancelled", 
+    value: 6, 
+    color: "#f44336" 
   },
-  {
-    name: "Pending",
-    value: 26,
-    color: "#2196f3",
+  { 
+    name: "Pending", 
+    value: 26, 
+    color: "#2196f3" 
   },
 ];
 
@@ -136,15 +135,27 @@ const upcomingAppointments = [
 ];
 
 const topServices = [
-  {
-    rank: 1,
-    service: "Oil Change",
-    times: 35,
+  { 
+    rank: 1, 
+    service: "Oil Change", 
+    times: 35 
   },
-  { rank: 2, service: "Engine Repair", times: 30 },
-  { rank: 3, service: "Battery Replacement", times: 18 },
-  { rank: 4, service: "AC Service", times: 14 },
-  { rank: 5, service: "Suspension Repair", times: 12 },
+  { rank: 2, 
+    service: "Engine Repair", 
+    times: 30 
+  },
+  { rank: 3, 
+    service: "Battery Replacement", 
+    times: 18 
+  },
+  { rank: 4, 
+    service: "AC Service", 
+    times: 14 
+  },
+  { rank: 5, 
+    service: "Suspension Repair", 
+    times: 12 
+  },
 ];
 
 const reviews = [
@@ -188,6 +199,7 @@ const ServiceProviderDashboard = () => {
         boxSizing: "border-box",
       }}
     >
+
       {/* KPI Cards */}
       <Grid container spacing={1} mb={5} justifyContent="center">
         {kpiData.map(({ icon, title, value, subtitle, trend, color }, i) => (
@@ -205,26 +217,26 @@ const ServiceProviderDashboard = () => {
                 overflow: "hidden",
                 width: 230,
                 height: 180,
-              }}
-            >
-              {/* Left vertical colored stripe */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  height: "100%",
-                  width: "20px",
-                  backgroundColor: color,
-                  borderTopLeftRadius: "12px",
-                  borderBottomLeftRadius: "12px",
                 }}
-              />
-
-              {/* Icon and title */}
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            >
+                {/* Left vertical colored stripe */}
                 <Box
-                  sx={{
+                sx={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    height: "100%",
+                    width: "20px",
+                    backgroundColor: color,
+                    borderTopLeftRadius: "12px",
+                    borderBottomLeftRadius: "12px",
+                }}
+                />
+
+                {/* Icon and title */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Box
+                    sx={{
                     backgroundColor: color,
                     borderRadius: "0.5rem",
                     width: 40,
@@ -234,49 +246,48 @@ const ServiceProviderDashboard = () => {
                     justifyContent: "center",
                     color: "#fff",
                     fontSize: 18,
-                  }}
+                    }}
                 >
-                  {icon}
+                    {icon}
                 </Box>
-                <Typography
-                  sx={{ fontWeight: 700, fontSize: 16, color: "#1e293b" }}
-                >
-                  {title}
+                <Typography sx={{ fontWeight: 700, fontSize: 16, color: "#1e293b" }}>
+                    {title}
                 </Typography>
-              </Box>
+                </Box>
 
-              {/* Value */}
-              <Typography
+                {/* Value */}
+                <Typography
                 sx={{
-                  mt: 1.5,
-                  fontSize: 24,
-                  fontWeight: 800,
-                  color: "#0f172a",
+                    mt: 1.5,
+                    fontSize: 24,
+                    fontWeight: 800,
+                    color: "#0f172a",
                 }}
-              >
+                >
                 {value}
-              </Typography>
+                </Typography>
 
-              {/* Subtitle */}
-              <Typography sx={{ fontSize: 13, color: "#64748b" }}>
+                {/* Subtitle */}
+                <Typography sx={{ fontSize: 13, color: "#64748b" }}>
                 {subtitle}
-              </Typography>
+                </Typography>
 
-              {/* Trend */}
-              <Typography
+                {/* Trend */}
+                <Typography
                 sx={{
-                  mt: 1,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: trend >= 0 ? "#22c55e" : "#ef4444",
+                    mt: 1,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: trend >= 0 ? "#22c55e" : "#ef4444",
                 }}
-              >
+                >
                 {trend >= 0 ? `▲ ${trend}%` : `▼ ${Math.abs(trend)}%`}
-              </Typography>
+                </Typography>
             </Paper>
-          </Grid>
+            </Grid>
         ))}
-      </Grid>
+        </Grid>
+
 
       {/* Charts Row */}
       <Grid container spacing={10} mb={4} justifyContent="center">
@@ -357,7 +368,8 @@ const ServiceProviderDashboard = () => {
             sx={{
               p: 2,
               borderRadius: "1rem",
-              minHeight: 100,
+              minHeight:100,
+
               backgroundColor: "white",
               border: "1px solid #DFF2EB",
               boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
@@ -368,37 +380,23 @@ const ServiceProviderDashboard = () => {
             <Table size="medium" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Date
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Time
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Appointment ID
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Customer
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Service
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Status
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Date</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Time</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Appointment ID</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Customer</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Service</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {upcomingAppointments.map((a, i) => (
                   <TableRow key={i} hover>
-                    <TableCell sx={{ fontSize: 12 }}>
-                      {new Date(a.date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{a.time}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{a.id}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{a.customer}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{a.service}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>
+                    <TableCell sx={{ fontSize:12 }}>{new Date(a.date).toLocaleDateString()}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{a.time}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{a.id}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{a.customer}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{a.service}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>
                       <Chip
                         label={a.status}
                         color={
@@ -440,23 +438,17 @@ const ServiceProviderDashboard = () => {
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Rank
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Service
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Times Booked
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Rank</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Service</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Times Booked</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {topServices.map((s) => (
                   <TableRow key={s.rank} hover>
-                    <TableCell sx={{ fontSize: 12 }}>{s.rank}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{s.service}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{s.times}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{s.rank}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{s.service}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{s.times}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -484,25 +476,19 @@ const ServiceProviderDashboard = () => {
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Customer
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Rating
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize: 16 }}>
-                    Review
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Customer</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Rating</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Review</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {reviews.map((r, i) => (
                   <TableRow key={i} hover>
-                    <TableCell sx={{ fontSize: 12 }}>{r.customer}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>
+                    <TableCell sx={{ fontSize:12 }}>{r.customer}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>
                       <Rating value={r.rating} readOnly size="small" />
                     </TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>{r.comment}</TableCell>
+                    <TableCell sx={{ fontSize:12 }}>{r.comment}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

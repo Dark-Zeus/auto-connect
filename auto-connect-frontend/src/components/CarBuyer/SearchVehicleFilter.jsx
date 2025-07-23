@@ -7,7 +7,8 @@ const VehicleFilterForm = () => {
     type: '',
     manufacturer: '',
     model: '',
-    year: '',
+    minYear: '',
+    maxYear: '',
     transmission: '',
     fuel: '',
     condition: '',
@@ -75,7 +76,8 @@ const VehicleFilterForm = () => {
       type: '',
       manufacturer: '',
       model: '',
-      year: '',
+      minYear: '',
+      maxYear: '',
       transmission: '',
       fuel: '',
       condition: '',
@@ -217,7 +219,7 @@ const VehicleFilterForm = () => {
           />
         </div>
 
-        {/* Year */}
+        {/* Year Range */}
         <div className="tw:space-y-2">
           <label className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:font-medium tw:text-gray-700">
             <svg className="tw:w-4 tw:h-4 tw:text-blue-500" fill="currentColor" viewBox="0 0 24 24">
@@ -225,17 +227,30 @@ const VehicleFilterForm = () => {
             </svg>
             Year of Manufacture
           </label>
-          <select
-            name="year"
-            value={formData.year}
-            onChange={handleInputChange}
-            className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
-          >
-            <option value="">Select Year</option>
-            {years.map(year => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+          <div className="tw:grid tw:grid-cols-2 tw:gap-3">
+            <select
+              name="minYear"
+              value={formData.minYear || ""}
+              onChange={handleInputChange}
+              className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
+            >
+              <option value="">Min Year</option>
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            <select
+              name="maxYear"
+              value={formData.maxYear || ""}
+              onChange={handleInputChange}
+              className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
+            >
+              <option value="">Max Year</option>
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Transmission */}

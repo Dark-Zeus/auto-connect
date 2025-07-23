@@ -1,65 +1,88 @@
 import React, { useState } from "react";
-import { Person, Home, Phone, Badge } from "@mui/icons-material";
+import {
+  Phone,
+  Badge,
+  Mail,
+  MapPin,
+  Calendar,
+  Users,
+  Home,
+} from "lucide-react";
 
 function VehicleOwnerCard({ owner }) {
   const [showPopup, setShowPopup] = useState(false);
 
+  if (!owner) return null; // Safeguard in case `owner` is undefined
+
   return (
     <>
-      {/* Main Card */}
+      {/* Card */}
       <div
         onClick={() => setShowPopup(true)}
-        className="tw:w-[320px] tw:rounded-2xl tw:shadow-lg tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:p-5 hover:tw:shadow-xl hover:tw:scale-[1.03] tw-transition-all tw-duration-300 tw-space-y-3 tw:cursor-pointer"
+        className="tw:w-[300px] tw:rounded-2xl tw:p-5 tw:shadow-lg tw:cursor-pointer tw:transition-transform hover:tw:scale-105 tw:bg-white"
       >
-        <div className="tw:flex tw:items-center tw:gap-4">
+        <div className="tw:flex tw:gap-4">
           <img
             src={owner.image}
             alt={owner.name}
-            className="tw:w-16 tw:h-16 tw:rounded-full tw:object-cover tw:border tw:border-gray-300 tw:shadow-sm"
+            className="tw:w-35 tw:h-35 tw:rounded-xl tw:object-cover tw:border tw:border-blue-100"
           />
           <div>
-            <h2 className="tw:text-lg tw:font-bold tw:text-blue-900">{owner.name}</h2>
-            <p className="tw:text-sm tw:text-gray-700">{owner.email}</p>
-            <p className="tw:text-sm tw:text-gray-700">{owner.mobile}</p>
+            <h2 className="tw:font-bold tw:text-lg">{owner.name}</h2>
+            <p className="tw:text-sm tw:text-gray-600">
+              <Mail size={12} className="tw:inline tw:mr-1" />
+              {owner.email}
+            </p>
+            <p className="tw:text-sm tw:text-gray-600">
+              <Phone size={12} className="tw:inline tw:mr-1" />
+              {owner.mobile}
+            </p>
           </div>
+        </div>
+        <div className="tw:mt-3 tw:text-xs tw:text-gray-500">
+          <span>
+            <MapPin size={12} className="tw:inline tw:mr-1" />
+            {owner.city}
+          </span>
+          <span className="tw:ml-4">
+            <Badge size={12} className="tw:inline tw:mr-1" />
+            {owner.nic}
+          </span>
         </div>
       </div>
 
-      {/* Popup Modal */}
+      {/* Modal */}
       {showPopup && (
-        <div className="tw:fixed tw:inset-0 tw:bg-black/30 tw:flex tw:items-center tw:justify-center tw:z-50 tw:px-4">
-          <div className="tw:bg-white tw:rounded-3xl tw:shadow-2xl tw:p-6 tw:max-w-2xl tw:w-full tw:relative tw:overflow-y-auto tw:max-h-[90vh]">
+        <div className="tw:fixed tw:inset-0 tw:bg-black/50 tw:flex tw:items-center tw:justify-center tw:z-999">
+          <div className="tw:bg-white tw:p-6 tw:rounded-xl tw:shadow-xl tw:max-w-xl tw:w-full tw:relative">
             <button
               onClick={() => setShowPopup(false)}
-              className="tw:absolute tw:top-4 tw:right-4 tw:text-gray-500 hover:tw:text-red-500 tw:text-xl"
+              className="tw:absolute tw:top-3 tw:right-3 tw:text-red-500 hover:tw:text-red-700"
             >
-              ✖
+              &#10005;
             </button>
-
-            {/* Header */}
-            <div className="tw:flex tw:items-center tw:gap-5 tw:mb-6">
+            <div className="tw:flex tw:gap-4">
               <img
                 src={owner.image}
                 alt={owner.name}
-                className="tw:w-20 tw:h-20 tw:rounded-full tw:object-cover tw:border tw:border-gray-300"
+                className="tw:w-40 tw:h-40 tw:rounded-xl tw:object-cover"
               />
               <div>
-                <h2 className="tw:text-2xl tw:font-bold tw:text-blue-800">{owner.name}</h2>
-                <p className="tw:text-blue-600">{owner.email}</p>
-                <p className="tw:text-blue-600">{owner.mobile}</p>
+                <h2 className="tw:text-2xl tw:font-bold">{owner.name}</h2>
+                <p className="tw:text-sm tw:text-gray-600">{owner.email}</p>
+                <p className="tw:text-sm tw:text-gray-600">{owner.mobile}</p>
               </div>
             </div>
 
-            {/* Details Grid */}
-            <div className="tw:grid tw:grid-cols-2 sm:tw:grid-cols-2 tw:gap-4">
-              <Detail label="NIC" value={owner.nic} />
-              <Detail label="Gender" value={owner.gender} />
-              <Detail label="Date of Birth" value={owner.dob} />
-              <Detail label="Address" value={owner.address} />
-              <Detail label="City" value={owner.city} />
-              <Detail label="District" value={owner.district} />
-              <Detail label="Province" value={owner.province} />
-              <Detail label="Postal Code" value={owner.postalCode} />
+            <div className="tw:grid tw:grid-cols-2 tw:gap-4 tw:mt-4">
+              <Detail label="NIC" value={owner.nic} icon={<Badge size={16} />} />
+              <Detail label="Gender" value={owner.gender} icon={<Users size={16} />} />
+              <Detail label="DOB" value={owner.dob} icon={<Calendar size={16} />} />
+              <Detail label="Address" value={owner.address} icon={<MapPin size={16} />} />
+              <Detail label="City" value={owner.city} icon={<Home size={16} />} />
+              <Detail label="District" value={owner.district} icon={<MapPin size={16} />} />
+              <Detail label="Province" value={owner.province} icon={<MapPin size={16} />} />
+              <Detail label="Postal Code" value={owner.postalCode} icon={<Home size={16} />} />
             </div>
           </div>
         </div>
@@ -68,11 +91,14 @@ function VehicleOwnerCard({ owner }) {
   );
 }
 
-function Detail({ label, value }) {
+function Detail({ icon, label, value }) {
   return (
-    <div className="tw:bg-blue-50 tw:p-4 tw:rounded-xl tw:shadow-sm">
-      <p className="tw:text-xs tw:font-semibold tw:text-blue-600">{label}</p>
-      <p className="tw:text-blue-900 tw:font-bold">{value || "—"}</p>
+    <div className="tw:bg-gray-50 tw:p-3 tw:rounded-lg tw:shadow-sm">
+      <div className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:text-gray-700">
+        {icon}
+        <strong>{label}:</strong>
+      </div>
+      <p className="tw:mt-1 tw:text-sm tw:text-gray-900">{value}</p>
     </div>
   );
 }

@@ -11,7 +11,7 @@ import {
   AlertCircle,
   Trash2,
   Eye,
-  Reply,
+  Reply
 } from "lucide-react";
 
 const contactRequests = [
@@ -86,20 +86,15 @@ function UserContacts() {
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const filteredRequests = contactRequests
-    .filter(
-      (req) =>
-        req.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        req.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        req.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        req.email.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter(req =>
+      req.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.email.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter(
-      (req) => selectedCategory === "all" || req.category === selectedCategory
-    )
-    .filter((req) => selectedStatus === "all" || req.status === selectedStatus)
-    .filter(
-      (req) => selectedPriority === "all" || req.priority === selectedPriority
-    )
+    .filter(req => selectedCategory === "all" || req.category === selectedCategory)
+    .filter(req => selectedStatus === "all" || req.status === selectedStatus)
+    .filter(req => selectedPriority === "all" || req.priority === selectedPriority)
     .sort((a, b) => {
       if (sortBy === "date") return new Date(b.date) - new Date(a.date);
       if (sortBy === "priority") {
@@ -111,71 +106,49 @@ function UserContacts() {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "urgent":
-        return "tw:bg-red-100 tw:text-red-800 tw:border-red-200";
-      case "high":
-        return "tw:bg-orange-100 tw:text-orange-800 tw:border-orange-200";
-      case "medium":
-        return "tw:bg-yellow-100 tw:text-yellow-800 tw:border-yellow-200";
-      case "low":
-        return "tw:bg-green-100 tw:text-green-800 tw:border-green-200";
-      default:
-        return "tw:bg-gray-100 tw:text-gray-800 tw:border-gray-200";
+      case "urgent": return "tw:bg-red-100 tw:text-red-800 tw:border-red-200";
+      case "high": return "tw:bg-orange-100 tw:text-orange-800 tw:border-orange-200";
+      case "medium": return "tw:bg-yellow-100 tw:text-yellow-800 tw:border-yellow-200";
+      case "low": return "tw:bg-green-100 tw:text-green-800 tw:border-green-200";
+      default: return "tw:bg-gray-100 tw:text-gray-800 tw:border-gray-200";
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "unread":
-        return <Mail className="tw:w-4 tw:h-4 tw:text-blue-600" />;
-      case "in-progress":
-        return <Clock className="tw:w-4 tw:h-4 tw:text-orange-600" />;
-      case "resolved":
-        return <CheckCircle className="tw:w-4 tw:h-4 tw:text-green-600" />;
-      default:
-        return <AlertCircle className="tw:w-4 tw:h-4 tw:text-gray-600" />;
+      case "unread": return <Mail className="tw:w-4 tw:h-4 tw:text-blue-600" />;
+      case "in-progress": return <Clock className="tw:w-4 tw:h-4 tw:text-orange-600" />;
+      case "resolved": return <CheckCircle className="tw:w-4 tw:h-4 tw:text-green-600" />;
+      default: return <AlertCircle className="tw:w-4 tw:h-4 tw:text-gray-600" />;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "unread":
-        return "tw:bg-blue-50 tw:text-blue-700 tw:border tw:border-blue-200";
-      case "in-progress":
-        return "tw:bg-orange-50 tw:text-orange-700 tw:border tw:border-orange-200";
-      case "resolved":
-        return "tw:bg-green-50 tw:text-green-700 tw:border tw:border-green-200";
-      default:
-        return "tw:bg-gray-50 tw:text-gray-700 tw:border tw:border-gray-200";
+      case "unread": return "tw:bg-blue-50 tw:text-blue-700 tw:border tw:border-blue-200";
+      case "in-progress": return "tw:bg-orange-50 tw:text-orange-700 tw:border tw:border-orange-200";
+      case "resolved": return "tw:bg-green-50 tw:text-green-700 tw:border tw:border-green-200";
+      default: return "tw:bg-gray-50 tw:text-gray-700 tw:border tw:border-gray-200";
     }
   };
 
   const getCategoryIcon = (category) => {
     switch (category) {
-      case "account":
-        return <User className="tw:w-4 tw:h-4 tw:text-blue-500" />;
-      case "payment":
-        return (
-          <div className="tw:w-4 tw:h-4 tw:rounded-full tw:bg-green-500" />
-        );
-      case "service":
-        return <MessageSquare className="tw:w-4 tw:h-4 tw:text-indigo-500" />;
-      case "technical":
-        return <AlertCircle className="tw:w-4 tw:h-4 tw:text-red-500" />;
-      case "feature":
-        return <div className="tw:w-4 tw:h-4 tw:bg-purple-500 tw:rounded" />;
-      default:
-        return <MessageSquare className="tw:w-4 tw:h-4 tw:text-gray-400" />;
+      case "account": return <User className="tw:w-4 tw:h-4 tw:text-blue-500" />;
+      case "payment": return <div className="tw:w-4 tw:h-4 tw:rounded-full tw:bg-green-500" />;
+      case "service": return <MessageSquare className="tw:w-4 tw:h-4 tw:text-indigo-500" />;
+      case "technical": return <AlertCircle className="tw:w-4 tw:h-4 tw:text-red-500" />;
+      case "feature": return <div className="tw:w-4 tw:h-4 tw:bg-purple-500 tw:rounded" />;
+      default: return <MessageSquare className="tw:w-4 tw:h-4 tw:text-gray-400" />;
     }
   };
 
   const stats = {
     total: contactRequests.length,
-    unread: contactRequests.filter((r) => r.status === "unread").length,
-    inProgress: contactRequests.filter((r) => r.status === "in-progress")
-      .length,
-    resolved: contactRequests.filter((r) => r.status === "resolved").length,
-    urgent: contactRequests.filter((r) => r.priority === "urgent").length,
+    unread: contactRequests.filter(r => r.status === "unread").length,
+    inProgress: contactRequests.filter(r => r.status === "in-progress").length,
+    resolved: contactRequests.filter(r => r.status === "resolved").length,
+    urgent: contactRequests.filter(r => r.priority === "urgent").length
   };
 
   return (
@@ -300,13 +273,7 @@ function UserContacts() {
         {/* Results Count */}
         <div className="tw:mb-6">
           <p className="tw:text-gray-600">
-            Showing{" "}
-            <span className="tw:font-semibold tw:text-blue-700">
-              {filteredRequests.length}
-            </span>{" "}
-            of{" "}
-            <span className="tw:font-semibold">{contactRequests.length}</span>{" "}
-            requests
+            Showing <span className="tw:font-semibold tw:text-blue-700">{filteredRequests.length}</span> of <span className="tw:font-semibold">{contactRequests.length}</span> requests
           </p>
         </div>
 
@@ -326,22 +293,14 @@ function UserContacts() {
                       {req.subject}
                     </span>
                   </div>
-                  <div
-                    className={`tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:font-bold tw:border ${getPriorityColor(
-                      req.priority
-                    )}`}
-                  >
+                  <div className={`tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:font-bold tw:border ${getPriorityColor(req.priority)}`}>
                     {req.priority.toUpperCase()}
                   </div>
                 </div>
 
                 {/* Status and Date */}
                 <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
-                  <div
-                    className={`tw:flex tw:items-center tw:gap-2 tw:px-3 tw:py-1 tw:rounded-full tw:text-sm tw:font-semibold ${getStatusColor(
-                      req.status
-                    )}`}
-                  >
+                  <div className={`tw:flex tw:items-center tw:gap-2 tw:px-3 tw:py-1 tw:rounded-full tw:text-sm tw:font-semibold ${getStatusColor(req.status)}`}>
                     {getStatusIcon(req.status)}
                     {req.status.replace("-", " ").toUpperCase()}
                   </div>
@@ -383,16 +342,10 @@ function UserContacts() {
                   View Details
                 </button>
                 <div className="tw:flex tw:gap-2">
-                  <button
-                    className="tw:p-2 tw:text-green-600 tw:hover:bg-green-50 tw:rounded-lg tw:transition-colors"
-                    title="Reply"
-                  >
+                  <button className="tw:p-2 tw:text-green-600 tw:hover:bg-green-50 tw:rounded-lg tw:transition-colors" title="Reply">
                     <Reply className="tw:w-4 tw:h-4" />
                   </button>
-                  <button
-                    className="tw:p-2 tw:text-red-600 tw:hover:bg-red-50 tw:rounded-lg tw:transition-colors"
-                    title="Delete"
-                  >
+                  <button className="tw:p-2 tw:text-red-600 tw:hover:bg-red-50 tw:rounded-lg tw:transition-colors" title="Delete">
                     <Trash2 className="tw:w-4 tw:h-4" />
                   </button>
                 </div>
@@ -426,10 +379,7 @@ function UserContacts() {
                     </h2>
                     <div className="tw:flex tw:items-center tw:gap-4 tw:text-sm tw:text-blue-600">
                       <span>ID: #{selectedRequest.id}</span>
-                      <span>
-                        <Calendar className="tw:w-4 tw:h-4 tw:inline" />{" "}
-                        {selectedRequest.date}
-                      </span>
+                      <span><Calendar className="tw:w-4 tw:h-4 tw:inline" /> {selectedRequest.date}</span>
                     </div>
                   </div>
                   <button
@@ -442,30 +392,20 @@ function UserContacts() {
 
                 <div className="tw:space-y-6">
                   <div className="tw:bg-blue-50 tw:rounded-xl tw:p-6 tw:shadow-inner">
-                    <h3 className="tw:font-semibold tw:text-blue-700 tw:mb-2">
-                      From:
-                    </h3>
+                    <h3 className="tw:font-semibold tw:text-blue-700 tw:mb-2">From:</h3>
                     <div className="tw:flex tw:items-center tw:gap-3 tw:mb-1">
                       <User className="tw:w-5 tw:h-5 tw:text-blue-400" />
-                      <span className="tw:text-blue-900 tw:font-semibold">
-                        {selectedRequest.name}
-                      </span>
+                      <span className="tw:text-blue-900 tw:font-semibold">{selectedRequest.name}</span>
                     </div>
                     <div className="tw:flex tw:items-center tw:gap-3">
                       <Mail className="tw:w-5 tw:h-5 tw:text-blue-400" />
-                      <span className="tw:text-blue-600">
-                        {selectedRequest.email}
-                      </span>
+                      <span className="tw:text-blue-600">{selectedRequest.email}</span>
                     </div>
                   </div>
 
                   <div className="tw:bg-blue-50 tw:rounded-xl tw:p-6 tw:shadow-inner">
-                    <h3 className="tw:font-semibold tw:text-blue-700 tw:mb-2">
-                      Message:
-                    </h3>
-                    <p className="tw:text-blue-900 tw:text-base tw:leading-relaxed">
-                      {selectedRequest.message}
-                    </p>
+                    <h3 className="tw:font-semibold tw:text-blue-700 tw:mb-2">Message:</h3>
+                    <p className="tw:text-blue-900 tw:text-base tw:leading-relaxed">{selectedRequest.message}</p>
                   </div>
 
                   <div className="tw:flex tw:gap-4 tw:pt-4">

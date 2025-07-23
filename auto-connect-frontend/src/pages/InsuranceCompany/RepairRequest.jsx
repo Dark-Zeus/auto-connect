@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import Sidebar from "@components/InsuranceCompany/Sidebar";
 
 const approvedRequests = [
   {
@@ -34,17 +35,30 @@ const pendingRequests = [
     date: "2025-07-08",
     status: "Pending",
   },
+  {
+    id: 3,
+    client: "Michael Brown",
+    vehicle: "Chevrolet Malibu 2018",
+    date: "2025-07-09",
+    status: "Pending",
+  },
 ];
 
 const RepairRequests = () => {
-  return (
-    <div className="tw:p-6">
-      <h1 className="tw:text-3xl tw:font-bold tw:text-[#4A628A] tw:mb-6 tw:pb-10">
-        Repair Requests
-      </h1>
+  const [isOpen, setIsOpen] = useState(true);
 
-      {/* Approved Requests */}
-      <div className="tw:mb-10">
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  return (
+    <div className="tw:flex tw:flex-grow tw:w-full tw:min-h-screen">
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <main
+        className={`tw:flex-grow tw:transition-all tw:duration-300 tw:min-h-screen tw:w-full tw:p-7 tw:bg-gray-100 tw:overflow-auto ${
+          isOpen ? "tw:ml-80" : "tw:ml-20"
+        }`}
+      >
+        <h1 className="tw:text-3xl tw:font-bold tw:text-[#4A628A] tw:mb-6 tw:pb-10">
+          Repair Requests
+        </h1>
         <h2 className="tw:text-xl tw:font-semibold tw:text-[#77AB2D] tw:flex tw:items-center tw:gap-2 tw:mb-4 tw:pb-4">
           <CheckCircleIcon className="tw:text-[#77AB2D]" /> Approved Requests
         </h2>
@@ -70,37 +84,46 @@ const RepairRequests = () => {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Pending Requests */}
-      <div>
-        <h2 className="tw:flex tw:items-center tw:gap-2 tw:mb-4 tw:text-xl tw:font-semibold tw:text-yellow-600 tw:pb-4">
-          <HourglassBottomIcon className="tw:text-yellow-600" /> Pending
-          Requests
-        </h2>
-        <div className="tw:grid tw:gap-4 tw:md:grid-cols-2">
-          {pendingRequests.map((req) => (
-            <div
-              key={req.id}
-              className="tw:p-8 tw:bg-white tw:border tw:border-yellow-200 tw:rounded-lg tw:shadow-md"
-            >
-              <div className="tw:flex tw:items-center tw:justify-between tw:mb-2">
-                <p className="tw:font-semibold tw:text-[#4A628A]">
-                  {req.client}
+        {/* Pending Requests */}
+        <div className="tw:mt-10">
+          <h2 className="tw:flex tw:items-center tw:gap-2 tw:mb-4 tw:text-xl tw:font-semibold tw:text-yellow-600 tw:pb-4">
+            <HourglassBottomIcon className="tw:text-yellow-600" /> Pending
+            Requests
+          </h2>
+          <div className="tw:grid tw:gap-4 tw:md:grid-cols-2">
+            {pendingRequests.map((req) => (
+              <div
+                key={req.id}
+                className="tw:p-8 tw:bg-white tw:border tw:border-yellow-200 tw:rounded-lg tw:shadow-md"
+              >
+                <div className="tw:flex tw:items-center tw:justify-between tw:mb-2">
+                  <p className="tw:font-semibold tw:text-[#4A628A]">
+                    {req.client}
+                  </p>
+                  <HourglassBottomIcon className="tw:text-yellow-500" />
+                </div>
+                <p className="tw:text-sm tw:text-gray-700">
+                  Vehicle: {req.vehicle}
                 </p>
-                <HourglassBottomIcon className="tw:text-yellow-500" />
+                <p className="tw:text-sm tw:text-gray-700">Date: {req.date}</p>
+                <p className="tw:mt-2 tw:text-sm tw:font-semibold tw:text-yellow-700">
+                  {req.status}
+                </p>
+                {/* two button for accep and decline */}
+                <div className="tw:mt-4 tw:flex tw:gap-4">
+                  <button className="tw:bg-[#77AB2D] tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-green-600">
+                    Accept
+                  </button>
+                  <button className="tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded tw:hover:bg-red-600">
+                    Decline
+                  </button>
+                </div>
               </div>
-              <p className="tw:text-sm tw:text-gray-700">
-                Vehicle: {req.vehicle}
-              </p>
-              <p className="tw:text-sm tw:text-gray-700">Date: {req.date}</p>
-              <p className="tw:mt-2 tw:text-sm tw:font-semibold tw:text-yellow-700">
-                {req.status}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
