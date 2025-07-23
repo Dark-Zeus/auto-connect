@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import {
-  Search, Filter, Mail, Calendar, User, MessageSquare, Clock,
-  CheckCircle, AlertCircle, Trash2, Eye, Reply
+  Search,
+  Filter,
+  Mail,
+  Calendar,
+  User,
+  MessageSquare,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Trash2,
+  Eye,
+  Reply
 } from "lucide-react";
 
 const contactRequests = [
@@ -10,56 +20,61 @@ const contactRequests = [
     name: "Nimal Perera",
     email: "nimal@example.com",
     subject: "Account Issue",
-    message: "I'm unable to verify my email. I've tried multiple times but the verification link doesn't seem to work. Could you please help me resolve this issue?",
+    message:
+      "I'm unable to verify my email. I've tried multiple times but the verification link doesn't seem to work. Could you please help me resolve this issue?",
     date: "2025-07-18",
     priority: "high",
     status: "unread",
-    category: "account"
+    category: "account",
   },
   {
     id: 2,
     name: "Tharushi Jayasinghe",
     email: "tharushi@example.com",
     subject: "Payment Problem",
-    message: "My payment didn't go through, please check. The transaction shows as pending on my bank account but I haven't received confirmation from your system.",
+    message:
+      "My payment didn't go through, please check. The transaction shows as pending on my bank account but I haven't received confirmation from your system.",
     date: "2025-07-17",
     priority: "urgent",
     status: "in-progress",
-    category: "payment"
+    category: "payment",
   },
   {
     id: 3,
     name: "Kasun Fernando",
     email: "kasun@example.com",
     subject: "Service Center Inquiry",
-    message: "I want to register my service center with your platform. Could you please provide me with the necessary documentation and requirements?",
+    message:
+      "I want to register my service center with your platform. Could you please provide me with the necessary documentation and requirements?",
     date: "2025-07-16",
     priority: "medium",
     status: "resolved",
-    category: "service"
+    category: "service",
   },
   {
     id: 4,
     name: "Amara Silva",
     email: "amara@example.com",
     subject: "Technical Support",
-    message: "The mobile app keeps crashing when I try to upload documents. This has been happening for the past week.",
+    message:
+      "The mobile app keeps crashing when I try to upload documents. This has been happening for the past week.",
     date: "2025-07-15",
     priority: "high",
     status: "unread",
-    category: "technical"
+    category: "technical",
   },
   {
     id: 5,
     name: "Rajesh Gunaratne",
     email: "rajesh@example.com",
     subject: "Feature Request",
-    message: "Would it be possible to add dark mode to the application? It would be really helpful for users who work late hours.",
+    message:
+      "Would it be possible to add dark mode to the application? It would be really helpful for users who work late hours.",
     date: "2025-07-14",
     priority: "low",
     status: "in-progress",
-    category: "feature"
-  }
+    category: "feature",
+  },
 ];
 
 function UserContacts() {
@@ -140,46 +155,56 @@ function UserContacts() {
     <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-50 tw:via-blue-50 tw:to-indigo-100">
       <div className="tw:container tw:mx-auto tw:px-4 tw:py-8">
         {/* Header */}
-          <div className="tw:mb-8">
-            <h1 className="tw:text-4xl tw:font-extrabold tw:text-blue-900 tw:mb-2 tw:tracking-tight tw:flex tw:items-center tw:gap-3">
-              <MessageSquare className="tw:w-8 tw:h-8 tw:text-blue-500" />
-              Contact Requests Dashboard
-            </h1>
-            <p className="tw:text-gray-600 tw:text-lg">
-              Manage and respond to customer inquiries efficiently
-            </p>
-          </div>
+        <div className="tw:mb-8">
+          <h1 className="tw:text-4xl tw:font-extrabold tw:text-blue-900 tw:mb-2 tw:tracking-tight tw:flex tw:items-center tw:gap-3">
+            <MessageSquare className="tw:w-8 tw:h-8 tw:text-blue-500" />
+            Contact Requests Dashboard
+          </h1>
+          <p className="tw:text-gray-600 tw:text-lg">
+            Manage and respond to customer inquiries efficiently
+          </p>
+        </div>
 
-          {/* Stats Cards */}
-          <div className="tw:grid tw:grid-cols-5 sm:tw:grid-cols-3 md:tw:grid-cols-5 tw:gap-4 tw:mb-8">
-            <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-blue-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
-              <MessageSquare className="tw:w-7 tw:h-7 tw:text-blue-400 tw:mb-1" />
-              <span className="tw:text-3xl tw:font-extrabold tw:text-blue-900">{stats.total}</span>
-              <span className="tw:text-sm tw:text-gray-600">Total Requests</span>
-            </div>
-            <div className="tw:bg-gradient-to-br tw:from-blue-100 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-blue-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
-              <Mail className="tw:w-7 tw:h-7 tw:text-blue-500 tw:mb-1" />
-              <span className="tw:text-3xl tw:font-extrabold tw:text-blue-600">{stats.unread}</span>
-              <span className="tw:text-sm tw:text-gray-600">Unread</span>
-            </div>
-            <div className="tw:bg-gradient-to-br tw:from-orange-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-orange-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
-              <Clock className="tw:w-7 tw:h-7 tw:text-orange-500 tw:mb-1" />
-              <span className="tw:text-3xl tw:font-extrabold tw:text-orange-600">{stats.inProgress}</span>
-              <span className="tw:text-sm tw:text-gray-600">In Progress</span>
-            </div>
-            <div className="tw:bg-gradient-to-br tw:from-green-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-green-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
-              <CheckCircle className="tw:w-7 tw:h-7 tw:text-green-500 tw:mb-1" />
-              <span className="tw:text-3xl tw:font-extrabold tw:text-green-600">{stats.resolved}</span>
-              <span className="tw:text-sm tw:text-gray-600">Resolved</span>
-            </div>
-            <div className="tw:bg-gradient-to-br tw:from-red-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-red-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
-              <AlertCircle className="tw:w-7 tw:h-7 tw:text-red-500 tw:mb-1" />
-              <span className="tw:text-3xl tw:font-extrabold tw:text-red-600">{stats.urgent}</span>
-              <span className="tw:text-sm tw:text-gray-600">Urgent</span>
-            </div>
+        {/* Stats Cards */}
+        <div className="tw:grid tw:grid-cols-5 sm:tw:grid-cols-3 md:tw:grid-cols-5 tw:gap-4 tw:mb-8">
+          <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-blue-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
+            <MessageSquare className="tw:w-7 tw:h-7 tw:text-blue-400 tw:mb-1" />
+            <span className="tw:text-3xl tw:font-extrabold tw:text-blue-900">
+              {stats.total}
+            </span>
+            <span className="tw:text-sm tw:text-gray-600">Total Requests</span>
           </div>
+          <div className="tw:bg-gradient-to-br tw:from-blue-100 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-blue-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
+            <Mail className="tw:w-7 tw:h-7 tw:text-blue-500 tw:mb-1" />
+            <span className="tw:text-3xl tw:font-extrabold tw:text-blue-600">
+              {stats.unread}
+            </span>
+            <span className="tw:text-sm tw:text-gray-600">Unread</span>
+          </div>
+          <div className="tw:bg-gradient-to-br tw:from-orange-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-orange-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
+            <Clock className="tw:w-7 tw:h-7 tw:text-orange-500 tw:mb-1" />
+            <span className="tw:text-3xl tw:font-extrabold tw:text-orange-600">
+              {stats.inProgress}
+            </span>
+            <span className="tw:text-sm tw:text-gray-600">In Progress</span>
+          </div>
+          <div className="tw:bg-gradient-to-br tw:from-green-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-green-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
+            <CheckCircle className="tw:w-7 tw:h-7 tw:text-green-500 tw:mb-1" />
+            <span className="tw:text-3xl tw:font-extrabold tw:text-green-600">
+              {stats.resolved}
+            </span>
+            <span className="tw:text-sm tw:text-gray-600">Resolved</span>
+          </div>
+          <div className="tw:bg-gradient-to-br tw:from-red-50 tw:to-white tw:rounded-xl tw:p-5 tw:shadow-md tw:border tw:border-red-100 tw:flex tw:flex-col tw:items-center tw:gap-1">
+            <AlertCircle className="tw:w-7 tw:h-7 tw:text-red-500 tw:mb-1" />
+            <span className="tw:text-3xl tw:font-extrabold tw:text-red-600">
+              {stats.urgent}
+            </span>
+            <span className="tw:text-sm tw:text-gray-600">Urgent</span>
+          </div>
+        </div>
 
-          {/* Controls */}
+        {/* Controls */}
         <div className="tw:bg-white tw:rounded-xl tw:shadow-md tw:border tw:border-gray-100 tw:p-6 tw:mb-8">
           <div className="tw:flex tw:flex-col lg:tw:flex-row tw:gap-4 tw:items-center tw:justify-between">
             {/* Search */}
@@ -294,11 +319,15 @@ function UserContacts() {
                 <div className="tw:border-t tw:pt-4 tw:space-y-2">
                   <div className="tw:flex tw:items-center tw:gap-2">
                     <User className="tw:w-4 tw:h-4 tw:text-blue-400" />
-                    <span className="tw:font-medium tw:text-blue-900">{req.name}</span>
+                    <span className="tw:font-medium tw:text-blue-900">
+                      {req.name}
+                    </span>
                   </div>
                   <div className="tw:flex tw:items-center tw:gap-2">
                     <Mail className="tw:w-4 tw:h-4 tw:text-blue-400" />
-                    <span className="tw:text-blue-600 tw:text-sm">{req.email}</span>
+                    <span className="tw:text-blue-600 tw:text-sm">
+                      {req.email}
+                    </span>
                   </div>
                 </div>
               </div>

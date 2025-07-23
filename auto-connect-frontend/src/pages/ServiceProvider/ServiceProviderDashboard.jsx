@@ -203,9 +203,9 @@ const ServiceProviderDashboard = () => {
       {/* KPI Cards */}
       <Grid container spacing={1} mb={5} justifyContent="center">
         {kpiData.map(({ icon, title, value, subtitle, trend, color }, i) => (
-            <Grid item xs={12} sm={6} md={3} key={i}>
+          <Grid item xs={12} sm={6} md={3} key={i}>
             <Paper
-                sx={{
+              sx={{
                 display: "flex",
                 flexDirection: "column",
                 p: 4,
@@ -313,7 +313,6 @@ const ServiceProviderDashboard = () => {
                   dataKey="value"
                   nameKey="name"
                   outerRadius={100}
-                
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -370,6 +369,7 @@ const ServiceProviderDashboard = () => {
               p: 2,
               borderRadius: "1rem",
               minHeight:100,
+
               backgroundColor: "white",
               border: "1px solid #DFF2EB",
               boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",

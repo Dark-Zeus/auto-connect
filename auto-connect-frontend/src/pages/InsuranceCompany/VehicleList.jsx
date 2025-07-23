@@ -121,7 +121,6 @@ const VehicleList = () => {
 
   return (
     <div className="tw:min-h-screen tw:bg-[#B9E5E8] tw:flex tw:flex-col tw:items-center tw:p-4 tw:space-y-6 tw:w-full">
-      
       {/* Search Bar */}
       <input
         type="text"

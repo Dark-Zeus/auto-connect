@@ -76,6 +76,7 @@ export const createSendToken = (user, statusCode, res, message = "Success") => {
         profileImage: user.profileImage,
         businessInfo: user.businessInfo,
         rating: user.rating,
+        nicNumber: user.nicNumber,
         lastLogin: user.lastLogin,
       },
     },
@@ -395,3 +396,227 @@ export const requireInsuranceProvider = restrictTo(
   "insurance_agent",
   "system_admin"
 );
+
+// ========== APPENDED ADDITIONAL FUNCTIONALITY FOR VEHICLE MANAGEMENT ==========
+
+// Check if user owns the resource (for vehicle operations)
+export const checkResourceOwnership = (resourceParam = "id") => {
+  return async (req, res, next) => {
+    try {
+      const resourceId = req.params[resourceParam];
+
+      // For vehicle operations, we'll check ownership in the vehicle controller
+      // This middleware can be extended for other resource types
+      if (req.baseUrl.includes("/vehicles")) {
+        // Vehicle ownership will be checked in vehicle controller methods
+        // since it requires querying the Vehicle model
+        next();
+        return;
+      }
+
+      // For other resources, implement specific ownership checks
+      next();
+    } catch (error) {
+      LOG.error("Resource ownership check error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error checking resource ownership.",
+      });
+    }
+  };
+};
+
+// Verify NIC number matches authenticated user (for vehicle registration)
+export const verifyNICOwnership = (req, res, next) => {
+  const { nicNumber, ownerNIC } = req.body;
+  const submittedNIC = nicNumber || ownerNIC;
+
+  if (submittedNIC && submittedNIC !== req.user.nicNumber) {
+    LOG.warn({
+      message: "NIC ownership violation attempt",
+      userId: req.user._id,
+      userNIC: req.user.nicNumber,
+      submittedNIC: submittedNIC,
+      endpoint: req.originalUrl,
+      ip: req.ip,
+    });
+
+    return res.status(403).json({
+      success: false,
+      message: "You can only register vehicles under your own NIC number.",
+      error: "NIC_OWNERSHIP_VIOLATION",
+      providedNIC: submittedNIC,
+      userNIC: req.user.nicNumber,
+    });
+  }
+
+  next();
+};
+
+// Rate limiting for sensitive operations
+export const sensitiveOperationLimit = (req, res, next) => {
+  // Add additional logging for sensitive operations
+  if (req.method === "DELETE") {
+    LOG.warn({
+      message: "Sensitive DELETE operation attempted",
+      userId: req.user._id,
+      endpoint: req.originalUrl,
+      ip: req.ip,
+      userAgent: req.get("user-agent"),
+    });
+  }
+
+  if (req.route && req.route.path.includes("export")) {
+    LOG.info({
+      message: "Data export operation attempted",
+      userId: req.user._id,
+      endpoint: req.originalUrl,
+      ip: req.ip,
+    });
+  }
+
+  next();
+};
+
+// Middleware to ensure vehicle owner role for vehicle operations
+export const requireVehicleOwner = (req, res, next) => {
+  if (req.user.role !== "vehicle_owner") {
+    LOG.warn({
+      message: "Non-vehicle owner attempted vehicle operation",
+      userId: req.user._id,
+      userRole: req.user.role,
+      endpoint: req.originalUrl,
+      method: req.method,
+      ip: req.ip,
+    });
+
+    return res.status(403).json({
+      success: false,
+      message: "Only vehicle owners can perform this operation.",
+      error: "INSUFFICIENT_ROLE_PERMISSIONS",
+      userRole: req.user.role,
+      requiredRole: "vehicle_owner",
+    });
+  }
+  next();
+};
+
+// Combined middleware for vehicle operations (commonly used together)
+export const protectVehicleOperations = [
+  protect,
+  requireVehicleOwner,
+  verifyNICOwnership,
+  sensitiveOperationLimit,
+];
+
+// Middleware to attach user context to request
+export const attachUserContext = (req, res, next) => {
+  if (req.user) {
+    req.userContext = {
+      id: req.user._id,
+      email: req.user.email,
+      role: req.user.role,
+      nicNumber: req.user.nicNumber,
+      fullName: req.user.fullName,
+      isVerified: req.user.isVerified,
+      isActive: req.user.isActive,
+    };
+  }
+  next();
+};
+
+// Enhanced role checking with detailed logging
+export const restrictToWithLogging = (...roles) => {
+  return (req, res, next) => {
+    const hasPermission = roles.includes(req.user.role);
+
+    LOG.info({
+      message: `Access control check: ${hasPermission ? "GRANTED" : "DENIED"}`,
+      userId: req.user._id,
+      userRole: req.user.role,
+      requiredRoles: roles,
+      endpoint: req.originalUrl,
+      method: req.method,
+      ip: req.ip,
+      result: hasPermission ? "ALLOWED" : "BLOCKED",
+    });
+
+    if (!hasPermission) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to perform this action.",
+        error: "INSUFFICIENT_PERMISSIONS",
+        userRole: req.user.role,
+        requiredRoles: roles,
+      });
+    }
+
+    next();
+  };
+};
+
+// Validate request source (for additional security)
+export const validateRequestSource = (req, res, next) => {
+  // Check for suspicious request patterns
+  const suspiciousPatterns = [
+    /\b(union|select|insert|delete|drop|create|alter)\b/i,
+    /[<>'"]/g,
+    /javascript:/i,
+  ];
+
+  const requestUrl = req.originalUrl;
+  const isSuspicious = suspiciousPatterns.some((pattern) =>
+    pattern.test(requestUrl)
+  );
+
+  if (isSuspicious) {
+    LOG.warn({
+      message: "Suspicious request pattern detected",
+      url: requestUrl,
+      ip: req.ip,
+      userAgent: req.get("user-agent"),
+      userId: req.user?._id,
+    });
+
+    return res.status(400).json({
+      success: false,
+      message: "Invalid request format.",
+      error: "SUSPICIOUS_REQUEST",
+    });
+  }
+
+  next();
+};
+
+// Session validation middleware
+export const validateSession = async (req, res, next) => {
+  if (!req.user) {
+    return next();
+  }
+
+  try {
+    // Check if user's session is still valid
+    const currentUser = await User.findById(req.user._id).select(
+      "+lastLogin +loginAttempts"
+    );
+
+    if (!currentUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Session invalid. Please log in again.",
+        error: "SESSION_INVALID",
+      });
+    }
+
+    // Update request with fresh user data
+    req.user = currentUser;
+    next();
+  } catch (error) {
+    LOG.error("Session validation error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Session validation failed.",
+      error: "SESSION_VALIDATION_ERROR",
+    });
+  }
+};
