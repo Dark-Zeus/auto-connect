@@ -21,6 +21,7 @@ import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile";
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
 import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
+import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -76,7 +77,7 @@ function getNavLinks(userContext) {
           path: [`/vehicles`],
           title: "Vehicle List",
           icon: "directions_car",
-          page: "ListedVehiclesPage",
+          page: <AddedVehicles />,
         },
         {
           path: [`/vehicles/add`],
