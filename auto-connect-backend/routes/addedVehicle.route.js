@@ -1,44 +1,44 @@
-// routes/addedVehicle.route.js
+// backend/routes/addedVehicles.route.js (Updated to match controller exports)
 import express from "express";
+import { protect } from "../middleware/auth.middleware.js";
 import {
   addVehicle,
   getAddedVehicles,
-  getAddedVehiclesByOwnerNIC,
-  getAddedVehicle,
+  getAddedVehicleById, // Changed from getAddedVehicle
   updateAddedVehicle,
   deleteAddedVehicle,
-  markCompleted,
+  updateVehicleStatus,
+  markVehicleCompleted,
   getAddedVehicleStats,
   exportAddedVehicles,
-} from "../controllers/addedVehicle.controller.js";
-import { protect, restrictTo } from "../middleware/auth.middleware.js";
+  bulkUpdateStatus,
+  bulkDeleteVehicles,
+  getVehicleHistory,
+  getAddedVehiclesByOwnerNIC,
+} from "../controllers/addedVehicles.controller.js"; // Make sure this matches your actual file name
 
 const router = express.Router();
 
-// All routes require authentication
+// Protect all routes (require authentication)
 router.use(protect);
 
-// Public routes (authenticated users)
-router
-  .route("/")
-  .get(getAddedVehicles) // GET /api/v1/added-vehicles - Get user's added vehicles
-  .post(addVehicle); // POST /api/v1/added-vehicles - Add a vehicle
-
-// Statistics and export
+// Main CRUD routes
+router.post("/", addVehicle); // POST /api/v1/added-vehicles
+router.get("/", getAddedVehicles); // GET /api/v1/added-vehicles
 router.get("/stats", getAddedVehicleStats); // GET /api/v1/added-vehicles/stats
 router.get("/export", exportAddedVehicles); // GET /api/v1/added-vehicles/export
+router.get("/owner/:nicNumber", getAddedVehiclesByOwnerNIC); // GET /api/v1/added-vehicles/owner/:nicNumber
 
-// Get added vehicles by owner NIC
-router.get("/owner/:nicNumber", getAddedVehiclesByOwnerNIC); // GET /api/v1/added-vehicles/owner/123456789V
+// Bulk operations
+router.patch("/bulk/status", bulkUpdateStatus); // PATCH /api/v1/added-vehicles/bulk/status
+router.delete("/bulk/delete", bulkDeleteVehicles); // DELETE /api/v1/added-vehicles/bulk/delete
 
-// Individual added vehicle operations
-router
-  .route("/:id")
-  .get(getAddedVehicle) // GET /api/v1/added-vehicles/:id
-  .patch(updateAddedVehicle) // PATCH /api/v1/added-vehicles/:id
-  .delete(deleteAddedVehicle); // DELETE /api/v1/added-vehicles/:id
-
-// Mark as completed
-router.patch("/:id/complete", markCompleted); // PATCH /api/v1/added-vehicles/:id/complete
+// Individual vehicle routes
+router.get("/:id", getAddedVehicleById); // GET /api/v1/added-vehicles/:id
+router.put("/:id", updateAddedVehicle); // PUT /api/v1/added-vehicles/:id
+router.delete("/:id", deleteAddedVehicle); // DELETE /api/v1/added-vehicles/:id
+router.patch("/:id/status", updateVehicleStatus); // PATCH /api/v1/added-vehicles/:id/status
+router.patch("/:id/complete", markVehicleCompleted); // PATCH /api/v1/added-vehicles/:id/complete
+router.get("/:id/history", getVehicleHistory); // GET /api/v1/added-vehicles/:id/history
 
 export default router;

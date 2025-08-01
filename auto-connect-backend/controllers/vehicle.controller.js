@@ -1,5 +1,5 @@
 // controllers/vehicle.controller.js
-import Vehicle from "../models/Vehicle.model.js";
+import Vehicle from "../models/vehicle.model.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";
 
