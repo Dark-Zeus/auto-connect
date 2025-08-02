@@ -1,4 +1,4 @@
-import { resolveExample } from "./paramResolvers/exampleResolver"
+import { resolveExample } from "./paramResolvers/exampleResolver";
 
 // Vehicle Owner
 import UserDashboard from "@pages/VehicleOwner/UserDashboard";
@@ -20,8 +20,7 @@ import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to chan
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
 import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
-
-
+import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -45,14 +44,12 @@ import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
-// Insurance Agent
 
 import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
 import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
 import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
 import VehicleList from "@pages/InsuranceCompany/VehicleList";
-
-
+import { Add } from "@mui/icons-material";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -85,7 +82,7 @@ function getNavLinks(userContext) {
           path: [`/vehicles/add`],
           title: "Add New Vehicle",
           icon: "add_circle",
-          page: <VehicleRegistrationPage />,
+          page: <AddVehicles  />,
         },
         {
           path: [`/vehicles/:vehicleId`],
@@ -137,7 +134,6 @@ function getNavLinks(userContext) {
           title: "My Bookings",
           icon: "event_available",
           page: <MyBookingServices />,
-          
         },
         // {
         //   path: [`/services/history`],
@@ -299,8 +295,6 @@ function getNavLinks(userContext) {
       page: <VehiclePassportDashboard />,
     });
 
-
-
     // nav.push({
     //   title: "Documents",
     //   icon: "folder",
@@ -387,12 +381,15 @@ function getNavLinks(userContext) {
   }
 
   // SERVICE PROVIDER Navigation
-  if (userContext.role === "service_center" || userContext.role === "repair_center") {
+  if (
+    userContext.role === "service_center" ||
+    userContext.role === "repair_center"
+  ) {
     nav.push({
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: <ServiceProviderDashboard/>,
+      page: <ServiceProviderDashboard />,
     });
 
     // nav.push({
@@ -488,14 +485,14 @@ function getNavLinks(userContext) {
           icon: "verified",
           page: <VehicleServiceUpdatePage />, // TODO: Create this page
         },
-      ]
+      ],
     });
 
     nav.push({
       title: "Reviews & Feedback",
       icon: "feedback",
       page: <ServiceProviderReviews />,
-    })
+    });
 
     // nav.push({
     //   title: "Inventory",
@@ -670,11 +667,11 @@ function getNavLinks(userContext) {
       page: <InsuranceDashboard/>,
     });
 
-nav.push({
+    nav.push({
       path: [`/vehicles`],
       title: "Vehicle List",
       icon: "directions_car",
-      page: <VehicleList/>,
+      page: <VehicleList />,
     });
 
     nav.push({
@@ -991,7 +988,7 @@ nav.push({
       path: [`/subscriptions`],
       title: "Subscriptions",
       icon: "subscriptions",
-      page: <Subscriptions />
+      page: <Subscriptions />,
     });
 
     nav.push({
@@ -1020,8 +1017,8 @@ nav.push({
           title: "Service Centers",
           icon: "build",
           page: <ServiceCenters />,
-        }
-      ]
+        },
+      ],
     });
 
     nav.push({
@@ -1036,7 +1033,7 @@ nav.push({
       title: "Transaction Management",
       icon: "account_balance_wallet",
       page: <Transactions />,
-    })
+    });
 
     nav.push({
       path: [`/updates`],
@@ -1281,7 +1278,7 @@ nav.push({
 }
 
 function processNavLinks(nav) {
-  nav.forEach(navItem => {
+  nav.forEach((navItem) => {
     // Check main nav items for subNav
     if (navItem.subNav && Array.isArray(navItem.subNav)) {
       const defaultItem = {
@@ -1289,21 +1286,21 @@ function processNavLinks(nav) {
         title: navItem.defLinkSettings?.title || navItem.title || "Default",
         page: navItem.page,
         icon: navItem.defLinkSettings?.icon || navItem.icon || "home",
-        paramResolvers: navItem.paramResolvers
+        paramResolvers: navItem.paramResolvers,
       };
       navItem.subNav.unshift(defaultItem);
     }
 
     // Check sub items for subNav
     if (navItem.sub) {
-      navItem.sub.forEach(subItem => {
+      navItem.sub.forEach((subItem) => {
         if (subItem.subNav && Array.isArray(subItem.subNav)) {
           const defaultItem = {
             path: subItem.path,
             title: "Default",
             page: subItem.page,
             icon: subItem.icon,
-            paramResolvers: subItem.paramResolvers
+            paramResolvers: subItem.paramResolvers,
           };
           subItem.subNav.unshift(defaultItem);
         }
