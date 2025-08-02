@@ -1,9 +1,8 @@
-// src/pages/AddVehicles.jsx (Updated with Dialog Integration)
+// src/pages/AddVehicles.jsx (Simplified Display Only Version)
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-  Box,
   Container,
   Typography,
   Button,
@@ -44,18 +43,8 @@ import { UserContext } from "../../contexts/UserContext";
 import {
   vehicleAPI,
   handleVehicleError,
-  handleVehicleSuccess,
 } from "../../services/vehicleApiService";
-
 import { addedVehicleAPI } from "../../services/addedVehicleApiService";
-import AddVehicleForm from "../components/AddVehicleForm";
-
-const [showAddForm, setShowAddForm] = useState(false);
-const [selectedVehicleForAdd, setSelectedVehicleForAdd] = useState(null);
-const [submittingVehicle, setSubmittingVehicle] = useState(false);
-
-
-// Import the dialog component
 import "./AddVehicles.css";
 
 const AddVehicles = () => {
@@ -84,32 +73,33 @@ const AddVehicles = () => {
   });
   const [expiryWarnings, setExpiryWarnings] = useState([]);
 
-useEffect(() => {
-  console.log("User context:", user);
-  if (!user) {
-    toast.error("Please log in to access this page.");
-    return;
-  }
+  // Initial data loading
+  useEffect(() => {
+    console.log("User context:", user);
+    if (!user) {
+      toast.error("Please log in to access this page.");
+      return;
+    }
 
-  if (user.role !== "vehicle_owner") {
-    toast.error("Access denied. Only vehicle owners can access this page.");
-    return;
-  }
+    if (user.role !== "vehicle_owner") {
+      toast.error("Access denied. Only vehicle owners can access this page.");
+      return;
+    }
 
-  if (!user.nicNumber) {
-    toast.error(
-      "NIC number is required to manage vehicles. Please complete your profile."
-    );
-    return;
-  }
+    if (!user.nicNumber) {
+      toast.error(
+        "NIC number is required to manage vehicles. Please complete your profile."
+      );
+      return;
+    }
 
-  // Initial data fetch
-  fetchVehicles();
-  fetchVehicleStats();
-  loadAddedVehicleIds(); // ADD THIS LINE
-}, [user]);
+    // Initial data fetch
+    fetchVehicles();
+    fetchVehicleStats();
+    loadAddedVehicleIds();
+  }, [user]);
 
-  // Fetch vehicles from backend using enhanced API - FILTERED BY USER NIC
+  // Fetch vehicles from backend - FILTERED BY USER NIC
   const fetchVehicles = async (page = 1, search = "", status = "all") => {
     try {
       setLoading(true);
@@ -166,7 +156,7 @@ useEffect(() => {
     }
   };
 
-  // Fetch vehicle statistics using enhanced API - FILTERED BY USER NIC
+  // Fetch vehicle statistics - FILTERED BY USER NIC
   const fetchVehicleStats = async () => {
     try {
       const response = await vehicleAPI.getStats({
@@ -203,16 +193,291 @@ useEffect(() => {
     }
   };
 
+  // Load already added vehicle IDs
+  // (Removed duplicate declaration to fix redeclaration error)
+
   // Refresh data
   const handleRefresh = async () => {
     setRefreshing(true);
     await Promise.all([
       fetchVehicles(pagination.page, searchTerm, filterStatus),
       fetchVehicleStats(),
+      loadAddedVehicleIds(),
     ]);
     setRefreshing(false);
     toast.success("Data refreshed successfully");
   };
+
+
+  const handleAddVehicle = async (vehicleId) => {
+    const vehicle = vehicles.find((v) => v._id === vehicleId);
+    if (!vehicle) {
+      toast.error("Vehicle not found");
+      return;
+    }
+
+    // Check if vehicle is verified before allowing addition
+    if (vehicle.verificationStatus !== "VERIFIED") {
+      toast.warning(
+        `${vehicle.registrationNumber} must be verified before adding to service. Current status: ${vehicle.verificationStatus}`
+      );
+      return;
+    }
+
+    // Check if already added
+    if (addedVehicles.includes(vehicleId)) {
+      toast.info(
+        `${vehicle.registrationNumber} is already added to service requests`
+      );
+      return;
+    }
+
+    try {
+      console.log(
+        "🚀 Adding vehicle to service requests:",
+        vehicle.registrationNumber
+      );
+
+      // Set scheduled date to tomorrow to avoid past date validation
+      const scheduledDate = new Date();
+      scheduledDate.setDate(scheduledDate.getDate() + 1);
+
+      // Prepare vehicle data according to the EXACT backend schema requirements
+      const addVehicleData = {
+        // REQUIRED: Vehicle ID (ObjectId)
+        vehicleId: vehicle._id,
+
+        // REQUIRED: Purpose (enum value)
+        purpose: "SERVICE_BOOKING", // Must match enum exactly
+
+        // REQUIRED: Priority (enum value)
+        priority: "MEDIUM", // Must match enum exactly
+
+        // REQUIRED: Scheduled date (future date)
+        scheduledDate: scheduledDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
+
+        // Service details object with CORRECT enum values
+        serviceDetails: {
+          serviceType: "GENERAL_MAINTENANCE", // Must match backend enum exactly
+          urgency: false, // Boolean, not string
+          estimatedDuration: "2-3 hours",
+          estimatedCost: 0, // Number, must be >= 0
+        },
+
+        // Contact info object with proper validation
+        contactInfo: {
+          phone: user.phone || "+94771234567", // Must match phone pattern
+          email: user.email || `${user.nicNumber}@autoconnect.lk`, // Must match email pattern
+          preferredContactMethod: "PHONE", // Must be exact enum value
+        },
+
+        // Location object
+        location: {
+          address: "Service location to be confirmed",
+          city: "Colombo",
+          district: "Colombo",
+          coordinates: {
+            latitude: null,
+            longitude: null,
+          },
+        },
+
+        // Notes with length validation (max 500 characters as per schema)
+        notes: `Vehicle added for service booking from vehicle management page.
+
+Vehicle Details:
+- Registration: ${vehicle.registrationNumber}
+- Make/Model: ${vehicle.make} ${vehicle.model} (${vehicle.yearOfManufacture})
+- Color: ${vehicle.color}
+- Fuel Type: ${vehicle.fuelType}
+- Class: ${vehicle.classOfVehicle}
+- Current Mileage: ${vehicle.mileage || "Not specified"}km
+
+Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`.substring(
+          0,
+          490
+        ), // Ensure under 500 chars
+
+        // NOTE: The following fields are automatically set by the backend:
+        // - addedBy: req.user._id (from JWT token)
+        // - vehicleOwner: vehicle.ownerId (from vehicle record)
+        // - ownerNIC: vehicle.ownerNIC (from vehicle record)
+        // - createdBy: req.user._id (from JWT token)
+        // - status: "ACTIVE" (default)
+        // - isActive: true (default)
+        // - tracking: { submittedAt, lastUpdated, etc. }
+        // - metadata: { source, ipAddress, userAgent, etc. }
+      };
+
+      console.log("📝 Sending vehicle data to API:", addVehicleData);
+
+      // Call the API
+      const response = await addedVehicleAPI.addVehicle(addVehicleData);
+
+      console.log("📊 API Response:", response);
+
+      if (response.success) {
+        // Add to local state to prevent re-adding
+        setAddedVehicles((prev) => [...prev, vehicleId]);
+
+        toast.success(
+          `✅ ${vehicle.registrationNumber} added to service requests successfully!`
+        );
+
+        console.log(
+          "✅ Vehicle successfully added to added_vehicles collection:",
+          {
+            addedVehicleId: response.data?.addedVehicle?._id,
+            registrationNumber: vehicle.registrationNumber,
+            status: response.data?.addedVehicle?.status,
+            purpose: response.data?.addedVehicle?.purpose,
+          }
+        );
+
+        // Show additional info after success
+        setTimeout(() => {
+          toast.info(
+            `📋 Service request created for ${vehicle.registrationNumber}. View it in "Added Vehicles" page.`,
+            { autoClose: 6000 }
+          );
+        }, 1000);
+
+        // Refresh the added vehicles list
+        await loadAddedVehicleIds();
+      } else {
+        // Handle API errors with detailed feedback
+        console.error("❌ Add vehicle API error:", response.message);
+        handleAddVehicleError(response.message, vehicle.registrationNumber);
+      }
+    } catch (error) {
+      console.error("❌ Exception in handleAddVehicle:", error);
+      handleAddVehicleError(error.message, vehicle.registrationNumber);
+    }
+  };
+
+  // Enhanced error handling function
+  const handleAddVehicleError = (errorMessage, registrationNumber = "") => {
+    console.error("❌ Add vehicle error:", errorMessage);
+
+    if (errorMessage.toLowerCase().includes("validation")) {
+      // Parse validation details if available
+      if (errorMessage.includes("Details:")) {
+        const detailsStart = errorMessage.indexOf("Details:");
+        const details = errorMessage.substring(detailsStart + 8);
+        try {
+          const parsedDetails = JSON.parse(details);
+          console.error("🔍 Validation Details:", parsedDetails);
+
+          // Show more specific error based on validation details
+          if (parsedDetails.vehicleId) {
+            toast.error("❌ Invalid vehicle ID. Please refresh and try again.");
+          } else if (parsedDetails.scheduledDate) {
+            toast.error(
+              "❌ Invalid scheduled date. Please check the date and try again."
+            );
+          } else if (parsedDetails.contactInfo) {
+            toast.error(
+              "❌ Invalid contact information. Please check your profile details."
+            );
+          } else {
+            toast.error(
+              "❌ Validation error. Please check the vehicle data and try again."
+            );
+          }
+        } catch (parseError) {
+          toast.error(
+            "❌ Validation error. Please check the vehicle data and try again."
+          );
+        }
+      } else {
+        toast.error(
+          "❌ Validation error. Please check the vehicle data and try again."
+        );
+      }
+    } else if (errorMessage.toLowerCase().includes("already added")) {
+      toast.warning(
+        `⚠️ ${registrationNumber} is already in your service requests!`
+      );
+      // Add to local state if it was already added
+      const vehicleId = vehicles.find(
+        (v) => v.registrationNumber === registrationNumber
+      )?._id;
+      if (vehicleId) {
+        setAddedVehicles((prev) => [...prev, vehicleId]);
+      }
+    } else if (
+      errorMessage.toLowerCase().includes("session") ||
+      errorMessage.toLowerCase().includes("authentication")
+    ) {
+      toast.error("🔐 Session expired. Please log in again.");
+      // Optionally redirect to login
+      // navigate('/login');
+    } else if (
+      errorMessage.toLowerCase().includes("permission") ||
+      errorMessage.toLowerCase().includes("access")
+    ) {
+      toast.error("🚫 You don't have permission to add this vehicle.");
+    } else if (errorMessage.toLowerCase().includes("not found")) {
+      if (errorMessage.toLowerCase().includes("vehicle owner")) {
+        toast.error(
+          "❌ Vehicle owner information not found. Please contact support."
+        );
+      } else {
+        toast.error(
+          "❌ Vehicle not found. Please refresh the page and try again."
+        );
+      }
+    } else if (
+      errorMessage.toLowerCase().includes("network") ||
+      errorMessage.toLowerCase().includes("fetch")
+    ) {
+      toast.error(
+        "🌐 Cannot connect to server. Please check your internet connection."
+      );
+    } else if (
+      errorMessage.toLowerCase().includes("server") ||
+      errorMessage.toLowerCase().includes("500")
+    ) {
+      toast.error("🔧 Server error. Please try again in a few moments.");
+    } else {
+      toast.error(
+        `❌ ${
+          errorMessage ||
+          "An unexpected error occurred while adding the vehicle."
+        }`
+      );
+    }
+  };
+
+  // Enhanced loadAddedVehicleIds function with better error handling
+  const loadAddedVehicleIds = async () => {
+    try {
+      console.log("🔍 Refreshing added vehicles list...");
+      const response = await addedVehicleAPI.getAddedVehicles({
+        limit: 100,
+        status: "all",
+      });
+
+      if (response.success && response.data?.addedVehicles) {
+        const addedIds = response.data.addedVehicles
+          .map((av) => av.vehicleId?._id || av.vehicleId)
+          .filter((id) => id);
+
+        setAddedVehicles(addedIds);
+        console.log(
+          "📋 Updated added vehicles list:",
+          addedIds.length,
+          "vehicles"
+        );
+      }
+    } catch (error) {
+      console.error("Error refreshing added vehicles list:", error);
+      // Don't show toast error for this as it's not critical to the main functionality
+    }
+  };
+
+  // Simple add vehicle function - adds to added_vehicles collection
+
 
   // Check for expiry warnings
   const checkExpiryWarnings = (vehicleList) => {
@@ -276,192 +541,6 @@ useEffect(() => {
   const handlePageChange = (event, page) => {
     setPagination({ ...pagination, page });
     fetchVehicles(page, searchTerm, filterStatus);
-  };
-
-  // Direct add vehicle function - adds to added_vehicles collection
-  // Fixed handleAddVehicle function for AddVehicles.jsx
-  // Replace your existing handleAddVehicle function with this improved version
-
-  const handleAddVehicle = async (vehicleId) => {
-    const vehicle = vehicles.find((v) => v._id === vehicleId);
-    if (!vehicle) {
-      toast.error("Vehicle not found");
-      return;
-    }
-
-    // Check if vehicle is verified before allowing addition
-    if (vehicle.verificationStatus !== "VERIFIED") {
-      toast.warning(
-        `${vehicle.registrationNumber} must be verified before adding to service. Current status: ${vehicle.verificationStatus}`
-      );
-      return;
-    }
-
-    try {
-      console.log(
-        "🚀 Adding vehicle to service requests:",
-        vehicle.registrationNumber
-      );
-
-      // Set scheduled date to tomorrow to avoid "past date" validation error
-      const scheduledDate = new Date();
-      scheduledDate.setDate(scheduledDate.getDate() + 1);
-
-      // Prepare comprehensive vehicle data for added_vehicles collection
-      const addVehicleData = {
-        vehicleId: vehicle._id,
-        purpose: "SERVICE_BOOKING",
-        priority: "MEDIUM",
-        scheduledDate: scheduledDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
-
-        contactInfo: {
-          phone: user.phone || "+94771234567",
-          email: user.email || `${user.nicNumber}@autoconnect.lk`,
-          preferredContactMethod: "PHONE",
-        },
-
-        location: {
-          address: "Service location to be confirmed",
-          city: "Colombo",
-          district: "Colombo",
-          postalCode: "00100",
-        },
-
-        notes: `Vehicle added for service booking from vehicle management page.
-
-Vehicle Details:
-- Registration: ${vehicle.registrationNumber}
-- Make/Model: ${vehicle.make} ${vehicle.model} (${vehicle.yearOfManufacture})
-- Color: ${vehicle.color}
-- Fuel Type: ${vehicle.fuelType}
-- Class: ${vehicle.classOfVehicle}
-- Current Mileage: ${vehicle.mileage || "Not specified"}km
-
-Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
-
-        serviceDetails: {
-          requestType: "GENERAL_SERVICE",
-          urgency: "NORMAL",
-          serviceCategory: "MAINTENANCE",
-        },
-      };
-
-      console.log("📝 Sending vehicle data to API:", addVehicleData);
-
-      // Use your API service
-      const response = await addedVehicleAPI.addVehicle(addVehicleData);
-
-      console.log("📊 API Response:", response);
-
-      if (response.success) {
-        // Add to local state to prevent re-adding
-        setAddedVehicles((prev) => [...prev, vehicleId]);
-
-        toast.success(
-          `✅ ${vehicle.registrationNumber} added to service requests successfully!`
-        );
-
-        console.log(
-          "✅ Vehicle successfully added to added_vehicles collection:",
-          {
-            addedVehicleId: response.data?._id,
-            registrationNumber: vehicle.registrationNumber,
-            status: response.data?.status,
-            purpose: response.data?.purpose,
-          }
-        );
-
-        // Show additional info after success
-        setTimeout(() => {
-          toast.info(
-            `📋 Service request created for ${vehicle.registrationNumber}. Track it in "Service Requests" section.`,
-            { autoClose: 6000 }
-          );
-        }, 1000);
-      } else {
-        // Handle API errors
-        const errorMessage =
-          response.message || "Failed to add vehicle to service requests";
-        console.error("❌ Add vehicle API error:", errorMessage);
-
-        if (errorMessage.toLowerCase().includes("already added")) {
-          toast.warning(
-            `⚠️ ${vehicle.registrationNumber} is already in your service requests!`
-          );
-        } else if (errorMessage.toLowerCase().includes("session")) {
-          toast.error("🔐 Session expired. Please log in again.");
-        } else if (errorMessage.toLowerCase().includes("permission")) {
-          toast.error("🚫 You don't have permission to add this vehicle.");
-        } else {
-          toast.error(`❌ ${errorMessage}`);
-        }
-      }
-    } catch (error) {
-      console.error("❌ Exception in handleAddVehicle:", error);
-
-      let errorMessage =
-        "An unexpected error occurred while adding the vehicle.";
-
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
-        errorMessage =
-          "🌐 Cannot connect to server. Please check your internet connection.";
-      } else if (error.message.includes("JSON")) {
-        errorMessage =
-          "📄 Server returned invalid response. Please try again later.";
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage);
-    }
-  };
-
-  // STEP 4: ADD THIS FUNCTION (add this new function anywhere in your component)
-  const loadAddedVehicleIds = async () => {
-    try {
-      console.log("🔍 Checking for already added vehicles...");
-      const response = await addedVehicleAPI.getAddedVehicles({
-        limit: 100,
-        status: "all",
-      });
-
-      if (response.success && response.data?.addedVehicles) {
-        const addedIds = response.data.addedVehicles
-          .map((av) => av.vehicleId?._id || av.vehicleId)
-          .filter((id) => id);
-
-        setAddedVehicles(addedIds);
-        console.log("📋 Found already added vehicles:", addedIds.length);
-      }
-    } catch (error) {
-      console.error("Error loading added vehicles:", error);
-    }
-  };
-
-  // Helper function to get auth token (add this if not already present)
-  const getAuthToken = () => {
-    return (
-      localStorage.getItem("token") ||
-      sessionStorage.getItem("token") ||
-      localStorage.getItem("token") ||
-      sessionStorage.getItem("token")
-    );
-  };
-
-  // Handle successful vehicle addition from dialog
-  const handleAddVehicleSuccess = (addedVehicle) => {
-    console.log("Vehicle successfully added:", addedVehicle);
-    // Optionally refresh data or update UI
-    // fetchVehicles(); // Uncomment if you want to refresh the list
-
-    // Could also navigate to a different page or show a confirmation
-    // navigate('/added-vehicles'); // Example navigation
-  };
-
-  // Handle dialog close
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    setSelectedVehicle(null);
   };
 
   // Handle export vehicles
@@ -641,8 +720,9 @@ Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
       vehicle.revenueLicense?.validTo &&
       isExpiringSoon(vehicle.revenueLicense.validTo);
 
-    // Check if vehicle can be added (must be verified)
+    // Check if vehicle can be added (must be verified and not already added)
     const canAddVehicle = vehicle.verificationStatus === "VERIFIED";
+    const isAlreadyAdded = addedVehicles.includes(vehicle._id);
 
     return (
       <Fade in={true} timeout={300 + index * 50}>
@@ -724,7 +804,7 @@ Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
               </div>
             )}
 
-            {/* Verification Status Warning */}
+            {/* Status Warnings */}
             {!canAddVehicle && (
               <Alert
                 severity="info"
@@ -732,6 +812,16 @@ Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
                 className="verification-warning"
               >
                 Vehicle must be verified before adding to service
+              </Alert>
+            )}
+
+            {isAlreadyAdded && (
+              <Alert
+                severity="success"
+                size="small"
+                className="already-added-warning"
+              >
+                Already added to service requests
               </Alert>
             )}
 
@@ -756,7 +846,9 @@ Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
               </div>
               <Tooltip
                 title={
-                  canAddVehicle
+                  isAlreadyAdded
+                    ? "Vehicle already added to service requests"
+                    : canAddVehicle
                     ? "Add vehicle to service request"
                     : "Vehicle must be verified first"
                 }
@@ -771,10 +863,16 @@ Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
                     }}
                     size="small"
                     className="add-vehicle-btn"
-                    disabled={!canAddVehicle}
-                    color={canAddVehicle ? "primary" : "inherit"}
+                    disabled={!canAddVehicle || isAlreadyAdded}
+                    color={
+                      isAlreadyAdded
+                        ? "success"
+                        : canAddVehicle
+                        ? "primary"
+                        : "inherit"
+                    }
                   >
-                    Add
+                    {isAlreadyAdded ? "Added" : "Add"}
                   </Button>
                 </span>
               </Tooltip>
@@ -1068,6 +1166,15 @@ Owner: ${user.firstName} ${user.lastName} (${user.nicNumber})`,
                   ? "Try adjusting your search or filter criteria"
                   : `No vehicles found for NIC: ${user?.nicNumber}`}
               </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/vehicle-registration")}
+                startIcon={<AddIcon />}
+                sx={{ mt: 2 }}
+              >
+                Register Your First Vehicle
+              </Button>
             </CardContent>
           </Card>
         )}
