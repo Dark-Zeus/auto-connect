@@ -209,7 +209,7 @@ function UserContacts() {
           <div className="tw:flex tw:flex-col lg:tw:flex-row tw:gap-4 tw:items-center tw:justify-between">
             {/* Search */}
             <div className="tw:relative tw:w-full lg:tw:w-96">
-              <Search className="tw:absolute tw:left-3 tw:top-1/2 tw:-translate-y-1/2 tw:text-blue-400 tw:w-5 tw:h-5" />
+              <Search className="tw:absolute tw:right-2 tw:top-1/2 tw:-translate-y-1/2 tw:text-blue-400 tw:w-5 tw:h-5" />
               <input
                 type="text"
                 placeholder="Search requests..."
