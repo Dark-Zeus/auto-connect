@@ -25,6 +25,8 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
+
 
 import OverlayWindow from "@components/OverlayWindow";
 import BookingDetailsPage from "./BookingDetailsPage";
@@ -220,6 +222,10 @@ const MyBookings = () => {
   const [bookingToRate, setBookingToRate] = useState(null);
   const [overlayBooking, setOverlayBooking] = useState(null);//overlay window
   const [overlayContent, setOverlayContent] = useState(null);
+  const [reviewText, setReviewText] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -284,22 +290,43 @@ const handleEdit = (booking) => {
 const handleReschedule = handleEdit;
 
   // Open rating dialog for selected booking
-  const openRatingForBooking = (booking) => {
-    setBookingToRate(booking);
-    setCurrentRating(bookingRatings[booking.id] || 0);
-    setRatingDialogOpen(true);
-  };
+const openRatingForBooking = (booking) => {
+  const existing = bookingRatings[booking.id] || {};
+  setBookingToRate(booking);
+  setCurrentRating(existing.rating || 0);
+  setReviewText(existing.review || "");
+  setRatingDialogOpen(true);
+};
+
 
   // Submit rating
-  const submitRating = () => {
-    if (!currentRating || currentRating < 1) {
-      alert("Please select a rating.");
-      return;
-    }
-    setBookingRatings((prev) => ({ ...prev, [bookingToRate.id]: currentRating }));
-    setRatingDialogOpen(false);
-    alert(`Thanks for rating booking ID: ${bookingToRate.id} with ${currentRating} stars.`);
-  };
+const submitRating = () => {
+  if (!currentRating || currentRating < 1) {
+    alert("Please select a rating.");
+    return;
+  }
+
+  // Store both rating and review (you can adapt this as needed)
+  setBookingRatings((prev) => ({
+    ...prev,
+    [bookingToRate.id]: {
+      rating: currentRating,
+      review: reviewText,
+    },
+  }));
+
+  setSnackbarMessage(`Thanks for rating booking ID: ${bookingToRate.id} with ${currentRating} stars.`);
+  setSnackbarOpen(true);
+
+
+  // Reset dialog state
+  setCurrentRating(0);
+  setReviewText("");
+  setRatingDialogOpen(false);
+};
+
+
+
 
   return (
     <Box sx={{ backgroundColor: "#e9f7ef", minHeight: "100vh", py: 3 }}>
@@ -517,10 +544,16 @@ const handleReschedule = handleEdit;
                         <>
                           {bookingRatings[booking.id] ? (
                             <Rating
-                              value={bookingRatings[booking.id]}
+                              value={bookingRatings[booking.id].rating}
                               readOnly
                               size="small"
-                            />
+                              sx={{
+                                color: "#ffb400",
+                                "& .MuiRating-iconFilled": {
+                                  color: "#ffb400",
+                                },
+                              }}
+/>
                           ) : (
                             <Button
                               variant="contained"
@@ -561,36 +594,82 @@ const handleReschedule = handleEdit;
         </Box>
 
         {/* Rating Dialog */}
-        <Dialog
-          open={ratingDialogOpen}
-          onClose={() => setRatingDialogOpen(false)}
+     <Dialog open={ratingDialogOpen} onClose={() => setRatingDialogOpen(false)}>
+        <DialogTitle>Rate Completed Service</DialogTitle>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, p: 3 }}
         >
-          <DialogTitle>Rate Completed Service</DialogTitle>
-          <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, p: 3 }}>
-            <Typography>
-              Rate your experience with {bookingToRate?.centerName}
-            </Typography>
-            <Rating
+          <Typography>
+            Rate your experience with {bookingToRate?.centerName}
+          </Typography>
+          <Rating
               name="rating"
               value={currentRating}
               onChange={(e, newValue) => setCurrentRating(newValue)}
               size="large"
+              sx={{
+                color: "#ffb400", // Yellow for selected stars
+                "& .MuiRating-iconFilled": {
+                  color: "#ffb400",
+                },
+                "& .MuiRating-iconHover": {
+                  color: "#ffcc33",
+                },
+              }}
             />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setRatingDialogOpen(false)}>Cancel</Button>
-            <Button variant="contained" onClick={submitRating}>
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
+
+          <TextField
+            label="Write a review"
+            multiline
+            rows={4}
+            fullWidth
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRatingDialogOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={submitRating}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
 
         {overlayContent && (
           <OverlayWindow closeWindowFunction={() => setOverlayContent(null)}>
             {overlayContent}
           </OverlayWindow>
-)}
+        )}
+
+        <Snackbar
+  open={snackbarOpen}
+  autoHideDuration={4000}
+  onClose={() => setSnackbarOpen(false)}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+>
+  <Alert
+    onClose={() => setSnackbarOpen(false)}
+    severity="success"
+    variant="filled" 
+    sx={{
+      width: '100%',
+      bgcolor: '#ffffff !important',  
+      color: '#000000 !important',    
+      fontWeight: 400,
+      fontSize: 16,
+      borderRadius: 2,
+      boxShadow: 3,
+      borderColor: '#000000 !important',
+    }}
+  >
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+
+
+
 
       </Container>
     </Box>
