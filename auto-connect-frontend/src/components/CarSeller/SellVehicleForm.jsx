@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Camera, X , CarFront, User, Logs, ClipboardCheckIcon, Clipboard} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
+import listVehicleAPI from '../../services/listVehicleApiService';
 
-const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
+const VehicleListingForm = () => {
   const [formData, setFormData] = useState({
     mobile: '',
     district: '',
@@ -26,9 +27,49 @@ const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomith
   const [photos, setPhotos] = useState(Array(6).fill(null));
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState("");
-const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const navigate = useNavigate();
+  const [fixedName, setFixedName] = useState('');
+  const [fixedEmail, setFixedEmail] = useState('');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        // Use the auth API endpoint directly through fetch
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No authentication token found');
+        
+        const response = await fetch('http://localhost:3000/api/v1/auth/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const userData = await response.json();
+        
+        // Handle different API response structures
+        const user = userData.user || userData;
+        
+        if (user) {
+          setFixedName(`${user.firstName || ''} ${user.lastName || ''}`);
+          setFixedEmail(user.email || '');
+          setUserId(user._id || '');
+        } else {
+          throw new Error('User data not found');
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+        setSnackbarMessage("Couldn't load user info. Please refresh or login again.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
+    };
+    
+    fetchUserInfo();
+  }, []);
+
+  const [userId, setUserId] = useState('');
 
   const handleSnackbarClose = (event, reason) => {
   if (reason === 'clickaway') {
@@ -157,26 +198,45 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     setPhotos(newPhotos);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { isValid, firstErrorField } = validateForm();
 
     if (isValid) {
-      console.log('Form Data:', { ...formData, name: fixedName, email: fixedEmail });
-      console.log('Photos:', photos);
-      setSnackbarMessage("Vehicle listed successfully!");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-      setTimeout(() => {
-        setSnackbarOpen(false);
-        navigate('/myads');
-      }, 3000);
+      const payload = {
+        ...formData,
+        userId: userId,
+        name: fixedName || 'Unknown User',
+        email: fixedEmail || 'email@example.com',
+        views: 0,
+        photos: photos.filter(Boolean),
+      };
+
+      try {
+        // Use the listVehicleAPI service instead of direct fetch
+        const result = await listVehicleAPI.createListing(payload);
+        
+        console.log('Form Data:', payload);
+        console.log('Response:', result);
+
+        setSnackbarMessage("Vehicle listed successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        
+        // The success handling in Snackbar's onClose will navigate
+      } catch (error) {
+        // Error is already handled by the service with toast notifications
+        console.error('Submission error:', error);
+        setSnackbarMessage(error.message || "Failed to submit. Please try again.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
     } else {
       console.log('Validation failed:', errors);
 
-       setSnackbarMessage("Please fix the errors in the form");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
+      setSnackbarMessage("Please fix the errors in the form");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
 
       if (firstErrorField && fieldRefs[firstErrorField]?.current) {
         fieldRefs[firstErrorField].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
