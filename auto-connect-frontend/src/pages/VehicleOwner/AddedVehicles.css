@@ -1,0 +1,407 @@
+/* src/pages/VehicleOwner/AddedVehicles.css */
+
+/* Spinning animation for refresh button */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Added Vehicle Card Styles */
+.added-vehicle-card {
+  transition: all 0.3s ease;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.added-vehicle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Status-based border colors */
+.added-vehicle-card.status-active {
+  border-left: 4px solid #1976d2 !important;
+}
+
+.added-vehicle-card.status-completed {
+  border-left: 4px solid #2e7d32 !important;
+}
+
+.added-vehicle-card.status-pending {
+  border-left: 4px solid #ed6c02 !important;
+}
+
+.added-vehicle-card.status-cancelled {
+  border-left: 4px solid #d32f2f !important;
+}
+
+/* Stats Card Animations */
+.stats-card {
+  transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Search and Filter Section */
+.search-filter-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Priority Chip Styles */
+.priority-high {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+.priority-medium {
+  background-color: #f59e0b !important;
+  color: white !important;
+}
+
+.priority-low {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.priority-urgent {
+  background-color: #dc2626 !important;
+  color: white !important;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Empty State Styling */
+.empty-state {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px !important;
+  color: white;
+}
+
+.empty-state .MuiCardContent-root {
+  padding: 3rem !important;
+}
+
+.empty-state .MuiTypography-root {
+  color: white !important;
+}
+
+.empty-state .MuiButton-root {
+  background-color: white !important;
+  color: #667eea !important;
+  font-weight: 600;
+}
+
+.empty-state .MuiButton-root:hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .added-vehicles-container {
+    padding: 1rem !important;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .header-actions {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .stats-grid {
+    gap: 1rem !important;
+  }
+
+  .filter-tabs {
+    overflow-x: auto;
+  }
+
+  .added-vehicle-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .added-vehicle-header {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .added-vehicle-footer {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+
+  .added-vehicle-actions {
+    justify-content: center;
+  }
+}
+
+/* Custom Scrollbar */
+.filter-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.filter-tabs::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.filter-tabs::-webkit-scrollbar-thumb {
+  background: #1976d2;
+  border-radius: 2px;
+}
+
+.filter-tabs::-webkit-scrollbar-thumb:hover {
+  background: #1565c0;
+}
+
+/* Loading States */
+.loading-container {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.skeleton-card {
+  opacity: 0.7;
+  animation: skeleton-loading 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes skeleton-loading {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Enhanced Button Styles */
+.action-btn {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.complete-btn {
+  color: #2e7d32 !important;
+}
+
+.complete-btn:hover {
+  background-color: rgba(46, 125, 50, 0.1) !important;
+}
+
+.edit-btn {
+  color: #1976d2 !important;
+}
+
+.edit-btn:hover {
+  background-color: rgba(25, 118, 210, 0.1) !important;
+}
+
+.delete-btn {
+  color: #d32f2f !important;
+}
+
+.delete-btn:hover {
+  background-color: rgba(211, 47, 47, 0.1) !important;
+}
+
+/* Card Content Spacing */
+.vehicle-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.vehicle-detail-icon {
+  font-size: 16px !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+  flex-shrink: 0;
+}
+
+.vehicle-notes-section {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Enhanced Typography */
+.vehicle-registration {
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.vehicle-model {
+  color: rgba(0, 0, 0, 0.6) !important;
+  font-weight: 500 !important;
+}
+
+/* Status Chip Enhancements */
+.status-chip {
+  font-weight: 600 !important;
+  border-width: 2px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Pagination Styling */
+.pagination-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.pagination-section .MuiPaginationItem-root {
+  color: #666 !important;
+  border-color: #e0e0e0 !important;
+  transition: all 0.2s ease;
+}
+
+.pagination-section .MuiPaginationItem-root:hover {
+  background-color: rgba(25, 118, 210, 0.1) !important;
+  border-color: #1976d2 !important;
+}
+
+.pagination-section .MuiPaginationItem-root.Mui-selected {
+  background-color: #1976d2 !important;
+  border-color: #1976d2 !important;
+  color: white !important;
+}
+
+/* Dialog Enhancements */
+.MuiDialog-paper {
+  border-radius: 12px !important;
+}
+
+.MuiDialogTitle-root {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.MuiDialogActions-root {
+  padding: 1rem 1.5rem !important;
+  gap: 0.5rem;
+}
+
+/* Fade and Zoom Animations */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 300ms ease-in-out;
+}
+
+.zoom-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.zoom-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 300ms ease-in-out;
+}
+
+/* Header Gradient */
+.page-header {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Search Input Enhancement */
+.search-input .MuiOutlinedInput-root {
+  border-radius: 12px !important;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.search-input .MuiOutlinedInput-root:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.search-input .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+/* Filter Tabs Enhancement */
+.filter-tabs {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 0.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.filter-tabs .MuiTab-root {
+  border-radius: 8px;
+  margin: 0 0.25rem;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.3s ease;
+}
+
+.filter-tabs .MuiTab-root.Mui-selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Export Button Enhancement */
+.export-btn {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3) !important;
+}
+
+.export-btn:hover {
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+/* Add Vehicle Button Enhancement */
+.add-vehicle-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+.add-vehicle-btn:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+  transform: translateY(-1px);
+}
