@@ -50,10 +50,10 @@ import {
   DateRange as DateIcon,
   Notes as NotesIcon,
   Build as ServiceIcon,
+  Add as AddIcon,
 } from "@mui/icons-material";
 import { UserContext } from "../../contexts/UserContext";
 import { addedVehicleAPI } from "../../services/addedVehicleApiService";
-import "./AddedVehicles.css";
 
 const AddedVehicles = () => {
   const navigate = useNavigate();
@@ -71,11 +71,11 @@ const AddedVehicles = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [vehicleStats, setVehicleStats] = useState({
-    total: 0,
-    active: 0,
-    completed: 0,
-    pending: 0,
-    cancelled: 0,
+    totalRequests: 0,
+    pendingRequests: 0,
+    scheduledRequests: 0,
+    completedRequests: 0,
+    cancelledRequests: 0,
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -88,12 +88,13 @@ const AddedVehicles = () => {
   useEffect(() => {
     if (!user) {
       toast.error("Please log in to access this page.");
+      navigate("/login");
       return;
     }
 
     fetchAddedVehicles();
     fetchStats();
-  }, [user]);
+  }, [user, navigate]);
 
   // Fetch added vehicles from backend
   const fetchAddedVehicles = async (
@@ -115,16 +116,19 @@ const AddedVehicles = () => {
       }
 
       if (status !== "all") {
-        params.status = status.toUpperCase();
+        params.status = status;
       }
 
       if (purpose !== "all") {
-        params.purpose = purpose.toUpperCase();
+        params.purpose = purpose;
       }
+
+      console.log("🚀 Fetching added vehicles with params:", params);
 
       const response = await addedVehicleAPI.getAddedVehicles(params);
 
       if (response.success) {
+        console.log("✅ Added vehicles response:", response.data);
         setAddedVehicles(response.data.addedVehicles || []);
         setPagination({
           ...pagination,
@@ -133,10 +137,11 @@ const AddedVehicles = () => {
           totalCount: response.data.pagination?.totalCount || 0,
         });
       } else {
+        console.error("❌ Failed to fetch added vehicles:", response.message);
         toast.error(response.message || "Failed to fetch added vehicles");
       }
     } catch (error) {
-      console.error("Error fetching added vehicles:", error);
+      console.error("❌ Error fetching added vehicles:", error);
       toast.error("Failed to fetch added vehicles");
     } finally {
       setLoading(false);
@@ -146,20 +151,16 @@ const AddedVehicles = () => {
   // Fetch statistics
   const fetchStats = async () => {
     try {
-      const response = await addedVehicleAPI.getStats();
+      const response = await addedVehicleAPI.getAddedVehicleStats();
 
       if (response.success) {
-        const overview = response.data.overview;
-        setVehicleStats({
-          total: overview.total || 0,
-          active: overview.active || 0,
-          completed: overview.completed || 0,
-          pending: overview.pending || 0,
-          cancelled: overview.cancelled || 0,
-        });
+        console.log("📊 Stats response:", response.data);
+        setVehicleStats(response.data);
+      } else {
+        console.warn("⚠️ Stats fetch failed:", response.message);
       }
     } catch (error) {
-      console.error("Error fetching stats:", error);
+      console.error("❌ Error fetching stats:", error);
     }
   };
 
@@ -213,161 +214,53 @@ const AddedVehicles = () => {
     fetchAddedVehicles(page, searchTerm, filterStatus, filterPurpose);
   };
 
-  // Handle update added vehicle
+  // Handle update added vehicle (placeholder for now)
   const handleUpdateVehicle = async (updatedData) => {
     try {
-      const response = await addedVehicleAPI.updateAddedVehicle(
-        selectedVehicle._id,
-        updatedData
-      );
-
-      if (response.success) {
-        toast.success("Vehicle updated successfully");
-        setEditDialogOpen(false);
-        fetchAddedVehicles(
-          pagination.page,
-          searchTerm,
-          filterStatus,
-          filterPurpose
-        );
-      }
+      // This will be implemented when you need the update functionality
+      toast.info("Update functionality will be implemented soon");
+      setEditDialogOpen(false);
     } catch (error) {
       console.error("Error updating vehicle:", error);
       toast.error("Failed to update vehicle");
     }
   };
 
-  // Handle delete added vehicle
+  // Handle delete added vehicle (placeholder for now)
   const handleDeleteVehicle = async () => {
     try {
-      const response = await addedVehicleAPI.deleteAddedVehicle(
-        selectedVehicle._id
-      );
-
-      if (response.success) {
-        toast.success("Vehicle removed successfully");
-        setDeleteDialogOpen(false);
-        fetchAddedVehicles(
-          pagination.page,
-          searchTerm,
-          filterStatus,
-          filterPurpose
-        );
-      }
+      // This will be implemented when you need the delete functionality
+      toast.info("Delete functionality will be implemented soon");
+      setDeleteDialogOpen(false);
     } catch (error) {
       console.error("Error deleting vehicle:", error);
       toast.error("Failed to remove vehicle");
     }
   };
 
-  // Handle mark as completed
+  // Handle mark as completed (placeholder for now)
   const handleMarkCompleted = async (vehicleId) => {
     try {
-      const response = await addedVehicleAPI.markCompleted(
-        vehicleId,
-        "Service completed"
-      );
-
-      if (response.success) {
-        toast.success("Vehicle marked as completed");
-        fetchAddedVehicles(
-          pagination.page,
-          searchTerm,
-          filterStatus,
-          filterPurpose
-        );
-        fetchStats();
-      }
+      // This will be implemented when you need the completion functionality
+      toast.info("Mark completed functionality will be implemented soon");
     } catch (error) {
       console.error("Error marking as completed:", error);
       toast.error("Failed to mark as completed");
     }
   };
 
-  // Handle export
+  // Handle export (placeholder for now)
   const handleExport = async () => {
     try {
-      setExporting(true);
-      const response = await addedVehicleAPI.exportAddedVehicles({
-        status: filterStatus !== "all" ? filterStatus : undefined,
-        purpose: filterPurpose !== "all" ? filterPurpose : undefined,
-      });
-
-      if (response.success) {
-        const csvData = convertToCSV(response.data.addedVehicles);
-        const filename = `added_vehicles_${
-          new Date().toISOString().split("T")[0]
-        }.csv`;
-
-        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        toast.success(
-          `${response.data.totalCount} added vehicles exported successfully`
-        );
-      }
+      // This will be implemented when you need export functionality
+      toast.info("Export functionality will be implemented soon");
     } catch (error) {
       console.error("Error exporting vehicles:", error);
       toast.error("Failed to export vehicles");
-    } finally {
-      setExporting(false);
     }
   };
 
   // Utility functions
-  const convertToCSV = (data) => {
-    if (!data || data.length === 0) return "";
-
-    const headers = [
-      "Added Date",
-      "Registration Number",
-      "Make",
-      "Model",
-      "Year",
-      "Color",
-      "Status",
-      "Purpose",
-      "Priority",
-      "Scheduled Date",
-      "Contact Phone",
-      "Contact Email",
-      "Location",
-      "Notes",
-    ];
-
-    const csvHeaders = headers.join(",");
-
-    const csvRows = data.map((item) =>
-      [
-        item.createdAt || "",
-        item.vehicleId?.registrationNumber || "",
-        item.vehicleId?.make || "",
-        item.vehicleId?.model || "",
-        item.vehicleId?.yearOfManufacture || "",
-        item.vehicleId?.color || "",
-        item.status || "",
-        item.purpose || "",
-        item.priority || "",
-        item.scheduledDate || "",
-        item.contactInfo?.phone || "",
-        item.contactInfo?.email || "",
-        item.location?.address || "",
-        item.notes || "",
-      ]
-        .map((field) => `"${field}"`)
-        .join(",")
-    );
-
-    return [csvHeaders, ...csvRows].join("\n");
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case "ACTIVE":
@@ -422,6 +315,17 @@ const AddedVehicles = () => {
     });
   };
 
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "Not specified";
+    return new Date(dateString).toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   // Added Vehicle Card Component
   const AddedVehicleCard = ({ addedVehicle, index }) => {
     const vehicle = addedVehicle.vehicleId;
@@ -430,104 +334,166 @@ const AddedVehicles = () => {
       <Fade in={true} timeout={300 + index * 50}>
         <Card
           className={`added-vehicle-card status-${addedVehicle.status?.toLowerCase()}`}
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            borderLeft: `4px solid ${
+              getStatusColor(addedVehicle.status) === "primary"
+                ? "#1976d2"
+                : getStatusColor(addedVehicle.status) === "success"
+                ? "#2e7d32"
+                : getStatusColor(addedVehicle.status) === "error"
+                ? "#d32f2f"
+                : "#ed6c02"
+            }`,
+            "&:hover": {
+              transform: "translateY(-2px)",
+              boxShadow: 4,
+            },
+            transition: "all 0.3s ease",
+          }}
         >
-          <CardContent className="added-vehicle-card-content">
+          <CardContent
+            sx={{ flex: 1, display: "flex", flexDirection: "column" }}
+          >
             {/* Header */}
-            <div className="added-vehicle-header">
-              <div className="added-vehicle-title-section">
-                <Typography variant="h6" className="added-vehicle-registration">
-                  {vehicle?.registrationNumber}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                mb: 2,
+              }}
+            >
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  {vehicle?.registrationNumber || "Unknown Vehicle"}
                 </Typography>
-                <Typography variant="body2" className="added-vehicle-model">
-                  {vehicle?.make} {vehicle?.model} ({vehicle?.yearOfManufacture}
-                  )
+                <Typography variant="body2" color="text.secondary">
+                  {vehicle
+                    ? `${vehicle.make} ${vehicle.model} (${vehicle.yearOfManufacture})`
+                    : "Vehicle details unavailable"}
                 </Typography>
-              </div>
-              <div className="added-vehicle-status-section">
-                <Chip
-                  icon={getStatusIcon(addedVehicle.status)}
-                  label={addedVehicle.status}
-                  color={getStatusColor(addedVehicle.status)}
-                  size="small"
-                  variant="outlined"
-                  className="added-vehicle-status-chip"
-                />
-              </div>
-            </div>
+              </Box>
+              <Chip
+                icon={getStatusIcon(addedVehicle.status)}
+                label={addedVehicle.status}
+                color={getStatusColor(addedVehicle.status)}
+                size="small"
+                variant="outlined"
+                sx={{ fontWeight: 600 }}
+              />
+            </Box>
 
             {/* Vehicle Details */}
-            <div className="added-vehicle-details">
-              <div className="added-vehicle-detail-row">
-                <ServiceIcon className="added-vehicle-detail-icon" />
-                <span className="added-vehicle-detail-text">
+            <Box sx={{ mb: 2, flex: 1 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+              >
+                <ServiceIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                <Typography variant="body2" sx={{ flex: 1 }}>
                   {addedVehicle.purpose?.replace("_", " ")}
-                </span>
+                </Typography>
                 <Chip
                   label={addedVehicle.priority}
                   size="small"
-                  style={{
+                  sx={{
                     backgroundColor: getPriorityColor(addedVehicle.priority),
                     color: "white",
                     fontSize: "0.7rem",
+                    fontWeight: 600,
                   }}
                 />
-              </div>
+              </Box>
 
               {addedVehicle.scheduledDate && (
-                <div className="added-vehicle-detail-row">
-                  <DateIcon className="added-vehicle-detail-icon" />
-                  <span className="added-vehicle-detail-text">
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <DateIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="body2">
                     Scheduled: {formatDate(addedVehicle.scheduledDate)}
-                  </span>
-                </div>
+                  </Typography>
+                </Box>
               )}
 
               {addedVehicle.contactInfo?.phone && (
-                <div className="added-vehicle-detail-row">
-                  <PhoneIcon className="added-vehicle-detail-icon" />
-                  <span className="added-vehicle-detail-text">
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <PhoneIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="body2">
                     {addedVehicle.contactInfo.phone}
-                  </span>
-                </div>
+                  </Typography>
+                </Box>
               )}
 
               {addedVehicle.location?.address && (
-                <div className="added-vehicle-detail-row">
-                  <LocationIcon className="added-vehicle-detail-icon" />
-                  <span className="added-vehicle-detail-text">
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <LocationIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
+                  <Typography variant="body2" sx={{ fontSize: "0.85rem" }}>
                     {addedVehicle.location.address}
-                  </span>
-                </div>
+                  </Typography>
+                </Box>
               )}
 
               {addedVehicle.notes && (
-                <div className="added-vehicle-notes">
-                  <NotesIcon className="added-vehicle-detail-icon" />
-                  <span className="added-vehicle-notes-text">
-                    {addedVehicle.notes.substring(0, 100)}
-                    {addedVehicle.notes.length > 100 && "..."}
-                  </span>
-                </div>
+                <Box
+                  sx={{
+                    mt: 1,
+                    p: 1,
+                    backgroundColor: "grey.50",
+                    borderRadius: 1,
+                    border: "1px solid",
+                    borderColor: "grey.200",
+                  }}
+                >
+                  <Box
+                    sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}
+                  >
+                    <NotesIcon
+                      sx={{ fontSize: 16, color: "text.secondary", mt: 0.2 }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ fontSize: "0.85rem", lineHeight: 1.4 }}
+                    >
+                      {addedVehicle.notes.length > 100
+                        ? `${addedVehicle.notes.substring(0, 100)}...`
+                        : addedVehicle.notes}
+                    </Typography>
+                  </Box>
+                </Box>
               )}
-            </div>
+            </Box>
 
             {/* Footer */}
-            <div className="added-vehicle-footer">
-              <div className="added-vehicle-meta">
-                <Typography
-                  variant="caption"
-                  className="added-vehicle-meta-text"
-                >
-                  Added: {formatDate(addedVehicle.createdAt)}
-                </Typography>
-              </div>
-              <div className="added-vehicle-actions">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                pt: 1,
+                borderTop: "1px solid",
+                borderColor: "grey.200",
+                mt: "auto",
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                Added: {formatDate(addedVehicle.createdAt)}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 0.5 }}>
                 {addedVehicle.status === "ACTIVE" && (
                   <Tooltip title="Mark as completed">
                     <IconButton
                       size="small"
                       onClick={() => handleMarkCompleted(addedVehicle._id)}
-                      className="action-btn complete-btn"
+                      sx={{ color: "success.main" }}
                     >
                       <CompletedIcon />
                     </IconButton>
@@ -540,7 +506,7 @@ const AddedVehicles = () => {
                       setSelectedVehicle(addedVehicle);
                       setEditDialogOpen(true);
                     }}
-                    className="action-btn edit-btn"
+                    sx={{ color: "primary.main" }}
                   >
                     <EditIcon />
                   </IconButton>
@@ -552,13 +518,13 @@ const AddedVehicles = () => {
                       setSelectedVehicle(addedVehicle);
                       setDeleteDialogOpen(true);
                     }}
-                    className="action-btn delete-btn"
+                    sx={{ color: "error.main" }}
                   >
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
-              </div>
-            </div>
+              </Box>
+            </Box>
           </CardContent>
         </Card>
       </Fade>
@@ -568,155 +534,77 @@ const AddedVehicles = () => {
   // Stats Card Component
   const StatsCard = ({ title, value, icon, color, subtitle, loading }) => (
     <Zoom in={true} timeout={300}>
-      <Card className="stats-card">
-        <CardContent className="stats-card-content">
+      <Card
+        sx={{
+          height: "100%",
+          "&:hover": { transform: "translateY(-2px)", boxShadow: 3 },
+          transition: "all 0.3s ease",
+        }}
+      >
+        <CardContent>
           {loading ? (
-            <div className="stats-loading">
+            <Box>
               <Skeleton variant="text" width={60} height={40} />
               <Skeleton variant="text" width={100} height={24} />
               {subtitle && <Skeleton variant="text" width={80} height={16} />}
-            </div>
+            </Box>
           ) : (
-            <>
-              <div className="stats-main">
-                <div className="stats-info">
-                  <Typography
-                    variant="h3"
-                    className="stats-value"
-                    style={{ color }}
-                  >
-                    {value}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="h3"
+                  sx={{ fontWeight: 800, color, mb: 0.5 }}
+                >
+                  {value}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 600, color: "text.primary", mb: 0.25 }}
+                >
+                  {title}
+                </Typography>
+                {subtitle && (
+                  <Typography variant="body2" color="text.secondary">
+                    {subtitle}
                   </Typography>
-                  <Typography variant="h6" className="stats-title">
-                    {title}
-                  </Typography>
-                  {subtitle && (
-                    <Typography variant="body2" className="stats-subtitle">
-                      {subtitle}
-                    </Typography>
-                  )}
-                </div>
-                <div className="stats-icon" style={{ color }}>
-                  {icon}
-                </div>
-              </div>
-            </>
+                )}
+              </Box>
+              <Box sx={{ color, fontSize: "2.5rem", opacity: 0.8 }}>{icon}</Box>
+            </Box>
           )}
         </CardContent>
       </Card>
     </Zoom>
   );
 
-  // Edit Dialog Component
-  const EditDialog = () => {
-    const [editData, setEditData] = useState({
-      purpose: selectedVehicle?.purpose || "",
-      priority: selectedVehicle?.priority || "",
-      status: selectedVehicle?.status || "",
-      notes: selectedVehicle?.notes || "",
-      scheduledDate: selectedVehicle?.scheduledDate?.split("T")[0] || "",
-    });
+  // Edit Dialog Component (placeholder)
+  const EditDialog = () => (
+    <Dialog
+      open={editDialogOpen}
+      onClose={() => setEditDialogOpen(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>Edit Added Vehicle</DialogTitle>
+      <DialogContent>
+        <Typography>Edit functionality will be implemented soon.</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+        <Button onClick={() => handleUpdateVehicle({})} variant="contained">
+          Save Changes
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
-    const handleSave = () => {
-      handleUpdateVehicle(editData);
-    };
-
-    return (
-      <Dialog
-        open={editDialogOpen}
-        onClose={() => setEditDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Edit Added Vehicle</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-            <FormControl fullWidth>
-              <InputLabel>Purpose</InputLabel>
-              <Select
-                value={editData.purpose}
-                label="Purpose"
-                onChange={(e) =>
-                  setEditData({ ...editData, purpose: e.target.value })
-                }
-              >
-                <MenuItem value="SERVICE_BOOKING">Service Booking</MenuItem>
-                <MenuItem value="INSURANCE_CLAIM">Insurance Claim</MenuItem>
-                <MenuItem value="MAINTENANCE_SCHEDULE">
-                  Maintenance Schedule
-                </MenuItem>
-                <MenuItem value="REPAIR_REQUEST">Repair Request</MenuItem>
-                <MenuItem value="INSPECTION">Inspection</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <InputLabel>Priority</InputLabel>
-              <Select
-                value={editData.priority}
-                label="Priority"
-                onChange={(e) =>
-                  setEditData({ ...editData, priority: e.target.value })
-                }
-              >
-                <MenuItem value="LOW">Low</MenuItem>
-                <MenuItem value="MEDIUM">Medium</MenuItem>
-                <MenuItem value="HIGH">High</MenuItem>
-                <MenuItem value="URGENT">Urgent</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select
-                value={editData.status}
-                label="Status"
-                onChange={(e) =>
-                  setEditData({ ...editData, status: e.target.value })
-                }
-              >
-                <MenuItem value="ACTIVE">Active</MenuItem>
-                <MenuItem value="PENDING">Pending</MenuItem>
-                <MenuItem value="COMPLETED">Completed</MenuItem>
-                <MenuItem value="CANCELLED">Cancelled</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              fullWidth
-              type="date"
-              label="Scheduled Date"
-              value={editData.scheduledDate}
-              onChange={(e) =>
-                setEditData({ ...editData, scheduledDate: e.target.value })
-              }
-              InputLabelProps={{ shrink: true }}
-            />
-
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              label="Notes"
-              value={editData.notes}
-              onChange={(e) =>
-                setEditData({ ...editData, notes: e.target.value })
-              }
-              placeholder="Add notes about this service request..."
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">
-            Save Changes
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  // Delete Dialog Component
+  // Delete Dialog Component (placeholder)
   const DeleteDialog = () => (
     <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
       <DialogTitle>Confirm Removal</DialogTitle>
@@ -738,64 +626,97 @@ const AddedVehicles = () => {
 
   // Loading skeleton
   const AddedVehicleCardSkeleton = () => (
-    <Card className="added-vehicle-card added-vehicle-card-skeleton">
+    <Card sx={{ height: "300px" }}>
       <CardContent>
-        <div className="skeleton-header">
-          <div>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          <Box>
             <Skeleton variant="text" width={120} height={32} />
             <Skeleton variant="text" width={160} height={20} />
-          </div>
+          </Box>
           <Skeleton variant="rectangular" width={80} height={24} />
-        </div>
-        <div className="skeleton-details">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} variant="text" width="100%" height={20} />
-          ))}
-        </div>
-        <div className="skeleton-footer">
+        </Box>
+        {[...Array(4)].map((_, i) => (
+          <Skeleton
+            key={i}
+            variant="text"
+            width="100%"
+            height={20}
+            sx={{ mb: 1 }}
+          />
+        ))}
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Skeleton variant="text" width={80} height={16} />
-          <div style={{ display: "flex", gap: "8px" }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             <Skeleton variant="circular" width={32} height={32} />
             <Skeleton variant="circular" width={32} height={32} />
             <Skeleton variant="circular" width={32} height={32} />
-          </div>
-        </div>
+          </Box>
+        </Box>
       </CardContent>
     </Card>
   );
 
   if (loading && addedVehicles.length === 0) {
     return (
-      <Container maxWidth="xl" className="added-vehicles-container">
-        <div className="loading-container">
-          <CircularProgress size={60} className="loading-spinner" />
-          <Typography variant="h6" className="loading-text">
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            minHeight: "60vh",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress size={60} sx={{ mb: 2 }} />
+          <Typography variant="h6" color="text.secondary">
             Loading your service requests...
           </Typography>
-        </div>
+        </Box>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="xl" className="added-vehicles-container">
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
-      <div className="page-header">
-        <div className="header-content">
-          <div className="header-info">
-            <Typography variant="h3" className="header-title">
+      <Box sx={{ mb: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
+          <Box>
+            <Typography
+              variant="h3"
+              sx={{ fontWeight: 700, color: "text.primary", mb: 1 }}
+            >
               Added Vehicles
             </Typography>
-            <Typography variant="h6" className="header-subtitle">
+            <Typography variant="h6" color="text.secondary">
               Manage your vehicles added for service requests
             </Typography>
-          </div>
-          <div className="header-actions">
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
             <Tooltip title="Refresh data">
               <IconButton
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="refresh-btn"
+                sx={{
+                  "&:hover": { transform: "rotate(180deg)" },
+                  transition: "transform 0.3s ease",
+                }}
               >
                 <RefreshIcon className={refreshing ? "spinning" : ""} />
               </IconButton>
@@ -807,29 +728,27 @@ const AddedVehicles = () => {
               }
               onClick={handleExport}
               disabled={addedVehicles.length === 0 || exporting}
-              className="export-btn"
             >
               {exporting ? "Exporting..." : "Export Data"}
             </Button>
             <Button
               variant="contained"
               onClick={() => navigate("/add-vehicles")}
-              startIcon={<CarIcon />}
-              className="add-vehicle-btn"
+              startIcon={<AddIcon />}
             >
               Add More Vehicles
             </Button>
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
 
       {/* Statistics Cards */}
-      <div className="stats-section">
+      <Box sx={{ mb: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={2.4}>
             <StatsCard
               title="Total Requests"
-              value={vehicleStats.total}
+              value={vehicleStats.totalRequests}
               icon={<CarIcon />}
               color="#3b82f6"
               subtitle="All service requests"
@@ -839,7 +758,7 @@ const AddedVehicles = () => {
           <Grid item xs={12} sm={6} md={2.4}>
             <StatsCard
               title="Active"
-              value={vehicleStats.active}
+              value={vehicleStats.scheduledRequests}
               icon={<VerifiedIcon />}
               color="#10b981"
               subtitle="Currently active"
@@ -849,7 +768,7 @@ const AddedVehicles = () => {
           <Grid item xs={12} sm={6} md={2.4}>
             <StatsCard
               title="Pending"
-              value={vehicleStats.pending}
+              value={vehicleStats.pendingRequests}
               icon={<ScheduleIcon />}
               color="#f59e0b"
               subtitle="Awaiting action"
@@ -859,7 +778,7 @@ const AddedVehicles = () => {
           <Grid item xs={12} sm={6} md={2.4}>
             <StatsCard
               title="Completed"
-              value={vehicleStats.completed}
+              value={vehicleStats.completedRequests}
               icon={<CompletedIcon />}
               color="#06b6d4"
               subtitle="Finished requests"
@@ -869,7 +788,7 @@ const AddedVehicles = () => {
           <Grid item xs={12} sm={6} md={2.4}>
             <StatsCard
               title="Cancelled"
-              value={vehicleStats.cancelled}
+              value={vehicleStats.cancelledRequests}
               icon={<CancelledIcon />}
               color="#ef4444"
               subtitle="Cancelled requests"
@@ -877,11 +796,11 @@ const AddedVehicles = () => {
             />
           </Grid>
         </Grid>
-      </div>
+      </Box>
 
       {/* Search and Filter */}
-      <Card className="search-filter-section">
-        <CardContent className="search-filter-content">
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
           <TextField
             placeholder="Search by registration number, make, model, or notes..."
             value={searchTerm}
@@ -893,34 +812,42 @@ const AddedVehicles = () => {
                 </InputAdornment>
               ),
             }}
-            className="search-input"
             fullWidth
+            sx={{ mb: 2 }}
           />
-          <div className="filter-tabs-container">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
             <Tabs
               value={filterStatus}
               onChange={(e, v) => handleFilterChange(e, v, "status")}
               variant="scrollable"
               scrollButtons="auto"
-              className="filter-tabs"
             >
-              <Tab label={`All (${vehicleStats.total})`} value="all" />
-              <Tab label={`Active (${vehicleStats.active})`} value="active" />
+              <Tab label={`All (${vehicleStats.totalRequests})`} value="all" />
               <Tab
-                label={`Pending (${vehicleStats.pending})`}
+                label={`Active (${vehicleStats.scheduledRequests})`}
+                value="active"
+              />
+              <Tab
+                label={`Pending (${vehicleStats.pendingRequests})`}
                 value="pending"
               />
               <Tab
-                label={`Completed (${vehicleStats.completed})`}
+                label={`Completed (${vehicleStats.completedRequests})`}
                 value="completed"
               />
               <Tab
-                label={`Cancelled (${vehicleStats.cancelled})`}
+                label={`Cancelled (${vehicleStats.cancelledRequests})`}
                 value="cancelled"
               />
             </Tabs>
-          </div>
-          <div className="purpose-filter">
             <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
               <InputLabel>Filter by Purpose</InputLabel>
               <Select
@@ -940,33 +867,33 @@ const AddedVehicles = () => {
                 <MenuItem value="inspection">Inspection</MenuItem>
               </Select>
             </FormControl>
-          </div>
+          </Box>
         </CardContent>
       </Card>
 
       {/* Added Vehicles Grid */}
-      <div className="added-vehicles-section">
+      <Box sx={{ mb: 4 }}>
         {loading ? (
-          <div className="added-vehicles-grid">
+          <Grid container spacing={3}>
             {[...Array(6)].map((_, index) => (
-              <AddedVehicleCardSkeleton key={index} />
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <AddedVehicleCardSkeleton />
+              </Grid>
             ))}
-          </div>
+          </Grid>
         ) : addedVehicles.length > 0 ? (
           <>
-            <div className="added-vehicles-grid">
+            <Grid container spacing={3}>
               {addedVehicles.map((addedVehicle, index) => (
-                <AddedVehicleCard
-                  key={addedVehicle._id}
-                  addedVehicle={addedVehicle}
-                  index={index}
-                />
+                <Grid item xs={12} sm={6} md={4} key={addedVehicle._id}>
+                  <AddedVehicleCard addedVehicle={addedVehicle} index={index} />
+                </Grid>
               ))}
-            </div>
+            </Grid>
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-              <div className="pagination-section">
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                 <Pagination
                   count={pagination.totalPages}
                   page={pagination.page}
@@ -976,20 +903,34 @@ const AddedVehicles = () => {
                   showFirstButton
                   showLastButton
                 />
-              </div>
+              </Box>
             )}
           </>
         ) : (
           /* Empty State */
-          <Card className="empty-state">
-            <CardContent className="empty-state-content">
-              <CarIcon className="empty-state-icon" />
-              <Typography variant="h4" className="empty-state-title">
+          <Card
+            sx={{
+              border: "2px dashed",
+              borderColor: "grey.300",
+              textAlign: "center",
+              py: 6,
+            }}
+          >
+            <CardContent>
+              <CarIcon sx={{ fontSize: "4rem", color: "grey.300", mb: 2 }} />
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 600, mb: 1, color: "text.primary" }}
+              >
                 {searchTerm || filterStatus !== "all" || filterPurpose !== "all"
                   ? "No vehicles found"
                   : "No vehicles added yet"}
               </Typography>
-              <Typography variant="body1" className="empty-state-subtitle">
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ mb: 2, maxWidth: 400, mx: "auto" }}
+              >
                 {searchTerm || filterStatus !== "all" || filterPurpose !== "all"
                   ? "Try adjusting your search or filter criteria"
                   : "Start by adding vehicles from your registered vehicles"}
@@ -998,15 +939,15 @@ const AddedVehicles = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => navigate("/add-vehicles")}
-                startIcon={<CarIcon />}
-                sx={{ mt: 2 }}
+                startIcon={<AddIcon />}
+                size="large"
               >
                 Add Your First Vehicle
               </Button>
             </CardContent>
           </Card>
         )}
-      </div>
+      </Box>
 
       {/* Dialogs */}
       <EditDialog />
