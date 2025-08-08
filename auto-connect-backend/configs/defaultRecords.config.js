@@ -30,20 +30,12 @@ const addDefaultRecords = async () => {
       });
 
       LOG.info({
-        message: "Default system administrator created",
+        message: "Default system administrator created. Please change the password after first login.",
         adminId: defaultAdmin._id,
         email: defaultAdmin.email,
+        phone: defaultAdmin.phone,
+        password: process.env.DEFAULT_ADMIN_PASSWORD || "Admin@123456",
       });
-
-      console.log("\n=================================");
-      console.log("🚀 DEFAULT ADMIN ACCOUNT CREATED");
-      console.log("=================================");
-      console.log(`📧 Email: ${defaultAdmin.email}`);
-      console.log(
-        `🔑 Password: ${process.env.DEFAULT_ADMIN_PASSWORD || "Admin@123456"}`
-      );
-      console.log("🔐 Please change the default password after first login!");
-      console.log("=================================\n");
     }
 
     // Add other default records here if needed
