@@ -19,7 +19,7 @@ import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
-import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
+//import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
 
@@ -46,10 +46,10 @@ import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdat
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
 
-import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
-import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
-import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
-import VehicleList from "@pages/InsuranceCompany/VehicleList";
+// import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
+ import InsuranceCompanyDashboard from "@pages/InsuranceCompany/InsuranceCompanyDashboard";
+// import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
+// import VehicleList from "@pages/InsuranceCompany/VehicleList";
 import { Add } from "@mui/icons-material";
 
 function getNavLinks(userContext) {
@@ -240,27 +240,27 @@ function getNavLinks(userContext) {
       ],
     });
 
-    nav.push({
-      title: "Insurance & Claims",
-      icon: "security",
-      page: "Insurance & Claims",
-      defLinkSettings: {
-        title: "Insurance Dashboard",
-        icon: "security",
-      },
-      sub: [
-        {
-          path: [`/insurance`],
-          title: "My Insurance",
-          icon: "security",
-          page: <InsuranceDetails />,
-        },
-        {
-          path: [`/insurance/claims/new`],
-          title: "File New Claim",
-          icon: "report_problem",
-          page: <InsuranceClaimPage />,
-        },
+    // nav.push({
+    //   title: "Insurance & Claims",
+    //   icon: "security",
+    //   page: "Insurance & Claims",
+    //   defLinkSettings: {
+    //     title: "Insurance Dashboard",
+    //     icon: "security",
+    //   },
+      // sub: [
+      //   {
+      //     path: [`/insurance`],
+      //     title: "My Insurance",
+      //     icon: "security",
+      //     page: <InsuranceDetails />,
+      //   },
+      //   {
+      //     path: [`/insurance/claims/new`],
+      //     title: "File New Claim",
+      //     icon: "report_problem",
+      //     page: <InsuranceClaimPage />,
+      //   },
         // {
         //   path: [`/insurance`],
         //   title: "Insurance Dashboard",
@@ -286,8 +286,8 @@ function getNavLinks(userContext) {
         //   icon: "warning",
         //   page: "Accident Reports",
         // },
-      ],
-    });
+    //   ],
+    // });
 
     nav.push({
       path: [`/dashboardVehiclePassport`],
@@ -661,19 +661,19 @@ function getNavLinks(userContext) {
 
   // INSURANCE COMPANY Navigation
   if (userContext.role === "insurance_agent") {
-    nav.push({
-      path: [`/dashboard`],
-      title: "Dashboard",
-      icon: "dashboard",
-      page: <InsuranceDashboard/>,
-    });
+     nav.push({
+       path: [`/dashboard`],
+       title: "Dashboard",
+       icon: "dashboard",
+       page: <InsuranceCompanyDashboard/>,
+     });
 
-    nav.push({
-      path: [`/vehicles`],
-      title: "Vehicle List",
-      icon: "directions_car",
-      page: <VehicleList />,
-    });
+    // nav.push({
+    //   path: [`/vehicles`],
+    //   title: "Vehicle List",
+    //   icon: "directions_car",
+    //   page: <VehicleList />,
+    // });
 
     nav.push({
       title: "Claims Management",
@@ -690,12 +690,12 @@ function getNavLinks(userContext) {
         //   icon: "assignment",
         //   page: "Claims Dashboard",
         // },
-        {
-          path: [`/claims/active`],
-          title: "Active Claims",
-          icon: "pending_actions",
-          page: <InsuranceClaims />,
-        },
+        // {
+        //   path: [`/claims/active`],
+        //   title: "Active Claims",
+        //   icon: "pending_actions",
+        //   page: <InsuranceClaims />,
+        // },
         // {
         //   path: [`/claims/processing`],
         //   title: "Claim Processing",
