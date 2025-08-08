@@ -51,7 +51,7 @@ function SentNotificationTable({ sentNotifications }) {
 
   return (
     <div className="tw:max-w-lg tw:w-full tw:bg-white tw:rounded-xl tw:shadow-md tw:p-6 tw:overflow-x-auto">
-      <h2 className="tw:text-xl tw:font-semibold tw:mb-4 tw:text-blue-800 tw:flex tw:items-center tw:gap-2">
+      <h2 className="tw:text-2xl tw:font-semibold tw:!mb-10 tw:text-blue-800 tw:flex tw:items-center tw:gap-2">
         <Send className="tw:w-5 tw:h-5 tw:text-blue-700" />
         Sent Notifications
       </h2>

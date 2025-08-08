@@ -52,7 +52,6 @@ import {
 // CSS Imports - Typography system imported after component styles
 import "./LandingPage.css";
 
-
 // Import the HeroSection component
 import HeroSection from "../components/HeroSection";
 
@@ -322,24 +321,23 @@ const LandingPage = () => {
       <header className={`header ${isScrolled ? "scrolled" : ""}`}>
         <div className="header-container">
           <div className="header-content">
-         
-                  <div className="logo">
-                    <div className="logo-icon">
-                    <img
-                      src="/logo.png"
-                      alt="AutoConnect Logo"
-                      className="w-8 h-8"
-                    />
-                    </div>
-                    <span
-                    className="logo-text font-display font-bold"
-                    style={{ fontSize: "2rem" }}
-                    >
-                    Auto<span className="logo-accent">Connect</span>
-                    </span>
-                  </div>
+            <div className="logo">
+              <div className="logo-icon">
+                <img
+                  src="/logo.png"
+                  alt="AutoConnect Logo"
+                  className="w-8 h-8"
+                />
+              </div>
+              <span
+                className="logo-text font-display font-bold"
+                style={{ fontSize: "2rem" }}
+              >
+                Auto<span className="logo-accent">Connect</span>
+              </span>
+            </div>
 
-                  {/* Desktop Navigation */}
+            {/* Desktop Navigation */}
             <nav className="nav-desktop">
               {[
                 "Home",
@@ -993,102 +991,284 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer id="contact" className="footer">
-          <div className="footer-container">
-            <div className="footer-grid">
-              {/* Brand Section */}
-              <div className="footer-brand">
-                <div className="footer-logo">
-                  <div className="footer-logo-icon">
-                    <img
-                      src="/logo.png"
-                      alt="AutoConnect Logo"
-                      className="w-6 h-6"
-                    />
-                  </div>
-                  <span className="footer-logo-text font-display font-bold">
-                    Auto<span className="logo-accent">Connect</span>
+        <footer
+          id="contact"
+          style={{
+            background: "#1a1a1a", // --charcoal
+            color: "#e8f4f8", // --aqua-light for readable contrast
+            fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
+            fontSize: "1.08rem",
+            margin: 0,
+            padding: 0,
+            width: "100%",
+            borderTopLeftRadius: "0",
+            borderTopRightRadius: "0",
+            boxShadow: "0 -2px 8px 0 rgba(26,26,26,0.14)",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "1240px",
+              margin: "0 auto",
+              padding: "2.5rem 1.5rem 0 1.5rem",
+              display: "grid",
+              gridTemplateColumns:
+                "minmax(210px, 1.7fr) minmax(180px, 1.15fr) minmax(195px, 1fr)",
+              gap: "2rem",
+              alignItems: "start",
+            }}
+          >
+            {/* Brand Section */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.25rem",
+              }}
+            >
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}
+              >
+                <span
+                  style={{
+                    width: "2.2rem",
+                    height: "2.2rem",
+                    borderRadius: "9px",
+                    background:
+                      "linear-gradient(135deg,#7ab2d3 60%,#4a628a 100%)", // --sky-blue to --navy-blue
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 1px 6px rgba(74,98,138,0.13)",
+                  }}
+                >
+                  <img
+                    src="/logo.png"
+                    alt="AutoConnect Logo"
+                    style={{ width: "1.15rem", height: "1.15rem" }}
+                  />
+                </span>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    fontSize: "1.4rem",
+                    color: "#dff2eb", // --soft-mint for a fresh look
+                    letterSpacing: "-0.5px",
+                  }}
+                >
+                  Auto
+                  <span style={{ color: "#7ab2d3", fontWeight: 800 }}>
+                    Connect
                   </span>
-                </div>
-                <p className="footer-description body-regular text-secondary leading-relaxed">
-                  Sri Lanka's most comprehensive vehicle lifecycle management
-                  platform. Connecting vehicle owners, service providers, and
-                  insurance companies through transparent, efficient, and secure
-                  digital ecosystem.
-                </p>
-                <div className="footer-social">
-                  {[Facebook, Twitter, Instagram, Linkedin].map(
-                    (Icon, index) => (
-                      <a key={index} href="#" className="social-link">
-                        <Icon className="w-5 h-5" />
-                      </a>
-                    )
-                  )}
-                </div>
+                </span>
               </div>
-
-              {/* Platform Services */}
-              <div className="footer-section">
-                <h4 className="footer-section-title heading-4 text-primary font-secondary font-semibold">
-                  Platform Services
-                </h4>
-                <ul className="footer-links">
-                  {[
-                    "Vehicle Registry",
-                    "Trading Marketplace",
-                    "Service Booking",
-                    "Insurance Integration",
-                    "Analytics Dashboard",
-                  ].map((item, index) => (
-                    <li key={index}>
-                      <a
-                        href="#"
-                        className="footer-link body-regular text-secondary"
-                      >
-                        {item}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Contact */}
-              <div className="footer-section">
-                <h4 className="footer-section-title heading-4 text-primary font-secondary font-semibold">
-                  Contact Us
-                </h4>
-                <div className="footer-contact">
-                  <div className="contact-item">
-                    <Mail className="w-5 h-5 contact-icon" />
-                    <span className="body-regular text-secondary">
-                      platform@autoconnect.lk
-                    </span>
-                  </div>
-                  <div className="contact-item">
-                    <Phone className="w-5 h-5 contact-icon" />
-                    <span className="body-regular text-secondary">
-                      +94 11 234 5678
-                    </span>
-                  </div>
-                  <div className="contact-item">
-                    <MapPin className="w-5 h-5 contact-icon" />
-                    <span className="body-regular text-secondary">
-                      Colombo 03, Sri Lanka
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom */}
-            <div className="footer-bottom">
-              <p className="footer-copyright body-small text-tertiary text-center">
-                © 2025 AutoConnect. All rights reserved. Revolutionizing Sri
-                Lanka's automotive ecosystem through comprehensive digital
-                transformation.
+              <p
+                style={{
+                  fontSize: "1rem",
+                  opacity: 0.8,
+                  lineHeight: 1.65,
+                  maxWidth: "305px",
+                  color: "#b9e5e8", // --aqua-mist
+                  margin: 0,
+                }}
+              >
+                Sri Lanka’s most comprehensive vehicle lifecycle platform. We
+                connect vehicle owners, service providers, and insurers with
+                secure, smart workflow automation and transparency.
               </p>
+              <div style={{ display: "flex", gap: ".74rem", marginTop: "5px" }}>
+                {[Facebook, Twitter, Instagram, Linkedin].map((Icon, idx) => (
+                  <a
+                    href="#"
+                    aria-label={Icon.name}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "2.05rem",
+                      height: "2.05rem",
+                      background: "#b9e5e8", // --aqua-mist
+                      borderRadius: "7px",
+                      color: "#4a628a", // --navy-blue
+                      fontSize: "1.13rem",
+                      transition: "background .22s,color .22s",
+                    }}
+                    key={idx}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = "#7ab2d3";
+                      e.currentTarget.style.color = "#1a1a1a";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = "#b9e5e8";
+                      e.currentTarget.style.color = "#4a628a";
+                    }}
+                  >
+                    <Icon style={{ width: "1.11em", height: "1.11em" }} />
+                  </a>
+                ))}
+              </div>
             </div>
+            {/* Services Section */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.88rem",
+              }}
+            >
+              <h4
+                style={{
+                  fontWeight: 600,
+                  fontSize: "1.09rem",
+                  color: "#7ab2d3", // --sky-blue
+                  margin: 0,
+                }}
+              >
+                Platform Services
+              </h4>
+              <ul
+                style={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: ".51rem",
+                }}
+              >
+                {[
+                  "Vehicle Registry",
+                  "Trading Marketplace",
+                  "Service Booking",
+                  "Insurance Integration",
+                  "Analytics Dashboard",
+                ].map((item, idx) => (
+                  <li key={idx}>
+                    <a
+                      href="#"
+                      style={{
+                        fontSize: "1rem",
+                        color: "#e1f0f8", // --sky-light
+                        textDecoration: "none",
+                        opacity: 0.88,
+                        fontWeight: 400,
+                        transition: "color .14s",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.color = "#7ab2d3")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.color = "#e1f0f8")
+                      }
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Contact Section */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.7rem",
+              }}
+            >
+              <h4
+                style={{
+                  fontWeight: 600,
+                  fontSize: "1.09rem",
+                  color: "#7ab2d3", // --sky-blue
+                  margin: 0,
+                }}
+              >
+                Contact Us
+              </h4>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: ".55rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: ".68rem",
+                    color: "#b9e5e8",
+                    fontSize: "1em",
+                  }}
+                >
+                  <Mail
+                    style={{
+                      color: "#4a628a",
+                      width: "1.11em",
+                      height: "1.11em",
+                    }}
+                  />
+                  <span>platform@autoconnect.lk</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: ".68rem",
+                    color: "#b9e5e8",
+                    fontSize: "1em",
+                  }}
+                >
+                  <Phone
+                    style={{
+                      color: "#4a628a",
+                      width: "1.11em",
+                      height: "1.11em",
+                    }}
+                  />
+                  <span>+94 11 234 5678</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: ".68rem",
+                    color: "#b9e5e8",
+                    fontSize: "1em",
+                  }}
+                >
+                  <MapPin
+                    style={{
+                      color: "#4a628a",
+                      width: "1.11em",
+                      height: "1.11em",
+                    }}
+                  />
+                  <span>Colombo 03, Sri Lanka</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Bottom Notice */}
+          <div
+            style={{
+              textAlign: "center",
+              paddingTop: "1.5rem",
+              paddingBottom: "1.1rem",
+              marginTop: "2.1rem",
+              fontSize: "1.01rem",
+              opacity: 0.71,
+              color: "#aab9cb", // blend of --navy-light and --sky-blue
+              borderTop: "1px solid #4a4a4a",
+              letterSpacing: "0.01em",
+            }}
+          >
+            © 2025{" "}
+            <strong style={{ color: "#7ab2d3", fontWeight: 600 }}>
+              AutoConnect
+            </strong>
+            . All rights reserved. Empowering Sri Lanka’s automotive ecosystem
+            through trusted digital innovation.
           </div>
         </footer>
       </main>

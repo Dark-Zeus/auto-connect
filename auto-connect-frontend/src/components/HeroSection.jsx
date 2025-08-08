@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./HeroSection.css";
+import AutoConnectMascot from "@/assets/images/AutoConnectMascot.png";
 
 const HeroSection = () => {
   const [activeCard, setActiveCard] = useState(0);
@@ -94,6 +95,7 @@ const HeroSection = () => {
                 fontSize: "1.35rem",
                 lineHeight: "1.7",
                 fontWeight: 500,
+                color: "#1a1a1a",
               }}
             >
               Revolutionary digital ecosystem connecting vehicle owners, service
@@ -149,81 +151,19 @@ const HeroSection = () => {
           </div>
 
           {/* Visual */}
-          <div className="hero-visual-modern" onMouseMove={handleMouseMove}>
-            {/* 3D Vehicle Visualization */}
-            <div className="vehicle-showcase">
-              <div className="vehicle-3d-container">
-                {/* Animated Car Icon */}
-                <div className="vehicle-icon-3d">
-                  <Car className="w-24 h-24 text-white" />
-                  <div className="vehicle-glow"></div>
-                </div>
-
-                {/* Rotating Ring */}
-                <div className="rotating-ring">
-                  <div className="ring-segment"></div>
-                  <div className="ring-segment"></div>
-                  <div className="ring-segment"></div>
-                  <div className="ring-segment"></div>
-                </div>
-              </div>
-
-              {/* Interactive Stats Cards */}
-              <div className="stats-orbit">
-                {interactiveCards.map((card, index) => (
-                  <div
-                    key={index}
-                    className={`stat-card-floating ${
-                      activeCard === index ? "active" : ""
-                    }`}
-                    style={{
-                      "--delay": `${index * 0.5}s`,
-                      "--angle": `${index * 90}deg`,
-                    }}
-                  >
-                    <div className="card-gradient">
-                      <div className="card-icon">{card.icon}</div>
-                      <div className="card-content">
-                        <div className="card-number">{card.title}</div>
-                        <div className="card-label">{card.subtitle}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Particle Effects */}
-              <div className="particle-field">
-                {[...Array(20)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="particle"
-                    style={{
-                      "--delay": `${i * 0.3}s`,
-                      "--x": `${Math.random() * 100}%`,
-                      "--y": `${Math.random() * 100}%`,
-                    }}
-                  ></div>
-                ))}
-              </div>
-            </div>
-
-            {/* Background Effects */}
-            <div className="hero-bg-effects">
-              <div className="gradient-orb orb-1"></div>
-              <div className="gradient-orb orb-2"></div>
-              <div className="gradient-orb orb-3"></div>
-            </div>
-
-            {/* Mouse Follower */}
-            <div
-              className="mouse-follower"
-              style={{
-                left: `${mousePosition.x}%`,
-                top: `${mousePosition.y}%`,
-              }}
-            ></div>
-          </div>
+<div
+  className="relative flex items-center justify-center min-h-[520px] p-10 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-[0_20px_80px_-10px_rgba(74,98,138,0.25)] overflow-hidden transition-all duration-500"
+>
+  {/* Orb glow background */}
+  <div className="absolute -top-16 -left-16 w-64 h-64 bg-primary-medium opacity-20 rounded-full blur-3xl z-0"></div>
+  <div className="absolute -bottom-12 -right-12 w-52 h-52 bg-primary-blue opacity-20 rounded-full blur-2xl z-0"></div>
+  {/* Mascot image */}
+  <img
+    src={AutoConnectMascot}
+    alt="AutoConnect Mascot"
+    className="relative z-10 max-w-full max-h-[480px] object-contain rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 ease-in-out animate-bounce-smooth"
+  />
+</div>
         </div>
       </div>
     </section>

@@ -51,7 +51,7 @@ function SendNotificationBox({ onSend }) {
       </h2>
 
       {/* Receiver Dropdown */}
-      <div className="tw:mb-4">
+      <div className="tw:mt-4 tw:mb-4">
         <label className="tw:block tw:font-semibold tw:text-blue-800 tw:mb-2 flex items-center gap-2">
           <Users className="tw:w-4 tw:h-4 tw:text-blue-500" />
           Select Receiver

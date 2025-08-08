@@ -142,7 +142,7 @@ function NavBar({ navLinks, version, icon, userId }) {
           <div className="dashboard-nav__profile-image"></div>
         </div>
         <div className="dashboard-nav__profile">
-          <div className="dashboard-nav__profile-details">John Doe</div>
+          <div className="dashboard-nav__profile-details">Ovindu Gunatunga</div>
           <Link to="/auth/logout">
             <div
               className="dashboard-nav__logout material-symbols-outlined-fill"
