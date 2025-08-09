@@ -46,11 +46,12 @@ import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdat
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
 
-// import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
- import InsuranceCompanyDashboard from "@pages/InsuranceCompany/InsuranceCompanyDashboard";
+import InsuranceClaimsManagementPage from "@pages/InsuranceCompany/InsuranceClaimsManagementPage";
+import InsuranceCompanyDashboard from "@pages/InsuranceCompany/InsuranceCompanyDashboard";
 // import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
 // import VehicleList from "@pages/InsuranceCompany/VehicleList";
 import { Add } from "@mui/icons-material";
+import InsuranceClaimDetailsPage from "@pages/InsuranceCompany/InsuranceClaimDetailsPage";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -668,6 +669,22 @@ function getNavLinks(userContext) {
        page: <InsuranceCompanyDashboard/>,
      });
 
+      nav.push({
+       path: [`/claimsmanagement`],
+       title: "Claims Management",
+       icon: "assignment",
+       page: <InsuranceClaimsManagementPage/>,
+     });
+
+      nav.push({
+        path: [`/insurance-claims/:id`],
+        title: "Claim Details",
+        icon: "assignment",
+        page: <InsuranceClaimDetailsPage />,
+        hidden: true, 
+      });
+
+
     // nav.push({
     //   path: [`/vehicles`],
     //   title: "Vehicle List",
@@ -675,15 +692,15 @@ function getNavLinks(userContext) {
     //   page: <VehicleList />,
     // });
 
-    nav.push({
-      title: "Claims Management",
-      icon: "assignment",
-      page: "Claims Management",
-      defLinkSettings: {
-        title: "Claims Dashboard",
-        icon: "assignment",
-      },
-      sub: [
+    // nav.push({
+    //   title: "Claims Management",
+    //   icon: "assignment",
+    //   page: "Claims Management",
+    //   defLinkSettings: {
+    //     title: "Claims Dashboard",
+    //     icon: "assignment",
+    //   },
+    //   sub: [
         // {
         //   path: [`/claims`],
         //   title: "Claims Dashboard",
@@ -708,8 +725,8 @@ function getNavLinks(userContext) {
         //   icon: "assessment",
         //   page: "Damage Assessment",
         // }
-      ]
-    });
+    //   ]
+    // });
 
     nav.push({
       title: "Policy Management",
