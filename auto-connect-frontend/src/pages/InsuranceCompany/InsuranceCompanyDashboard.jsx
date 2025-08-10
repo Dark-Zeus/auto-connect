@@ -10,9 +10,10 @@ import {
   Filter,
   BarChart3
 } from 'lucide-react';
-import './InsuranceCompanyDashboard.css';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
+import './InsuranceModuleCSS/InsuranceCompanyDashboard.css';
 
 const InsuranceCompanyDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -32,17 +33,11 @@ const InsuranceCompanyDashboard = () => {
   };
 
   const recentClaims = [
-    { id: 'CLM-2024-001', customer: 'John Silva', vehicle: 'Honda Civic - ABC-1234', type: 'Accident', amount: 150000, status: 'pending', date: '2024-08-05', priority: 'high' },
-    { id: 'CLM-2024-002', customer: 'Sarah Fernando', vehicle: 'Toyota Prius - XYZ-5678', type: 'Theft', amount: 280000, status: 'investigating', date: '2024-08-04', priority: 'urgent' },
-    { id: 'CLM-2024-003', customer: 'Mike Perera', vehicle: 'Nissan Leaf - DEF-9012', type: 'Vandalism', amount: 45000, status: 'approved', date: '2024-08-03', priority: 'normal' },
-    { id: 'CLM-2024-004', customer: 'Lisa Rajapaksa', vehicle: 'BMW X5 - GHI-3456', type: 'Fire Damage', amount: 520000, status: 'processing', date: '2024-08-02', priority: 'high' },
-    { id: 'CLM-2024-005', customer: 'Rajiv Perera', vehicle: 'Suzuki Alto - KLM-7890', type: 'Accident', amount: 80000, status: 'pending', date: '2024-08-01', priority: 'normal' },
-    { id: 'CLM-2024-006', customer: 'Anusha Wijesinghe', vehicle: 'Toyota Hilux - JKL-1111', type: 'Flood Damage', amount: 300000, status: 'approved', date: '2024-07-30', priority: 'high' },
-    { id: 'CLM-2024-007', customer: 'Tharindu Silva', vehicle: 'Mitsubishi Lancer - QWE-2222', type: 'Theft', amount: 200000, status: 'pending', date: '2024-07-28', priority: 'urgent' }
+    ...ClaimDetailsTestData
   ];
 
   const dashboardCards = [
-    { title: "Claims Management", description: "Process, review and manage insurance claims efficiently", icon: <FileText />, iconBg: "linear-gradient(45deg, #7AB2D3, #4A628A)", buttonText: "Manage Claims", buttonColor: "btn-blue", action: "manage-claims", stats: `${dashboardStats.activeClaims} Active` },
+    { title: "Claims Management", description: "Process, review and manage insurance claims efficiently", icon: <FileText />, iconBg: "linear-gradient(45deg, #7AB2D3, #4A628A)", buttonText: "Manage Claims", buttonColor: "btn-blue", action: "manage-claims", stats: `${dashboardStats.activeClaims} Active`, navigateTo: "/claimsmanagement" },
     { title: "Policy Management", description: "Oversee all insurance policies and renewals", icon: <Shield />, iconBg: "linear-gradient(45deg, #B9E5E8, #7AB2D3)", buttonText: "View Policies", buttonColor: "btn-teal", action: "manage-policies", stats: `${dashboardStats.totalPolicies.toLocaleString()} Policies` },
     { title: "Customer Management", description: "Manage customer relationships and communications", icon: <Users />, iconBg: "linear-gradient(45deg, #4A628A, #7AB2D3)", buttonText: "View Customers", buttonColor: "btn-indigo", action: "manage-customers", stats: `${dashboardStats.totalCustomers.toLocaleString()} Customers` },
     { title: "Analytics & Reports", description: "Generate detailed analytics and business reports", icon: <BarChart3 />, iconBg: "linear-gradient(45deg, #B9E5E8, #4A628A)", buttonText: "View Analytics", buttonColor: "btn-purple", action: "analytics", stats: "Real-time Data" },
@@ -110,9 +105,9 @@ const InsuranceCompanyDashboard = () => {
                 <h3 className="card-title">{card.title}</h3>
                 <p className="card-description">{card.description}</p>
                 <p className="card-stats">{card.stats}</p>
-                <button 
+                <button
                   className={`card-button ${card.buttonColor}`}
-                  onClick={() => console.log(`Action: ${card.action}`)}
+                  onClick={() => navigate(card.navigateTo)}
                 >
                   {card.buttonText}
                 </button>
@@ -172,7 +167,10 @@ const InsuranceCompanyDashboard = () => {
             </thead>
             <tbody>
               {recentClaims.slice(0, 6).map((claim) => (
-                <tr key={claim.id} onClick={() => navigate(`/insurance/claims/${claim.id}`)}>
+                <tr 
+                  key={claim.id} 
+                  onClick={() => navigate(`/insurance-claims/${claim.id}`)}
+                >
                   <td>{claim.id}</td>
                   <td>{claim.customer}</td>
                   <td>{claim.vehicle}</td>
