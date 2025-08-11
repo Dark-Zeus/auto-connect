@@ -142,6 +142,23 @@ const listVehicleAPI = {
       handleListVehicleError(error, "fetch listing");
       throw error;
     }
+  },
+
+  getMyListings: async () => {
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+      const response = await fetch(`${LIST_VEHICLES_ENDPOINT}/my`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      return await handleResponse(response);
+    } catch (error) {
+      handleListVehicleError(error, "fetch my listings");
+      throw error;
+    }
   }
 
   // Add other methods as needed: updateListing, deleteListing, etc.
