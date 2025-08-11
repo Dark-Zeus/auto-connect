@@ -177,10 +177,10 @@ const DevUserSwitcher = ({ currentUser, onUserChange }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const userRoles = [
-        { role: "vehicle_owner", userName: "john_doe", label: "Vehicle Owner", icon: "🚗" },
-        { role: "service_center", userName: "sunera", label: "Service Center", icon: "🔧" },
-        { role: "repair_center", userName: "mike_repair", label: "Repair Center", icon: "🛠️" },
-        { role: "insurance_agent", userName: "sarah_insurance", label: "Insurance Agent", icon: "🛡️" },
+        { role: "vehicle_owner", userName: "Ovindu Gunatunga", label: "Vehicle Owner", icon: "🚗" },
+        { role: "service_center", userName: "NewSun Service Center", label: "Service Center", icon: "🔧" },
+        { role: "repair_center", userName: "Mikes Repair", label: "Repair Center", icon: "🛠️" },
+        { role: "insurance_agent", userName: "AIA insuarance", label: "Insurance Agent", icon: "🛡️" },
         { role: "system_admin", userName: "admin_user", label: "System Admin", icon: "⚙️" }
     ];
 

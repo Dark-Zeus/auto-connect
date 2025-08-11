@@ -172,19 +172,19 @@ export const createRateLimit = (windowMs, max, message) => {
 
 // Specific rate limiters
 export const authLimiter = createRateLimit(
-  15 * 60 * 1000, // 15 minutes
+  1 * 60 * 1000, // 1 minutes
   5, // limit each IP to 5 requests per windowMs
   "Too many authentication attempts, please try again later."
 );
 
 export const generalLimiter = createRateLimit(
-  15 * 60 * 1000, // 15 minutes
+  1 * 60 * 1000, // 1 minutes
   100, // limit each IP to 100 requests per windowMs
   "Too many requests, please try again later."
 );
 
 export const passwordResetLimiter = createRateLimit(
-  60 * 60 * 1000, // 1 hour
+  6 * 60 * 1000, // 1 min
   3, // limit each IP to 3 password reset requests per hour
   "Too many password reset attempts, please try again later."
 );
