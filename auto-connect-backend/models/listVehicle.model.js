@@ -24,4 +24,13 @@ const listVehicleSchema = new mongoose.Schema({
     views: { type: Number, default: 0 }, // <--- important
     }, { timestamps: true });
 
+    listVehicleSchema.statics.updateVehicleAd = async function (id, userId, updateData) {
+        // Only allow the owner to update
+        return this.findOneAndUpdate(
+            { _id: id, userId },
+            updateData,
+            { new: true }
+        );
+    };
+
 export default mongoose.model('ListVehicle', listVehicleSchema);
