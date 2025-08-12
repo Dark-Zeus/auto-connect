@@ -40,3 +40,22 @@ export const getVehicleAdById = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const updateVehicleAd = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    const updateData = req.body;
+    const updatedAd = await ListVehicle.updateVehicleAd(id, userId, updateData);
+    if (!updatedAd) {
+      return res.status(404).json({ success: false, message: "Vehicle ad not found or not owned by user" });
+    }
+    res.status(200).json({ success: true, message: "Vehicle ad updated", data: updatedAd });
+  } catch (err) {
+    console.error("Error updating vehicle ad:", err);
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
