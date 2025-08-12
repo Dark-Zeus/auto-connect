@@ -26,3 +26,17 @@ export const getMyVehicleAds = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const getVehicleAdById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vehicle = await ListVehicle.findById(id);
+    if (!vehicle) {
+      return res.status(404).json({ success: false, message: "Vehicle ad not found" });
+    }
+    res.status(200).json({ success: true, data: vehicle });
+  } catch (err) {
+    console.error("Error fetching vehicle ad by ID:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
