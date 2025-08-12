@@ -7,7 +7,7 @@ import userApiService from '../../services/userApiService';
 import { UserContext } from "../../contexts/UserContext";
 import { toast } from "react-toastify";
 
-const VehicleListingForm = () => {
+const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
   const [formData, setFormData] = useState({
     mobile: '',
     district: '',
@@ -25,8 +25,8 @@ const VehicleListingForm = () => {
     mileage: '',
     description: '',
     registrationNumber: '',
-    name: '',
-    email: ''
+    name: fixedName || '',
+    email: fixedEmail || ''
   });
 
   const [photos, setPhotos] = useState(Array(6).fill(null));
@@ -34,78 +34,17 @@ const VehicleListingForm = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [fixedName, setFixedName] = useState('');
-  const [fixedEmail, setFixedEmail] = useState('');
-  const [userId, setUserId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { userContext: user } = useContext(UserContext);
 
   useEffect(() => {
-  const fetchUserProfile = async () => {
-    try {
-      setIsLoading(true);
-      const userData = await userApiService.getCurrentUser();
-      console.log("Complete user data:", userData);
-
-      if (userData && userData.success && userData.user) {
-        const user = userData.user;
-        setUserId(user._id || '');
-        setFixedEmail(user.email || '');
-        const fullName =
-          user.name ||
-          `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
-          'Unknown User'; // Fallback name
-        setFixedName(fullName);
-        console.log("Setting user data:", { userId: user._id, email: user.email, name: fullName });
-      } else {
-        throw new Error("Invalid user data structure");
-      }
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-      if (process.env.NODE_ENV === "development" || import.meta.env.DEV) {
-        console.warn("Using fallback user data for development");
-        setFixedName("Dev User");
-        setFixedEmail("dev@example.com");
-        setUserId("dev-user-id");
-      } else {
-        setFixedName("Unknown User");
-        setFixedEmail("email@example.com");
-        setUserId("");
-        setSnackbarMessage('Failed to load user information');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  fetchUserProfile();
-}, []);useEffect(() => {
-    console.log("User context:", user);
-
-    if (!user) {
-      toast.error("Please log in to access this page.");
-      navigate("/login"); // Redirect to login if no user
-      return;
-    }
-
-    if (user.role !== "vehicle_owner") {
-      toast.error("Access denied. Only vehicle owners can access this page.");
-      navigate("/"); // Redirect to home or another page
-      return;
-    }
-
-    // Map user data to formData
     setFormData((prev) => ({
       ...prev,
-      name: user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Unknown User",
-      email: user.email || "email@example.com"
+      name: fixedName || "",
+      email: fixedEmail || ""
     }));
-
-    setIsLoading(false);
-  }, [user, navigate]);
+  }, [fixedName, fixedEmail]);
 
   const handleSnackbarClose = (event, reason) => {
   if (reason === 'clickaway') {
@@ -247,27 +186,16 @@ const VehicleListingForm = () => {
       };
 
       try {
-        // Use the listVehicleAPI service instead of direct fetch
         const result = await listVehicleAPI.createListing(payload);
-        
-        console.log('Form Data:', payload);
-        console.log('Response:', result);
-
         setSnackbarMessage("Vehicle listed successfully!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        
-        // The success handling in Snackbar's onClose will navigate
       } catch (error) {
-        // Error is already handled by the service with toast notifications
-        console.error('Submission error:', error);
         setSnackbarMessage(error.message || "Failed to submit. Please try again.");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       }
     } else {
-      console.log('Validation failed:', errors);
-
       setSnackbarMessage("Please fix the errors in the form");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
@@ -655,7 +583,7 @@ const VehicleListingForm = () => {
                 <input 
                   className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700"
                   type="text"
-                  value={isLoading ? '' : (formData.name)}
+                  value={formData.name}
                   placeholder={isLoading ? 'Loading...' : ''}
                   readOnly
                 />
@@ -715,7 +643,7 @@ const VehicleListingForm = () => {
                 <input 
                   className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700"
                   type="email"
-                  value={isLoading ? '' : (formData.email)}
+                  value={formData.email}
                   placeholder={isLoading ? 'Loading...' : ''}
                   readOnly
                 />
