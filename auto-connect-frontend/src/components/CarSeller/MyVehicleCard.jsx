@@ -89,7 +89,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         message: 'Do you want to edit this vehicle listing?',
         onOK: () => {
           setConfirmOpen(false);
-          navigate('/update-vehicle-ad');
+          navigate(`/update-vehicle-ad/${vehicleData.id}`); // Pass ID in route
         },
         onCancel: () => setConfirmOpen(false)
       });
