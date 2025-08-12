@@ -159,7 +159,29 @@ const listVehicleAPI = {
       handleListVehicleError(error, "fetch my listings");
       throw error;
     }
-  }
+  },
+
+  updateListing: async (id, vehicleData) => {
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+      const response = await fetch(`${LIST_VEHICLES_ENDPOINT}/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(vehicleData)
+      });
+
+      const data = await handleResponse(response);
+      return handleListVehicleSuccess(data, "updated");
+    } catch (error) {
+      handleListVehicleError(error, "update listing");
+      throw error;
+    }
+  },
 
   // Add other methods as needed: updateListing, deleteListing, etc.
 };
