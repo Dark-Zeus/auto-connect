@@ -8,6 +8,7 @@ import lc150_3 from '../../assets/images/lc150_3.jpg';
 import lc150_4 from '../../assets/images/lc150_4.jpg';
 import lc150_5 from '../../assets/images/lc150_5.jpg';
 import lc150_6 from '../../assets/images/lc150_6.jpg';
+import listVehicleAPI from "../../services/listVehicleApiService";
 
 const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
   const defaultVehicleData = {
@@ -116,6 +117,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -125,7 +127,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
     
     // If this was a success message, navigate after closing
     if (snackbarSeverity === "success") {
-      navigate('/myads');
+      navigate('/marketplace/my-ads');
     }
   };
 
@@ -244,20 +246,33 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
     setPhotos(newPhotos);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { isValid, firstErrorField } = validateForm();
 
     if (isValid) {
-      console.log('Updated Form Data:', { ...formData, name: fixedName, email: fixedEmail });
-      console.log('Updated Photos:', photos.filter(p => p !== null));
-      
-      setSnackbarMessage("Vehicle updated successfully!");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      setLoading(true);
+      try {
+        // Prepare update payload
+        const updatePayload = {
+          ...formData,
+          name: fixedName,
+          email: fixedEmail,
+          photos: photos.filter(p => p !== null)
+        };
+        // Call API to update
+        await listVehicleAPI.updateListing(vehicle._id, updatePayload);
+        setSnackbarMessage("Vehicle updated successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+      } catch (error) {
+        setSnackbarMessage(error.message || "Failed to update vehicle");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      } finally {
+        setLoading(false);
+      }
     } else {
-      console.log('Validation failed:', errors);
-      
       setSnackbarMessage("Please fix the errors in the form");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
@@ -270,7 +285,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
   };
 
   const handleCancel = () => {
-    navigate('/myads');
+    navigate('/marketplace/my-ads');
   };
 
   return (
@@ -705,8 +720,9 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
               type="submit"
               onClick={handleSubmit}
               className="tw:px-8 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:hover:bg-blue-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
+              disabled={loading}
             >
-              Update Vehicle
+              {loading ? "Updating..." : "Update Vehicle"}
             </button>
           </div>
         </div>
