@@ -9,6 +9,8 @@ import authRoute from "./auth.route.js";
 import adminRoute from "./admin.route.js";
 import vehicleRoute from "./vehicle.route.js";
 import addedVehicleRoute from "./addedVehicle.route.js";
+import serviceCenterRoutes from "./serviceCenter.route.js";
+import bookingRoutes from "./booking.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -27,6 +29,7 @@ router.use("/auth/forgot-password", passwordResetLimiter);
 router.use("/auth/reset-password", passwordResetLimiter);
 router.use("/auth", authRoute);
 
+
 // Admin routes
 router.use("/admin", adminRoute);
 
@@ -35,6 +38,10 @@ router.use("/vehicles", generalLimiter, vehicleRoute);
 
 // Added Vehicle routes - NEW
 router.use("/added-vehicles", generalLimiter, addedVehicleRoute);
+
+// Service Center routes - NEW
+router.use("/service-centers", serviceCenterRoutes);
+router.use("/bookings", bookingRoutes);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -80,6 +87,29 @@ router.get("/docs", (req, res) => {
           "PATCH /added-vehicles/:id - Update added vehicle",
           "DELETE /added-vehicles/:id - Remove added vehicle",
           "PATCH /added-vehicles/:id/complete - Mark as completed",
+        ],
+      },
+      "service-centers": {
+        // NEW SECTION
+        description: "Service center listings and details (for vehicle owners)",
+        routes: [
+          "GET /service-centers - List available service centers",
+          "GET /service-centers/categories - Get service categories",
+          "GET /service-centers/stats - Service center statistics",
+          "GET /service-centers/:id - Get service center details",
+        ],
+      },
+      bookings: {
+        // NEW SECTION
+        description: "Service booking management",
+        routes: [
+          "POST /bookings - Create new booking (vehicle owners)",
+          "GET /bookings - Get user's bookings",
+          "GET /bookings/stats - Booking statistics",
+          "GET /bookings/:id - Get booking details",
+          "PATCH /bookings/:id/status - Update booking status (service centers)",
+          "PATCH /bookings/:id/cancel - Cancel booking (vehicle owners)",
+          "POST /bookings/:id/feedback - Submit feedback (vehicle owners)",
         ],
       },
 
