@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Camera, X, CarFront, User, Logs, ClipboardCheckIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
@@ -9,7 +9,7 @@ import lc150_4 from '../../assets/images/lc150_4.jpg';
 import lc150_5 from '../../assets/images/lc150_5.jpg';
 import lc150_6 from '../../assets/images/lc150_6.jpg';
 
-const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
+const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
   const defaultVehicleData = {
     name: 'Lomitha',
     mobile: '0767120123',
@@ -64,11 +64,52 @@ const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomi
   });
 
   // Initialize photos with the existing images
-  const [photos, setPhotos] = useState(
-    vehicleData.images && vehicleData.images.length > 0
-      ? [...vehicleData.images]
-      : Array(6).fill(null)
-  );
+  // const [photos, setPhotos] = useState(
+  //   vehicleData.images && vehicleData.images.length > 0
+  //     ? [...vehicleData.images]
+  //     : Array(6).fill(null)
+  // );
+
+  const getInitialPhotos = () => {
+    // Prefer backend's 'photos' array, fallback to 'images' or empty
+    let arr = [];
+    if (vehicle && Array.isArray(vehicle.photos)) {
+      arr = vehicle.photos;
+    } else if (vehicle && Array.isArray(vehicle.images)) {
+      arr = vehicle.images;
+    } else if (defaultVehicleData.images) {
+      arr = defaultVehicleData.images;
+    }
+    // Always return an array of length 6
+    return [...arr, ...Array(6 - arr.length).fill(null)].slice(0, 6);
+  };
+
+  const [photos, setPhotos] = useState(getInitialPhotos());
+  useEffect(() => {
+    setPhotos(getInitialPhotos());
+    // Optionally update formData if vehicle changes
+    if (vehicle) {
+      setFormData({
+        mobile: vehicle.mobile,
+        district: vehicle.district,
+        city: vehicle.city,
+        vehicleType: vehicle.vehicleType,
+        condition: vehicle.condition,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year,
+        price: vehicle.price,
+        ongoingLease: vehicle.ongoingLease,
+        transmission: vehicle.transmission,
+        fuelType: vehicle.fuelType,
+        engineCapacity: vehicle.engineCapacity,
+        mileage: vehicle.mileage,
+        description: vehicle.description,
+        registrationNumber: vehicle.registrationNumber
+      });
+    }
+    // eslint-disable-next-line
+  }, [vehicle]);
 
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -546,7 +587,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomi
                       <button
                         type="button"
                         onClick={() => removePhoto(index)}
-                        className="tw:absolute tw:top-2 tw:right-2 tw:bg-red-500 tw:text-white tw:rounded-full tw:p-1 tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity"
+                        className="tw:absolute tw:top-2 tw:right-2 tw:bg-gray-500 tw:text-white tw:rounded-full tw:p-1 tw:hover:cursor-pointer tw:transition-all"
                       >
                         <X className="tw:w-4 tw:h-4" />
                       </button>
@@ -582,9 +623,12 @@ const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomi
                 <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
                   Name
                 </label>
-                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
-                  {fixedName}
-                </div>
+                <input 
+                  className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700"
+                  type="text"
+                  value={fixedName}
+                  readOnly
+                />
               </div>
 
               <div>
@@ -638,9 +682,12 @@ const UpdateVehicleForm = ({ vehicle, fixedName = 'Lomitha', fixedEmail = 'jlomi
 
               <div className="md:tw:col-span-2">
                 <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Email</label>
-                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
-                  {fixedEmail}
-                </div>
+                <input 
+                  className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700"
+                  type="email"
+                  value={fixedEmail}
+                  readOnly
+                />
               </div>
             </div>
           </div>
