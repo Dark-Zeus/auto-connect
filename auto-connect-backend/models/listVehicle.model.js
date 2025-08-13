@@ -22,6 +22,8 @@ const listVehicleSchema = new mongoose.Schema({
     registrationNumber: { type: String, required: true },
     photos: [String],
     views: { type: Number, default: 0 }, // <--- important
+    status: { type: Number, default: 1 }, // 1 for active, 0 for inactive
+    promotion: { type: Number, default: 0 } // 0 for no promotion, 1 for promoted
     }, { timestamps: true });
 
     listVehicleSchema.statics.updateVehicleAd = async function (id, userId, updateData) {
