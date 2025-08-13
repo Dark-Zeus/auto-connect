@@ -19,7 +19,7 @@ export const getMyVehicleAds = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
-    const myAds = await ListVehicle.find({ userId }).sort({ createdAt: -1 });
+    const myAds = await ListVehicle.find({ userId, status: 1 }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: myAds });
   } catch (err) {
     console.error("Error fetching user's vehicle ads:", err);
