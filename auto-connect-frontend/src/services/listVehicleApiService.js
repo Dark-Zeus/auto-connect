@@ -100,7 +100,7 @@ const listVehicleAPI = {
 
       // Build query parameters
       const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
+      Object.entries({ ...params, status: 1 }).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           queryParams.append(key, value);
         }
@@ -122,7 +122,7 @@ const listVehicleAPI = {
     }
   },
 
-  // Get single vehicle listing
+  // Get info to show in update form
   getListing: async (id) => {
     try {
       const token = getAuthToken();
@@ -144,12 +144,13 @@ const listVehicleAPI = {
     }
   },
 
+  //get info to show in myvehiclecards in MyAdsPage
   getMyListings: async () => {
     try {
       const token = getAuthToken();
       if (!token) throw new Error("Authentication token not found. Please log in again.");
 
-      const response = await fetch(`${LIST_VEHICLES_ENDPOINT}/my`, {
+      const response = await fetch(`${LIST_VEHICLES_ENDPOINT}/my?status=1`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` }
       });
