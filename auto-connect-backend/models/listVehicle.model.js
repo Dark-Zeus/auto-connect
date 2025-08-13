@@ -35,4 +35,13 @@ const listVehicleSchema = new mongoose.Schema({
         );
     };
 
+    listVehicleSchema.statics.softDeleteVehicleAd = async function (id, userId) {
+        // Only allow the owner to soft delete
+        return this.findOneAndUpdate(
+            { _id: id, userId },
+            { status: 0 },
+            { new: true }
+        );
+    };
+
 export default mongoose.model('ListVehicle', listVehicleSchema);
