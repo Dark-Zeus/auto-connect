@@ -1,338 +1,536 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import serviceCenterImg from "../../assets/images/service_center1.jpg"; // Make sure this file exists
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Box,
   Typography,
   Paper,
-  Avatar,
+  Grid,
   Chip,
+  Button,
   Divider,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
-  Rating,
-  Button,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
+  Avatar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import {
   LocationOn,
+  Star,
   Phone,
   Email,
+  CheckCircle,
+  Schedule,
+  AccessTime,
   Verified,
-  Star,
-  Build,
-  CalendarToday,
-  ArrowBack,
-  ArrowForward,
 } from "@mui/icons-material";
-
-const galleryImages = [
-  {
-    img: serviceCenterImg || "https://via.placeholder.com/190x190?text=Service+Center",
-    title: "Service Center",
-  },
-];
+import { serviceCenterApi } from "../../services/serviceCenterApi";
+import "./ServiceProviderProfile.css";
 
 const ServiceProviderProfile = ({ center }) => {
-  if (!center) {
+  const [serviceCenter, setServiceCenter] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+
+  // Fetch detailed service center data including operating hours
+  useEffect(() => {
+    const fetchServiceCenterDetails = async () => {
+      if (!center?.id) {
+        console.log("No center ID provided, using passed data");
+        setServiceCenter(center);
+        setLoading(false);
+        return;
+      }
+
+      // Validate the ID format before making API call
+      const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(center.id);
+      if (!isValidObjectId) {
+        console.warn("Invalid ObjectId format, using passed data:", center.id);
+        setServiceCenter(center);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        console.log("Fetching service center details for ID:", center.id);
+        const response = await serviceCenterApi.getServiceCenter(center.id);
+
+        if (response.success) {
+          setServiceCenter(response.data.serviceCenter);
+          console.log("Successfully fetched service center details");
+        } else {
+          console.warn("API response not successful, using passed data");
+          setServiceCenter(center); // Fallback to passed data
+        }
+      } catch (err) {
+        console.error("Error fetching service center details:", err);
+        console.log("Using passed center data as fallback");
+        setError("Failed to load detailed service center information");
+        setServiceCenter(center); // Fallback to passed data
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServiceCenterDetails();
+  }, [center]);
+
+  // Mock reviews data (you can fetch this from API later)
+  const reviewsData = [
+    {
+      name: "Tharindu Perera",
+      rating: 5,
+      comment: "Excellent service! Very professional and timely.",
+      date: "2025-01-10",
+    },
+    {
+      name: "Kasuni Silva",
+      rating: 4,
+      comment: "Good work quality, reasonable prices.",
+      date: "2025-01-08",
+    },
+    {
+      name: "Roshan Fernando",
+      rating: 5,
+      comment: "Highly recommended! Great customer service.",
+      date: "2025-01-05",
+    },
+  ];
+
+  // Format operating hours for display
+  const formatOperatingHours = (operatingHours) => {
+    if (!operatingHours) return {};
+
+    const daysOrder = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ];
+    const dayNames = {
+      monday: "Monday",
+      tuesday: "Tuesday",
+      wednesday: "Wednesday",
+      thursday: "Thursday",
+      friday: "Friday",
+      saturday: "Saturday",
+      sunday: "Sunday",
+    };
+
+    return daysOrder.map((day) => ({
+      day: dayNames[day],
+      ...operatingHours[day],
+      key: day,
+    }));
+  };
+
+  const isCurrentlyOpen = (operatingHours) => {
+    if (!operatingHours) return false;
+
+    const now = new Date();
+    const currentDay = now
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase(); // ✅ Correct way to get day name
+    const dayMap = {
+      sun: "sunday",
+      mon: "monday",
+      tue: "tuesday",
+      wed: "wednesday",
+      thu: "thursday",
+      fri: "friday",
+      sat: "saturday",
+    };
+
+    const todayKey = dayMap[currentDay];
+    const todayHours = operatingHours[todayKey];
+
+    if (!todayHours || !todayHours.isOpen) return false;
+
+    const currentTime = now.getHours() * 100 + now.getMinutes();
+    const openTime = parseInt(todayHours.open.replace(":", ""));
+    const closeTime = parseInt(todayHours.close.replace(":", ""));
+
+    return currentTime >= openTime && currentTime <= closeTime;
+  };
+
+  if (loading) {
     return (
-      <Container sx={{ py: 5 }}>
-        <Typography sx={{ fontSize: 24, fontWeight: 600, color: "error.main" }}>
-          No service provider data available.
-        </Typography>
-      </Container>
+      <div className="service-provider-profile">
+        <Container maxWidth="md">
+          <div className="loading-container">
+            <CircularProgress className="loading-spinner" />
+            <Typography sx={{ ml: 2, color: "var(--navy-blue)" }}>
+              Loading service center details...
+            </Typography>
+          </div>
+        </Container>
+      </div>
     );
   }
 
-  const [showAllReviews, setShowAllReviews] = useState(false);
-  const [currentImage, setCurrentImage] = useState(0);
-  const [openReviewDialog, setOpenReviewDialog] = useState(false);
-  const [newReview, setNewReview] = useState({ name: "", comment: "" });
-  const [reviewsData, setReviewsData] = useState([
-    {
-      name: "Nuwan Perera",
-      comment: "Great service, very professional and timely. Highly recommended!",
-    },
-    {
-      name: "Anushka Fernando",
-      comment: "Clean workshop and knowledgeable staff. Will return.",
-    },
-    {
-      name: "Dilani Madushani",
-      comment: "Affordable and quick service. Minor delays but overall good.",
-    },
-    {
-      name: "Ruwan Jayasuriya",
-      comment: "Mechanics explained everything clearly. Trustworthy center.",
-    },
-  ]);
-
-  const {
-    name,
-    location: loc,
-    phone,
-    email,
-    services,
-    rating,
-    reviews,
-    verified,
-    premium,
-  } = center;
-
-  const pricedServices = services.map((service, i) => ({
-    name: service,
-    price: `Rs. ${(5000 + i * 750).toLocaleString()}`,
-  }));
-
-  const availableSlots = [
-    "08:00 AM - 09:00 AM",
-    "10:00 AM - 11:00 AM",
-    "01:00 PM - 02:00 PM",
-    "03:00 PM - 04:00 PM",
-    "04:30 PM - 05:30 PM",
-  ];
-
-  const handleAddReview = () => {
-    if (!newReview.name || !newReview.comment) return;
-    setReviewsData((prev) => [...prev, newReview]);
-    setNewReview({ name: "", comment: "" });
-    setOpenReviewDialog(false);
-  };
-
-  // Gallery navigation
-  const handlePrevImage = () => {
-    setCurrentImage((prev) =>
-      prev === 0 ? galleryImages.length - 1 : prev - 1
+  if (error) {
+    return (
+      <div className="service-provider-profile">
+        <Container maxWidth="md">
+          <Alert severity="error" className="error-alert">
+            {error}
+          </Alert>
+        </Container>
+      </div>
     );
-  };
+  }
 
-  const handleNextImage = () => {
-    setCurrentImage((prev) =>
-      prev === galleryImages.length - 1 ? 0 : prev + 1
+  if (!serviceCenter) {
+    return (
+      <div className="service-provider-profile">
+        <Container maxWidth="md">
+          <Alert severity="warning" className="error-alert">
+            Service center details not available
+          </Alert>
+        </Container>
+      </div>
     );
-  };
+  }
+
+  const operatingHoursData = formatOperatingHours(serviceCenter.operatingHours);
+  const isOpen = isCurrentlyOpen(serviceCenter.operatingHours);
 
   return (
-    <Box sx={{ minHeight: "100vh", width: "100%", backgroundColor: "#DFF2EB", py: 5 }}>
+    <div className="service-provider-profile">
       <Container maxWidth="md">
-        <Paper
-          sx={{
-            p: 4,
-            borderRadius: 3,
-            boxShadow: "0 4px 20px rgba(74, 98, 138, 0.15)",
-          }}
-        >
+        <Paper className="service-provider-card">
           {/* Header */}
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-            <Avatar sx={{ width: 150, height: 150, flexShrink: 0 }}>
-              {name.charAt(0)}
-            </Avatar>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                <Typography sx={{ fontSize: 20, fontWeight: 700 }}>
-                  {name}
+          <Box className="profile-header">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+                gap: 2,
+              }}
+            >
+              <Box>
+                <Typography
+                  variant="h4"
+                  className="profile-title"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {serviceCenter.name}
+                  {serviceCenter.verified && (
+                    <Verified
+                      className="profile-verified-icon"
+                      sx={{ fontSize: 28 }}
+                    />
+                  )}
                 </Typography>
+
+                <Box className="profile-rating">
+                  <Star className="star-icon" />
+                  <Typography className="profile-rating-text">
+                    {serviceCenter.rating || 0}
+                  </Typography>
+                  <Typography className="profile-rating-count">
+                    ({serviceCenter.reviews || 0} reviews)
+                  </Typography>
+                  {serviceCenter.premium && (
+                    <Chip
+                      label="Premium"
+                      className="premium-chip"
+                      size="small"
+                    />
+                  )}
+                </Box>
+
+                <Box className="location-text">
+                  <LocationOn className="location-icon" />
+                  <Typography>{serviceCenter.location}</Typography>
+                </Box>
               </Box>
 
-              <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 1 }}>
-                <LocationOn color="action" />
-                <Typography sx={{ fontSize: 14, fontWeight: 500 }}>{loc}</Typography>
-              </Box>
-              <Box sx={{
-                display: "flex",
-                alignItems: "center",
-                mt: 1,
-                gap: 3,
-                flexWrap: "wrap",
-              }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <Phone color="action" />
-                  <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                    {phone || "Not available"}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <Email color="action" />
-                  <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                    {email || "Not available"}
-                  </Typography>
-                </Box>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 1 }}>
-                <Star color="warning" />
-                <Rating name="read-only" value={rating} precision={0.1} readOnly size="small" />
-                <Typography sx={{ fontSize: 12, fontWeight: 500 }} color="text.secondary">
-                  ({reviews} reviews)
+              {/* Status Badge */}
+              <Box className="status-badge-container">
+                <Chip
+                  icon={<AccessTime />}
+                  label={isOpen ? "Open Now" : "Closed"}
+                  className={isOpen ? "status-open" : "status-closed"}
+                  variant="filled"
+                  sx={{ mb: 1 }}
+                />
+                <Typography variant="body2" sx={{ color: "var(--navy-light)" }}>
+                  Since {new Date(serviceCenter.joinedDate).getFullYear()}
                 </Typography>
               </Box>
             </Box>
           </Box>
 
-                   {/* Services & Gallery Side by Side */}
-          <Divider sx={{ my: 4 }} />
-          <Grid container spacing={10}>
-            {/* Services List */}
-            <Grid item xs={12} md={6}>
-              <Typography sx={{ fontSize: 18, fontWeight: 600 }} gutterBottom>
-                Services & Pricing
-              </Typography>
-              <List dense>
-                {pricedServices.map((item) => (
-                  <ListItem key={item.name}>
-                    <ListItemIcon>
-                      <Build />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.name}
-                      secondary={item.price}
-                      primaryTypographyProps={{ sx: { fontSize: 14, fontWeight: 500 } }}
-                      secondaryTypographyProps={{ sx: { fontSize: 12, fontWeight: 500 } }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Grid>
-
-            {/* Gallery Carousel */}
-          <Grid
-              item
-              xs={20}
-              md={0}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                position: "relative",
-              }}
-            >
-              <Box
-                sx={{
-                  position: "left",
-                  maxWidth: 240,
-                  overflow: "hidden",
-                  borderRadius: 2,
-                  boxShadow: 1,
-                  bgcolor: "#eee",
-                }}
-              >
-                <Box
-                  component="img"
-                  src={galleryImages[currentImage].img}
-                  alt={galleryImages[currentImage].title}
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                    borderRadius: 2,
-                  }}
-                />
-
-                <Button
-                  onClick={() => setCurrentImage((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: -45,
-                    transform: "translateY(-50%)",
-                    minWidth: 0,
-                    borderRadius: "50%",
-                    zIndex: 1,
-                    bgcolor: "#e9f7ef",
-                    boxShadow: 2,
-                  }}
-                >
-                  ‹
-                </Button>
-                <Button
-                  onClick={() => setCurrentImage((prev) => (prev + 1) % galleryImages.length)}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    right: -45,
-                    transform: "translateY(-50%)",
-                    minWidth: 0,
-                    borderRadius: "50%",
-                    zIndex: 1,
-                    bgcolor: "#e9f7ef",
-                    boxShadow: 2,
-                  }}
-                >
-                  ›
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
-
-          {/* Availability */}
-          <Divider sx={{ my: 4 }} />
-          <Box>
-            <Typography sx={{ fontSize: 18, fontWeight: 600 }} gutterBottom>
-              Available Time Slots
+          {/* Contact Information */}
+          <div className="profile-section">
+            <Typography variant="h6" className="section-title">
+              <Phone />
+              Contact Information
             </Typography>
-            <Grid container spacing={2}>
-              {availableSlots.map((slot, i) => (
-                <Grid item key={i}>
-                  <Chip
-                    label={slot}
-                    color="primary"
-                    variant="outlined"
-                    sx={{ fontSize: 12, fontWeight: 500 }}
-                  />
+            <Grid container className="contact-info-grid">
+              <Grid item xs={12} sm={6}>
+                <div className="contact-item">
+                  <Phone className="contact-icon" />
+                  <Typography className="contact-text">
+                    {serviceCenter.phone}
+                  </Typography>
+                </div>
+              </Grid>
+              {serviceCenter.email && (
+                <Grid item xs={12} sm={6}>
+                  <div className="contact-item">
+                    <Email className="contact-icon" />
+                    <Typography className="contact-text">
+                      {serviceCenter.email}
+                    </Typography>
+                  </div>
                 </Grid>
-              ))}
+              )}
             </Grid>
-          </Box>
+          </div>
 
-          {/* Reviews */}
-          <Divider sx={{ my: 4 }} />
-          <Box sx={{ position: "relative" }}>
-            <Typography sx={{ fontSize: 18, fontWeight: 600, mb: 1 }} gutterBottom>
+          {/* Services Offered */}
+          <Divider className="divider" />
+          <div className="profile-section">
+            <Typography variant="h6" className="section-title">
+              <CheckCircle />
+              Services Offered
+            </Typography>
+            <div className="services-container">
+              {serviceCenter.services?.map((service, index) => (
+                <Chip
+                  key={index}
+                  label={service}
+                  className="service-chip"
+                  variant="outlined"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Operating Hours */}
+          <Divider className="divider" />
+          <div className="profile-section">
+            <Typography variant="h6" className="section-title">
+              <Schedule />
+              Operating Hours
+            </Typography>
+
+            {operatingHoursData.length > 0 ? (
+              <TableContainer className="operating-hours-table">
+                <Table size="small">
+                  <TableHead className="table-header">
+                    <TableRow>
+                      <TableCell className="table-header-cell">Day</TableCell>
+                      <TableCell className="table-header-cell">Hours</TableCell>
+                      <TableCell className="table-header-cell">
+                        Status
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {operatingHoursData.map((dayInfo) => (
+                      <TableRow key={dayInfo.key} className="table-row">
+                        <TableCell className="table-cell day-cell">
+                          {dayInfo.day}
+                        </TableCell>
+                        <TableCell className="table-cell">
+                          {dayInfo.isOpen ? (
+                            <span className="hours-text">
+                              {dayInfo.open} - {dayInfo.close}
+                            </span>
+                          ) : (
+                            <Typography className="hours-closed">
+                              Closed
+                            </Typography>
+                          )}
+                        </TableCell>
+                        <TableCell className="table-cell">
+                          <Chip
+                            label={dayInfo.isOpen ? "Open" : "Closed"}
+                            className={
+                              dayInfo.isOpen
+                                ? "status-chip-open"
+                                : "status-chip-closed"
+                            }
+                            size="small"
+                            variant="filled"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Alert severity="info" className="error-alert">
+                Operating hours information not available
+              </Alert>
+            )}
+          </div>
+
+          {/* Business Information */}
+          {serviceCenter.businessInfo && (
+            <>
+              <Divider className="divider" />
+              <div className="profile-section">
+                <Typography variant="h6" className="section-title">
+                  <CheckCircle />
+                  Business Information
+                </Typography>
+                <Grid container spacing={2} className="contact-info-grid">
+                  {serviceCenter.businessInfo.licenseNumber && (
+                    <Grid item xs={12} sm={6}>
+                      <div className="contact-item">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--navy-light)", fontWeight: 600 }}
+                        >
+                          License Number
+                        </Typography>
+                        <Typography
+                          className="contact-text"
+                          sx={{ fontWeight: 500, fontFamily: "monospace" }}
+                        >
+                          {serviceCenter.businessInfo.licenseNumber}
+                        </Typography>
+                      </div>
+                    </Grid>
+                  )}
+                  {serviceCenter.businessInfo.businessRegistrationNumber && (
+                    <Grid item xs={12} sm={6}>
+                      <div className="contact-item">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--navy-light)", fontWeight: 600 }}
+                        >
+                          Registration Number
+                        </Typography>
+                        <Typography
+                          className="contact-text"
+                          sx={{ fontWeight: 500, fontFamily: "monospace" }}
+                        >
+                          {
+                            serviceCenter.businessInfo
+                              .businessRegistrationNumber
+                          }
+                        </Typography>
+                      </div>
+                    </Grid>
+                  )}
+                  {serviceCenter.businessInfo.taxIdentificationNumber && (
+                    <Grid item xs={12} sm={6}>
+                      <div className="contact-item">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--navy-light)", fontWeight: 600 }}
+                        >
+                          Tax ID Number
+                        </Typography>
+                        <Typography
+                          className="contact-text"
+                          sx={{ fontWeight: 500, fontFamily: "monospace" }}
+                        >
+                          {serviceCenter.businessInfo.taxIdentificationNumber}
+                        </Typography>
+                      </div>
+                    </Grid>
+                  )}
+                  {serviceCenter.businessInfo.businessName && (
+                    <Grid item xs={12} sm={6}>
+                      <div className="contact-item">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--navy-light)", fontWeight: 600 }}
+                        >
+                          Business Name
+                        </Typography>
+                        <Typography
+                          className="contact-text"
+                          sx={{ fontWeight: 500 }}
+                        >
+                          {serviceCenter.businessInfo.businessName}
+                        </Typography>
+                      </div>
+                    </Grid>
+                  )}
+                </Grid>
+              </div>
+            </>
+          )}
+
+          {/* Customer Reviews */}
+          <Divider className="divider" />
+          <div className="profile-section">
+            <Typography variant="h6" className="section-title">
+              <Star />
               Customer Reviews
             </Typography>
-           
-            <List sx={{ bgcolor: "#f5f5f5", borderRadius: 2, mt: 0, pt: 2, pb: 2, pr: 2, pl: 2 }}>
-              {(showAllReviews ? reviewsData : reviewsData.slice(0, 2)).map((review, i) => (
-                <ListItem key={i} alignItems="flex-start" sx={{ mb: 1 }}>
-                  <Avatar sx={{ bgcolor: "#1976d2", mr: 2 }}>
-                    {review.name.charAt(0)}
-                  </Avatar>
-                  <Box>
-                    <Typography sx={{ fontSize: 12, fontWeight: 600 }}>
-                      {review.name}
-                    </Typography>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500 }} color="text.secondary">
+
+            <div className="reviews-section">
+              {(showAllReviews ? reviewsData : reviewsData.slice(0, 2)).map(
+                (review, index) => (
+                  <div key={index} className="review-item">
+                    <div className="review-header">
+                      <Typography className="review-author">
+                        {review.name}
+                      </Typography>
+                      <Typography className="review-date">
+                        {new Date(review.date).toLocaleDateString()}
+                      </Typography>
+                    </div>
+                    <div className="review-rating">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="review-star"
+                          sx={{
+                            opacity: i < review.rating ? 1 : 0.3,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <Typography className="review-comment">
                       {review.comment}
                     </Typography>
-                  </Box>
-                </ListItem>
-              ))}
-            </List>
+                  </div>
+                )
+              )}
+            </div>
 
             {reviewsData.length > 2 && (
-              <Box textAlign="center" mt={1}>
+              <Box textAlign="center">
                 <Button
-                  size="small"
-                  onClick={() => setShowAllReviews((prev) => !prev)}
-                  sx={{ fontSize: 12, fontWeight: 500 }}
+                  className="show-more-button"
+                  onClick={() => setShowAllReviews(!showAllReviews)}
                 >
                   {showAllReviews ? "Hide Reviews" : "View All Reviews"}
                 </Button>
               </Box>
             )}
-          </Box>
+          </div>
         </Paper>
-   
       </Container>
-    </Box>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-// src/pages/ServiceProvider/ManageSlotsPage.jsx - Redesigned for Visual Consistency
+// src/pages/ServiceProvider/ManageSlotsPage.jsx - Fixed & Simplified Version
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -6,8 +6,6 @@ import {
   Calendar,
   Clock,
   Save,
-  AlertCircle,
-  CheckCircle,
   Info,
   Settings,
   Zap,
@@ -98,7 +96,12 @@ const ManageSlotsPage = () => {
     fetchSlotStats();
   }, [selectedDate]);
 
+  // FIXED: API call with proper error handling
   const fetchWorkingHours = async () => {
+    console.log("🔍 Debug - User context:", userContext);
+    console.log("🔍 Debug - User role:", userContext?.role);
+    console.log("🔍 Debug - Token exists:", !!localStorage.getItem("token"));
+
     try {
       const response = await fetch("/api/v1/services/working-hours", {
         headers: {
@@ -107,14 +110,36 @@ const ManageSlotsPage = () => {
         },
       });
 
+      console.log("🔍 Debug - Response status:", response.status);
+      console.log(
+        "🔍 Debug - Response headers:",
+        Object.fromEntries(response.headers.entries())
+      );
+
+      // Check if response is actually JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error(
+          "❌ API endpoint not found - received HTML instead of JSON"
+        );
+        console.error("🔍 Debug - Response text:", await response.text());
+        toast.error("API endpoint not configured. Please check backend setup.");
+        return;
+      }
+
       if (response.ok) {
         const data = await response.json();
-        if (data.workingHours) {
-          setWorkingHours(data.workingHours);
+        console.log("✅ Working hours fetched:", data);
+        if (data.success && data.data?.workingHours) {
+          setWorkingHours(data.data.workingHours);
         }
+      } else {
+        console.error("❌ Failed to fetch working hours:", response.status);
+        toast.error("Failed to fetch working hours");
       }
     } catch (error) {
-      console.error("Error fetching working hours:", error);
+      console.error("❌ Error fetching working hours:", error);
+      toast.error("Network error. Using default working hours.");
     }
   };
 
@@ -127,14 +152,23 @@ const ManageSlotsPage = () => {
         },
       });
 
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("❌ Slot settings API endpoint not found");
+        return;
+      }
+
       if (response.ok) {
         const data = await response.json();
-        if (data.settings) {
-          setSlotSettings(data.settings);
+        console.log("✅ Slot settings fetched:", data);
+        if (data.success && data.data?.settings) {
+          setSlotSettings(data.data.settings);
         }
+      } else {
+        console.error("❌ Failed to fetch slot settings:", response.status);
       }
     } catch (error) {
-      console.error("Error fetching slot settings:", error);
+      console.error("❌ Error fetching slot settings:", error);
     }
   };
 
@@ -150,15 +184,27 @@ const ManageSlotsPage = () => {
         }
       );
 
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("❌ Slot stats API endpoint not found");
+        return;
+      }
+
       if (response.ok) {
         const data = await response.json();
-        setStats(data.stats || stats);
+        console.log("✅ Slot stats fetched:", data);
+        if (data.success && data.data?.stats) {
+          setStats(data.data.stats);
+        }
+      } else {
+        console.error("❌ Failed to fetch slot stats:", response.status);
       }
     } catch (error) {
-      console.error("Error fetching slot stats:", error);
+      console.error("❌ Error fetching slot stats:", error);
     }
   };
 
+  // FIXED: Added missing handler functions
   const handleWorkingHoursChange = (day, field, value) => {
     setWorkingHours((prev) => ({
       ...prev,
@@ -176,9 +222,12 @@ const ManageSlotsPage = () => {
     }));
   };
 
+  // FIXED: Improved error handling for save operations
   const saveWorkingHours = async () => {
     setLoading(true);
     try {
+      console.log("💾 Saving working hours:", workingHours);
+
       const response = await fetch("/api/v1/services/working-hours", {
         method: "POST",
         headers: {
@@ -188,7 +237,15 @@ const ManageSlotsPage = () => {
         body: JSON.stringify({ workingHours }),
       });
 
-      if (response.ok) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("API endpoint not found");
+      }
+
+      const data = await response.json();
+      console.log("📤 Save working hours response:", data);
+
+      if (response.ok && data.success) {
         toast.success("Working hours saved successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -198,12 +255,11 @@ const ManageSlotsPage = () => {
           draggable: true,
         });
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to save working hours");
+        toast.error(data.message || "Failed to save working hours");
       }
     } catch (error) {
-      console.error("Error saving working hours:", error);
-      toast.error("Network error. Please try again.");
+      console.error("❌ Error saving working hours:", error);
+      toast.error("API endpoint not configured. Please check backend setup.");
     } finally {
       setLoading(false);
     }
@@ -212,6 +268,8 @@ const ManageSlotsPage = () => {
   const saveSlotSettings = async () => {
     setLoading(true);
     try {
+      console.log("💾 Saving slot settings:", slotSettings);
+
       const response = await fetch("/api/v1/services/slot-settings", {
         method: "POST",
         headers: {
@@ -221,7 +279,15 @@ const ManageSlotsPage = () => {
         body: JSON.stringify({ settings: slotSettings }),
       });
 
-      if (response.ok) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("API endpoint not found");
+      }
+
+      const data = await response.json();
+      console.log("📤 Save slot settings response:", data);
+
+      if (response.ok && data.success) {
         toast.success("Slot settings saved successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -231,12 +297,11 @@ const ManageSlotsPage = () => {
           draggable: true,
         });
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to save slot settings");
+        toast.error(data.message || "Failed to save slot settings");
       }
     } catch (error) {
-      console.error("Error saving slot settings:", error);
-      toast.error("Network error. Please try again.");
+      console.error("❌ Error saving slot settings:", error);
+      toast.error("API endpoint not configured. Please check backend setup.");
     } finally {
       setLoading(false);
     }
@@ -244,13 +309,15 @@ const ManageSlotsPage = () => {
 
   const generateSlotsForWeek = async () => {
     const confirmGenerate = window.confirm(
-      "This will generate time slots for the entire week based on your working hours. Existing slots will be updated. Continue?"
+      "This will generate time slots for the entire week based on your working hours. Continue?"
     );
 
     if (!confirmGenerate) return;
 
     setLoading(true);
     try {
+      console.log("🔄 Generating weekly slots...");
+
       const response = await fetch("/api/v1/services/generate-weekly-slots", {
         method: "POST",
         headers: {
@@ -264,7 +331,15 @@ const ManageSlotsPage = () => {
         }),
       });
 
-      if (response.ok) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("API endpoint not found");
+      }
+
+      const data = await response.json();
+      console.log("📤 Generate slots response:", data);
+
+      if (response.ok && data.success) {
         toast.success("Weekly slots generated successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -273,14 +348,13 @@ const ManageSlotsPage = () => {
           pauseOnHover: true,
           draggable: true,
         });
-        fetchSlotStats();
+        fetchSlotStats(); // Refresh stats
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to generate slots");
+        toast.error(data.message || "Failed to generate slots");
       }
     } catch (error) {
-      console.error("Error generating slots:", error);
-      toast.error("Network error. Please try again.");
+      console.error("❌ Error generating slots:", error);
+      toast.error("API endpoint not configured. Please check backend setup.");
     } finally {
       setLoading(false);
     }
