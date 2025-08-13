@@ -183,6 +183,8 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
         userId: userId,
         views: 0,
         photos: photos.filter(Boolean),
+        status: 1,
+        promotion: 0
       };
 
       try {
