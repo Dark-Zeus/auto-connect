@@ -20,6 +20,7 @@ import toyotaImage from '../../assets/images/toyota-v8.jpg';
 import noImage from '../../assets/images/noImage.jpeg';
 import Confirm from '../atoms/Confirm';
 import { useNavigate } from 'react-router-dom';
+import listVehicleAPI from '../../services/listVehicleApiService';
 
 const ListedVehicleCard = ({ vehicle = null }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -79,7 +80,16 @@ const ListedVehicleCard = ({ vehicle = null }) => {
       setConfirmProps({
         title: 'Delete Vehicle',
         message: 'Are you sure you want to delete this vehicle listing?',
-        onOK: () => setConfirmOpen(false),
+        onOK: async () => {
+        setConfirmOpen(false);
+        try {
+          await listVehicleAPI.deleteListing(vehicleData.id);
+          navigate('/marketplace/my-ads');
+          window.location.reload();
+        } catch (err) {
+          // Error handled by API service
+        }
+      },
         onCancel: () => setConfirmOpen(false)
       });
       setConfirmOpen(true);
