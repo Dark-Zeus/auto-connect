@@ -184,7 +184,26 @@ const listVehicleAPI = {
     }
   },
 
-  // Add other methods as needed: updateListing, deleteListing, etc.
+  deleteListing: async (id) => {
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+      const response = await fetch(`${LIST_VEHICLES_ENDPOINT}/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await handleResponse(response);
+      return handleListVehicleSuccess(data, "deleted");
+    } catch (error) {
+      handleListVehicleError(error, "delete listing");
+      throw error;
+    }
+  },
+
 };
 
 export default listVehicleAPI;
