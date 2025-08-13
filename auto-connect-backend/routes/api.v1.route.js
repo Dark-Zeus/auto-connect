@@ -11,6 +11,7 @@ import vehicleRoute from "./vehicle.route.js";
 import addedVehicleRoute from "./addedVehicle.route.js";
 import serviceCenterRoutes from "./serviceCenter.route.js";
 import bookingRoutes from "./booking.route.js";
+import operatingHoursRoutes from "./operatingHours.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -42,6 +43,7 @@ router.use("/added-vehicles", generalLimiter, addedVehicleRoute);
 // Service Center routes - NEW
 router.use("/service-centers", serviceCenterRoutes);
 router.use("/bookings", bookingRoutes);
+router.use("/services", operatingHoursRoutes); 
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -89,8 +91,7 @@ router.get("/docs", (req, res) => {
           "PATCH /added-vehicles/:id/complete - Mark as completed",
         ],
       },
-      "service-centers": {
-        // NEW SECTION
+"service-centers": {
         description: "Service center listings and details (for vehicle owners)",
         routes: [
           "GET /service-centers - List available service centers",
@@ -99,8 +100,19 @@ router.get("/docs", (req, res) => {
           "GET /service-centers/:id - Get service center details",
         ],
       },
+      services: {
+        description: "Service provider operations (working hours, slots)",
+        routes: [
+          "GET /services/working-hours - Get working hours",
+          "POST /services/working-hours - Update working hours",
+          "GET /services/slot-settings - Get slot settings", 
+          "POST /services/slot-settings - Update slot settings",
+          "GET /services/slot-stats - Get slot statistics",
+          "POST /services/generate-weekly-slots - Generate weekly slots",
+          "GET /services/test - Test endpoint"
+        ],
+      },
       bookings: {
-        // NEW SECTION
         description: "Service booking management",
         routes: [
           "POST /bookings - Create new booking (vehicle owners)",

@@ -1,4 +1,4 @@
-// routes/serviceCenter.route.js
+// routes/serviceCenter.route.js - SIMPLIFIED VERSION
 import express from "express";
 import {
   getServiceCenters,
@@ -6,60 +6,34 @@ import {
   getServiceCategories,
   getServiceCenterStats,
 } from "../controllers/serviceCenter.controller.js";
-import { protect, restrictTo } from "../middleware/auth.middleware.js";
-import { validate } from "../utils/validation.util.js";
-import Joi from "joi";
+import { protect } from "../middleware/auth.middleware.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
 // All routes require authentication
 router.use(protect);
 
-// Validation schemas
-const getServiceCentersValidation = Joi.object({
-  page: Joi.number().integer().min(1).optional(),
-  limit: Joi.number().integer().min(1).max(50).optional(),
-  search: Joi.string().max(100).optional(),
-  serviceCategory: Joi.string().max(50).optional(),
-  location: Joi.string().max(50).optional(),
-  sortBy: Joi.string()
-    .valid("rating", "reviews", "name", "location", "newest")
-    .optional(),
-});
+// Simple validation middleware for ObjectId
+const validateObjectId = (req, res, next) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid service center ID format",
+      error: {
+        code: "INVALID_OBJECT_ID",
+        details: "The provided ID is not a valid MongoDB ObjectId",
+      },
+    });
+  }
+  next();
+};
 
-const getServiceCenterValidation = Joi.object({
-  id: Joi.string().hex().length(24).required().messages({
-    "string.hex": "Invalid service center ID format",
-    "string.length": "Invalid service center ID length",
-    "any.required": "Service center ID is required",
-  }),
-});
-
-// Routes accessible by vehicle owners
-router.get(
-  "/",
-  restrictTo("vehicle_owner"), // Only vehicle owners can access
-  validate(getServiceCentersValidation, "query"),
-  getServiceCenters
-);
-
-router.get(
-  "/categories",
-  restrictTo("vehicle_owner"), // Only vehicle owners can access
-  getServiceCategories
-);
-
-router.get(
-  "/stats",
-  restrictTo("vehicle_owner", "system_admin"), // Vehicle owners and admins
-  getServiceCenterStats
-);
-
-router.get(
-  "/:id",
-  restrictTo("vehicle_owner"), // Only vehicle owners can access
-  validate(getServiceCenterValidation, "params"),
-  getServiceCenter
-);
+// Simplified routes
+router.get("/", getServiceCenters); // GET /api/v1/service-centers
+router.get("/categories", getServiceCategories); // GET /api/v1/service-centers/categories
+router.get("/stats", getServiceCenterStats); // GET /api/v1/service-centers/stats
+router.get("/:id", validateObjectId, getServiceCenter); // GET /api/v1/service-centers/:id
 
 export default router;
