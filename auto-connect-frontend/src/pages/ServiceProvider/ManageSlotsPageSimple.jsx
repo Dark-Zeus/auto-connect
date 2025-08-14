@@ -141,24 +141,26 @@ const ManageSlotsPage = () => {
   };
 
   const handleScheduleChange = (day, field, value) => {
-    setSchedule(prev => ({
+    setSchedule((prev) => ({
       ...prev,
       [day]: {
         ...prev[day],
         [field]: value,
         // If closing the day, clear times
-        ...(field === 'isOpen' && !value && { startTime: "", endTime: "" }),
+        ...(field === "isOpen" && !value && { startTime: "", endTime: "" }),
         // If opening the day, set default times
-        ...(field === 'isOpen' && value && prev[day].startTime === "" && { 
-          startTime: "09:00", 
-          endTime: "17:00" 
-        })
-      }
+        ...(field === "isOpen" &&
+          value &&
+          prev[day].startTime === "" && {
+            startTime: "09:00",
+            endTime: "17:00",
+          }),
+      },
     }));
   };
 
   const handleSlotSettingsChange = (field, value) => {
-    setSlotSettings(prev => ({
+    setSlotSettings((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -167,9 +169,9 @@ const ManageSlotsPage = () => {
   const handleSaveSchedule = async () => {
     try {
       setSaving(true);
-      
+
       // Validate schedule
-      const hasOpenDay = Object.values(schedule).some(day => day.isOpen);
+      const hasOpenDay = Object.values(schedule).some((day) => day.isOpen);
       if (!hasOpenDay) {
         toast.error("At least one day must be open");
         return;
@@ -177,9 +179,9 @@ const ManageSlotsPage = () => {
 
       await weeklyScheduleApi.updateSchedule({
         schedule,
-        slotSettings
+        slotSettings,
       });
-      
+
       fetchStats(); // Refresh stats after saving
     } catch (error) {
       console.error("Error saving schedule:", error);
@@ -215,13 +217,13 @@ const ManageSlotsPage = () => {
       const today = new Date();
       const nextWeek = new Date();
       nextWeek.setDate(today.getDate() + 7);
-      
+
       const response = await weeklyScheduleApi.getAvailableSlots(
         userContext._id,
-        today.toISOString().split('T')[0],
-        nextWeek.toISOString().split('T')[0]
+        today.toISOString().split("T")[0],
+        nextWeek.toISOString().split("T")[0]
       );
-      
+
       if (response.success) {
         setPreviewSlots(response.data.slots || []);
         setPreviewDialogOpen(true);
@@ -232,18 +234,20 @@ const ManageSlotsPage = () => {
   };
 
   const getOpenDaysCount = () => {
-    return Object.values(schedule).filter(day => day.isOpen).length;
+    return Object.values(schedule).filter((day) => day.isOpen).length;
   };
 
   const getTotalWeeklySlots = () => {
     // Rough calculation based on duration
     let totalSlots = 0;
-    Object.values(schedule).forEach(day => {
+    Object.values(schedule).forEach((day) => {
       if (day.isOpen && day.startTime && day.endTime) {
         const start = new Date(`1970-01-01T${day.startTime}`);
         const end = new Date(`1970-01-01T${day.endTime}`);
         const duration = (end - start) / (1000 * 60); // minutes
-        const slotsPerDay = Math.floor(duration / (slotSettings.duration + slotSettings.bufferTime));
+        const slotsPerDay = Math.floor(
+          duration / (slotSettings.duration + slotSettings.bufferTime)
+        );
         totalSlots += Math.max(0, slotsPerDay);
       }
     });
@@ -263,7 +267,14 @@ const ManageSlotsPage = () => {
   return (
     <Box sx={{ p: 3, maxWidth: 1400, margin: "0 auto" }}>
       {/* Header */}
-      <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box
+        sx={{
+          mb: 4,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, color: "#2c3e50" }}>
             <ScheduleIcon sx={{ mr: 2, verticalAlign: "middle" }} />
@@ -277,7 +288,10 @@ const ManageSlotsPage = () => {
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
-            onClick={() => { fetchSchedule(); fetchStats(); }}
+            onClick={() => {
+              fetchSchedule();
+              fetchStats();
+            }}
           >
             Refresh
           </Button>
@@ -292,7 +306,10 @@ const ManageSlotsPage = () => {
             variant="contained"
             startIcon={<BlockIcon />}
             onClick={() => setBlockDialogOpen(true)}
-            sx={{ backgroundColor: "#e74c3c", "&:hover": { backgroundColor: "#c0392b" } }}
+            sx={{
+              backgroundColor: "#e74c3c",
+              "&:hover": { backgroundColor: "#c0392b" },
+            }}
           >
             Block Date
           </Button>
@@ -303,7 +320,9 @@ const ManageSlotsPage = () => {
       {stats && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: "linear-gradient(45deg, #3498db, #2980b9)" }}>
+            <Card
+              sx={{ background: "linear-gradient(45deg, #3498db, #2980b9)" }}
+            >
               <CardContent sx={{ color: "white", textAlign: "center" }}>
                 <CheckCircleIcon sx={{ fontSize: 40, mb: 1 }} />
                 <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -314,7 +333,9 @@ const ManageSlotsPage = () => {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: "linear-gradient(45deg, #27ae60, #229954)" }}>
+            <Card
+              sx={{ background: "linear-gradient(45deg, #27ae60, #229954)" }}
+            >
               <CardContent sx={{ color: "white", textAlign: "center" }}>
                 <AccessTime sx={{ fontSize: 40, mb: 1 }} />
                 <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -325,7 +346,9 @@ const ManageSlotsPage = () => {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: "linear-gradient(45deg, #f39c12, #e67e22)" }}>
+            <Card
+              sx={{ background: "linear-gradient(45deg, #f39c12, #e67e22)" }}
+            >
               <CardContent sx={{ color: "white", textAlign: "center" }}>
                 <CalendarTodayIcon sx={{ fontSize: 40, mb: 1 }} />
                 <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -336,7 +359,9 @@ const ManageSlotsPage = () => {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: "linear-gradient(45deg, #e74c3c, #c0392b)" }}>
+            <Card
+              sx={{ background: "linear-gradient(45deg, #e74c3c, #c0392b)" }}
+            >
               <CardContent sx={{ color: "white", textAlign: "center" }}>
                 <BlockIcon sx={{ fontSize: 40, mb: 1 }} />
                 <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -351,24 +376,24 @@ const ManageSlotsPage = () => {
 
       {/* Main Content */}
       <Paper sx={{ p: 3 }}>
-        <Tabs 
-          value={tabValue} 
+        <Tabs
+          value={tabValue}
           onChange={(e, newValue) => setTabValue(newValue)}
           sx={{ mb: 3 }}
         >
-          <Tab 
-            label="Working Hours" 
-            icon={<AccessTime />} 
+          <Tab
+            label="Working Hours"
+            icon={<AccessTime />}
             iconPosition="start"
           />
-          <Tab 
-            label="Slot Settings" 
-            icon={<SettingsIcon />} 
+          <Tab
+            label="Slot Settings"
+            icon={<SettingsIcon />}
             iconPosition="start"
           />
-          <Tab 
-            label="Blocked Dates" 
-            icon={<BlockIcon />} 
+          <Tab
+            label="Blocked Dates"
+            icon={<BlockIcon />}
             iconPosition="start"
           />
         </Tabs>
@@ -386,20 +411,37 @@ const ManageSlotsPage = () => {
                   const daySchedule = schedule[day.key];
                   return (
                     <Grid item xs={12} md={6} lg={4} key={day.key}>
-                      <Card 
-                        sx={{ 
-                          border: daySchedule?.isOpen ? `2px solid ${day.color}` : "2px solid #e0e0e0",
-                          backgroundColor: daySchedule?.isOpen ? "#f8f9fa" : "#fafafa"
+                      <Card
+                        sx={{
+                          border: daySchedule?.isOpen
+                            ? `2px solid ${day.color}`
+                            : "2px solid #e0e0e0",
+                          backgroundColor: daySchedule?.isOpen
+                            ? "#f8f9fa"
+                            : "#fafafa",
                         }}
                       >
                         <CardContent>
-                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              mb: 2,
+                            }}
+                          >
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>
                               {day.label}
                             </Typography>
                             <Switch
                               checked={daySchedule?.isOpen || false}
-                              onChange={(e) => handleScheduleChange(day.key, "isOpen", e.target.checked)}
+                              onChange={(e) =>
+                                handleScheduleChange(
+                                  day.key,
+                                  "isOpen",
+                                  e.target.checked
+                                )
+                              }
                               color="primary"
                             />
                           </Box>
@@ -412,7 +454,13 @@ const ManageSlotsPage = () => {
                                 type="time"
                                 size="small"
                                 value={daySchedule.startTime || ""}
-                                onChange={(e) => handleScheduleChange(day.key, "startTime", e.target.value)}
+                                onChange={(e) =>
+                                  handleScheduleChange(
+                                    day.key,
+                                    "startTime",
+                                    e.target.value
+                                  )
+                                }
                                 InputLabelProps={{ shrink: true }}
                               />
                               <TextField
@@ -421,11 +469,17 @@ const ManageSlotsPage = () => {
                                 type="time"
                                 size="small"
                                 value={daySchedule.endTime || ""}
-                                onChange={(e) => handleScheduleChange(day.key, "endTime", e.target.value)}
+                                onChange={(e) =>
+                                  handleScheduleChange(
+                                    day.key,
+                                    "endTime",
+                                    e.target.value
+                                  )
+                                }
                                 InputLabelProps={{ shrink: true }}
                               />
                               {daySchedule.startTime && daySchedule.endTime && (
-                                <Chip 
+                                <Chip
                                   label={`${daySchedule.startTime} - ${daySchedule.endTime}`}
                                   size="small"
                                   color="primary"
@@ -436,7 +490,11 @@ const ManageSlotsPage = () => {
                           )}
 
                           {!daySchedule?.isOpen && (
-                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 2 }}>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ textAlign: "center", py: 2 }}
+                            >
                               Closed
                             </Typography>
                           )}
@@ -473,9 +531,11 @@ const ManageSlotsPage = () => {
                   <Select
                     value={slotSettings.duration}
                     label="Slot Duration"
-                    onChange={(e) => handleSlotSettingsChange("duration", e.target.value)}
+                    onChange={(e) =>
+                      handleSlotSettingsChange("duration", e.target.value)
+                    }
                   >
-                    {SLOT_DURATIONS.map(option => (
+                    {SLOT_DURATIONS.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
                       </MenuItem>
@@ -483,14 +543,19 @@ const ManageSlotsPage = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   label="Buffer Time (minutes)"
                   type="number"
                   value={slotSettings.bufferTime}
-                  onChange={(e) => handleSlotSettingsChange("bufferTime", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleSlotSettingsChange(
+                      "bufferTime",
+                      parseInt(e.target.value)
+                    )
+                  }
                   InputProps={{ inputProps: { min: 0, max: 60 } }}
                 />
               </Grid>
@@ -501,14 +566,22 @@ const ManageSlotsPage = () => {
                   label="Advance Booking Days"
                   type="number"
                   value={slotSettings.advanceBookingDays}
-                  onChange={(e) => handleSlotSettingsChange("advanceBookingDays", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleSlotSettingsChange(
+                      "advanceBookingDays",
+                      parseInt(e.target.value)
+                    )
+                  }
                   InputProps={{ inputProps: { min: 1, max: 90 } }}
                 />
               </Grid>
 
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 2, backgroundColor: "#f8f9fa" }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 600, mb: 1 }}
+                  >
                     Quick Preview
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -518,7 +591,8 @@ const ManageSlotsPage = () => {
                     • Estimated Weekly Slots: ~{getTotalWeeklySlots()}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    • Slot Duration: {slotSettings.duration} min + {slotSettings.bufferTime} min buffer
+                    • Slot Duration: {slotSettings.duration} min +{" "}
+                    {slotSettings.bufferTime} min buffer
                   </Typography>
                 </Card>
               </Grid>
@@ -564,7 +638,8 @@ const ManageSlotsPage = () => {
               </List>
             ) : (
               <Alert severity="info">
-                No blocked dates. Use the "Block Date" button to add blocked dates.
+                No blocked dates. Use the "Block Date" button to add blocked
+                dates.
               </Alert>
             )}
           </Box>
@@ -572,8 +647,8 @@ const ManageSlotsPage = () => {
       </Paper>
 
       {/* Block Date Dialog */}
-      <Dialog 
-        open={blockDialogOpen} 
+      <Dialog
+        open={blockDialogOpen}
         onClose={() => setBlockDialogOpen(false)}
         maxWidth="sm"
         fullWidth
@@ -586,7 +661,9 @@ const ManageSlotsPage = () => {
               label="Date"
               type="date"
               value={blockData.date}
-              onChange={(e) => setBlockData(prev => ({ ...prev, date: e.target.value }))}
+              onChange={(e) =>
+                setBlockData((prev) => ({ ...prev, date: e.target.value }))
+              }
               InputLabelProps={{ shrink: true }}
             />
             <TextField
@@ -595,14 +672,16 @@ const ManageSlotsPage = () => {
               multiline
               rows={3}
               value={blockData.reason}
-              onChange={(e) => setBlockData(prev => ({ ...prev, reason: e.target.value }))}
+              onChange={(e) =>
+                setBlockData((prev) => ({ ...prev, reason: e.target.value }))
+              }
               placeholder="Enter reason for blocking this date..."
             />
           </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setBlockDialogOpen(false)}>Cancel</Button>
-          <Button 
+          <Button
             onClick={handleBlockDate}
             variant="contained"
             color="error"
@@ -615,8 +694,8 @@ const ManageSlotsPage = () => {
       </Dialog>
 
       {/* Preview Slots Dialog */}
-      <Dialog 
-        open={previewDialogOpen} 
+      <Dialog
+        open={previewDialogOpen}
         onClose={() => setPreviewDialogOpen(false)}
         maxWidth="md"
         fullWidth
@@ -631,7 +710,7 @@ const ManageSlotsPage = () => {
               <Grid container spacing={2}>
                 {previewSlots.slice(0, 20).map((slot, index) => (
                   <Grid item xs={6} sm={4} md={3} key={index}>
-                    <Chip 
+                    <Chip
                       label={`${slot.date} ${slot.startTime}`}
                       size="small"
                       color="primary"

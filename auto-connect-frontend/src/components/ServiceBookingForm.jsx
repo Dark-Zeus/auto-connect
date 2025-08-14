@@ -39,6 +39,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { bookingApi } from "../services/bookingApi";
 import { vehicleApi } from "../services/vehicleApi";
+import { weeklyScheduleApi } from "../services/weeklyScheduleApi";
 import { toast } from "react-toastify";
 
 const timeSlots = ["09:00-11:00", "11:00-13:00", "13:00-15:00", "15:00-17:00"];
@@ -96,24 +97,8 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Initialize available slots with service center's operating hours or default time slots
-  const getInitialTimeSlots = () => {
-    // Try to get operating hours from service center data
-    const operatingHours =
-      center.operatingHours || center.businessInfo?.operatingHours;
-    if (
-      operatingHours &&
-      Array.isArray(operatingHours) &&
-      operatingHours.length > 0
-    ) {
-      // Convert operating hours to time slots if needed
-      return timeSlots; // For now, use default but log the operating hours
-    }
-    return timeSlots;
-  };
-
-  const [availableSlots, setAvailableSlots] = useState(getInitialTimeSlots());
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [userVehicles, setUserVehicles] = useState([]);
   const [isLoadingVehicles, setIsLoadingVehicles] = useState(false);
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
@@ -138,15 +123,12 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
     fetchUserVehicles();
     // Also log service center details for debugging
     console.log("🏢 Service center details:", center);
-    console.log(
-      "🕐 Service center operating hours:",
-      center.operatingHours || center.businessInfo?.operatingHours
-    );
   }, []);
 
   // Fetch available time slots when date changes
   useEffect(() => {
     if (formData.preferredDate && center.id) {
+      fetchAvailableSlots();
       fetchAvailableSlots();
     }
   }, [formData.preferredDate, center.id]);
@@ -190,30 +172,51 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
   };
 
   const fetchAvailableSlots = async () => {
+    if (!formData.preferredDate || !center.id) return;
+
     console.log("🕒 Fetching available time slots...");
     console.log("📅 Selected date:", formData.preferredDate);
     console.log("🏢 Service center ID:", center.id);
 
     try {
-      const response = await bookingApi.getAvailableTimeSlots(
+      setIsLoadingSlots(true);
+      const response = await weeklyScheduleApi.getAvailableSlotsForDate(
         center.id,
         formData.preferredDate
       );
 
       console.log("📋 Available slots response:", response);
 
-      if (response.success) {
-        const slots = response.data.availableSlots || timeSlots;
+      if (response.success && response.data.slots) {
+        const slots = response.data.slots.map((slot) => ({
+          time: slot.startTime,
+          label: `${slot.startTime} - ${slot.endTime}`,
+          duration: slot.duration,
+          available: slot.isAvailable,
+        }));
         setAvailableSlots(slots);
         console.log("✅ Available slots updated:", slots);
       } else {
-        console.log("⚠️ No success in response, using fallback slots");
-        setAvailableSlots(timeSlots);
+        console.log("⚠️ No slots available for this date");
+        setAvailableSlots([]);
       }
     } catch (error) {
       console.error("❌ Error fetching available slots:", error);
-      console.log("🔄 Using fallback time slots:", timeSlots);
-      setAvailableSlots(timeSlots); // Fallback to all slots
+      // Fallback to default time slots if weekly schedule fails
+      const fallbackSlots = [
+        "09:00-11:00",
+        "11:00-13:00",
+        "13:00-15:00",
+        "15:00-17:00",
+      ].map((slot) => ({
+        time: slot, // Keep full format for compatibility with old booking system
+        label: slot,
+        available: true,
+      }));
+      setAvailableSlots(fallbackSlots);
+      console.log("🔄 Using fallback time slots");
+    } finally {
+      setIsLoadingSlots(false);
     }
   };
 
@@ -378,7 +381,21 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
         specialRequests: formData.specialRequests,
       };
 
-      console.log("Submitting booking data:", bookingData);
+      console.log("📋 Submitting booking data:", bookingData);
+      console.log("🏢 Service center object:", center);
+      console.log("🆔 Service center ID details:", {
+        id: center.id,
+        _id: center._id,
+        idType: typeof center.id,
+        idLength: center.id?.length,
+      });
+      console.log("📅 Form data details:", {
+        date: formData.preferredDate,
+        timeSlot: formData.preferredTimeSlot,
+        services: formData.services,
+        vehicle: formData.vehicle,
+        contactInfo: formData.contactInfo,
+      });
 
       const response = await bookingApi.createBooking(bookingData);
 
@@ -727,47 +744,98 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
                   >
                     Preferred Time Slot *
                   </FormLabel>
-                  <RadioGroup
-                    value={formData.preferredTimeSlot}
-                    onChange={handleChange}
-                    name="preferredTimeSlot"
-                    sx={{ mt: 1 }}
-                  >
-                    {availableSlots.length > 0 ? (
-                      availableSlots.map((slot) => (
-                        <FormControlLabel
-                          key={slot}
-                          value={slot}
-                          control={<Radio />}
-                          label={
-                            <Box sx={{ display: "flex", alignItems: "center" }}>
-                              <AccessTime
-                                sx={{ mr: 1, color: "#7ab2d3", fontSize: 18 }}
-                              />
-                              <Typography variant="body1">{slot}</Typography>
-                            </Box>
-                          }
-                          sx={{
-                            border: "1px solid #e0e0e0",
-                            borderRadius: 1,
-                            m: 0.5,
-                            p: 1,
-                            "&:hover": { backgroundColor: "#f5f5f5" },
-                            "& .MuiFormControlLabel-label": { width: "100%" },
-                          }}
-                        />
-                      ))
-                    ) : (
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "#666", fontStyle: "italic" }}
-                      >
-                        {formData.preferredDate
-                          ? "No available slots for selected date"
-                          : "Please select a date first"}
+                  {isLoadingSlots ? (
+                    <Box
+                      sx={{ display: "flex", justifyContent: "center", py: 3 }}
+                    >
+                      <CircularProgress size={24} />
+                      <Typography sx={{ ml: 1 }}>
+                        Loading available slots...
                       </Typography>
-                    )}
-                  </RadioGroup>
+                    </Box>
+                  ) : (
+                    <RadioGroup
+                      value={formData.preferredTimeSlot}
+                      onChange={handleChange}
+                      name="preferredTimeSlot"
+                      sx={{ mt: 1 }}
+                    >
+                      {availableSlots.length > 0 ? (
+                        availableSlots.map((slot, index) => {
+                          const slotValue =
+                            typeof slot === "object" ? slot.time : slot;
+                          const slotLabel =
+                            typeof slot === "object" ? slot.label : slot;
+                          const isAvailable =
+                            typeof slot === "object"
+                              ? slot.available !== false
+                              : true;
+
+                          return (
+                            <FormControlLabel
+                              key={`${slotValue}-${index}`}
+                              value={slotValue}
+                              control={<Radio />}
+                              disabled={!isAvailable}
+                              label={
+                                <Box
+                                  sx={{ display: "flex", alignItems: "center" }}
+                                >
+                                  <AccessTime
+                                    sx={{
+                                      mr: 1,
+                                      color: isAvailable ? "#7ab2d3" : "#ccc",
+                                      fontSize: 18,
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="body1"
+                                    sx={{
+                                      color: isAvailable ? "inherit" : "#ccc",
+                                    }}
+                                  >
+                                    {slotLabel}
+                                  </Typography>
+                                  {!isAvailable && (
+                                    <Chip
+                                      label="Unavailable"
+                                      size="small"
+                                      color="default"
+                                      sx={{ ml: 1 }}
+                                    />
+                                  )}
+                                </Box>
+                              }
+                              sx={{
+                                border: "1px solid #e0e0e0",
+                                borderRadius: 1,
+                                m: 0.5,
+                                p: 1,
+                                opacity: isAvailable ? 1 : 0.6,
+                                "&:hover": {
+                                  backgroundColor: isAvailable
+                                    ? "#f5f5f5"
+                                    : "transparent",
+                                },
+                                "& .MuiFormControlLabel-label": {
+                                  width: "100%",
+                                },
+                              }}
+                            />
+                          );
+                        })
+                      ) : (
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "#666", fontStyle: "italic" }}
+                        >
+                          {formData.preferredDate
+                            ? "No available slots for selected date"
+                            : "Please select a date first"}
+                        </Typography>
+                      )}
+                    </RadioGroup>
+                  )}
                   {errors.preferredTimeSlot && (
                     <Typography
                       variant="caption"

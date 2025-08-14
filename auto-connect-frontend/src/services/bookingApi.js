@@ -72,9 +72,10 @@ export const bookingApi = {
   // Create a new booking
   createBooking: async (bookingData) => {
     try {
-      console.log("Creating booking with data:", bookingData);
+      console.log("📤 Creating booking with data:", bookingData);
       const response = await bookingAxios.post("/bookings", bookingData);
 
+      console.log("✅ Booking creation successful:", response.data);
       toast.success("Booking created successfully!");
 
       return {
@@ -83,7 +84,27 @@ export const bookingApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("Error creating booking:", error);
+      console.error("❌ Error creating booking:", error);
+      console.error("📋 Error response:", error.response);
+      console.error("📊 Error response data:", error.response?.data);
+      console.error("📈 Error response status:", error.response?.status);
+
+      // Log specific validation errors if available
+      if (error.response?.data?.errors) {
+        console.error("🔍 Validation errors:", error.response.data.errors);
+        error.response.data.errors.forEach((validationError, index) => {
+          console.error(
+            `  ${index + 1}. ${validationError.field}: ${
+              validationError.message
+            }`
+          );
+        });
+      }
+
+      // Log debug info if available
+      if (error.response?.data?.debug) {
+        console.error("🐛 Debug info:", error.response.data.debug);
+      }
 
       const errorMessage =
         error.response?.data?.message ||
