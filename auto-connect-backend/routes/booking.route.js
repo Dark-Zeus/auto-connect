@@ -8,6 +8,7 @@ import {
   cancelBooking,
   submitFeedback,
   getBookingStats,
+  getAvailableTimeSlots,
 } from "../controllers/booking.controller.js";
 import { protect, restrictTo } from "../middleware/auth.middleware.js";
 import { validate } from "../utils/validation.util.js";
@@ -161,6 +162,13 @@ router.get(
   "/stats",
   restrictTo("vehicle_owner", "service_center", "system_admin"),
   getBookingStats
+);
+
+// Get available time slots for a specific date and service center
+router.get(
+  "/available-slots",
+  restrictTo("vehicle_owner"),
+  getAvailableTimeSlots
 );
 
 // Get specific booking details

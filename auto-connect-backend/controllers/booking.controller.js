@@ -555,6 +555,147 @@ export const getBookingStats = catchAsync(async (req, res, next) => {
   }
 });
 
+// Get available time slots for a specific date and service center
+export const getAvailableTimeSlots = catchAsync(async (req, res, next) => {
+  const { serviceCenterId, date } = req.query;
+
+  if (!serviceCenterId || !date) {
+    return next(new AppError("Service center ID and date are required", 400));
+  }
+
+  // Validate service center exists
+  const serviceCenter = await User.findOne({
+    _id: serviceCenterId,
+    role: "service_center",
+    isActive: true,
+  });
+
+  if (!serviceCenter) {
+    return next(new AppError("Service center not found", 404));
+  }
+
+  // Validate date is not in the past
+  const selectedDate = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (selectedDate < today) {
+    return next(new AppError("Date cannot be in the past", 400));
+  }
+
+  try {
+    // Get all booked time slots for this date and service center
+    const bookedSlots = await Booking.find({
+      serviceCenter: serviceCenterId,
+      preferredDate: selectedDate,
+      status: { $in: ["PENDING", "CONFIRMED", "IN_PROGRESS"] },
+      isActive: true,
+    }).select("preferredTimeSlot");
+
+    const bookedTimeSlots = bookedSlots.map(
+      (booking) => booking.preferredTimeSlot
+    );
+
+    // All available time slots
+    // Import TimeSlot model dynamically to avoid circular dependency
+    const { default: TimeSlot } = await import("../models/TimeSlot.model.js");
+
+    try {
+      // Get available slots using the TimeSlot model
+      const availableSlots = await TimeSlot.getAvailableSlots(
+        serviceCenterId,
+        selectedDate
+      );
+
+      const dayOfWeek = [
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+      ][selectedDate.getDay()];
+
+      // Filter out booked slots and format response
+      const availableTimeSlots = availableSlots
+        .filter((slot) => !bookedTimeSlots.includes(slot.timeRange))
+        .map((slot) => slot.timeRange);
+
+      console.log("TimeSlot system - Available slots result:", {
+        date: selectedDate,
+        dayOfWeek,
+        totalSlots: availableSlots.length,
+        bookedSlots: bookedTimeSlots.length,
+        availableSlots: availableTimeSlots.length,
+      });
+
+      // Filter out booked slots
+      const finalAvailableSlots =
+        availableTimeSlots.length > 0 ? availableTimeSlots : [];
+
+      res.status(200).json({
+        success: true,
+        message: "Available time slots retrieved successfully",
+        data: {
+          date: selectedDate,
+          serviceCenterId,
+          availableSlots: finalAvailableSlots,
+          bookedSlots: bookedTimeSlots,
+          totalAvailable: finalAvailableSlots.length,
+        },
+      });
+
+      LOG.info({
+        message: "Available time slots retrieved via TimeSlot system",
+        serviceCenterId,
+        date,
+        availableSlots: finalAvailableSlots.length,
+      });
+    } catch (timeSlotError) {
+      console.log(
+        "TimeSlot system failed, using fallback:",
+        timeSlotError.message
+      );
+
+      // Fallback to default slots if TimeSlot system fails
+      const allTimeSlots = [
+        "09:00-11:00",
+        "11:00-13:00",
+        "13:00-15:00",
+        "15:00-17:00",
+      ];
+
+      // Filter out booked slots
+      const availableSlots = allTimeSlots.filter(
+        (slot) => !bookedTimeSlots.includes(slot)
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Available time slots retrieved successfully (fallback)",
+        data: {
+          date: selectedDate,
+          serviceCenterId,
+          availableSlots,
+          bookedSlots: bookedTimeSlots,
+          totalAvailable: availableSlots.length,
+        },
+      });
+
+      LOG.info({
+        message: "Available time slots retrieved (fallback system)",
+        serviceCenterId,
+        date,
+        availableSlots: availableSlots.length,
+      });
+    }
+  } catch (error) {
+    LOG.error("Error fetching available time slots:", error);
+    return next(new AppError("Failed to fetch available time slots", 500));
+  }
+});
+
 export default {
   createBooking,
   getUserBookings,
@@ -563,4 +704,5 @@ export default {
   cancelBooking,
   submitFeedback,
   getBookingStats,
+  getAvailableTimeSlots,
 };

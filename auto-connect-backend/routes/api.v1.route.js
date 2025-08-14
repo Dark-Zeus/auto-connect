@@ -12,6 +12,7 @@ import addedVehicleRoute from "./addedVehicle.route.js";
 import serviceCenterRoutes from "./serviceCenter.route.js";
 import bookingRoutes from "./booking.route.js";
 import operatingHoursRoutes from "./operatingHours.route.js";
+import timeSlotRoutes from "./timeSlot.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -30,7 +31,6 @@ router.use("/auth/forgot-password", passwordResetLimiter);
 router.use("/auth/reset-password", passwordResetLimiter);
 router.use("/auth", authRoute);
 
-
 // Admin routes
 router.use("/admin", adminRoute);
 
@@ -43,7 +43,8 @@ router.use("/added-vehicles", generalLimiter, addedVehicleRoute);
 // Service Center routes - NEW
 router.use("/service-centers", serviceCenterRoutes);
 router.use("/bookings", bookingRoutes);
-router.use("/services", operatingHoursRoutes); 
+router.use("/services", operatingHoursRoutes);
+router.use("/time-slots", timeSlotRoutes);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -91,7 +92,7 @@ router.get("/docs", (req, res) => {
           "PATCH /added-vehicles/:id/complete - Mark as completed",
         ],
       },
-"service-centers": {
+      "service-centers": {
         description: "Service center listings and details (for vehicle owners)",
         routes: [
           "GET /service-centers - List available service centers",
@@ -105,11 +106,11 @@ router.get("/docs", (req, res) => {
         routes: [
           "GET /services/working-hours - Get working hours",
           "POST /services/working-hours - Update working hours",
-          "GET /services/slot-settings - Get slot settings", 
+          "GET /services/slot-settings - Get slot settings",
           "POST /services/slot-settings - Update slot settings",
           "GET /services/slot-stats - Get slot statistics",
           "POST /services/generate-weekly-slots - Generate weekly slots",
-          "GET /services/test - Test endpoint"
+          "GET /services/test - Test endpoint",
         ],
       },
       bookings: {
