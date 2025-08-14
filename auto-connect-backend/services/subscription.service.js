@@ -1,25 +1,27 @@
-const Subscription = require("../models/subscription.model");
+// services/subscription.service.js
+import Subscription from "../models/subscription.model.js";
 
 class SubscriptionService {
   static async createSubscription(data) {
-    return await Subscription.create(data);
+    const subscription = new Subscription(data);
+    return subscription.save();
   }
 
-  static async getSubscriptions() {
-    return await Subscription.find();
+  static async getSubscriptions(filter = {}) {
+    return Subscription.find(filter);
   }
 
   static async getSubscriptionById(id) {
-    return await Subscription.findById(id);
+    return Subscription.findById(id);
   }
 
   static async updateSubscription(id, data) {
-    return await Subscription.findByIdAndUpdate(id, data, { new: true });
+    return Subscription.findByIdAndUpdate(id, data, { new: true });
   }
 
   static async deleteSubscription(id) {
-    return await Subscription.findByIdAndDelete(id);
+    return Subscription.findByIdAndDelete(id);
   }
 }
 
-module.exports = SubscriptionService;
+export default SubscriptionService;

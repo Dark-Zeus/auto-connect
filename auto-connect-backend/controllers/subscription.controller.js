@@ -1,55 +1,121 @@
-const SubscriptionService = require("../services/subscription.service");
-
-exports.addSubscription = async (req, res) => {
+import SubscriptionService from "../services/subscription.service.js";
+//import SubscriptionService from "../models/subscription.model.js";
+// Add a new subscription
+export const addSubscription = async (req, res) => {
   try {
-    const subscription = await SubscriptionService.createSubscription(req.body);
-    res.status(201).json(subscription);
+    // Optionally associate with user: const userId = req.user?.id || req.user?._id;
+    const subscriptionData = req.body;
+    // If user-specific: subscriptionData.userId = userId;
+    const newSubscription = await SubscriptionService.createSubscription(subscriptionData);
+    res.status(201).json({
+      success: true,
+      message: "Subscription created successfully",
+      data: newSubscription,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error creating subscription:", error);
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-exports.viewSubscriptions = async (req, res) => {
+// View all subscriptions
+export const viewSubscriptions = async (req, res) => {
   try {
+    // Optionally filter by user: const userId = req.user?.id || req.user?._id;
+    // const subscriptions = await SubscriptionService.getSubscriptions({ userId });
     const subscriptions = await SubscriptionService.getSubscriptions();
-    res.status(200).json(subscriptions);
+    res.status(200).json({
+      success: true,
+      data: subscriptions,
+      message: "Subscriptions fetched successfully",
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching subscriptions:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-exports.viewSubscriptionById = async (req, res) => {
+// View subscription by ID
+export const viewSubscriptionById = async (req, res) => {
   try {
-    const subscription = await SubscriptionService.getSubscriptionById(req.params.id);
+    const { id } = req.params;
+    // Optionally check user ownership
+    const subscription = await SubscriptionService.getSubscriptionById(id);
     if (!subscription) {
-      return res.status(404).json({ message: "Subscription not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found",
+      });
     }
-    res.status(200).json(subscription);
+    res.status(200).json({
+      success: true,
+      data: subscription,
+      message: "Subscription fetched successfully",
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching subscription by ID:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-exports.updateSubscription = async (req, res) => {
+// Update a subscription
+export const updateSubscription = async (req, res) => {
   try {
-    const subscription = await SubscriptionService.updateSubscription(req.params.id, req.body);
-    if (!subscription) {
-      return res.status(404).json({ message: "Subscription not found" });
+    const { id } = req.params;
+    // Optionally check user ownership
+    const updateData = req.body;
+    const updatedSubscription = await SubscriptionService.updateSubscription(id, updateData);
+    if (!updatedSubscription) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found",
+      });
     }
-    res.status(200).json(subscription);
+    res.status(200).json({
+      success: true,
+      message: "Subscription updated successfully",
+      data: updatedSubscription,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error updating subscription:", error);
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-exports.deleteSubscription = async (req, res) => {
+// Delete a subscription
+export const deleteSubscription = async (req, res) => {
   try {
-    const subscription = await SubscriptionService.deleteSubscription(req.params.id);
-    if (!subscription) {
-      return res.status(404).json({ message: "Subscription not found" });
+    const { id } = req.params;
+    // Optionally check user ownership
+    const deletedSubscription = await SubscriptionService.deleteSubscription(id);
+    if (!deletedSubscription) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found",
+      });
     }
-    res.status(200).json({ message: "Subscription deleted successfully" });
+    res.status(200).json({
+      success: true,
+      message: "Subscription deleted successfully",
+      data: deletedSubscription,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error deleting subscription:", error);
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

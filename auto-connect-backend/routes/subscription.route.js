@@ -1,20 +1,25 @@
-const express = require("express");
-const router = express.Router();
-const subscriptionController = require("../controllers/subscription.controller");
+import express from "express";
+import * as subscriptionController from "../controllers/subscription.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
 
-// Create
+const router = express.Router();
+
+// Apply authentication middleware to all subscription routes
+router.use(protect);
+
+// Create a new subscription
 router.post("/", subscriptionController.addSubscription);
 
-// Read all
+// Get all subscriptions
 router.get("/", subscriptionController.viewSubscriptions);
 
-// Read one
+// Get a subscription by ID
 router.get("/:id", subscriptionController.viewSubscriptionById);
 
-// Update
+// Update a subscription
 router.put("/:id", subscriptionController.updateSubscription);
 
-// Delete
+// Delete a subscription
 router.delete("/:id", subscriptionController.deleteSubscription);
 
-module.exports = router;
+export default router;
