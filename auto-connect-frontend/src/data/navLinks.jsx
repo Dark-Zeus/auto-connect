@@ -232,7 +232,7 @@ function getNavLinks(userContext) {
           hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
-          path: [`/update-vehicle-ad`],
+          path: [`/update-vehicle-ad/:id`],
           title: "Update Vehicle Ad",
           icon: "edit",
           page: <UpdateVehicleAd />,

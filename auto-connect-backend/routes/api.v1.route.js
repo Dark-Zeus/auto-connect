@@ -9,6 +9,7 @@ import authRoute from "./auth.route.js";
 import adminRoute from "./admin.route.js";
 import vehicleRoute from "./vehicle.route.js";
 import addedVehicleRoute from "./addedVehicle.route.js";
+import listVehicleRoute from "./listVehicle.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -35,6 +36,8 @@ router.use("/vehicles", generalLimiter, vehicleRoute);
 
 // Added Vehicle routes - NEW
 router.use("/added-vehicles", generalLimiter, addedVehicleRoute);
+
+router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
 // API Documentation route
 router.get("/docs", (req, res) => {

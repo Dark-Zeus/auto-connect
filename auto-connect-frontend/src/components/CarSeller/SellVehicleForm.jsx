@@ -1,9 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Camera, X , CarFront, User, Logs, ClipboardCheckIcon, Clipboard} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
+import listVehicleAPI from '../../services/listVehicleApiService';
+import userApiService from '../../services/userApiService';
+import { UserContext } from "../../contexts/UserContext";
+import { toast } from "react-toastify";
 
-const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomitha95@gmail.com' }) => {
+const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
   const [formData, setFormData] = useState({
     mobile: '',
     district: '',
@@ -20,15 +24,27 @@ const VehicleListingForm = ({ fixedName = 'Jaith Lomitha', fixedEmail = 'jlomith
     engineCapacity: '',
     mileage: '',
     description: '',
-    registrationNumber: ''
+    registrationNumber: '',
+    name: fixedName || '',
+    email: fixedEmail || ''
   });
 
   const [photos, setPhotos] = useState(Array(6).fill(null));
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState("");
-const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { userContext: user } = useContext(UserContext);
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      name: fixedName || "",
+      email: fixedEmail || ""
+    }));
+  }, [fixedName, fixedEmail]);
 
   const handleSnackbarClose = (event, reason) => {
   if (reason === 'clickaway') {
@@ -38,7 +54,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   
   // If this was a success message, navigate after closing
   if (snackbarSeverity === "success") {
-    navigate('/myads');
+    navigate('/marketplace/my-ads');
   }
 };
 
@@ -157,26 +173,34 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     setPhotos(newPhotos);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { isValid, firstErrorField } = validateForm();
 
     if (isValid) {
-      console.log('Form Data:', { ...formData, name: fixedName, email: fixedEmail });
-      console.log('Photos:', photos);
-      setSnackbarMessage("Vehicle listed successfully!");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-      setTimeout(() => {
-        setSnackbarOpen(false);
-        navigate('/myads');
-      }, 3000);
-    } else {
-      console.log('Validation failed:', errors);
+      const payload = {
+        ...formData,
+        userId: userId,
+        views: 0,
+        photos: photos.filter(Boolean),
+        status: 1,
+        promotion: 0
+      };
 
-       setSnackbarMessage("Please fix the errors in the form");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
+      try {
+        const result = await listVehicleAPI.createListing(payload);
+        setSnackbarMessage("Vehicle listed successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+      } catch (error) {
+        setSnackbarMessage(error.message || "Failed to submit. Please try again.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
+    } else {
+      setSnackbarMessage("Please fix the errors in the form");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
 
       if (firstErrorField && fieldRefs[firstErrorField]?.current) {
         fieldRefs[firstErrorField].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -201,14 +225,15 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
       fuelType: '',
       engineCapacity: '',
       mileage: '',
-      description: ''
+      description: '',
+      registrationNumber: ''
     });
     setPhotos(Array(6).fill(null));
     setErrors({});
   };
 
   return (
-    <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-100 tw:to-blue-50 tw:py-8 tw:px-4">
+    <div className="tw:min-h-screen tw:bg-transparent tw:py-8 tw:px-4">
       <Snackbar
       open={snackbarOpen}
       autoHideDuration={4000}
@@ -521,7 +546,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                       <button
                         type="button"
                         onClick={() => removePhoto(index)}
-                        className="tw:absolute tw:top-2 tw:right-2 tw:bg-red-500 tw:text-white tw:rounded-full tw:p-1 tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity"
+                        className="tw:absolute tw:top-2 tw:right-2 tw:bg-gray-500 tw:text-white tw:rounded-full tw:p-1 tw:hover:cursor-pointer tw:transition-all"
                       >
                         <X className="tw:w-4 tw:h-4" />
                       </button>
@@ -557,9 +582,13 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
                 <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">
                   Name
                 </label>
-                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
-                  {fixedName}
-                </div>
+                <input 
+                  className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700"
+                  type="text"
+                  value={formData.name}
+                  placeholder={isLoading ? 'Loading...' : ''}
+                  readOnly
+                />
               </div>
 
               <div>
@@ -613,9 +642,13 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
               <div className="md:tw:col-span-2">
                 <label className="tw:block tw:text-sm tw:font-medium tw:text-slate-700 tw:mb-2">Email</label>
-                <div className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700">
-                  {fixedEmail}
-                </div>
+                <input 
+                  className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700"
+                  type="email"
+                  value={formData.email}
+                  placeholder={isLoading ? 'Loading...' : ''}
+                  readOnly
+                />
               </div>
             </div>
           </div>
@@ -626,7 +659,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState("success");
               type="button"
               onClick={handleDiscard}
               className="tw:px-8 tw:py-3 tw:border tw:bg-red-700 tw:text-white tw:border-slate-300 tw:rounded-lg tw:hover:bg-red-800 tw:transition-colors tw:font-medium tw:cursor-pointer"
-              disabled={Object.values(formData).every(val => !val) && photos.every(photo => !photo)}
+              //disabled={Object.values(formData).every(val => !val) && photos.every(photo => !photo)}
             >
               Discard
             </button>
