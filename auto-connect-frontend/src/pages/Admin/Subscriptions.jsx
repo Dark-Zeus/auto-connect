@@ -11,7 +11,7 @@ export default function Subscriptions() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
 
-  // Fetch all subscriptions on mount
+  // Fetch subscriptions on mount
   useEffect(() => {
     fetchSubscriptions();
   }, []);
@@ -20,13 +20,14 @@ export default function Subscriptions() {
     try {
       const res = await subscriptionAPI.getSubscriptions();
       if (res.success) {
-        setSubscriptions(res.data);
+        setSubscriptions(res.data); // expects array with _id
       }
     } catch (err) {
       handleSubscriptionError(err, "fetch subscriptions");
     }
   };
 
+  // Add new subscription
   const handleAddPlan = async (newPlan) => {
     try {
       const res = await subscriptionAPI.createSubscription(newPlan);
@@ -37,6 +38,34 @@ export default function Subscriptions() {
       }
     } catch (err) {
       handleSubscriptionError(err, "create subscription");
+    }
+  };
+
+  // Edit subscription
+  const handleEditPlan = async (updatedPlan) => {
+    try {
+      const res = await subscriptionAPI.updateSubscription(updatedPlan._id, updatedPlan);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "update subscription");
+        setSubscriptions((prev) =>
+          prev.map((sub) => (sub._id === updatedPlan._id ? res.data : sub))
+        );
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "update subscription");
+    }
+  };
+
+  // Delete subscription
+  const handleDeletePlan = async (id) => {
+    try {
+      const res = await subscriptionAPI.deleteSubscription(id);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "delete subscription");
+        setSubscriptions((prev) => prev.filter((sub) => sub._id !== id));
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "delete subscription");
     }
   };
 
@@ -55,8 +84,12 @@ export default function Subscriptions() {
         </button>
       </div>
 
-      {/* Pass the fetched subscriptions to SubscriptionBox */}
-      <SubscriptionBox subscriptions={subscriptions} />
+      {/* Pass subscriptions and handlers to SubscriptionBox */}
+      <SubscriptionBox
+        subscriptions={subscriptions}
+        onEdit={handleEditPlan}
+        onDelete={handleDeletePlan}
+      />
 
       {showAddModal && (
         <AddPlanModal
