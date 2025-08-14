@@ -116,7 +116,7 @@ const ManageSlotsPage = () => {
       const response = await timeSlotApi.getMyTimeSlots();
       if (response.success) {
         setTimeSlots(response.data.timeSlots || []);
-        console.log("� Time slots loaded:", response.data.timeSlots);
+        console.log("📅 Time slots loaded:", response.data.timeSlots);
       }
     } catch (error) {
       console.error("Error fetching time slots:", error);
