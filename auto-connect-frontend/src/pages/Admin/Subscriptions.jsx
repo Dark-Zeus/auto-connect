@@ -1,13 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SubscriptionBox from "@components/AdminComponents/SubscriptionPlans/SubscriptionBox";
 import AddPlanModal from "@components/AdminComponents/SubscriptionPlans/AddSubscriptionPlan";
+import {
+  subscriptionAPI,
+  handleSubscriptionSuccess,
+  handleSubscriptionError,
+} from "@/services/subscriptionApiService";
 
 export default function Subscriptions() {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [subscriptions, setSubscriptions] = useState([]);
 
-  const handleAddPlan = (newPlan) => {
-    console.log("New Plan Added:", newPlan);
-    // TODO: Add the new plan to the data/state or trigger API
+  // Fetch all subscriptions on mount
+  useEffect(() => {
+    fetchSubscriptions();
+  }, []);
+
+  const fetchSubscriptions = async () => {
+    try {
+      const res = await subscriptionAPI.getSubscriptions();
+      if (res.success) {
+        setSubscriptions(res.data);
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "fetch subscriptions");
+    }
+  };
+
+  const handleAddPlan = async (newPlan) => {
+    try {
+      const res = await subscriptionAPI.createSubscription(newPlan);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "create subscription");
+        setSubscriptions((prev) => [...prev, res.data]);
+        setShowAddModal(false);
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "create subscription");
+    }
   };
 
   return (
@@ -25,7 +55,8 @@ export default function Subscriptions() {
         </button>
       </div>
 
-      <SubscriptionBox />
+      {/* Pass the fetched subscriptions to SubscriptionBox */}
+      <SubscriptionBox subscriptions={subscriptions} />
 
       {showAddModal && (
         <AddPlanModal
