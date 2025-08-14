@@ -1,0 +1,131 @@
+.policy-management-page {
+  padding: 2rem;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.page-header p {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input,
+.filter-select{
+  padding: 1rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.search-input {
+  flex: 1 1 300px;
+}
+
+.filter-select {
+  flex: 1 1 150px;
+}
+
+.search-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+
+/* Table Styling */
+.policies-table {
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.policies-table thead th {
+  background-color: #e9ecef;
+  text-align: left;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.policies-table tbody tr {
+  background-color: white;
+}
+
+.policies-table tbody td {
+  padding: 12px;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.policies-table tbody tr:hover {
+  background-color: #f5f9ff;
+  cursor: pointer;
+}
+
+/* Wrap table and pagination */
+.table-wrapper {
+  display: inline-block;
+  width: 100%;
+}
+
+/* Pagination container aligned to right */
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background-color: #4588aa;
+  color: white;
+  border-color: #4588aa;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.policies-per-page {
+  padding: 0.4rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}

@@ -45,13 +45,12 @@ import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 
-
-import InsuranceClaimsManagementPage from "@pages/InsuranceCompany/InsuranceClaimsManagementPage";
+//Insurance Company
+//import { Add } from "@mui/icons-material";
 import InsuranceCompanyDashboard from "@pages/InsuranceCompany/InsuranceCompanyDashboard";
-// import InsuranceDetails from "@pages/InsuranceCompany/InsuranceDetails";
-// import VehicleList from "@pages/InsuranceCompany/VehicleList";
-import { Add } from "@mui/icons-material";
+import InsuranceClaimsManagementPage from "@pages/InsuranceCompany/InsuranceClaimsManagementPage";
 import InsuranceClaimDetailsPage from "@pages/InsuranceCompany/InsuranceClaimDetailsPage";
+import InsurancePolicyManagement from "@pages/InsuranceCompany/InsurancePolicyManagementPage";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -685,6 +684,7 @@ function getNavLinks(userContext) {
       });
 
 
+
     // nav.push({
     //   path: [`/vehicles`],
     //   title: "Vehicle List",
@@ -738,10 +738,10 @@ function getNavLinks(userContext) {
       },
       sub: [
         {
-          path: [`/policies`],
-          title: "Policy Dashboard",
+          path: [`/policymanagement`],
+          title: "Policy Management",
           icon: "policy",
-          page: "Policy Dashboard",
+          page: <InsurancePolicyManagement/>,
         },
         // {
         //   path: [`/policies/create`],
