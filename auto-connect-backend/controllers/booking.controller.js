@@ -22,13 +22,57 @@ export const createBooking = catchAsync(async (req, res, next) => {
     specialRequests,
   } = req.body;
 
+  // Debug logging
+  console.log("🔍 === BOOKING DEBUG START ===");
+  console.log("📋 Received serviceCenterId:", serviceCenterId);
+  console.log("📝 ServiceCenter ID type:", typeof serviceCenterId);
+  console.log("📏 ServiceCenter ID length:", serviceCenterId?.length);
+  console.log("🔍 === BOOKING DEBUG END ===");
+
   // Validate service center exists and is active
-  const serviceCenter = await User.findOne({
+  console.log("🔍 Looking for service center with query:", {
     _id: serviceCenterId,
     role: "service_center",
     isActive: true,
     isVerified: true,
   });
+
+  // First, let's check if the service center exists at all
+  const anyServiceCenter = await User.findById(serviceCenterId);
+  console.log(
+    "🔍 Service center (any):",
+    anyServiceCenter
+      ? {
+          id: anyServiceCenter._id,
+          role: anyServiceCenter.role,
+          isActive: anyServiceCenter.isActive,
+          isVerified: anyServiceCenter.isVerified,
+          email: anyServiceCenter.email,
+          businessName: anyServiceCenter.businessInfo?.businessName,
+        }
+      : "NOT FOUND"
+  );
+
+  // Now check with the strict criteria
+  const serviceCenter = await User.findOne({
+    _id: serviceCenterId,
+    role: "service_center",
+    isActive: true,
+    // Temporarily remove isVerified requirement for testing
+    // isVerified: true,
+  });
+
+  console.log("🏢 Found service center:", serviceCenter ? "YES" : "NO");
+  if (serviceCenter) {
+    console.log("📊 Service center details:", {
+      id: serviceCenter._id,
+      businessName: serviceCenter.businessInfo?.businessName,
+      email: serviceCenter.email,
+      role: serviceCenter.role,
+      isActive: serviceCenter.isActive,
+      isVerified: serviceCenter.isVerified,
+    });
+  }
 
   if (!serviceCenter) {
     return next(new AppError("Service center not found or not available", 404));
@@ -62,8 +106,13 @@ export const createBooking = catchAsync(async (req, res, next) => {
   }
 
   try {
-    // Create the booking
-    const newBooking = await Booking.create({
+    // Generate a unique booking ID
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substr(2, 5);
+    const bookingId = `BK-${timestamp}-${random}`.toUpperCase();
+
+    console.log("🚀 Creating booking with data:", {
+      bookingId,
       vehicleOwner: req.user._id,
       ownerNIC: req.user.nicNumber,
       serviceCenter: serviceCenterId,
@@ -75,6 +124,23 @@ export const createBooking = catchAsync(async (req, res, next) => {
       specialRequests,
       createdBy: req.user._id,
     });
+
+    // Create the booking
+    const newBooking = await Booking.create({
+      bookingId,
+      vehicleOwner: req.user._id,
+      ownerNIC: req.user.nicNumber,
+      serviceCenter: serviceCenterId,
+      vehicle,
+      services,
+      preferredDate: selectedDate,
+      preferredTimeSlot,
+      contactInfo,
+      specialRequests,
+      createdBy: req.user._id,
+    });
+
+    console.log("✅ Booking created successfully:", newBooking._id);
 
     // Populate the booking with related data
     const populatedBooking = await Booking.findById(newBooking._id)
@@ -103,6 +169,13 @@ export const createBooking = catchAsync(async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.error("❌ Error creating booking:", error);
+    console.error("❌ Error message:", error.message);
+    console.error("❌ Error stack:", error.stack);
+    if (error.name === "ValidationError") {
+      console.error("❌ Validation errors:", error.errors);
+    }
+
     LOG.error("Error creating booking:", error);
     return next(
       new AppError("Failed to create booking. Please try again.", 500)

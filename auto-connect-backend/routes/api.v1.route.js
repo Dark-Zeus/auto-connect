@@ -13,6 +13,7 @@ import serviceCenterRoutes from "./serviceCenter.route.js";
 import bookingRoutes from "./booking.route.js";
 import operatingHoursRoutes from "./operatingHours.route.js";
 import timeSlotRoutes from "./timeSlot.route.js";
+import weeklyScheduleRoutes from "./weeklySchedule.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -45,6 +46,7 @@ router.use("/service-centers", serviceCenterRoutes);
 router.use("/bookings", bookingRoutes);
 router.use("/services", operatingHoursRoutes);
 router.use("/time-slots", timeSlotRoutes);
+router.use("/weekly-schedule", weeklyScheduleRoutes);
 
 // API Documentation route
 router.get("/docs", (req, res) => {

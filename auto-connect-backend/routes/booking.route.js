@@ -56,10 +56,12 @@ const createBookingValidation = Joi.object({
     "any.required": "Preferred date is required",
   }),
   preferredTimeSlot: Joi.string()
-    .valid("09:00-11:00", "11:00-13:00", "13:00-15:00", "15:00-17:00")
+    .pattern(
+      /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](-([0-1]?[0-9]|2[0-3]):[0-5][0-9])?$/
+    )
     .required()
     .messages({
-      "any.only": "Invalid time slot selected",
+      "string.pattern.base": "Time slot must be in HH:MM or HH:MM-HH:MM format",
       "any.required": "Time slot is required",
     }),
   contactInfo: Joi.object({
@@ -95,7 +97,9 @@ const updateBookingStatusValidation = Joi.object({
   message: Joi.string().max(500).optional().allow(""),
   proposedDate: Joi.date().optional(),
   proposedTimeSlot: Joi.string()
-    .valid("09:00-11:00", "11:00-13:00", "13:00-15:00", "15:00-17:00")
+    .pattern(
+      /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](-([0-1]?[0-9]|2[0-3]):[0-5][0-9])?$/
+    )
     .optional(),
   estimatedDuration: Joi.string().max(50).optional().allow(""),
 });
