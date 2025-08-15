@@ -82,6 +82,28 @@ const buyVehicleAPI = {
       throw error;
     }
   },
+
+  fetchVehicleById: async (id) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error("Authentication token not found. Please log in again.");
+      }
+
+      const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await handleResponse(response);
+      return handleBuyVehicleSuccess(data, "fetched single vehicle");
+    } catch (error) {
+      handleBuyVehicleError(error, "fetch vehicle by id");
+      throw error;
+    }
+  },
 };
 
 export default buyVehicleAPI;
