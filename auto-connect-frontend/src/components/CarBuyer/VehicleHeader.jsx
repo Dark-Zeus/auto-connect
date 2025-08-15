@@ -1,6 +1,9 @@
 import React from "react";
 
 const VehicleHeader = ({ make, model, year, name, date, district, city }) => {
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString()
+    : "";
   return (
     <div className="tw:text-center tw:my-4">
       <h1 className="tw:text-3xl tw:font-bold tw:text-black">
