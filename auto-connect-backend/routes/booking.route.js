@@ -51,10 +51,23 @@ const createBookingValidation = Joi.object({
     "array.min": "At least one service must be selected",
     "any.required": "Services are required",
   }),
-  preferredDate: Joi.date().min("now").required().messages({
-    "date.min": "Preferred date cannot be in the past",
-    "any.required": "Preferred date is required",
-  }),
+  preferredDate: Joi.date()
+    .custom((value, helpers) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDate = new Date(value);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        return helpers.error("date.min");
+      }
+      return value;
+    })
+    .required()
+    .messages({
+      "date.min": "Preferred date cannot be in the past",
+      "any.required": "Preferred date is required",
+    }),
   preferredTimeSlot: Joi.string()
     .pattern(
       /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](-([0-1]?[0-9]|2[0-3]):[0-5][0-9])?$/

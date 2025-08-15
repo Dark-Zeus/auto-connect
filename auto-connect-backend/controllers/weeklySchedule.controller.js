@@ -207,9 +207,9 @@ export const getAvailableSlots = catchAsync(async (req, res, next) => {
     const dateStr = currentDate.toISOString().split("T")[0];
     const daySlots = schedule.generateSlotsForDate(dateStr);
 
-    // Filter out booked slots
-    const filteredSlots = daySlots.filter((slot) => {
-      return !existingBookings.some((booking) => {
+    // Mark slots as booked or available and check if past time
+    const slotsWithAvailability = daySlots.map((slot) => {
+      const isBooked = existingBookings.some((booking) => {
         const bookingDateStr = booking.preferredDate
           .toISOString()
           .split("T")[0];
@@ -219,9 +219,29 @@ export const getAvailableSlots = catchAsync(async (req, res, next) => {
             booking.preferredTimeSlot.startsWith(slot.startTime))
         );
       });
+
+      // Check if slot time has passed for today
+      let isPastTime = false;
+      if (dateStr === new Date().toISOString().split("T")[0]) {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const [slotHour, slotMinute] = slot.startTime.split(":").map(Number);
+        const slotTime = slotHour * 60 + slotMinute;
+        isPastTime = slotTime <= currentTime;
+      }
+
+      const isAvailable = !isBooked && !isPastTime;
+
+      return {
+        ...slot,
+        isAvailable: isAvailable,
+        isBooked: isBooked,
+        isPastTime: isPastTime,
+        status: isBooked ? "BOOKED" : isPastTime ? "PAST" : "AVAILABLE",
+      };
     });
 
-    availableSlots.push(...filteredSlots);
+    availableSlots.push(...slotsWithAvailability);
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
