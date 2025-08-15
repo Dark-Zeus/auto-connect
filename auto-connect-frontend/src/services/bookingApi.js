@@ -197,9 +197,12 @@ export const bookingApi = {
   // Cancel booking (for vehicle owners)
   cancelBooking: async (bookingId, reason = "") => {
     try {
-      const response = await bookingAxios.delete(`/bookings/${bookingId}`, {
-        data: { reason },
-      });
+      const response = await bookingAxios.patch(
+        `/bookings/${bookingId}/cancel`,
+        {
+          reason,
+        }
+      );
 
       toast.success("Booking cancelled successfully!");
 

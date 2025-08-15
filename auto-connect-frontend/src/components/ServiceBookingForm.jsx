@@ -192,7 +192,10 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
           time: slot.startTime,
           label: `${slot.startTime} - ${slot.endTime}`,
           duration: slot.duration,
-          available: slot.isAvailable,
+          isAvailable: slot.isAvailable,
+          isBooked: slot.isBooked || false,
+          isPastTime: slot.isPastTime || false,
+          status: slot.status || "AVAILABLE",
         }));
         setAvailableSlots(slots);
         console.log("✅ Available slots updated:", slots);
@@ -212,6 +215,8 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
         time: slot, // Keep full format for compatibility with old booking system
         label: slot,
         available: true,
+        isBooked: false,
+        status: "AVAILABLE",
       }));
       setAvailableSlots(fallbackSlots);
       console.log("🔄 Using fallback time slots");
@@ -400,13 +405,28 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
       const response = await bookingApi.createBooking(bookingData);
 
       if (response.success) {
-        // Navigate to confirmation page with booking details
-        navigate("/booking-confirmation", {
-          state: {
-            booking: response.data.booking,
-            serviceCenter: center,
-          },
-        });
+        // Show success message
+        toast.success(
+          "🎉 Booking created successfully! Redirecting to your bookings...",
+          {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+
+        // Wait a moment for the user to see the success message, then redirect
+        setTimeout(() => {
+          navigate("/services/appointments", {
+            state: {
+              newBooking: response.data.booking,
+              successMessage: "Your booking has been confirmed successfully!",
+            },
+          });
+        }, 1500);
       }
     } catch (error) {
       console.error("Booking submission failed:", error);
@@ -768,15 +788,44 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
                             typeof slot === "object" ? slot.label : slot;
                           const isAvailable =
                             typeof slot === "object"
-                              ? slot.available !== false
+                              ? slot.isAvailable !== false
                               : true;
+                          const isBooked =
+                            typeof slot === "object"
+                              ? slot.isBooked === true
+                              : false;
+                          const isPastTime =
+                            typeof slot === "object"
+                              ? slot.isPastTime === true
+                              : false;
+
+                          // Determine slot status and styling
+                          let statusColor = "#7ab2d3"; // Available
+                          let statusLabel = null;
+                          let backgroundColor = "transparent";
+                          let borderColor = "#e0e0e0";
+
+                          if (isBooked) {
+                            statusColor = "#f44336"; // Red for booked
+                            statusLabel = "Booked";
+                            backgroundColor = "rgba(244, 67, 54, 0.1)";
+                            borderColor = "#f44336";
+                          } else if (isPastTime) {
+                            statusColor = "#ff9800"; // Orange for past time
+                            statusLabel = "Past";
+                            backgroundColor = "rgba(255, 152, 0, 0.1)";
+                            borderColor = "#ff9800";
+                          } else if (!isAvailable) {
+                            statusColor = "#ccc"; // Gray for unavailable
+                            statusLabel = "Unavailable";
+                          }
 
                           return (
                             <FormControlLabel
                               key={`${slotValue}-${index}`}
                               value={slotValue}
                               control={<Radio />}
-                              disabled={!isAvailable}
+                              disabled={!isAvailable || isBooked || isPastTime}
                               label={
                                 <Box
                                   sx={{ display: "flex", alignItems: "center" }}
@@ -784,38 +833,47 @@ const ServiceBookingForm = ({ center: propCenter, booking: propBooking }) => {
                                   <AccessTime
                                     sx={{
                                       mr: 1,
-                                      color: isAvailable ? "#7ab2d3" : "#ccc",
+                                      color: statusColor,
                                       fontSize: 18,
                                     }}
                                   />
                                   <Typography
                                     variant="body1"
                                     sx={{
-                                      color: isAvailable ? "inherit" : "#ccc",
+                                      color: statusColor,
                                     }}
                                   >
                                     {slotLabel}
                                   </Typography>
-                                  {!isAvailable && (
+                                  {statusLabel && (
                                     <Chip
-                                      label="Unavailable"
+                                      label={statusLabel}
                                       size="small"
-                                      color="default"
-                                      sx={{ ml: 1 }}
+                                      sx={{
+                                        ml: 1,
+                                        backgroundColor: statusColor,
+                                        color: "white",
+                                        fontWeight: "bold",
+                                      }}
                                     />
                                   )}
                                 </Box>
                               }
                               sx={{
-                                border: "1px solid #e0e0e0",
+                                border: `2px solid ${borderColor}`,
                                 borderRadius: 1,
                                 m: 0.5,
                                 p: 1,
-                                opacity: isAvailable ? 1 : 0.6,
+                                opacity:
+                                  isAvailable && !isBooked && !isPastTime
+                                    ? 1
+                                    : 0.6,
+                                backgroundColor: backgroundColor,
                                 "&:hover": {
-                                  backgroundColor: isAvailable
-                                    ? "#f5f5f5"
-                                    : "transparent",
+                                  backgroundColor:
+                                    isAvailable && !isBooked && !isPastTime
+                                      ? "#f5f5f5"
+                                      : backgroundColor,
                                 },
                                 "& .MuiFormControlLabel-label": {
                                   width: "100%",
