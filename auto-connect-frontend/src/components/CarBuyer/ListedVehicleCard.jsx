@@ -43,7 +43,7 @@ const ListedVehicleCard = ({ vehicle }) => {
   const navigate = useNavigate();
 
   const handleHeaderClick = () => {
-    navigate('/vehicleview');
+    navigate('/vehicleview', { state: { vehicle } });
   };
 
   return (
