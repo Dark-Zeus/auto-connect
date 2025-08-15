@@ -42,27 +42,7 @@ const MobileIcon = () => (
 
 const VehicleDetails = ({ vehicle }) => {
 
-  const vehicleData = vehicle || {
-    name: 'Lomitha',
-    mobile: '0767120123',
-    district: 'Matara',
-    city: 'Akuressa',
-    email: 'jlomitha95@gmail.com.com',
-    vehicleType: 'SUV',
-    condition: 'Used',
-    make: 'Toyota',
-    model: 'Land Cruiser 150',
-    year: '2015',
-    registeredYear: '2015',
-    price: '32000000',
-    ongoingLease: false,
-    transmission: 'Automatic',
-    fuelType: 'Diesel',
-    engineCapacity: '3000',
-    mileage: '135000',
-    description: 'A well-maintained car with good fuel efficiency.',
-    views: '2164'
-  };
+  const vehicleData = vehicle || {};
 
   const [showMobile, setShowMobile] = useState(false);
   const [views] = useState(parseInt(vehicleData.views) || 0);
@@ -74,6 +54,7 @@ const VehicleDetails = ({ vehicle }) => {
   const [inquireDialogOpen, setInquireDialogOpen] = useState(false);
 
   const formatPrice = (price) => {
+    if (!price) return 'Negotiable';
     return new Intl.NumberFormat('en-LK', {
       style: 'currency',
       currency: 'LKR',
