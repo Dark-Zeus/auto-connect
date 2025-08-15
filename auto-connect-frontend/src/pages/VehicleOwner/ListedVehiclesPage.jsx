@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ListedVehicleCard from "@components/CarBuyer/ListedVehicleCard";
 import SearchVehicleFilter from "@components/CarBuyer/SearchVehicleFilter";
 import Pagination from "@components/CarBuyer/Pagination"; // your pagination component
@@ -13,153 +13,49 @@ import axio from '@assets/images/cars/axio.jpg';
 import navara from '@assets/images/cars/navara.jpg';
 import hilux from '@assets/images/cars/hilux.jpg';
 import aqua from '@assets/images/cars/aqua.jpg';
+import { CircularProgress } from "@mui/material";
+import buyVehicleApiService from "../../services/buyVehicleApiService";
+import { current } from "@reduxjs/toolkit";
 
 const ListedVehiclesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const vehiclesPerPage = 20;
+  const [availableVehicles, setAvailableVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const vehiclesData = [
-    {
-      id: 1,
-      manufacturer: 'Toyota',
-      model: 'Land Cruiser 150',
-      year: 2015,
-      price: 32000000,
-      odometer: 135000,
-      fuelType: 'Diesel',
-      image: lc150_1,
-      postedDate: '2025-07-13',
-      district: 'Gampaha',
-      city: 'Katana'
-    },
-    {
-      id: 2,
-      manufacturer: 'Honda',
-      model: 'Vezel',
-      year: 2018,
-      price: 12500000,
-      odometer: 65000,
-      fuelType: 'Hybrid',
-      image: vezel,
-      postedDate: '2025-07-12',
-      district: 'Colombo',
-      city: 'Dehiwala'
-    },
-    {
-      id: 3,
-      manufacturer: 'Toyota',
-      model: 'Corolla 141',
-      year: 2008,
-      price: 6800000,
-      odometer: 142000,
-      fuelType: 'Petrol',
-      image: corolla,
-      postedDate: '2025-07-12',
-      district: 'Kandy',
-      city: 'Peradeniya'
-    },
-    {
-      id: 4,
-      manufacturer: 'Toyota',
-      model: 'CHR',
-      year: 2021,
-      price: 14500000,
-      odometer: 58000,
-      fuelType: 'Hybrid',
-      image: chr,
-      postedDate: '2025-07-11',
-      district: 'Colombo',
-      city: 'Mount Lavinia'
-    },
-    {
-      id: 5,
-      manufacturer: 'Toyota',
-      model: 'Yaris',
-      year: 2023,
-      price: 9950000,
-      odometer: 78000,
-      fuelType: 'Petrol',
-      image: yaris,
-      postedDate: '2025-07-11',
-      district: 'Kurunegala',
-      city: 'Kurunegala'
-    },
-    {
-      id: 6,
-      manufacturer: 'Daihatsu',
-      model: 'Mira',
-      year: 2025,
-      price: 7200000,
-      odometer: 45000,
-      fuelType: 'Petrol',
-      image: mira,
-      postedDate: '2025-07-10',
-      district: 'Galle',
-      city: 'Unawatuna'
-    },
-    {
-      id: 7,
-      manufacturer: 'Toyota',
-      model: 'Axio',
-      year: 2014,
-      price: 10500000,
-      odometer: 92000,
-      fuelType: 'Hybrid',
-      image: axio,
-      postedDate: '2025-07-10',
-      district: 'Matara',
-      city: 'Matara'
-    },
-    {
-      id: 8,
-      manufacturer: 'Nissan',
-      model: 'Navara',
-      year: 2008,
-      price: 6800000,
-      odometer: 110000,
-      fuelType: 'Diesel',
-      image: navara,
-      postedDate: '2025-07-10',
-      district: 'Anuradhapura',
-      city: 'Anuradhapura'
-    },
-    {
-      id: 9,
-      manufacturer: 'Toyota',
-      model: 'Hilux',
-      year: 2019,
-      price: 21500000,
-      odometer: 85000,
-      fuelType: 'Diesel',
-      image: hilux,
-      postedDate: '2025-07-08',
-      district: 'Jaffna',
-      city: 'Jaffna'
-    },
-    {
-      id: 10,
-      manufacturer: 'Toyota',
-      model: 'Aqua',
-      year: 2015,
-      price: 8900000,
-      odometer: 62000,
-      fuelType: 'Hybrid',
-      image: aqua,
-      postedDate: '2025-07-08',
-      district: 'Batticaloa',
-      city: 'Batticaloa'
-    }
-  ];
+  useEffect(() => {
+    const fetchAvailableVehicles = async () => {
+      try {
+        const vehicles = await buyVehicleApiService.fetchAvailableVehicles();
+        setAvailableVehicles(vehicles.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAvailableVehicles();
+  }, []);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   // Create hardcoded card components as an array
   //const allCards = Array(55).fill().map((_, index) => (
     //<ListedVehicleCard key={index} />
   //));
 
-  const totalPages = Math.ceil(vehiclesData.length / vehiclesPerPage);
+  const totalPages = Math.ceil(availableVehicles.length / vehiclesPerPage);
   const indexOfLast = currentPage * vehiclesPerPage;
   const indexOfFirst = indexOfLast - vehiclesPerPage;
-  const currentVehicles = vehiclesData.slice(indexOfFirst, indexOfLast);
+  const currentVehicles = availableVehicles.slice(indexOfFirst, indexOfLast);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -178,7 +74,7 @@ const ListedVehiclesPage = () => {
         {/* Cards + Pagination */}
         <div className="tw:w-2/3 tw:flex tw:flex-col">
           {currentVehicles.map((vehicle) => (
-            <ListedVehicleCard key={vehicle.id} vehicle={vehicle} />
+            <ListedVehicleCard key={vehicle._id} vehicle={vehicle} />
           ))}
 
           <Pagination
