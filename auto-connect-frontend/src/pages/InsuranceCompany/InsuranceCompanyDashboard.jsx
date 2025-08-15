@@ -13,7 +13,7 @@ import {
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
-import './InsuranceModuleCSS/InsuranceCompanyDashboard.css';
+import './InsuranceCompanyDashboard.css';
 
 const InsuranceCompanyDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');

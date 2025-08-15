@@ -33,12 +33,14 @@
   font-weight: 700;
   font-size: 24px;
   margin-bottom: 10px;
+  align-self: flex-start;
+  padding: 5px;
 }
 
 /* Claim Information with Icons */
 .claim-info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -162,7 +164,10 @@
 
 /* Document Items */
 .document-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   flex-direction: column;
   gap: 1rem;
 }
@@ -238,7 +243,9 @@
 /* Policy Details Grid */
 .policy-grid {
   display: grid;
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .policy-item {
@@ -269,6 +276,13 @@
 }
 
 /* Customer Contact */
+.contact-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .contact-item {
   display: flex;
   align-items: center;

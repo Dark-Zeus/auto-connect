@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-import './InsuranceModuleCSS/InsuranceClaimDetailsPage.css';
+import './InsuranceClaimDetailsPage.css';
 import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
+import PolicyDetailsTestData from './testData/PolicyDetailsTestData';
 
 const InsuranceClaimDetailsPage = () => {
   const navigate = useNavigate();
@@ -33,16 +34,9 @@ const InsuranceClaimDetailsPage = () => {
   if (!claim) return <div>No claim found.</div>;
 
   // Mock policy details (replace with backend fetch in real app)
-  const policyDetails = {
-    policyNumber: 'POL-2024-7865',
-    coverageType: 'Comprehensive',
-    startDate: '2024-01-01',
-    endDate: '2025-01-01',
-    premium: 55000,
-    insurer: 'ABC Insurance Ltd',
-    coverageLimit: '2,000,000',
-    deductible: '10,000'
-  };
+  const policyDetails = PolicyDetailsTestData.find(
+    policy => policy.vehicleNumber === claim.vehicleNumber
+  );
 
   return (
     <div className="claim-details-page">
@@ -140,19 +134,16 @@ const InsuranceClaimDetailsPage = () => {
         <div className="section-header">
           <h3>Policy Details</h3>
         </div>
-        
-        <div className="policy-grid">
-          <div className="policy-item">
-            <p className="policy-label">Policy Number</p>
-            <p className="policy-value">{policyDetails.policyNumber}</p>
-          </div>
-          
-          <div className="policy-item">
-            <p className="policy-label">Coverage Type</p>
-            <p className="policy-value">{policyDetails.coverageType}</p>
-          </div>
-          
-          
+        {policyDetails ? (
+          <div className="policy-grid">
+            <div className="policy-item">
+              <p className="policy-label">Policy Number</p>
+              <p className="policy-value">{policyDetails.policyNumber}</p>
+            </div>
+            <div className="policy-item">
+              <p className="policy-label">Coverage Type</p>
+              <p className="policy-value">{policyDetails.policyType}</p>
+            </div>
             <div className="policy-item">
               <p className="policy-label">Start Date</p>
               <p className="policy-value">{policyDetails.startDate}</p>
@@ -161,28 +152,15 @@ const InsuranceClaimDetailsPage = () => {
               <p className="policy-label">End Date</p>
               <p className="policy-value">{policyDetails.endDate}</p>
             </div>
-          
-          
-          <div className="policy-item">
-            <p className="policy-label">Annual Premium</p>
-            <p className="policy-value">{policyDetails.premium.toLocaleString()} LKR</p>
+            <div className="policy-item">
+              <p className="policy-label">Annual Premium</p>
+              <p className="policy-value">{policyDetails.premium.toLocaleString()} LKR</p>
+            </div>
+            {/* Add more fields as needed */}
           </div>
-          
-          <div className="policy-item">
-            <p className="policy-label">Coverage Limit</p>
-            <p className="policy-value">{policyDetails.coverageLimit} LKR</p>
-          </div>
-          
-          <div className="policy-item">
-            <p className="policy-label">Deductible</p>
-            <p className="policy-value">{policyDetails.deductible} LKR</p>
-          </div>
-          
-          <div className="policy-item">
-            <p className="policy-label">Insurer</p>
-            <p className="policy-value">{policyDetails.insurer}</p>
-          </div>
-        </div>
+        ) : (
+          <div>No policy details found for this vehicle.</div>
+        )}
       </section>
 
       {/* Section 4: Additional Documents */}
@@ -229,7 +207,7 @@ const InsuranceClaimDetailsPage = () => {
         <div className="section-header">
           <h3>Customer Contact</h3>
         </div>
-        
+        <div className='contact-grid'>
         <div className="contact-item">
           <div className="contact-icon">📞</div>
           <div className="contact-info">
@@ -252,6 +230,7 @@ const InsuranceClaimDetailsPage = () => {
             <p className="contact-label">Address</p>
             <p className="contact-value">123 Colombo Road, Dehiwala</p>
           </div>
+        </div>
         </div>
       </section>
 

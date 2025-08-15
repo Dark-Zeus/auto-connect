@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './InsuranceModuleCSS/InsurancePolicyManagementPage.css';
+import './InsurancePolicyManagementPage.css';
 import { useNavigate } from "react-router-dom";
 import PolicyDetailsTestData from './testData/PolicyDetailsTestData';
 
@@ -8,12 +8,24 @@ const InsurancePolicyManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [policiesPerPage, setPoliciesPerPage] = useState(10);
 
   const navigate = useNavigate();
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('');
+    setTypeFilter('');
+    setStartDate('');
+    setEndDate('');
+    setCurrentPage(1);
+  };
 
   // Filter policies
   const filteredPolicies = policies.filter(policy => {
@@ -27,8 +39,11 @@ const InsurancePolicyManagement = () => {
     
     const typeMatch = typeFilter ? policy.policyType.toLowerCase() === typeFilter.toLowerCase() : true;
 
+    const dateMatch =
+      (!startDate || new Date(policy.startDate) >= new Date(startDate)) &&
+      (!endDate || new Date(policy.endDate) <= new Date(endDate));
 
-    return searchMatch && statusMatch && typeMatch;
+    return searchMatch && statusMatch && typeMatch && dateMatch;
   });
 
   // Pagination logic
@@ -51,7 +66,7 @@ const InsurancePolicyManagement = () => {
       <div className="filter-section">
         <input
           type="text"
-          placeholder="Policy Number, Vehicle Number, Customer or Vehicle Model"
+          placeholder="Search by Policy Number, Vehicle Number, Customer or Vehicle Model..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
@@ -80,6 +95,23 @@ const InsurancePolicyManagement = () => {
           <option value="third party fire theft">Third Party Fire & Theft</option>
         </select>
 
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="date-input"
+          placeholder="Start Date"
+        />
+
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="date-input"
+          placeholder="End Date"
+        />
+
+        <button onClick={clearFilters} className="clear-btn">Clear Filters</button>
       </div>
 
       {/* Policies Table */}
@@ -103,7 +135,7 @@ const InsurancePolicyManagement = () => {
               currentPolicies.map(policy => (
                 <tr 
                   key={policy.policyNumber} 
-                  onClick={() => navigate(`/insurance-policies/${policy.policyNumber}`)}
+                  onClick={() => navigate(`/insurancepolicydetails/${policy.policyNumber}`)}
                 >
                   <td>{policy.policyNumber}</td>
                   <td>{policy.customerName}</td>
@@ -178,3 +210,4 @@ const InsurancePolicyManagement = () => {
 };
 
 export default InsurancePolicyManagement;
+

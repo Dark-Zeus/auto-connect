@@ -51,6 +51,7 @@ import InsuranceCompanyDashboard from "@pages/InsuranceCompany/InsuranceCompanyD
 import InsuranceClaimsManagementPage from "@pages/InsuranceCompany/InsuranceClaimsManagementPage";
 import InsuranceClaimDetailsPage from "@pages/InsuranceCompany/InsuranceClaimDetailsPage";
 import InsurancePolicyManagement from "@pages/InsuranceCompany/InsurancePolicyManagementPage";
+import InsurancePolicyDetailsPage from "@pages/InsuranceCompany/InsurancePolicyDetailsPage";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -762,6 +763,14 @@ function getNavLinks(userContext) {
         //   page: "Policy Analytics",
         // }
       ]
+    });
+
+    nav.push({
+      path: [`/insurancepolicydetails/:policyNumber`],
+      title: "Policy Details",
+      icon: "info",
+      page: <InsurancePolicyDetailsPage />,
+      hidden: true,
     });
 
     // nav.push({
