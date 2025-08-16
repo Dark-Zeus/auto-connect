@@ -52,6 +52,7 @@ import InsuranceClaimsManagementPage from "@pages/InsuranceCompany/InsuranceClai
 import InsuranceClaimDetailsPage from "@pages/InsuranceCompany/InsuranceClaimDetailsPage";
 import InsurancePolicyManagement from "@pages/InsuranceCompany/InsurancePolicyManagementPage";
 import InsurancePolicyDetailsPage from "@pages/InsuranceCompany/InsurancePolicyDetailsPage";
+import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -744,12 +745,15 @@ function getNavLinks(userContext) {
           icon: "policy",
           page: <InsurancePolicyManagement/>,
         },
-        // {
-        //   path: [`/policies/create`],
-        //   title: "Create New Policy",
-        //   icon: "add_circle",
-        //   page: "Create New Policy",
-        // },
+
+        {
+          path: [`/addnewpolicy`],
+          title: "Add New Policy",
+          icon: "add_circle",
+          page: <AddNewPolicyPage />,
+        },
+
+
         // {
         //   path: [`/policies/premium`],
         //   title: "Premium Management",
