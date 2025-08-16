@@ -11,15 +11,20 @@ const SavedVehiclesPage = () => {
   const [savedAds, setSavedAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-    async function fetchSaved() {
-      setLoading(true);
-      const ads = await buyVehicleAPI.fetchSavedAds();
-      setSavedAds(ads);
-      setLoading(false);
-    }
+    const fetchSaved = async () => {
+    setLoading(true);
+    const ads = await buyVehicleAPI.fetchSavedAds();
+    setSavedAds(ads);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchSaved();
   }, []);
+
+  const handleUnsave = (vehicleId) => {
+    setSavedAds((prev) => prev.filter((ad) => ad.vehicleId._id !== vehicleId));
+  };
 
   const totalPages = Math.ceil(savedAds.length / vehiclesPerPage);
   const indexOfLast = currentPage * vehiclesPerPage;
@@ -38,9 +43,11 @@ const SavedVehiclesPage = () => {
           <div className="tw:text-xl tw:font-semibold tw:mb-10 tw:text-black tw:items-start">Saved Ads</div>
           {loading ? (
             <div>Loading...</div>
+          ) : currentCards.length === 0 ? (
+            <div className="tw-text-gray-500 tw-text-lg tw-mt-10">No saved ads.</div>
           ) : (
             currentCards.map((ad, idx) => (
-              <SavedVehicleCard key={ad._id || idx} vehicle={ad.vehicleId} />
+              <SavedVehicleCard key={ad._id || idx} vehicle={ad.vehicleId} onUnsave={handleUnsave} />
             ))
           )}
 
