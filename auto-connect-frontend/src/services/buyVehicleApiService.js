@@ -217,6 +217,47 @@ filterVehicles: async (filterData) => {
     throw error;
   }
 },
+
+checkIfReported: async (adId) => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found. Please log in again.");
+    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/check-reported?adId=${adId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await handleResponse(response);
+    return data.reported;
+  } catch (error) {
+    handleBuyVehicleError(error, "check if reported");
+    throw error;
+  }
+},
+
+reportAd: async ({ adId, issue, details }) => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/report`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ adId, issue, details })
+    });
+
+    const data = await handleResponse(response);
+    return handleBuyVehicleSuccess(data, "reported");
+  } catch (error) {
+    handleBuyVehicleError(error, "report ad");
+    throw error;
+  }
+},
+
 };
 
 export default buyVehicleAPI;
