@@ -169,7 +169,7 @@ const PolicyHistoryTestData = [
     premium: 88000,
     startDate: "2024-03-22",
     endDate: "2025-03-21",
-    status: "Suspended"
+    status: "Cancelled"
   },
   
   // Policy history for MH-4680 (Ajith Bandara)

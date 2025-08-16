@@ -13,6 +13,9 @@ const InsurancePolicyDetailsPage = () => {
   const [currentClaim, setCurrentClaim] = useState(null);
   const [claimsHistory, setClaimsHistory] = useState([]);
   const [policyHistory, setPolicyHistory] = useState([]);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [newStatus, setNewStatus] = useState('');
+  const [statusReason, setStatusReason] = useState('');
 
   useEffect(() => {
     // Find policy details
@@ -61,17 +64,46 @@ const InsurancePolicyDetailsPage = () => {
     navigate(`/insurance-claims/${claimId}`);
   };
 
+  const handleStatusChange = () => {
+    setNewStatus(policyDetails.status);
+    setStatusReason('');
+    setShowStatusModal(true);
+  };
+
+  const handleStatusSave = () => {
+    if (newStatus && statusReason.trim()) {
+      // Update the policy status
+      setPolicyDetails(prev => ({
+        ...prev,
+        status: newStatus
+      }));
+      
+      // Here you would typically make an API call to save the status change
+      console.log('Status changed to:', newStatus, 'Reason:', statusReason);
+      
+      // Close modal and reset form
+      setShowStatusModal(false);
+      setNewStatus('');
+      setStatusReason('');
+      
+      // You could show a success message here
+      alert('Status updated successfully!');
+    } else {
+      alert('Please select a status and provide a reason.');
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowStatusModal(false);
+    setNewStatus('');
+    setStatusReason('');
+  };
+
   const getStatusBadgeClass = (status) => {
     switch(status.toLowerCase()) {
       case 'active': return 'status-active';
       case 'expired': return 'status-expired';
       case 'cancelled': return 'status-cancelled';
-      case 'suspended': return 'status-suspended';
-      case 'pending': return 'status-pending';
-      case 'approved': return 'status-approved';
-      case 'rejected': return 'status-rejected';
-      case 'investigating': return 'status-investigating';
-      case 'processing': return 'status-processing';
       default: return 'status-default';
     }
   };
@@ -81,18 +113,33 @@ const InsurancePolicyDetailsPage = () => {
       case 'active': return { class: 'green', icon: '✓' };
       case 'expired': return { class: 'red', icon: '×' };
       case 'cancelled': return { class: 'yellow', icon: '!' };
-      case 'suspended': return { class: 'yellow', icon: '⏸' };
-      case 'pending': return { class: 'blue', icon: '⏳' };
-      case 'approved': return { class: 'green', icon: '✓' };
-      case 'rejected': return { class: 'red', icon: '×' };
-      case 'investigating': return { class: 'yellow', icon: '🔍' };
-      case 'processing': return { class: 'blue', icon: '⚙' };
       default: return { class: 'blue', icon: 'ℹ' };
     }
   };
 
   return (
     <div className="policy-details-page">
+      {/* Page Header */}
+      <div className="page-header">
+        <div className="header-left">
+          <h1 className="page-title">Policy Details</h1>
+          <div className="policy-info-header">
+            <p className="policy-number-header">{policyDetails.policyNumber}</p>
+            <span className={`status-badge-header ${getStatusBadgeClass(policyDetails.status)}`}>
+              {policyDetails.status}
+            </span>
+          </div>
+        </div>
+        <div className="header-right">
+          <button className="change-status-btn" onClick={handleStatusChange}>
+            Change Status
+          </button>
+          <button className="edit-details-btn">
+            Edit Details
+          </button>
+        </div>
+      </div>
+
       {/* Vehicle & Policy Information Section */}
       <div className="section-card">
         <h3>Vehicle & Policy Information</h3>
@@ -153,23 +200,48 @@ const InsurancePolicyDetailsPage = () => {
               <p className="info-value">{policyDetails.endDate}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Customer Details Section */}
+      <div className="section-card">
+        <h3>Customer Details</h3>
+        <div className="policy-info-grid">
           <div className="info-item">
-            <span className="info-icon">📊</span>
+            <span className="info-icon">👤</span>
             <div className="info-content">
-              <p className="info-label">Policy Status</p>
-              <p className="info-value">
-                <span className={`status-badge ${getStatusBadgeClass(policyDetails.status)}`}>
-                  {policyDetails.status}
-                </span>
-              </p>
+              <p className="info-label">Full Name</p>
+              <p className="info-value">{policyDetails.customerName}</p>
             </div>
           </div>
-        </div>
-        
-        <div className="action-buttons">
-          <button onClick={() => navigate('/policymanagement')} className="back-btn">
-            ← Back to Policies
-          </button>
+          <div className="info-item">
+            <span className="info-icon">🆔</span>
+            <div className="info-content">
+              <p className="info-label">NIC Number</p>
+              <p className="info-value">{policyDetails.nic}</p>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-icon">📍</span>
+            <div className="info-content">
+              <p className="info-label">Address</p>
+              <p className="info-value">{policyDetails.address}</p>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-icon">📞</span>
+            <div className="info-content">
+              <p className="info-label">Contact Number</p>
+              <p className="info-value">{policyDetails.contactNo}</p>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-icon">📧</span>
+            <div className="info-content">
+              <p className="info-label">Email Address</p>
+              <p className="info-value">{policyDetails.email}</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -319,6 +391,58 @@ const InsurancePolicyDetailsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Back to Policies Button - Moved to bottom */}
+      <div className="bottom-action-buttons">
+        <button onClick={() => navigate('/policymanagement')} className="back-btn">
+          ← Back to Policies
+        </button>
+      </div>
+
+      {/* Status Change Modal */}
+      {showStatusModal && (
+        <div className="modal-overlay" onClick={handleModalClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Change Policy Status</h3>
+              <button className="modal-close-btn" onClick={handleModalClose}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Select New Status:</label>
+                <select 
+                  className="form-select"
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value)}
+                >
+                  <option value="">Select Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Expired">Expired</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Reason for Status Change:</label>
+                <textarea
+                  className="form-textarea"
+                  placeholder="Please provide a reason for this status change..."
+                  value={statusReason}
+                  onChange={(e) => setStatusReason(e.target.value)}
+                  rows="4"
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="modal-cancel-btn" onClick={handleModalClose}>
+                Cancel
+              </button>
+              <button className="modal-save-btn" onClick={handleStatusSave}>
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
