@@ -18,11 +18,12 @@ import {
 } from '@mui/icons-material';
 
 import { useNavigate } from 'react-router-dom';
+import buyVehicleAPI from "../../services/buyVehicleApiService";
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
 import lc150_1 from '../../assets/images/lc150_1.jpg';
 
-const SavedVehicleCard = ({ vehicle }) => {
+const SavedVehicleCard = ({ vehicle, onUnsave }) => {
   // State to manage saved/unsaved toggle
   const [isSaved, setIsSaved] = useState(true);
 
@@ -56,9 +57,16 @@ const SavedVehicleCard = ({ vehicle }) => {
     navigate('/vehicleview', { state: { vehicle: vehicleData } });
   };
 
-  const handleBookmarkToggle = () => {
-    setIsSaved(!isSaved);
-    console.log(`Vehicle ${isSaved ? 'unsaved' : 'saved'}: ${vehicleData.manufacturer} ${vehicleData.model}`);
+  const handleBookmarkToggle = async () => {
+    if (isSaved) {
+      try {
+        await buyVehicleAPI.unsaveAd(vehicleData._id);
+        setIsSaved(false);
+        if (onUnsave) onUnsave(vehicleData._id);
+      } catch (error) {
+        // Optionally show error
+      }
+    }
   };
 
   return (
