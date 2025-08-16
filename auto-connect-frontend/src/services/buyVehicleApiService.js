@@ -54,7 +54,10 @@ const handleBuyVehicleError = (error, operation = "operation") => {
 
 // Success handling helper
 const handleBuyVehicleSuccess = (data, operation = "operation") => {
-  toast.success(data.message || `Vehicle fetching ${operation} successful!`);
+  // Only show toast for non-fetch operations
+  if (operation !== "fetched" && operation !== "fetched single vehicle") {
+    toast.success(data.message || `Vehicle fetching ${operation} successful!`);
+  }
   return data;
 };
 
@@ -190,6 +193,28 @@ checkIfSaved: async (vehicleId) => {
   } catch (error) {
     console.error("Error checking if vehicle is saved:", error);
     return false;
+  }
+},
+
+filterVehicles: async (filterData) => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/filter`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(filterData)
+    });
+
+    const data = await handleResponse(response);
+    return handleBuyVehicleSuccess(data, "filtered");
+  } catch (error) {
+    handleBuyVehicleError(error, "filter vehicles");
+    throw error;
   }
 },
 };
