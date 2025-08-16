@@ -5,20 +5,60 @@
 /* Page Header */
 .page-header {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 1rem;
   padding: 1rem;
-  text-align: flex-start;
+  gap: 2rem;
+  position: relative;
+}
+
+.header-content {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 .page-header h2 {
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   font-size: 24px;
+  order: 1;
 }
 
 .page-header p {
   font-size: 16px;
   color: #666;
+  margin: 0;
+  order: 2;
+}
+
+/* Add New Policy Button - positioned in top right corner */
+.add-policy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.8rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.add-policy-btn:hover {
+  background-color: #0056b3;
+}
+
+.add-policy-btn:active {
+  background-color: #004085;
 }
 
 /* Filter Section */
@@ -30,7 +70,7 @@
 }
 
 .search-input,
-.filter-select{
+.filter-select {
   padding: 1rem 1rem;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -50,7 +90,6 @@
   outline: none;
   border-color: #007bff;
 }
-
 
 /* Table Styling */
 .policies-table {
@@ -131,4 +170,26 @@
   border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 12px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .page-header {
+    padding-top: 4rem; /* Add space for absolute positioned button */
+  }
+  
+  .add-policy-btn {
+    position: static;
+    align-self: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-section {
+    flex-direction: column;
+  }
+  
+  .search-input,
+  .filter-select {
+    flex: 1 1 auto;
+  }
 }

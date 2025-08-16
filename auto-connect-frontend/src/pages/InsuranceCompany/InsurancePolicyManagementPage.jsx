@@ -8,8 +8,6 @@ const InsurancePolicyManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,9 +20,12 @@ const InsurancePolicyManagement = () => {
     setSearchTerm('');
     setStatusFilter('');
     setTypeFilter('');
-    setStartDate('');
-    setEndDate('');
     setCurrentPage(1);
+  };
+
+  // Navigate to Add New Policy page
+  const handleAddNewPolicy = () => {
+    navigate('/addnewpolicy');
   };
 
   // Filter policies
@@ -39,11 +40,7 @@ const InsurancePolicyManagement = () => {
     
     const typeMatch = typeFilter ? policy.policyType.toLowerCase() === typeFilter.toLowerCase() : true;
 
-    const dateMatch =
-      (!startDate || new Date(policy.startDate) >= new Date(startDate)) &&
-      (!endDate || new Date(policy.endDate) <= new Date(endDate));
-
-    return searchMatch && statusMatch && typeMatch && dateMatch;
+    return searchMatch && statusMatch && typeMatch;
   });
 
   // Pagination logic
@@ -58,18 +55,22 @@ const InsurancePolicyManagement = () => {
 
       {/* Page Header */}
       <div className="page-header">
-        
-          <h2>Policy Management</h2>
-          <p>View, search, and filter all insurance policies. Click on a policy to view details.</p>
-          <button>Add New Policy</button>
-  
+        <div className="header-content">
+          <div className="header-title">
+            <h2>Policy Management</h2>
+            <p>View, search, and filter all insurance policies. Click on a policy to view details.</p>
+          </div>
+        </div>
+        <button onClick={handleAddNewPolicy} className="add-policy-btn">
+          Add New Policy
+        </button>
       </div>
       
       {/* Search and Filter Section */}
       <div className="filter-section">
         <input
           type="text"
-          placeholder="Search by Policy Number, Vehicle Number, Customer or Vehicle Model..."
+          placeholder="Policy Number, Vehicle Number, Customer or Vehicle Model"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
@@ -84,7 +85,6 @@ const InsurancePolicyManagement = () => {
           <option value="active">Active</option>
           <option value="expired">Expired</option>
           <option value="cancelled">Cancelled</option>
-          <option value="suspended">Suspended</option>
         </select>
 
         <select
@@ -97,24 +97,6 @@ const InsurancePolicyManagement = () => {
           <option value="third party">Third Party</option>
           <option value="third party fire theft">Third Party Fire & Theft</option>
         </select>
-
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="date-input"
-          placeholder="Start Date"
-        />
-
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="date-input"
-          placeholder="End Date"
-        />
-
-        <button onClick={clearFilters} className="clear-btn">Clear Filters</button>
       </div>
 
       {/* Policies Table */}
@@ -213,4 +195,3 @@ const InsurancePolicyManagement = () => {
 };
 
 export default InsurancePolicyManagement;
-

@@ -41,6 +41,21 @@ const InsuranceClaimDetailsPage = () => {
   return (
     <div className="claim-details-page">
 
+      {/* Page Header */}
+      <div className="page-header">
+        <div className="header-content">
+          <div>
+            <h2>Claim Details - {claim.id}</h2>
+            <p>Complete claim information and processing details</p>
+          </div>
+        </div>
+        <div className="claim-status">
+          <span className={`status-badge ${claim.status.toLowerCase()}`}>
+            {claim.status}
+          </span>
+        </div>
+      </div>
+
       {/* Section 1: Claim Information */}
       <section className="section-card">
         <div className="section-header">
@@ -252,16 +267,15 @@ const InsuranceClaimDetailsPage = () => {
       </section>
 
       <div className="action-buttons">
-        <button className="approve-btn" onClick={handleApprove}>
-          Approve
-        </button>
-        <button className="reject-btn" onClick={handleReject}>
-          Reject
-        </button>
-        <button className="close-btn" onClick={() => navigate(-1)}>
-          Back
-        </button>
+        <div className="buttons">
+          <button className="back-btn" onClick={() => navigate(-1)}>Back</button> 
+          <div className="right-buttons">
+          <button className="approve-btn">Approve</button>
+          <button className="reject-btn">Reject</button>
+          </div>
+        </div>
       </div>
+
     </div>
   );
 };

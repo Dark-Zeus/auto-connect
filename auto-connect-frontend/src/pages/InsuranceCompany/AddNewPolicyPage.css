@@ -18,13 +18,13 @@
   font-size: 24px;
   font-weight: 500;
   color: #1f2937;
-  margin: 0 0 0.5rem 0;
+  margin-bottom: -20px;
 }
 
 .page-subtitle {
   font-size: 16px;
   color: #6b7280;
-  margin: 0;
+  
 }
 
 /* Progress Steps */
