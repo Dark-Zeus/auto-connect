@@ -201,7 +201,7 @@ const VehicleFilterForm = ({ onFilter }) => {
             Manufacturer
           </label>
           <select
-            name="manufacturer"
+            name="make"
             value={formData.make}
             onChange={handleInputChange}
             className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
