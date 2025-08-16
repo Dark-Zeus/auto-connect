@@ -69,7 +69,7 @@ const ListedVehicleCard = ({ vehicle }) => {
         <Box sx={{ width: '30%', height: '100%', p: 1.5, boxSizing: 'border-box' }}>
           <CardMedia
             component="img"
-            image={vehicle.photos}
+            image={vehicle.photos?.[0]}
             alt={`${vehicle.make} ${vehicle.model} ${vehicle.year}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
           />
