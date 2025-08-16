@@ -46,26 +46,7 @@ export const saveAd = async (req, res) => {
       return res.status(409).json({ success: false, message: "Ad already saved" });
     }
 
-    // Get vehicle details
-    const vehicle = await ListVehicle.findById(vehicleId);
-    if (!vehicle) {
-      return res.status(404).json({ success: false, message: "Vehicle not found" });
-    }
-
-    const savedAd = new SavedAd({
-      userId,
-      vehicleId,
-      make: vehicle.make,
-      model: vehicle.model,
-      year: vehicle.year,
-      city: vehicle.city,
-      district: vehicle.district,
-      price: vehicle.price,
-      mileage: vehicle.mileage,
-      fuelType: vehicle.fuelType,
-      postedDate: vehicle.createdAt,
-    });
-
+    const savedAd = new SavedAd({ userId, vehicleId });
     await savedAd.save();
 
     res.status(201).json({ success: true, message: "Ad saved successfully", data: savedAd });
@@ -75,23 +56,34 @@ export const saveAd = async (req, res) => {
   }
 };
 
+export const unsaveAd = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const { vehicleId } = req.body;
+
+    if (!userId || !vehicleId) {
+      return res.status(400).json({ success: false, message: "Missing userId or vehicleId" });
+    }
+
+    const deleted = await SavedAd.findOneAndDelete({ userId, vehicleId });
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Saved ad not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Ad unsaved successfully" });
+  } catch (err) {
+    console.error("Error unsaving ad:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 export const getSavedAds = async (req, res) => {
   try {
     const userId = req.user?._id || req.user?.id;
     if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
-    
-    console.log("Getting saved ads for user:", userId);
 
-    // Use populate to get the full vehicle object
     const savedAds = await SavedAd.find({ userId }).populate('vehicleId');
-    
-    console.log(`Found ${savedAds.length} saved ads for user ${userId}`);
-    
-    res.status(200).json({ 
-      success: true, 
-      data: savedAds,
-      message: `Retrieved ${savedAds.length} saved ads`
-    });
+    res.status(200).json({ success: true, data: savedAds });
   } catch (err) {
     console.error("Error fetching saved ads:", err);
     res.status(500).json({ success: false, message: err.message });
