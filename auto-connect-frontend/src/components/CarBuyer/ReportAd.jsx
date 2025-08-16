@@ -15,6 +15,7 @@ import {
   Alert
 } from '@mui/material';
 import { ReportProblem } from '@mui/icons-material';
+import buyVehicleApiService from "../../services/buyVehicleApiService";
 
 const ReportAd = ({
   open,
@@ -38,7 +39,7 @@ const ReportAd = ({
     'Other'
   ];
 
-  const handleSubmit = () => {
+    const handleSubmit = async () => {
     if (!reportReason) {
       setSnackbarMessage('Please select a reason for reporting');
       setSnackbarSeverity('error');
@@ -46,28 +47,27 @@ const ReportAd = ({
       return;
     }
 
-    const reportData = {
-      reason: reportReason,
-      description: reportDescription,
-      vehicleId: vehicleData.id,
-      vehicleMake: vehicleData.make,
-      vehicleModel: vehicleData.model,
-      reportedAt: new Date().toISOString()
-    };
+    try {
+      await buyVehicleApiService.reportAd({
+        adId: vehicleData._id,
+        issue: reportReason,
+        details: reportDescription
+      });
 
-    if (onSubmit) {
-      onSubmit(reportData);
+      setReportReason('');
+      setReportDescription('');
+      setSnackbarMessage('Report submitted successfully. We will review it shortly.');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } catch (error) {
+      setSnackbarMessage(error.message || 'Failed to submit report');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
-
-    setReportReason('');
-    setReportDescription('');
-    setSnackbarMessage('Report submitted successfully. We will review it shortly.');
-    setSnackbarSeverity('success');
-    setSnackbarOpen(true);
-
-    setTimeout(() => {
-      onClose();
-    }, 1000);
   };
 
   const handleCancel = () => {
@@ -152,8 +152,8 @@ const ReportAd = ({
                       </Typography>
                     </div>
                     <div className="tw:flex tw:flex-wrap tw:gap-2">
-                      <span className="tw:bg-white tw:text-slate-700 tw:px-4 tw:py-2 tw:rounded-full tw:text-sm tw:font-medium tw:shadow-sm">
-                        #ad_245es5d9
+                      <span className="tw:bg-white tw:text-slate-700 tw:px-4 tw:py-2 tw:rounded-full tw:text-sm tw:font-medium tw:shadow-sm tw-select-all">
+                        {vehicleData._id ? `${vehicleData._id}` : "N/A"}
                       </span>
                     </div>
                   </div>
