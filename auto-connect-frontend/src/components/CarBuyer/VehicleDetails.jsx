@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -32,6 +32,7 @@ import {
 import WhatsAppSVG from '../../assets/images/whatsapp.svg';
 import ReportAd from '@components/CarBuyer/ReportAd';
 import Inquire from '@components/CarBuyer/Inquire';
+import buyVehicleAPI from "../../services/buyVehicleApiService";
 
 // Import SVG icons (these would be your actual imports)
 const MobileIcon = () => (
@@ -72,12 +73,66 @@ const VehicleDetails = ({ vehicle }) => {
     setShowMobile(!showMobile);
   };
 
-  const handleSaveAd = () => {
-    setIsSaved(!isSaved);
-    setSnackbarMessage(isSaved ? 'Advertisement removed from saved items' : 'Advertisement saved successfully');
+  useEffect(() => {
+  if (vehicle && vehicle._id) {
+    // Store vehicle ID for debugging
+    console.log("Checking if vehicle is saved:", vehicle._id);
+    
+    // Define async function to check saved status
+    async function checkSavedStatus() {
+      try {
+        // Get all saved ads
+        const savedAds = await buyVehicleAPI.fetchSavedAds();
+        console.log("Retrieved saved ads:", savedAds);
+        
+        // Check if current vehicle is in saved ads
+        let found = false;
+        
+        if (Array.isArray(savedAds)) {
+          savedAds.forEach(ad => {
+            // Check different possible formats of vehicleId
+            if (
+              (ad.vehicleId === vehicle._id) || 
+              (ad.vehicleId?._id === vehicle._id) ||
+              (ad._id === vehicle._id)
+            ) {
+              found = true;
+              console.log("Found vehicle in saved ads:", ad);
+            }
+          });
+        }
+        
+        console.log("Setting isSaved to:", found);
+        setIsSaved(found);
+      } catch (error) {
+        console.error("Error checking saved status:", error);
+        setIsSaved(false);
+      }
+    }
+    
+    // Call the async function
+    checkSavedStatus();
+  }
+}, [vehicle]);
+
+ const handleSaveAd = async () => {
+  try {
+    console.log("Saving vehicle:", vehicle._id);
+    await buyVehicleAPI.saveAd(vehicle._id);
+    
+    // Update the state immediately
+    setIsSaved(true);
+    
+    setSnackbarMessage('Advertisement saved successfully');
     setSnackbarSeverity('success');
     setSnackbarOpen(true);
-  };
+  } catch (error) {
+    console.error("Error saving ad:", error);
+    setSnackbarMessage(error.message || 'Failed to save advertisement');
+    setSnackbarSeverity('error');
+    setSnackbarOpen(true);
+  }
+};
 
   const handleReportAd = () => {
     setReportDialogOpen(true);
