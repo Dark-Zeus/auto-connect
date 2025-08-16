@@ -53,6 +53,7 @@ const VehicleDetails = ({ vehicle }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [inquireDialogOpen, setInquireDialogOpen] = useState(false);
+  const [alreadyReported, setAlreadyReported] = useState(false);
 
   const formatPrice = (price) => {
     if (!price) return 'Negotiable';
@@ -141,14 +142,30 @@ const VehicleDetails = ({ vehicle }) => {
     setReportDialogOpen(true);
   };
 
-  const handleReportSubmit = (reportData) => {
-    // Handle the report submission - send to backend, etc.
-    console.log('Report submitted:', reportData);
-    
-    // Show success message
-    setSnackbarMessage('Report submitted successfully. We will review it shortly.');
-    setSnackbarSeverity('success');
-    setSnackbarOpen(true);
+  const handleReportSubmit = async (reportData) => {
+    try {
+      await buyVehicleAPI.reportAd({
+        adId: vehicleData._id,
+        issue: reportData.issue,
+        details: reportData.details
+      });
+      setReportDialogOpen(false);
+      setSnackbarMessage('Report submitted successfully. We will review it shortly.');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      if (error.message === "You have already reported this ad.") {
+        setReportDialogOpen(false);
+        setSnackbarMessage(error.message);
+        setSnackbarSeverity('info');
+        setSnackbarOpen(true);
+        setAlreadyReported(true);
+      } else {
+        setSnackbarMessage(error.message || 'Failed to submit report');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    }
   };
 
   const handleReportClose = () => {
@@ -157,6 +174,7 @@ const VehicleDetails = ({ vehicle }) => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+    setAlreadyReported(false);
   };
 
   const [animatedViews, setAnimatedViews] = useState(0);
@@ -408,8 +426,12 @@ const VehicleDetails = ({ vehicle }) => {
       <ReportAd
         open={reportDialogOpen}
         onClose={handleReportClose}
-        onSubmit={handleReportSubmit}
-        vehicleData={vehicleData}
+        vehicleData={{
+          _id: vehicleData._id,
+          make: vehicleData.make,
+          model: vehicleData.model,
+          year: vehicleData.year
+        }}
       />
 
       {/* Snackbar for notifications */}
