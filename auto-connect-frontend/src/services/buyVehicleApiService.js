@@ -150,40 +150,24 @@ const buyVehicleAPI = {
   },
 
   fetchSavedAds: async () => {
-  try {
-    const token = getAuthToken();
-    if (!token) throw new Error("Authentication token not found. Please log in again.");
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Authentication token not found. Please log in again.");
 
-    // Add debug log to see the token
-    console.log("Using token for fetchSavedAds:", token.substring(0, 10) + "...");
+      const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/saved`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/saved`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    // Log the raw response
-    console.log("Raw saved ads response status:", response.status);
-    
-    const data = await handleResponse(response);
-    console.log("Full saved ads response:", data);
-    
-    if (!data.success) {
-      console.error("API reported failure:", data.message);
+      const data = await handleResponse(response);
+      if (!data.success) return [];
+      if (!data.data || !Array.isArray(data.data)) return [];
+      return data.data;
+    } catch (error) {
+      console.error("Error fetching saved ads:", error);
       return [];
     }
-    
-    if (!data.data || !Array.isArray(data.data)) {
-      console.error("Unexpected response format for saved ads:", data);
-      return [];
-    }
-    
-    return data.data;
-  } catch (error) {
-    console.error("Error fetching saved ads:", error);
-    return [];
-  }
-},
+  },
 
 // Add this new method to check if a specific vehicle is saved
 checkIfSaved: async (vehicleId) => {
