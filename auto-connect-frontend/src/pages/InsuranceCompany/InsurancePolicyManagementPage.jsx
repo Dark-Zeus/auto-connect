@@ -58,8 +58,11 @@ const InsurancePolicyManagement = () => {
 
       {/* Page Header */}
       <div className="page-header">
-        <h2>Policy Management</h2>
-        <p>View, search, and filter all insurance policies. Click on a policy to view details.</p>
+        
+          <h2>Policy Management</h2>
+          <p>View, search, and filter all insurance policies. Click on a policy to view details.</p>
+          <button>Add New Policy</button>
+  
       </div>
       
       {/* Search and Filter Section */}

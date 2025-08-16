@@ -140,106 +140,162 @@ const InsurancePolicyDetailsPage = () => {
         </div>
       </div>
 
-      {/* Vehicle & Policy Information Section */}
+      {/* Customer Personal Details Section */}
       <div className="section-card">
-        <h3>Vehicle & Policy Information</h3>
-        <div className="policy-info-grid">
-          <div className="info-item">
-            <span className="info-icon">📋</span>
-            <div className="info-content">
-              <p className="info-label">Policy Number</p>
-              <p className="info-value">{policyDetails.policyNumber}</p>
+        <h3>Customer Personal Details</h3>
+        <div className="details-grid">
+          <div className="detail-item">
+            <span className="detail-icon">👤</span>
+            <div className="detail-content">
+              <p className="detail-label">Vehicle Owner's Name</p>
+              <p className="detail-value">{policyDetails.customerName}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">👤</span>
-            <div className="info-content">
-              <p className="info-label">Customer Name</p>
-              <p className="info-value">{policyDetails.customerName}</p>
+          <div className="detail-item">
+            <span className="detail-icon">🆔</span>
+            <div className="detail-content">
+              <p className="detail-label">NIC Number</p>
+              <p className="detail-value">{policyDetails.nic}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">🚗</span>
-            <div className="info-content">
-              <p className="info-label">Vehicle Number</p>
-              <p className="info-value">{policyDetails.vehicleNumber}</p>
+          <div className="detail-item">
+            <span className="detail-icon">📍</span>
+            <div className="detail-content">
+              <p className="detail-label">Address</p>
+              <p className="detail-value">{policyDetails.address}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">🚙</span>
-            <div className="info-content">
-              <p className="info-label">Vehicle Model</p>
-              <p className="info-value">{policyDetails.vehicleModel}</p>
+          <div className="detail-item">
+            <span className="detail-icon">📧</span>
+            <div className="detail-content">
+              <p className="detail-label">Email Address</p>
+              <p className="detail-value">{policyDetails.email}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">🛡️</span>
-            <div className="info-content">
-              <p className="info-label">Policy Type</p>
-              <p className="info-value">{policyDetails.policyType}</p>
-            </div>
-          </div>
-          <div className="info-item">
-            <span className="info-icon">💰</span>
-            <div className="info-content">
-              <p className="info-label">Premium Amount</p>
-              <p className="info-value">LKR {policyDetails.premium.toLocaleString()}</p>
-            </div>
-          </div>
-          <div className="info-item">
-            <span className="info-icon">📅</span>
-            <div className="info-content">
-              <p className="info-label">Policy Start Date</p>
-              <p className="info-value">{policyDetails.startDate}</p>
-            </div>
-          </div>
-          <div className="info-item">
-            <span className="info-icon">📅</span>
-            <div className="info-content">
-              <p className="info-label">Policy End Date</p>
-              <p className="info-value">{policyDetails.endDate}</p>
+          <div className="detail-item">
+            <span className="detail-icon">📞</span>
+            <div className="detail-content">
+              <p className="detail-label">Contact Number</p>
+              <p className="detail-value">{policyDetails.contactNo}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Customer Details Section */}
+      {/* Vehicle Information Section */}
       <div className="section-card">
-        <h3>Customer Details</h3>
-        <div className="policy-info-grid">
-          <div className="info-item">
-            <span className="info-icon">👤</span>
-            <div className="info-content">
-              <p className="info-label">Full Name</p>
-              <p className="info-value">{policyDetails.customerName}</p>
+        <h3>Vehicle Information</h3>
+        <div className="details-grid">
+          <div className="detail-item">
+            <span className="detail-icon">🚗</span>
+            <div className="detail-content">
+              <p className="detail-label">Vehicle Type</p>
+              <p className="detail-value">{policyDetails.vehicleType}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">🆔</span>
-            <div className="info-content">
-              <p className="info-label">NIC Number</p>
-              <p className="info-value">{policyDetails.nic}</p>
+          <div className="detail-item">
+            <span className="detail-icon">🔢</span>
+            <div className="detail-content">
+              <p className="detail-label">Vehicle Number</p>
+              <p className="detail-value">{policyDetails.vehicleNumber}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">📍</span>
-            <div className="info-content">
-              <p className="info-label">Address</p>
-              <p className="info-value">{policyDetails.address}</p>
+          <div className="detail-item">
+            <span className="detail-icon">📋</span>
+            <div className="detail-content">
+              <p className="detail-label">Vehicle Registration Number</p>
+              <p className="detail-value">{policyDetails.registrationNumber}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">📞</span>
-            <div className="info-content">
-              <p className="info-label">Contact Number</p>
-              <p className="info-value">{policyDetails.contactNo}</p>
+          <div className="detail-item">
+            <span className="detail-icon">⚙️</span>
+            <div className="detail-content">
+              <p className="detail-label">Engine Capacity</p>
+              <p className="detail-value">{policyDetails.engineCapacity}</p>
             </div>
           </div>
-          <div className="info-item">
-            <span className="info-icon">📧</span>
-            <div className="info-content">
-              <p className="info-label">Email Address</p>
-              <p className="info-value">{policyDetails.email}</p>
+          <div className="detail-item">
+            <span className="detail-icon">🔧</span>
+            <div className="detail-content">
+              <p className="detail-label">Chassis Number</p>
+              <p className="detail-value">{policyDetails.chassisNumber}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">🚙</span>
+            <div className="detail-content">
+              <p className="detail-label">Vehicle Model</p>
+              <p className="detail-value">{policyDetails.vehicleModel}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">🏭</span>
+            <div className="detail-content">
+              <p className="detail-label">Vehicle Make</p>
+              <p className="detail-value">{policyDetails.vehicleMake}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">📅</span>
+            <div className="detail-content">
+              <p className="detail-label">Manufacture Year</p>
+              <p className="detail-value">{policyDetails.manufactureYear}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">⛽</span>
+            <div className="detail-content">
+              <p className="detail-label">Fuel Type</p>
+              <p className="detail-value">{policyDetails.fuelType}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">💰</span>
+            <div className="detail-content">
+              <p className="detail-label">Estimated Value</p>
+              <p className="detail-value">LKR {policyDetails.estimatedValue.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Policy Information Section */}
+      <div className="section-card">
+        <h3>Policy Information</h3>
+        <div className="details-grid">
+          <div className="detail-item">
+            <span className="detail-icon">📋</span>
+            <div className="detail-content">
+              <p className="detail-label">Policy Number</p>
+              <p className="detail-value">{policyDetails.policyNumber}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">🛡️</span>
+            <div className="detail-content">
+              <p className="detail-label">Policy Type</p>
+              <p className="detail-value">{policyDetails.policyType}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">💵</span>
+            <div className="detail-content">
+              <p className="detail-label">Premium Amount</p>
+              <p className="detail-value">LKR {policyDetails.premium.toLocaleString()}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">📅</span>
+            <div className="detail-content">
+              <p className="detail-label">Policy Start Date</p>
+              <p className="detail-value">{policyDetails.startDate}</p>
+            </div>
+          </div>
+          <div className="detail-item">
+            <span className="detail-icon">📅</span>
+            <div className="detail-content">
+              <p className="detail-label">Policy End Date</p>
+              <p className="detail-value">{policyDetails.endDate}</p>
             </div>
           </div>
         </div>
@@ -250,44 +306,44 @@ const InsurancePolicyDetailsPage = () => {
         <h3>Current Active Claim</h3>
         {currentClaim ? (
           <div>
-            <div className="policy-info-grid">
-              <div className="info-item">
-                <span className="info-icon">🆔</span>
-                <div className="info-content">
-                  <p className="info-label">Claim ID</p>
-                  <p className="info-value">{currentClaim.id}</p>
+            <div className="details-grid">
+              <div className="detail-item">
+                <span className="detail-icon">🆔</span>
+                <div className="detail-content">
+                  <p className="detail-label">Claim ID</p>
+                  <p className="detail-value">{currentClaim.id}</p>
                 </div>
               </div>
-              <div className="info-item">
-                <span className="info-icon">📝</span>
-                <div className="info-content">
-                  <p className="info-label">Claim Type</p>
-                  <p className="info-value">{currentClaim.type}</p>
+              <div className="detail-item">
+                <span className="detail-icon">📝</span>
+                <div className="detail-content">
+                  <p className="detail-label">Claim Type</p>
+                  <p className="detail-value">{currentClaim.type}</p>
                 </div>
               </div>
-              <div className="info-item">
-                <span className="info-icon">💵</span>
-                <div className="info-content">
-                  <p className="info-label">Claim Amount</p>
-                  <p className="info-value">LKR {currentClaim.amount.toLocaleString()}</p>
+              <div className="detail-item">
+                <span className="detail-icon">💵</span>
+                <div className="detail-content">
+                  <p className="detail-label">Claim Amount</p>
+                  <p className="detail-value">LKR {currentClaim.amount.toLocaleString()}</p>
                 </div>
               </div>
-              <div className="info-item">
-                <span className="info-icon">📊</span>
-                <div className="info-content">
-                  <p className="info-label">Claim Status</p>
-                  <p className="info-value">
+              <div className="detail-item">
+                <span className="detail-icon">📊</span>
+                <div className="detail-content">
+                  <p className="detail-label">Claim Status</p>
+                  <p className="detail-value">
                     <span className={`status-badge ${getStatusBadgeClass(currentClaim.status)}`}>
                       {currentClaim.status}
                     </span>
                   </p>
                 </div>
               </div>
-              <div className="info-item">
-                <span className="info-icon">📅</span>
-                <div className="info-content">
-                  <p className="info-label">Claim Date</p>
-                  <p className="info-value">{currentClaim.date}</p>
+              <div className="detail-item">
+                <span className="detail-icon">📅</span>
+                <div className="detail-content">
+                  <p className="detail-label">Claim Date</p>
+                  <p className="detail-value">{currentClaim.date}</p>
                 </div>
               </div>
             </div>

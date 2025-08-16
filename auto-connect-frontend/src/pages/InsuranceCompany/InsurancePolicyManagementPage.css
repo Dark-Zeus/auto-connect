@@ -4,8 +4,11 @@
 
 /* Page Header */
 .page-header {
+  display: flex;
+  flex-direction: row;
   margin-bottom: 1rem;
   padding: 1rem;
+  text-align: flex-start;
 }
 
 .page-header h2 {
