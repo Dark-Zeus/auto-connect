@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+import buyVehicleApiService from '../../services/buyVehicleApiService';
 
-const VehicleFilterForm = () => {
+const VehicleFilterForm = ({ onFilter }) => {
   const [formData, setFormData] = useState({
+    urgency: 'false',
     district: '',
     city: '',
-    type: '',
-    manufacturer: '',
+    vehicleType: '',
+    make: '',
     model: '',
     minYear: '',
     maxYear: '',
     transmission: '',
-    fuel: '',
+    fuelType: '',
     condition: '',
     minPrice: '',
     maxPrice: ''
@@ -50,9 +52,11 @@ const VehicleFilterForm = () => {
 
   const fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric', 'CNG'];
 
-  const transmissionTypes = ['Manual', 'Automatic', 'CVT', 'Semi-Automatic'];
+  const transmissionTypes = ['Manual', 'Automatic', 'Triptonic', 'Other'];
 
   const conditionTypes = ['Brand New', 'Used', 'Reconditioned'];
+
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,10 +66,18 @@ const VehicleFilterForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Filter Data:', formData);
-    // Handle form submission here
+    setLoading(true);
+    try {
+      const res = await buyVehicleApiService.filterVehicles(formData);
+      if (onFilter) {
+        onFilter(res.data || []);
+      }
+    } catch (err) {
+      if (onFilter) onFilter([]);
+    }
+    setLoading(false);
   };
 
   const handleReset = () => {
@@ -73,13 +85,13 @@ const VehicleFilterForm = () => {
       urgency: 'false',
       district: '',
       city: '',
-      type: '',
-      manufacturer: '',
+      vehicleType: '',
+      make: '',
       model: '',
       minYear: '',
       maxYear: '',
       transmission: '',
-      fuel: '',
+      fuelType: '',
       condition: '',
       minPrice: '',
       maxPrice: ''
@@ -98,7 +110,7 @@ const VehicleFilterForm = () => {
         <p className="tw:text-blue-100 tw:mt-2">Find your perfect vehicle</p>
       </div>
 
-      <div className="tw:p-6 tw:space-y-6">
+      <form className="tw:p-6 tw:space-y-6" onSubmit={handleSubmit}>
         {/* Urgent Checkbox */}
         <div className="tw:space-y-2">
           <label className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:font-medium tw:text-gray-700">
@@ -168,8 +180,8 @@ const VehicleFilterForm = () => {
             Vehicle Type
           </label>
           <select
-            name="type"
-            value={formData.type}
+            name="vehicleType"
+            value={formData.vehicleType}
             onChange={handleInputChange}
             className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
           >
@@ -190,7 +202,7 @@ const VehicleFilterForm = () => {
           </label>
           <select
             name="manufacturer"
-            value={formData.manufacturer}
+            value={formData.make}
             onChange={handleInputChange}
             className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
           >
@@ -283,8 +295,8 @@ const VehicleFilterForm = () => {
             Fuel Type
           </label>
           <select
-            name="fuel"
-            value={formData.fuel}
+            name="fuelType"
+            value={formData.fuelType}
             onChange={handleInputChange}
             className="tw:w-full tw:p-3 tw:border tw:border-gray-300 tw:rounded-lg tw:focus:ring-2 tw:focus:ring-blue-500 tw:focus:border-transparent tw:bg-white tw:text-gray-700"
           >
@@ -367,7 +379,7 @@ const VehicleFilterForm = () => {
             Reset
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
