@@ -104,6 +104,88 @@ const buyVehicleAPI = {
       throw error;
     }
   },
+
+  saveAd: async (vehicleId) => {
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+      const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ vehicleId })
+      });
+
+      const data = await handleResponse(response);
+      return handleBuyVehicleSuccess(data, "saved");
+    } catch (error) {
+      handleBuyVehicleError(error, "save ad");
+      throw error;
+    }
+  },
+
+  fetchSavedAds: async () => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+    // Add debug log to see the token
+    console.log("Using token for fetchSavedAds:", token.substring(0, 10) + "...");
+
+    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/saved`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // Log the raw response
+    console.log("Raw saved ads response status:", response.status);
+    
+    const data = await handleResponse(response);
+    console.log("Full saved ads response:", data);
+    
+    if (!data.success) {
+      console.error("API reported failure:", data.message);
+      return [];
+    }
+    
+    if (!data.data || !Array.isArray(data.data)) {
+      console.error("Unexpected response format for saved ads:", data);
+      return [];
+    }
+    
+    return data.data;
+  } catch (error) {
+    console.error("Error fetching saved ads:", error);
+    return [];
+  }
+},
+
+// Add this new method to check if a specific vehicle is saved
+checkIfSaved: async (vehicleId) => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found");
+
+    // Try to find this vehicle in saved ads
+    const savedAds = await buyVehicleAPI.fetchSavedAds();
+    
+    // Simple check if this ID exists in saved vehicles
+    for (const ad of savedAds) {
+      if ((ad.vehicleId === vehicleId) || 
+          (ad.vehicleId && ad.vehicleId._id === vehicleId)) {
+        return true;
+      }
+    }
+    
+    return false;
+  } catch (error) {
+    console.error("Error checking if vehicle is saved:", error);
+    return false;
+  }
+},
 };
 
 export default buyVehicleAPI;
