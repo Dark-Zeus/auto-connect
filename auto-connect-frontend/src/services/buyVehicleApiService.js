@@ -127,6 +127,28 @@ const buyVehicleAPI = {
     }
   },
 
+  unsaveAd: async (vehicleId) => {
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+      const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/unsave`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ vehicleId })
+      });
+
+      const data = await handleResponse(response);
+      return handleBuyVehicleSuccess(data, "unsaved");
+    } catch (error) {
+      handleBuyVehicleError(error, "unsave ad");
+      throw error;
+    }
+  },
+
   fetchSavedAds: async () => {
   try {
     const token = getAuthToken();
