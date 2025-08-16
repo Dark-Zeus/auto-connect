@@ -1,5 +1,6 @@
 import ListVehicle from "../models/listVehicle.model.js";
 import SavedAd from "../models/saveListedVehicle.model.js";
+import ReportAd from "../models/reportAds.model.js";
 
 export const getAvailableVehicles = async (req, res) => {
   try {
@@ -137,6 +138,44 @@ export const filterVehicles = async (req, res) => {
     res.status(200).json({ success: true, data: vehicles });
   } catch (err) {
     console.error("Error filtering vehicles:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const reportAd = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const { adId, issue, details } = req.body;
+
+    if (!userId || !adId || !issue) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    const report = new ReportAd({
+      adId,
+      userId,
+      issue,
+      details
+    });
+
+    await report.save();
+    res.status(201).json({ success: true, message: "Report submitted successfully" });
+  } catch (err) {
+    console.error("Error reporting ad:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const checkIfReported = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const { adId } = req.query;
+    if (!userId || !adId) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+    const alreadyReported = await ReportAd.findOne({ userId, adId });
+    res.status(200).json({ success: true, reported: !!alreadyReported });
+  } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
