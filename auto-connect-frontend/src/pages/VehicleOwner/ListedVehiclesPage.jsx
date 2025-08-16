@@ -52,6 +52,11 @@ const ListedVehiclesPage = () => {
     //<ListedVehicleCard key={index} />
   //));
 
+  const handleFilterResults = (filteredVehicles) => {
+    setAvailableVehicles(filteredVehicles);
+    setCurrentPage(1); // Reset to first page on filter
+  };
+
   const totalPages = Math.ceil(availableVehicles.length / vehiclesPerPage);
   const indexOfLast = currentPage * vehiclesPerPage;
   const indexOfFirst = indexOfLast - vehiclesPerPage;
@@ -68,14 +73,18 @@ const ListedVehiclesPage = () => {
       <div className="tw:w-5/6 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:flex tw:flex-row tw:gap-2 tw:items-start">
         {/* Sidebar Filter */}
         <div className="tw:w-1/3">
-          <SearchVehicleFilter />
+          <SearchVehicleFilter onFilter={handleFilterResults} />
         </div>
 
         {/* Cards + Pagination */}
         <div className="tw:w-2/3 tw:flex tw:flex-col">
-          {currentVehicles.map((vehicle) => (
-            <ListedVehicleCard key={vehicle._id} vehicle={vehicle} />
-          ))}
+          {currentVehicles.length === 0 ? (
+            <div className="tw-text-gray-500 tw-text-lg tw-mt-10">No vehicles found.</div>
+          ) : (
+            currentVehicles.map((vehicle) => (
+              <ListedVehicleCard key={vehicle._id} vehicle={vehicle} />
+            ))
+          )}
 
           <Pagination
             currentPage={currentPage}
