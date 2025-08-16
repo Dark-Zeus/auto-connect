@@ -115,24 +115,27 @@ const VehicleDetails = ({ vehicle }) => {
   }
 }, [vehicle]);
 
- const handleSaveAd = async () => {
-  try {
-    console.log("Saving vehicle:", vehicle._id);
-    await buyVehicleAPI.saveAd(vehicle._id);
-    
-    // Update the state immediately
-    setIsSaved(true);
-    
-    setSnackbarMessage('Advertisement saved successfully');
-    setSnackbarSeverity('success');
-    setSnackbarOpen(true);
-  } catch (error) {
-    console.error("Error saving ad:", error);
-    setSnackbarMessage(error.message || 'Failed to save advertisement');
-    setSnackbarSeverity('error');
-    setSnackbarOpen(true);
-  }
-};
+  const handleSaveAd = async () => {
+    try {
+      if (isSaved) {
+        await buyVehicleAPI.unsaveAd(vehicle._id);
+        setIsSaved(false);
+        setSnackbarMessage('Advertisement unsaved successfully');
+        setSnackbarSeverity('info');
+      } else {
+        await buyVehicleAPI.saveAd(vehicle._id);
+        setIsSaved(true);
+        setSnackbarMessage('Advertisement saved successfully');
+        setSnackbarSeverity('success');
+      }
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error toggling save ad:", error);
+      setSnackbarMessage(error.message || 'Failed to update advertisement');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
 
   const handleReportAd = () => {
     setReportDialogOpen(true);
