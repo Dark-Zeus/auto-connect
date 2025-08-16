@@ -89,3 +89,54 @@ export const getSavedAds = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const filterVehicles = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const {
+      urgency,
+      district,
+      city,
+      vehicleType,
+      make,
+      model,
+      minYear,
+      maxYear,
+      transmission,
+      fuelType,
+      condition,
+      minPrice,
+      maxPrice
+    } = req.body;
+
+    const filter = {
+      userId: { $ne: userId },
+      status: 1
+    };
+
+    // Urgency: promotion === 4
+    if (urgency === 'true' || urgency === true) filter.promotion = 4;
+    if (district) filter.district = district;
+    if (city) filter.city = { $regex: city, $options: "i" };
+    if (vehicleType) filter.vehicleType = vehicleType;
+    if (make) filter.make = make;
+    if (model) filter.model = { $regex: model, $options: "i" };
+    if (transmission) filter.transmission = transmission;
+    if (fuelType) filter.fuelType = fuelType;
+    if (condition) filter.condition = condition;
+    if (minYear) filter.year = { ...filter.year, $gte: Number(minYear) };
+    if (maxYear) filter.year = { ...filter.year, $lte: Number(maxYear) };
+    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
+    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+
+    const vehicles = await ListVehicle.find(filter).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: vehicles });
+  } catch (err) {
+    console.error("Error filtering vehicles:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
