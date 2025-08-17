@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './InsuranceModuleCSS/InsuranceClaimsManagementPage.css';
+import './InsuranceClaimsManagementPage.css';
 import { useNavigate } from "react-router-dom";
 import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
 
@@ -29,7 +29,7 @@ const InsuranceClaimsManagement = () => {
   const filteredClaims = claims.filter(claim => {
     const searchMatch =
       claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      claim.vehicle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      claim.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       claim.customer.toLowerCase().includes(searchTerm.toLowerCase());
 
     const statusMatch = statusFilter ? claim.status.toLowerCase() === statusFilter.toLowerCase() : true;
@@ -61,7 +61,7 @@ const InsuranceClaimsManagement = () => {
       <div className="filter-section">
         <input
           type="text"
-          placeholder="Search by Claim ID, Vehicle or Customer..."
+          placeholder="Search by Claim ID, Vehicle number or Customer..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
@@ -104,11 +104,12 @@ const InsuranceClaimsManagement = () => {
             <tr>
               <th>Claim ID</th>
               <th>Customer</th>
-            <th>Vehicle</th>
-            <th>Type</th>
-            <th>Amount (LKR)</th>
-            <th>Status</th>
-            <th>Date</th>
+              <th>Vehicle</th>
+              <th>VehicleNumber</th>
+              <th>Type</th>
+              <th>Amount (LKR)</th>
+              <th>Status</th>
+              <th>Date</th>
           </tr>
         </thead>
         <tbody>
@@ -121,6 +122,7 @@ const InsuranceClaimsManagement = () => {
                 <td>{claim.id}</td>
                 <td>{claim.customer}</td>
                 <td>{claim.vehicle}</td>
+                <td>{claim.vehicleNumber}</td>
                 <td>{claim.type}</td>
                 <td>{claim.amount.toLocaleString()}</td>
                 <td>{claim.status}</td>

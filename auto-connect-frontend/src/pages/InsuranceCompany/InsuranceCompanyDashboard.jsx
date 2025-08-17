@@ -10,14 +10,17 @@ import {
   Filter,
   BarChart3
 } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, Sector } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
-import './InsuranceModuleCSS/InsuranceCompanyDashboard.css';
+import './InsuranceCompanyDashboard.css';
 
 const InsuranceCompanyDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
+  const [activePolicyIndex, setActivePolicyIndex] = useState(0);
+  const [activeClaimIndex, setActiveClaimIndex] = useState(0);
+  const renderActiveShape = (props) => <Sector {...props} />;
 
   const dashboardStats = {
     totalPolicies: 12458,
@@ -38,7 +41,7 @@ const InsuranceCompanyDashboard = () => {
 
   const dashboardCards = [
     { title: "Claims Management", description: "Process, review and manage insurance claims efficiently", icon: <FileText />, iconBg: "linear-gradient(45deg, #7AB2D3, #4A628A)", buttonText: "Manage Claims", buttonColor: "btn-blue", action: "manage-claims", stats: `${dashboardStats.activeClaims} Active`, navigateTo: "/claimsmanagement" },
-    { title: "Policy Management", description: "Oversee all insurance policies and renewals", icon: <Shield />, iconBg: "linear-gradient(45deg, #B9E5E8, #7AB2D3)", buttonText: "View Policies", buttonColor: "btn-teal", action: "manage-policies", stats: `${dashboardStats.totalPolicies.toLocaleString()} Policies` },
+    { title: "Policy Management", description: "Oversee all insurance policies and renewals", icon: <Shield />, iconBg: "linear-gradient(45deg, #B9E5E8, #7AB2D3)", buttonText: "View Policies", buttonColor: "btn-teal", action: "manage-policies", stats: `${dashboardStats.totalPolicies.toLocaleString()} Policies`, navigateTo: "/policymanagement" },
     { title: "Customer Management", description: "Manage customer relationships and communications", icon: <Users />, iconBg: "linear-gradient(45deg, #4A628A, #7AB2D3)", buttonText: "View Customers", buttonColor: "btn-indigo", action: "manage-customers", stats: `${dashboardStats.totalCustomers.toLocaleString()} Customers` },
     { title: "Analytics & Reports", description: "Generate detailed analytics and business reports", icon: <BarChart3 />, iconBg: "linear-gradient(45deg, #B9E5E8, #4A628A)", buttonText: "View Analytics", buttonColor: "btn-purple", action: "analytics", stats: "Real-time Data" },
     { title: "Fraud Detection", description: "Monitor and investigate suspicious claims and activities", icon: <AlertTriangle />, iconBg: "linear-gradient(45deg, #4A628A, #B9E5E8)", buttonText: "Fraud Center", buttonColor: "btn-red", action: "fraud-detection", stats: "12 Flagged Cases" }
@@ -116,37 +119,147 @@ const InsuranceCompanyDashboard = () => {
           ))}
         </div>
 
-        {/* Charts Section */}
+              {/* Enhanced Charts Section */}
         <div className="charts-section">
-          <div className="chart-card">
-            <h3 className="chart-title">New Policies by Vehicle Category</h3>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie data={policyData} dataKey="value" nameKey="name" outerRadius={100}>
-                  {policyData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="enhanced-chart-card">
+            <div className="chart-header">
+              <Shield className="chart-icon" />
+              <h3 className="enhanced-chart-title">New Policies by Vehicle Category</h3>
+            </div>
+            <div className="enhanced-chart-container">
+              <ResponsiveContainer width="100%" height={280}>
+                <PieChart>
+                  <Pie
+                    activeIndex={activePolicyIndex}
+                    activeShape={renderActiveShape}
+                    data={policyData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                    onMouseEnter={(_, index) => setActivePolicyIndex(index)}
+                    animationDuration={400}
+                  >
+                    {policyData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                        cursor="pointer"
+                      />
+                    ))}
+                  </Pie>
+                  {/* Center text */}
+                  <text
+                    x="50%"
+                    y="48%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="pie-chart-center-text"
+                    fill="#2c3e50"
+                    fontSize="18"
+                    fontWeight="600"
+                  >
+                    {policyData[activePolicyIndex]?.name}
+                  </text>
+                  <text
+                    x="50%"
+                    y="58%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="pie-chart-center-subtext"
+                    fill="#6c757d"
+                    fontSize="14"
+                  >
+                    {policyData[activePolicyIndex]?.value}
+                  </text>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="enhanced-legend">
+                {policyData.map((entry, index) => (
+                  <div key={index} className="enhanced-legend-item">
+                    <span
+                      className="legend-color"
+                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    ></span>
+                    <span className="legend-text">{entry.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="chart-card">
-            <h3 className="chart-title">Claims by Vehicle Category</h3>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie data={claimData} dataKey="value" nameKey="name" outerRadius={100}>
-                  {claimData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+
+          <div className="enhanced-chart-card">
+            <div className="chart-header">
+              <FileText className="chart-icon" />
+              <h3 className="enhanced-chart-title">Claims by Vehicle Category</h3>
+            </div>
+            <div className="enhanced-chart-container">
+              <ResponsiveContainer width="100%" height={280}>
+                <PieChart>
+                  <Pie
+                    activeIndex={activeClaimIndex}
+                    activeShape={renderActiveShape}
+                    data={claimData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                    onMouseEnter={(_, index) => setActiveClaimIndex(index)}
+                    animationDuration={400}
+                  >
+                    {claimData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                        cursor="pointer"
+                      />
+                    ))}
+                  </Pie>
+                  {/* Center text */}
+                  <text
+                    x="50%"
+                    y="48%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="pie-chart-center-text"
+                    fill="#2c3e50"
+                    fontSize="18"
+                    fontWeight="600"
+                  >
+                    {claimData[activeClaimIndex]?.name}
+                  </text>
+                  <text
+                    x="50%"
+                    y="58%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="pie-chart-center-subtext"
+                    fill="#6c757d"
+                    fontSize="14"
+                  >
+                    {claimData[activeClaimIndex]?.value}
+                  </text>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="enhanced-legend">
+                {claimData.map((entry, index) => (
+                  <div key={index} className="enhanced-legend-item">
+                    <span
+                      className="legend-color"
+                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    ></span>
+                    <span className="legend-text">{entry.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+
 
         {/* Recent Claims Table */}
         <div className="claims-section">
