@@ -780,6 +780,91 @@ export const getAvailableTimeSlots = catchAsync(async (req, res, next) => {
   }
 });
 
+// Helper function to send booking status update email
+const sendBookingStatusUpdateEmail = async (booking, status, message) => {
+  const customerName = `${booking.vehicleOwner.firstName} ${booking.vehicleOwner.lastName}`;
+  const serviceCenterName =
+    booking.serviceCenter.businessInfo?.businessName || "Service Center";
+
+  const statusMessages = {
+    CONFIRMED: "Your booking has been confirmed!",
+    IN_PROGRESS: "Work has started on your vehicle",
+    COMPLETED: "Your vehicle service has been completed",
+    REJECTED: "Your booking has been rejected",
+    CANCELLED: "Your booking has been cancelled",
+  };
+
+  const subject = `Booking Update - ${booking.bookingId}`;
+
+  const emailContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #2196F3;">Booking Status Update</h2>
+      
+      <p>Dear ${customerName},</p>
+      
+      <p>${statusMessages[status] || "Your booking status has been updated"}</p>
+      
+      <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3>Booking Details:</h3>
+        <p><strong>Booking ID:</strong> ${booking.bookingId}</p>
+        <p><strong>Service Center:</strong> ${serviceCenterName}</p>
+        <p><strong>Vehicle:</strong> ${booking.vehicle.registrationNumber} (${
+    booking.vehicle.make
+  } ${booking.vehicle.model})</p>
+        <p><strong>New Status:</strong> <span style="color: #4CAF50; font-weight: bold;">${status}</span></p>
+        ${
+          booking.serviceCenterResponse?.proposedDate
+            ? `<p><strong>Proposed Date:</strong> ${new Date(
+                booking.serviceCenterResponse.proposedDate
+              ).toLocaleDateString()}</p>`
+            : ""
+        }
+        ${
+          booking.serviceCenterResponse?.proposedTimeSlot
+            ? `<p><strong>Proposed Time:</strong> ${booking.serviceCenterResponse.proposedTimeSlot}</p>`
+            : ""
+        }
+        ${
+          booking.serviceCenterResponse?.estimatedDuration
+            ? `<p><strong>Estimated Duration:</strong> ${booking.serviceCenterResponse.estimatedDuration}</p>`
+            : ""
+        }
+      </div>
+      
+      ${
+        message
+          ? `
+        <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h4>Message from Service Center:</h4>
+          <p>${message}</p>
+        </div>
+      `
+          : ""
+      }
+      
+      <p>If you have any questions, please contact the service center directly:</p>
+      <p><strong>Phone:</strong> ${
+        booking.serviceCenter.phone || "Not provided"
+      }</p>
+      <p><strong>Email:</strong> ${booking.serviceCenter.email}</p>
+      
+      <hr style="margin: 30px 0;">
+      <p style="color: #666; font-size: 12px;">
+        This is an automated notification from AutoConnect. Please do not reply to this email.
+      </p>
+    </div>
+  `;
+
+  await sendEmail({
+    email: booking.vehicleOwner.email,
+    subject: subject,
+    html: emailContent,
+    message: `Booking ${booking.bookingId} status updated to ${status}. ${
+      message ? "Message: " + message : ""
+    }`,
+  });
+};
+
 export default {
   createBooking,
   getUserBookings,
