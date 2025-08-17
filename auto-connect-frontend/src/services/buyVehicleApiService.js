@@ -258,6 +258,26 @@ reportAd: async ({ adId, issue, details }) => {
   }
 },
 
+incrementVehicleViews: async (vehicleId) => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/${vehicleId}/increment-views`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await handleResponse(response);
+    return data.views;
+  } catch (error) {
+    handleBuyVehicleError(error, "increment vehicle views");
+    throw error;
+  }
+},
+
 };
 
 export default buyVehicleAPI;
