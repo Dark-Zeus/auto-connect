@@ -138,8 +138,23 @@ const VehicleDetails = ({ vehicle }) => {
     }
   };
 
-  const handleReportAd = () => {
-    setReportDialogOpen(true);
+  const handleReportAd = async () => {
+    if (!vehicleData._id) return;
+    try {
+      const reported = await buyVehicleAPI.checkIfReported(vehicleData._id);
+      if (reported) {
+        setAlreadyReported(true);
+        setSnackbarMessage("You've already reported this advertisement.");
+        setSnackbarSeverity('info');
+        setSnackbarOpen(true);
+      } else {
+        setReportDialogOpen(true);
+      }
+    } catch (error) {
+      setSnackbarMessage(error.message || "Failed to check report status");
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
   };
 
   const handleReportSubmit = async (reportData) => {
