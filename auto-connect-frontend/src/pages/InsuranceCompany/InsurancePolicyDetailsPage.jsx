@@ -202,7 +202,7 @@ const InsurancePolicyDetailsPage = () => {
           <div className="detail-item">
             <span className="detail-icon">📋</span>
             <div className="detail-content">
-              <p className="detail-label">Vehicle Registration Number</p>
+              <p className="detail-label">Vehicle Reg-No</p>
               <p className="detail-value">{policyDetails.registrationNumber}</p>
             </div>
           </div>

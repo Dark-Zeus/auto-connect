@@ -152,6 +152,7 @@
   color: #1f2937;
   background: white;
   transition: border-color 0.3s ease, box-shadow 0.2s ease;
+  height: 50px !important;
 }
 
 .form-input:focus,

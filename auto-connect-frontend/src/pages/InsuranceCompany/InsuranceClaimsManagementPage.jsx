@@ -63,7 +63,7 @@ const InsuranceClaimsManagement = () => {
       
       {/* Search and Filter Section */}
       <div className="filter-section">
-        <input
+        <input 
           type="text"
           placeholder="Search by Claim ID, Vehicle number or Customer..."
           value={searchTerm}
@@ -77,11 +77,13 @@ const InsuranceClaimsManagement = () => {
           className="filter-select"
         >
           <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="investigating">Investigating</option>
-          <option value="approved">Approved</option>
-          <option value="processing">Processing</option>
-          <option value="rejected">Rejected</option>
+          <option value="Pending">Pending</option>
+          <option value="Investigating">Investigating</option>
+          <option value="Processing-Period-01">Processing-Period-01</option>
+          <option value="Processing-Period-02">Processing-Period-02</option>
+          <option value="Processing-Period-03">Processing-Period-03</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
         </select>
 
         <input

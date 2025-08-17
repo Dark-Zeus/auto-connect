@@ -33,8 +33,10 @@
 }
 
 .edit-profile-btn {
-  font-size: 1.1rem;
+  font-size: 14px !important;
+  font-weight: 800 !important;
   padding: 12px 24px;
+
 }
 
 .profile-header-content {
@@ -324,6 +326,7 @@
   font-size: 1.2rem;
   transition: border-color 0.2s ease;
   background: white;
+  height: 50px !important;
 }
 
 .form-input:has(+ .input-icon),
