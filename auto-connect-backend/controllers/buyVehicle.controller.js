@@ -179,3 +179,21 @@ export const checkIfReported = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const incrementVehicleViews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vehicle = await ListVehicle.findByIdAndUpdate(
+      id,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+    if (!vehicle) {
+      return res.status(404).json({ success: false, message: "Vehicle not found" });
+    }
+    res.status(200).json({ success: true, views: vehicle.views });
+  } catch (err) {
+    console.error("Error incrementing vehicle views:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
