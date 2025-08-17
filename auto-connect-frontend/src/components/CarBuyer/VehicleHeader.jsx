@@ -2,7 +2,7 @@ import React from "react";
 
 const VehicleHeader = ({ make, model, year, name, date, district, city }) => {
   const formattedDate = date
-    ? new Date(date).toLocaleDateString()
+    ? new Date(date).toISOString().slice(0, 10)
     : "";
   return (
     <div className="tw:text-center tw:my-4">
@@ -10,7 +10,7 @@ const VehicleHeader = ({ make, model, year, name, date, district, city }) => {
         {make} {model} {year}
       </h1>
       <p className="tw:text-gray-600">
-        For Sale By {name} on {date}, {district}, {city}
+        For Sale By {name} on {formattedDate}, {district}, {city}
       </p>
     </div>
   );

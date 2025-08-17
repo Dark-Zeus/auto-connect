@@ -51,7 +51,7 @@ const VehicleViewPage = () => {
                     model={vehicleData.model}
                     year={vehicleData.year}
                     name={vehicleData.name}
-                    date={vehicleData.date}
+                    date={vehicleData.createdAt}
                     district={vehicleData.district}
                     city={vehicleData.city}
                 />
