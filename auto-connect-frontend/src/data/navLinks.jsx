@@ -53,6 +53,7 @@ import InsuranceClaimDetailsPage from "@pages/InsuranceCompany/InsuranceClaimDet
 import InsurancePolicyManagement from "@pages/InsuranceCompany/InsurancePolicyManagementPage";
 import InsurancePolicyDetailsPage from "@pages/InsuranceCompany/InsurancePolicyDetailsPage";
 import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
+import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -974,22 +975,22 @@ function getNavLinks(userContext) {
       sub: [
         {
           path: [`/profile`],
-          title: "Profile Overview",
+          title: "Profile",
           icon: "person",
-          page: "Profile Overview",
+          page: <InsuranceCompanyProfile />,
         },
-        {
-          path: [`/profile/personal`],
-          title: "Personal Information",
-          icon: "person_outline",
-          page: "Personal Information",
-        },
-        {
-          path: [`/profile/contact`],
-          title: "Contact Details",
-          icon: "contact_phone",
-          page: "Contact Details",
-        },
+        // {
+        //   path: [`/profile/personal`],
+        //   title: "Personal Information",
+        //   icon: "person_outline",
+        //   page: "Personal Information",
+        // },
+        // {
+        //   path: [`/profile/contact`],
+        //   title: "Contact Details",
+        //   icon: "contact_phone",
+        //   page: "Contact Details",
+        // },
         // {
         //   path: [`/profile/preferences`],
         //   title: "Preferences",

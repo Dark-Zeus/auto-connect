@@ -29,10 +29,12 @@
 
 .page-title {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 700 !important;
   color: #1f2937;
   margin: 0;
   line-height: 1.2;
+  margin-bottom: 2px !important;
+  
 }
 
 .policy-info-header {

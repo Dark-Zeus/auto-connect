@@ -53,8 +53,12 @@ const InsuranceClaimsManagement = () => {
 
       {/* Page Header */}
       <div className="page-header">
-        <h2>Claims Management</h2>
-        <p>View, search, and filter all insurance claims. Click on a claim to view details.</p>
+        <div className="header-content">
+          <div className="header-title">
+            <h2>Claims Management</h2>
+            <p>View, search, and filter all insurance claims. Click on a claim to view details.</p>
+          </div>
+        </div>
       </div>
       
       {/* Search and Filter Section */}

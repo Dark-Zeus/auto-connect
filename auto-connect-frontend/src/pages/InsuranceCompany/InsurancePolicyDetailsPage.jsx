@@ -122,9 +122,8 @@ const InsurancePolicyDetailsPage = () => {
       {/* Page Header */}
       <div className="page-header">
         <div className="header-left">
-          <h1 className="page-title">Policy Details</h1>
+          <h1 className="page-title">Policy Details - {policyDetails.policyNumber}</h1>
           <div className="policy-info-header">
-            <p className="policy-number-header">{policyDetails.policyNumber}</p>
             <span className={`status-badge-header ${getStatusBadgeClass(policyDetails.status)}`}>
               {policyDetails.status}
             </span>
