@@ -27,6 +27,9 @@ import {
   Search as SearchIcon,
   Edit as EditIcon,
   Cancel as CancelIcon,
+  Star as StarIcon,
+  StarBorder as StarBorderIcon,
+  ThumbUp as ThumbUpIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -315,7 +318,9 @@ const MyBookings = () => {
   const [bookingRatings, setBookingRatings] = useState({});
   const [ratingDialogOpen, setRatingDialogOpen] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
+  const [currentComment, setCurrentComment] = useState("");
   const [bookingToRate, setBookingToRate] = useState(null);
+  const [submittingRating, setSubmittingRating] = useState(false);
   const [overlayBooking, setOverlayBooking] = useState(null); //overlay window
   const [overlayContent, setOverlayContent] = useState(null);
 
@@ -368,6 +373,8 @@ const MyBookings = () => {
       estimatedCost: booking.estimatedCost || 0,
       createdAt: booking.createdAt,
       updatedAt: booking.updatedAt,
+      serviceCenterResponse: booking.serviceCenterResponse, // Include service center response
+      feedback: booking.feedback, // Include feedback if available
     };
 
     setOverlayBooking(convertedBooking);
@@ -415,24 +422,95 @@ const MyBookings = () => {
   // Open rating dialog for selected booking
   const openRatingForBooking = (booking) => {
     setBookingToRate(booking);
-    setCurrentRating(bookingRatings[booking._id] || 0);
+    setCurrentRating(0);
+    setCurrentComment("");
     setRatingDialogOpen(true);
   };
 
   // Submit rating
-  const submitRating = () => {
+  const submitRating = async () => {
     if (!currentRating || currentRating < 1) {
       toast.error("Please select a rating.");
       return;
     }
-    setBookingRatings((prev) => ({
-      ...prev,
-      [bookingToRate._id]: currentRating,
-    }));
-    setRatingDialogOpen(false);
-    toast.success(
-      `Thank you for rating ${bookingToRate.serviceCenter?.businessInfo?.businessName}!`
-    );
+
+    setSubmittingRating(true);
+
+    try {
+      const feedbackData = {
+        rating: currentRating,
+        comment: currentComment.trim() || undefined,
+      };
+
+      const response = await bookingApi.submitFeedback(
+        bookingToRate._id,
+        feedbackData
+      );
+
+      if (response.success) {
+        // Update local state to show the rating was submitted
+        setBookingRatings((prev) => ({
+          ...prev,
+          [bookingToRate._id]: currentRating,
+        }));
+
+        // Success animation feedback
+        toast.success(
+          `🌟 Rating submitted successfully! Thank you for your ${
+            currentRating === 1
+              ? "honest"
+              : currentRating === 2
+              ? "valuable"
+              : currentRating === 3
+              ? "helpful"
+              : currentRating === 4
+              ? "positive"
+              : "excellent"
+          } feedback!`,
+          {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            style: {
+              background: "linear-gradient(135deg, #7AB2D3, #4A628A)",
+              color: "white",
+              borderRadius: "12px",
+              boxShadow: "0 8px 32px rgba(122, 178, 211, 0.3)",
+              fontSize: "14px",
+              fontWeight: "600",
+            },
+          }
+        );
+
+        // Close dialog with slight delay to show success feedback
+        setTimeout(() => {
+          setRatingDialogOpen(false);
+          setCurrentRating(0);
+          setCurrentComment("");
+        }, 1000);
+
+        // Refresh bookings to get updated data
+        const activeStatus = tabStatusOrder[activeTab].key;
+        await fetchBookings(activeStatus);
+      }
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      toast.error("Failed to submit rating. Please try again.", {
+        position: "top-center",
+        style: {
+          background: "linear-gradient(135deg, #495057, #6c757d)",
+          color: "white",
+          borderRadius: "12px",
+          fontSize: "14px",
+          fontWeight: "600",
+        },
+      });
+    } finally {
+      setSubmittingRating(false);
+    }
   };
 
   return (
@@ -722,21 +800,173 @@ const MyBookings = () => {
 
                         {booking.status === "COMPLETED" && (
                           <>
-                            {bookingRatings[booking._id] ? (
-                              <Rating
-                                value={bookingRatings[booking._id]}
-                                readOnly
-                                size="small"
-                              />
+                            {booking.feedback?.rating ||
+                            bookingRatings[booking._id] ? (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  p: 2,
+                                  borderRadius: 3,
+                                  background:
+                                    "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
+                                  border: "2px solid #7AB2D3",
+                                  boxShadow:
+                                    "0 4px 15px rgba(122, 178, 211, 0.2)",
+                                  position: "relative",
+                                  overflow: "hidden",
+                                  "&::before": {
+                                    content: '""',
+                                    position: "absolute",
+                                    top: 0,
+                                    left: "-100%",
+                                    width: "100%",
+                                    height: "100%",
+                                    background:
+                                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
+                                    animation: "shine 3s ease-in-out infinite",
+                                  },
+                                  "@keyframes shine": {
+                                    "0%": { left: "-100%" },
+                                    "100%": { left: "100%" },
+                                  },
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 0.5,
+                                    zIndex: 1,
+                                  }}
+                                >
+                                  <StarIcon
+                                    sx={{ color: "#7AB2D3", fontSize: 16 }}
+                                  />
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      color: "#4A628A",
+                                      fontWeight: 700,
+                                      fontSize: "0.75rem",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.5px",
+                                    }}
+                                  >
+                                    Your Rating
+                                  </Typography>
+                                  <StarIcon
+                                    sx={{ color: "#7AB2D3", fontSize: 16 }}
+                                  />
+                                </Box>
+                                <Rating
+                                  value={
+                                    booking.feedback?.rating ||
+                                    bookingRatings[booking._id]
+                                  }
+                                  readOnly
+                                  size="small"
+                                  icon={
+                                    <StarIcon
+                                      sx={{
+                                        color: "#7AB2D3",
+                                        fontSize: "1.2rem",
+                                      }}
+                                    />
+                                  }
+                                  emptyIcon={
+                                    <StarBorderIcon
+                                      sx={{
+                                        color: "#B9E5E8",
+                                        fontSize: "1.2rem",
+                                      }}
+                                    />
+                                  }
+                                  sx={{
+                                    zIndex: 1,
+                                    "& .MuiRating-iconFilled": {
+                                      color: "#7AB2D3",
+                                      filter:
+                                        "drop-shadow(0 2px 4px rgba(122,178,211,0.3))",
+                                    },
+                                  }}
+                                />
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    color: "#4A628A",
+                                    fontWeight: 600,
+                                    fontSize: "0.7rem",
+                                    zIndex: 1,
+                                  }}
+                                >
+                                  {booking.feedback?.rating === 1 ||
+                                  bookingRatings[booking._id] === 1
+                                    ? "Poor"
+                                    : booking.feedback?.rating === 2 ||
+                                      bookingRatings[booking._id] === 2
+                                    ? "Fair"
+                                    : booking.feedback?.rating === 3 ||
+                                      bookingRatings[booking._id] === 3
+                                    ? "Good"
+                                    : booking.feedback?.rating === 4 ||
+                                      bookingRatings[booking._id] === 4
+                                    ? "Very Good"
+                                    : "Excellent"}
+                                </Typography>
+                              </Box>
                             ) : (
                               <Button
                                 variant="contained"
                                 size="small"
-                                color="primary"
-                                sx={{ fontSize: 13, fontWeight: 500 }}
+                                startIcon={<StarIcon />}
+                                sx={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  borderRadius: 3,
+                                  px: 2,
+                                  py: 1,
+                                  background:
+                                    "linear-gradient(45deg, #7AB2D3, #4A628A)",
+                                  color: "white",
+                                  textTransform: "none",
+                                  boxShadow:
+                                    "0 4px 15px rgba(122, 178, 211, 0.3)",
+                                  transition: "all 0.3s ease",
+                                  position: "relative",
+                                  overflow: "hidden",
+                                  "&::before": {
+                                    content: '""',
+                                    position: "absolute",
+                                    top: 0,
+                                    left: "-100%",
+                                    width: "100%",
+                                    height: "100%",
+                                    background:
+                                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+                                    transition: "left 0.5s ease",
+                                  },
+                                  "&:hover": {
+                                    background:
+                                      "linear-gradient(45deg, #4A628A, #7AB2D3)",
+                                    transform: "translateY(-2px)",
+                                    boxShadow:
+                                      "0 8px 25px rgba(122, 178, 211, 0.4)",
+                                    "&::before": {
+                                      left: "100%",
+                                    },
+                                  },
+                                  "&:active": {
+                                    transform: "translateY(0px)",
+                                    boxShadow:
+                                      "0 4px 15px rgba(122, 178, 211, 0.3)",
+                                  },
+                                }}
                                 onClick={() => openRatingForBooking(booking)}
                               >
-                                Rate
+                                Rate Service
                               </Button>
                             )}
                           </>
@@ -771,35 +1001,327 @@ const MyBookings = () => {
           </Grid>
         </Box>
 
-        {/* Rating Dialog */}
+        {/* Enhanced Rating Dialog */}
         <Dialog
           open={ratingDialogOpen}
           onClose={() => setRatingDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
+              boxShadow: "0 20px 40px rgba(74, 98, 138, 0.15)",
+              overflow: "hidden",
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "4px",
+                background:
+                  "linear-gradient(90deg, #DFF2EB, #B9E5E8, #7AB2D3, #4A628A)",
+                animation: "shimmer 2s ease-in-out infinite",
+              },
+              "@keyframes shimmer": {
+                "0%": { transform: "translateX(-100%)" },
+                "100%": { transform: "translateX(100%)" },
+              },
+            },
+          }}
         >
-          <DialogTitle>Rate Completed Service</DialogTitle>
+          <DialogTitle
+            sx={{
+              textAlign: "center",
+              pb: 1,
+              pt: 4,
+              background: "transparent",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                mb: 1,
+              }}
+            >
+              <StarIcon sx={{ color: "#7AB2D3", fontSize: 28 }} />
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Rate Your Experience
+              </Typography>
+              <StarIcon sx={{ color: "#7AB2D3", fontSize: 28 }} />
+            </Box>
+          </DialogTitle>
           <DialogContent
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 2,
-              p: 3,
+              gap: 3,
+              p: 4,
+              background: "transparent",
             }}
           >
-            <Typography>
-              Rate your experience with {bookingToRate?.centerName}
-            </Typography>
-            <Rating
-              name="rating"
-              value={currentRating}
-              onChange={(e, newValue) => setCurrentRating(newValue)}
-              size="large"
+            <Box
+              sx={{
+                textAlign: "center",
+                p: 2,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.9)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid #B9E5E8",
+                boxShadow: "0 8px 32px rgba(74, 98, 138, 0.1)",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: "center",
+                  color: "#2c3e50",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                How was your experience with
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#4A628A",
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                }}
+              >
+                {bookingToRate?.serviceCenter?.businessInfo?.businessName ||
+                  bookingToRate?.centerName}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
+                p: 3,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.95)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid #B9E5E8",
+                boxShadow: "0 8px 32px rgba(74, 98, 138, 0.1)",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#6c757d",
+                  fontWeight: 500,
+                  mb: 1,
+                }}
+              >
+                Click to rate (1-5 stars)
+              </Typography>
+
+              <Rating
+                name="rating"
+                value={currentRating}
+                onChange={(e, newValue) => setCurrentRating(newValue)}
+                size="large"
+                icon={
+                  <StarIcon sx={{ color: "#7AB2D3", fontSize: "2.5rem" }} />
+                }
+                emptyIcon={
+                  <StarBorderIcon
+                    sx={{ color: "#B9E5E8", fontSize: "2.5rem" }}
+                  />
+                }
+                sx={{
+                  my: 1,
+                  "& .MuiRating-iconFilled": {
+                    color: "#7AB2D3",
+                    filter: "drop-shadow(0 2px 4px rgba(122, 178, 211, 0.3))",
+                    transform: "scale(1)",
+                    transition: "all 0.2s ease",
+                  },
+                  "& .MuiRating-iconHover": {
+                    color: "#4A628A",
+                    transform: "scale(1.1)",
+                    filter: "drop-shadow(0 4px 8px rgba(74, 98, 138, 0.4))",
+                  },
+                  "& .MuiRating-iconEmpty": {
+                    color: "#B9E5E8",
+                    transition: "all 0.2s ease",
+                  },
+                  "& .MuiRating-icon": {
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      transform: "scale(1.15)",
+                      filter:
+                        "drop-shadow(0 4px 12px rgba(122, 178, 211, 0.5))",
+                    },
+                  },
+                }}
+              />
+
+              {currentRating > 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mt: 1,
+                    opacity: 0,
+                    animation: "fadeIn 0.5s ease forwards",
+                  }}
+                >
+                  <ThumbUpIcon sx={{ color: "#7AB2D3", fontSize: 20 }} />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#4A628A",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {currentRating === 1 && "Poor"}
+                    {currentRating === 2 && "Fair"}
+                    {currentRating === 3 && "Good"}
+                    {currentRating === 4 && "Very Good"}
+                    {currentRating === 5 && "Excellent"}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Share your thoughts (Optional)"
+              placeholder="Tell us about your experience..."
+              value={currentComment}
+              onChange={(e) => setCurrentComment(e.target.value)}
+              variant="outlined"
+              sx={{
+                mt: 1,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 3,
+                  background: "rgba(255,255,255,0.9)",
+                  backdropFilter: "blur(10px)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.95)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
+                  },
+                  "&.Mui-focused": {
+                    background: "rgba(255,255,255,1)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 12px 35px rgba(0,0,0,0.15)",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#6c757d",
+                  fontWeight: 500,
+                },
+              }}
             />
+
+            <style>
+              {`
+                @keyframes fadeIn {
+                  from { opacity: 0; transform: translateY(10px); }
+                  to { opacity: 1; transform: translateY(0); }
+                }
+              `}
+            </style>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setRatingDialogOpen(false)}>Cancel</Button>
-            <Button variant="contained" onClick={submitRating}>
-              Submit
+          <DialogActions
+            sx={{
+              p: 4,
+              pt: 2,
+              background: "transparent",
+              gap: 2,
+            }}
+          >
+            <Button
+              onClick={() => setRatingDialogOpen(false)}
+              disabled={submittingRating}
+              variant="outlined"
+              sx={{
+                borderRadius: 3,
+                px: 3,
+                py: 1,
+                fontWeight: 600,
+                border: "2px solid #6c757d",
+                color: "#495057",
+                background: "rgba(255,255,255,0.8)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  border: "2px solid #4A628A",
+                  background: "rgba(255,255,255,0.95)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 25px rgba(74, 98, 138, 0.1)",
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={submitRating}
+              disabled={!currentRating || currentRating < 1 || submittingRating}
+              startIcon={
+                submittingRating ? (
+                  <CircularProgress size={20} sx={{ color: "white" }} />
+                ) : (
+                  <StarIcon sx={{ color: "white" }} />
+                )
+              }
+              sx={{
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                fontWeight: 700,
+                fontSize: "1rem",
+                background:
+                  currentRating > 0
+                    ? "linear-gradient(45deg, #7AB2D3, #4A628A)"
+                    : "linear-gradient(45deg, #B9E5E8, #6c757d)",
+                color: "white",
+                transition: "all 0.3s ease",
+                boxShadow: "0 4px 15px rgba(122, 178, 211, 0.3)",
+                "&:hover": {
+                  background:
+                    currentRating > 0
+                      ? "linear-gradient(45deg, #4A628A, #7AB2D3)"
+                      : "linear-gradient(45deg, #6c757d, #B9E5E8)",
+                  transform: "translateY(-3px)",
+                  boxShadow: "0 8px 25px rgba(122, 178, 211, 0.4)",
+                },
+                "&:disabled": {
+                  background: "linear-gradient(45deg, #B9E5E8, #6c757d)",
+                  color: "rgba(255,255,255,0.7)",
+                  transform: "none",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              {submittingRating ? "Submitting..." : "Submit Rating"}
             </Button>
           </DialogActions>
         </Dialog>

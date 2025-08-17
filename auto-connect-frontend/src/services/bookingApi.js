@@ -228,6 +228,40 @@ export const bookingApi = {
     }
   },
 
+  // Submit feedback/rating for a completed booking
+  submitFeedback: async (bookingId, feedbackData) => {
+    try {
+      const response = await bookingAxios.post(
+        `/bookings/${bookingId}/feedback`,
+        feedbackData
+      );
+
+      const successMessage =
+        response.data.message || "Feedback submitted successfully";
+      toast.success(successMessage);
+
+      return {
+        success: true,
+        data: response.data.data,
+        message: successMessage,
+      };
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to submit feedback. Please try again.";
+
+      toast.error(errorMessage);
+
+      throw {
+        success: false,
+        message: errorMessage,
+        error: error.response?.data || error.message,
+      };
+    }
+  },
+
   // Get available time slots for a date
   getAvailableTimeSlots: async (serviceCenterId, date) => {
     try {
