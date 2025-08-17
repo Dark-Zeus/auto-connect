@@ -44,7 +44,7 @@ import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReview
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
-
+import VehicleServiceRequests from "@pages/ServiceProvider/vehicleServiceRequests";
 
 import InsuranceClaims from "@pages/InsuranceCompany/InsuranceClaims";
 import InsuranceDashboard from "@pages/InsuranceCompany/InsuranceDashboard";
@@ -83,7 +83,7 @@ function getNavLinks(userContext) {
           path: [`/vehicles/add`],
           title: "Add New Vehicle",
           icon: "add_circle",
-          page: <AddVehicles  />,
+          page: <AddVehicles />,
         },
         {
           path: [`/vehicles/:vehicleId`],
@@ -393,23 +393,30 @@ function getNavLinks(userContext) {
       page: <ServiceProviderDashboard />,
     });
 
-    // nav.push({
-    //   title: "Appointments",
-    //   icon: "schedule",
-    //   page: "Appointments",
-    //   defLinkSettings: {
-    //     title: "Appointment Management",
-    //     icon: "schedule",
-    //   },
-    //   sub: [
-    //     {
-    //       path: [`/appointments/calendar`],
-    //       title: "Service Calendar",
-    //       icon: "calendar_today",
-    //       page: "Service Calendar",
-    //     }
-    //   ]
-    // });
+    //nav.push({
+      //title: "Appointments",
+      //icon: "schedule",
+      //page: "Appointments",
+      //defLinkSettings: {
+        //title: "Appointment Management",
+        //icon: "schedule",
+      //},
+      //sub: [
+      //  {
+          //path: [`/appointments/calendar`],
+          //title: "Service Calendar",
+         // icon: "calendar_today",
+         // page: "Service Calendar",
+       // },
+      //],
+    //});
+
+    nav.push({
+      path: [`/service-requests`],
+      title: "Service Requests",
+      icon: "assignment",
+      page: <VehicleServiceRequests />,
+    });
 
     // nav.push({
     //   title: "Customer Management",
@@ -665,7 +672,7 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: <InsuranceDashboard/>,
+      page: <InsuranceDashboard />,
     });
 
     nav.push({
@@ -708,7 +715,7 @@ function getNavLinks(userContext) {
         //   icon: "assessment",
         //   page: "Damage Assessment",
         // }
-      ]
+      ],
     });
 
     nav.push({
@@ -744,7 +751,7 @@ function getNavLinks(userContext) {
         //   icon: "analytics",
         //   page: "Policy Analytics",
         // }
-      ]
+      ],
     });
 
     // nav.push({
@@ -972,7 +979,7 @@ function getNavLinks(userContext) {
         //   icon: "lock",
         //   page: "Security Settings",
         // }
-      ]
+      ],
     });
   }
 
