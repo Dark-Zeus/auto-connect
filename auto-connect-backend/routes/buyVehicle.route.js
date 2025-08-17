@@ -8,11 +8,11 @@ router.use(protect);
 
 router.get("/", getAvailableVehicles);
 router.get("/saved", getSavedAds);
+router.get("/check-reported", checkIfReported);
 router.get("/:id", getVehicleById);
 router.post("/save", saveAd);
 router.post("/unsave", unsaveAd);
 router.post("/filter", filterVehicles);
-router.get("/check-reported", checkIfReported);
 router.post("/report", reportAd);
 
 export default router;
