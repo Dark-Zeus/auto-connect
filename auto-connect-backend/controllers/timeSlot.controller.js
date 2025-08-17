@@ -1,5 +1,5 @@
 // controllers/timeSlot.controller.js
-import TimeSlot from "../models/TimeSlot.model.js";
+import TimeSlot from "../models/booking.model.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";
 import LOG from "../configs/log.config.js";

@@ -12,8 +12,8 @@ import {
   verifyVehicle,
   rejectVehicle,
   getUserVehiclesForBooking,
-} from "../controllers/vehicle.controller.js";
-import { protect, restrictTo } from "../middleware/auth.middleware.js";
+} from "../../../controllers/vehicle.controller.js";
+import { protect, restrictTo } from "../../../middleware/auth.middleware.js";
 
 const router = express.Router();
 

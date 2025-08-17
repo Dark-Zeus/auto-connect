@@ -1,9 +1,9 @@
 // routes/operatingHours.route.js - COMPLETE WORKING VERSION
 import express from "express";
-import User from "../models/user.model.js";
-import { protect, restrictTo } from "../middleware/auth.middleware.js";
-import { catchAsync } from "../utils/catchAsync.util.js";
-import { AppError } from "../utils/appError.util.js";
+import User from "../../../models/user.model.js";
+import { protect, restrictTo } from "../../../middleware/auth.middleware.js";
+import { catchAsync } from "../../../utils/catchAsync.util.js";
+import { AppError } from "../../../utils/appError.util.js";
 
 const router = express.Router();
 

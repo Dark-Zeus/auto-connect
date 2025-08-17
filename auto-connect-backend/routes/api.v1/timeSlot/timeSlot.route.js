@@ -8,9 +8,9 @@ import {
   unblockDate,
   deleteDaySlots,
   getTimeSlotStats,
-} from "../controllers/timeSlot.controller.js";
-import { protect, restrictTo } from "../middleware/auth.middleware.js";
-import { validate } from "../utils/validation.util.js";
+} from "../../../controllers/timeSlot.controller.js";
+import { protect, restrictTo } from "../../../middleware/auth.middleware.js";
+import { validate } from "../../../utils/validation.util.js";
 import Joi from "joi";
 
 const router = express.Router();

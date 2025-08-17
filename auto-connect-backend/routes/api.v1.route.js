@@ -8,12 +8,12 @@ import healthRoute from "./health.route.js";
 import authRoute from "./auth.route.js";
 import adminRoute from "./admin.route.js";
 import vehicleRoute from "./vehicle.route.js";
-import addedVehicleRoute from "./addedVehicle.route.js";
-import serviceCenterRoutes from "./serviceCenter.route.js";
-import bookingRoutes from "./booking.route.js";
-import operatingHoursRoutes from "./operatingHours.route.js";
-import timeSlotRoutes from "./timeSlot.route.js";
-import weeklyScheduleRoutes from "./weeklySchedule.route.js";
+import addedVehicleRoute from "./api.v1/addedVehicle/addedVehicle.route.js";
+import serviceCenterRoutes from "./api.v1/serviceCenter/serviceCenter.route.js";
+import bookingRoutes from "./api.v1/booking/booking.route.js";
+import operatingHoursRoutes from "./api.v1/operatingHours/operatingHours.route.js";
+import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
+import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
 
 // Import rate limiters for specific routes
 import {

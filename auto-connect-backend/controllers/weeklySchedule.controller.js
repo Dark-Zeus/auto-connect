@@ -1,6 +1,6 @@
 // controllers/weeklySchedule.controller.js
-import WeeklySchedule from "../models/WeeklySchedule.model.js";
-import Booking from "../models/Booking.model.js";
+import WeeklySchedule from "../models/weeklySchedule.model.js";
+import Booking from "../models/booking.model.js";
 import LOG from "../configs/log.config.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";

@@ -7,8 +7,8 @@ import {
   blockDate,
   unblockDate,
   getScheduleStats,
-} from "../controllers/weeklySchedule.controller.js";
-import { protect } from "../middleware/auth.middleware.js";
+} from "../../../controllers/weeklySchedule.controller.js";
+import { protect } from "../../../middleware/auth.middleware.js";
 
 const router = express.Router();
 

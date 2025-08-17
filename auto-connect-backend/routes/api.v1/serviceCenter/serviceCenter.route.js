@@ -5,8 +5,8 @@ import {
   getServiceCenter,
   getServiceCategories,
   getServiceCenterStats,
-} from "../controllers/serviceCenter.controller.js";
-import { protect } from "../middleware/auth.middleware.js";
+} from "../../../controllers/serviceCenter.controller.js";
+import { protect } from "../../../middleware/auth.middleware.js";
 import mongoose from "mongoose";
 
 const router = express.Router();

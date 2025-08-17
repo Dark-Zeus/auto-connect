@@ -1,5 +1,5 @@
 // controllers/booking.controller.js
-import Booking from "../models/Booking.model.js";
+import Booking from "../models/booking.model.js";
 import User from "../models/user.model.js";
 import LOG from "../configs/log.config.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
