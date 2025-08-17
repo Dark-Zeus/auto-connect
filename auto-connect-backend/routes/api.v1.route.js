@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 import healthRoute from "./health.route.js";
 import authRoute from "./auth.route.js";
 import adminRoute from "./admin.route.js";
-import vehicleRoute from "./vehicle.route.js";
+import vehicleRoute from "./api.v1/vehicle/vehicle.route.js";
 import addedVehicleRoute from "./api.v1/addedVehicle/addedVehicle.route.js";
 import serviceCenterRoutes from "./api.v1/serviceCenter/serviceCenter.route.js";
 import bookingRoutes from "./api.v1/booking/booking.route.js";

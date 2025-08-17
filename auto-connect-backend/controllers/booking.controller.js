@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import LOG from "../configs/log.config.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";
+import { sendEmail } from "../utils/email.util.js";
 
 // Create a new booking (Vehicle owners only)
 export const createBooking = catchAsync(async (req, res, next) => {
@@ -386,6 +387,16 @@ export const updateBookingStatus = catchAsync(async (req, res, next) => {
       .populate("vehicleOwner", "firstName lastName email phone")
       .populate("serviceCenter", "businessInfo.businessName email phone")
       .lean();
+
+    // Send email notification to customer
+    if (updatedBooking.vehicleOwner && updatedBooking.vehicleOwner.email) {
+      try {
+        await sendBookingStatusUpdateEmail(updatedBooking, status, message);
+      } catch (emailError) {
+        LOG.error("Failed to send email notification:", emailError);
+        // Don't fail the request if email fails
+      }
+    }
 
     LOG.info({
       message: "Booking status updated",
