@@ -16,6 +16,7 @@ import {
 } from '@mui/icons-material';
 
 import { useNavigate } from 'react-router-dom';
+import buyVehicleApiService from "../../services/buyVehicleApiService";
 
 const ListedVehicleCard = ({ vehicle }) => {
 
@@ -42,7 +43,12 @@ const ListedVehicleCard = ({ vehicle }) => {
 
   const navigate = useNavigate();
 
-  const handleHeaderClick = () => {
+  const handleHeaderClick = async () => {
+    try {
+      await buyVehicleApiService.incrementVehicleViews(vehicle._id);
+    } catch (err) {
+      // Optionally handle error (silent fail)
+    }
     navigate('/vehicleview', { state: { vehicle } });
   };
 
