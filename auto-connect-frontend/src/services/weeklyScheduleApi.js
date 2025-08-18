@@ -1,55 +1,13 @@
 // services/weeklyScheduleApi.js
-import axios from "axios";
+import axios from "../utils/axios.js";
 import { toast } from "react-toastify";
-
-const API_BASE = "/api/v1/weekly-schedule";
-
-// Configure axios defaults
-const apiClient = axios.create({
-  baseURL: API_BASE,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add auth token to requests
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Handle responses and errors
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error("Weekly Schedule API Error:", error);
-
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-      return Promise.reject(error);
-    }
-
-    const message = error.response?.data?.message || "An error occurred";
-    toast.error(message);
-    return Promise.reject(error);
-  }
-);
 
 export const weeklyScheduleApi = {
   // Get my weekly schedule
   getMySchedule: async () => {
     try {
       console.log("📅 Fetching weekly schedule...");
-      const response = await apiClient.get("/my-schedule");
+      const response = await axios.get("/weekly-schedule/my-schedule");
       console.log("✅ Weekly schedule fetched:", response.data);
       return response.data;
     } catch (error) {
@@ -62,7 +20,10 @@ export const weeklyScheduleApi = {
   updateSchedule: async (scheduleData) => {
     try {
       console.log("💾 Updating weekly schedule:", scheduleData);
-      const response = await apiClient.put("/my-schedule", scheduleData);
+      const response = await axios.put(
+        "/weekly-schedule/my-schedule",
+        scheduleData
+      );
       console.log("✅ Weekly schedule updated:", response.data);
       toast.success("Schedule updated successfully!");
       return response.data;
@@ -82,7 +43,9 @@ export const weeklyScheduleApi = {
       if (startDate) params.startDate = startDate;
       if (endDate) params.endDate = endDate;
 
-      const response = await apiClient.get("/available-slots", { params });
+      const response = await axios.get("/weekly-schedule/available-slots", {
+        params,
+      });
       console.log("✅ Available slots fetched:", response.data);
       return response.data;
     } catch (error) {
@@ -95,7 +58,7 @@ export const weeklyScheduleApi = {
   getAvailableSlotsForDate: async (serviceCenterId, date) => {
     try {
       console.log(`📅 Fetching available slots for ${date}...`);
-      const response = await apiClient.get("/available-slots", {
+      const response = await axios.get("/weekly-schedule/available-slots", {
         params: { serviceCenterId, date },
       });
       console.log("✅ Available slots for date fetched:", response.data);
@@ -110,7 +73,10 @@ export const weeklyScheduleApi = {
   blockDate: async (date, reason) => {
     try {
       console.log(`🚫 Blocking date ${date}...`);
-      const response = await apiClient.post("/block-date", { date, reason });
+      const response = await axios.post("/weekly-schedule/block-date", {
+        date,
+        reason,
+      });
       console.log("✅ Date blocked:", response.data);
       toast.success("Date blocked successfully!");
       return response.data;
@@ -124,7 +90,9 @@ export const weeklyScheduleApi = {
   unblockDate: async (date) => {
     try {
       console.log(`✅ Unblocking date ${date}...`);
-      const response = await apiClient.delete(`/unblock-date/${date}`);
+      const response = await axios.delete(
+        `/weekly-schedule/unblock-date/${date}`
+      );
       console.log("✅ Date unblocked:", response.data);
       toast.success("Date unblocked successfully!");
       return response.data;
@@ -138,7 +106,7 @@ export const weeklyScheduleApi = {
   getStats: async () => {
     try {
       console.log("📊 Fetching schedule statistics...");
-      const response = await apiClient.get("/stats");
+      const response = await axios.get("/weekly-schedule/stats");
       console.log("✅ Schedule statistics fetched:", response.data);
       return response.data;
     } catch (error) {

@@ -1,42 +1,5 @@
-import axios from "axios";
+import axios from "../utils/axios.js";
 import { toast } from "react-toastify";
-
-// Create axios instance for vehicle API
-const vehicleAxios = axios.create({
-  baseURL: "/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add auth token to requests
-vehicleAxios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Handle response errors
-vehicleAxios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error("Vehicle API Error:", error);
-
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 export const vehicleApi = {
   // Get user's vehicles for booking
@@ -48,7 +11,7 @@ export const vehicleApi = {
         localStorage.getItem("token") ? "Present" : "Missing"
       );
 
-      const response = await vehicleAxios.get("/vehicles/my-vehicles");
+      const response = await axios.get("/vehicles/my-vehicles");
 
       console.log("✅ API Response:", response.data);
 
@@ -76,7 +39,7 @@ export const vehicleApi = {
   // Get all user vehicles (with pagination)
   getUserVehicles: async (params = {}) => {
     try {
-      const response = await vehicleAxios.get("/vehicles", { params });
+      const response = await axios.get("/vehicles", { params });
 
       return {
         success: true,
@@ -99,7 +62,7 @@ export const vehicleApi = {
   // Get specific vehicle details
   getVehicle: async (vehicleId) => {
     try {
-      const response = await vehicleAxios.get(`/vehicles/${vehicleId}`);
+      const response = await axios.get(`/vehicles/${vehicleId}`);
 
       return {
         success: true,

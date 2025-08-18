@@ -3,6 +3,20 @@
 
 /* Custom CSS Variables for AutoConnect Color Scheme */
 :root {
+  /* Primary Color Palette */
+  --primary-light: #DFF2EB;
+  --primary-medium: #B9E5E8;
+  --primary-blue: #7AB2D3;
+  --primary-dark: #4A628A;
+  
+  /* Neutral Colors */
+  --white: #ffffff;
+  --gray-light: #f8f9fa;
+  --gray-medium: #6c757d;
+  --gray-dark: #495057;
+  --text-dark: #2c3e50;
+  --text-light: #ecf0f1;
+  
   /* State Colors */
   --success-color: #27ae60;
   --error-color: #e74c3c;

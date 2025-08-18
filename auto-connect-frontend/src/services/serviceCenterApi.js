@@ -1,72 +1,6 @@
-// src/services/serviceCenterApi.js (FIXED VERSION)
-import axios from "axios";
+// src/services/serviceCenterApi.js
+import axios from "../utils/axios.js";
 import { toast } from "react-toastify";
-
-// FIXED: Handle both VITE_ and REACT_APP_ environment variables
-const API_BASE_URL =
-  import.meta.env.VITE_REACT_APP_BACKEND_API_URL ||
-  import.meta.env.REACT_APP_BACKEND_URL + "/api/v1" ||
-  "http://localhost:3000/api/v1"; // Backend is on port 3000
-
-console.log("Service Center API Environment variables:", {
-  VITE_REACT_APP_BACKEND_API_URL: import.meta.env
-    .VITE_REACT_APP_BACKEND_API_URL,
-  REACT_APP_BACKEND_URL: import.meta.env.REACT_APP_BACKEND_URL,
-  REACT_APP_FRONTEND_URL: import.meta.env.REACT_APP_FRONTEND_URL,
-  Final_API_BASE_URL: API_BASE_URL,
-}); // Debug log
-
-const serviceCenterAxios = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 30000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add request interceptor to include auth token
-serviceCenterAxios.interceptors.request.use(
-  (config) => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    console.log(
-      "Making Service Center API request:",
-      config.method.toUpperCase(),
-      config.url,
-      config.params
-    );
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for error handling
-serviceCenterAxios.interceptors.response.use(
-  (response) => {
-    console.log("Service Center API response:", response.status, response.data);
-    return response;
-  },
-  (error) => {
-    console.error(
-      "Service Center API error:",
-      error.response?.data || error.message
-    );
-
-    if (error.response?.status === 401) {
-      // Handle unauthorized - redirect to login
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      window.location.href = "/auth/login";
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 // Service Center API endpoints
 export const serviceCenterApi = {
@@ -74,7 +8,7 @@ export const serviceCenterApi = {
   getServiceCenters: async (params = {}) => {
     try {
       console.log("Fetching service centers with params:", params);
-      const response = await serviceCenterAxios.get("/service-centers", {
+      const response = await axios.get("/service-centers", {
         params,
       });
       return {
@@ -97,7 +31,7 @@ export const serviceCenterApi = {
   getServiceCenter: async (id) => {
     try {
       console.log("Fetching service center details for ID:", id);
-      const response = await serviceCenterAxios.get(`/service-centers/${id}`);
+      const response = await axios.get(`/service-centers/${id}`);
       return {
         success: true,
         data: response.data.data,
@@ -119,9 +53,7 @@ export const serviceCenterApi = {
   getServiceCategories: async () => {
     try {
       console.log("Fetching service categories");
-      const response = await serviceCenterAxios.get(
-        "/service-centers/categories"
-      );
+      const response = await axios.get("/service-centers/categories");
       return {
         success: true,
         data: response.data.data,
@@ -142,7 +74,7 @@ export const serviceCenterApi = {
   getServiceCenterStats: async () => {
     try {
       console.log("Fetching service center statistics");
-      const response = await serviceCenterAxios.get("/service-centers/stats");
+      const response = await axios.get("/service-centers/stats");
       return {
         success: true,
         data: response.data.data,
@@ -169,7 +101,7 @@ export const serviceCenterApi = {
         location,
         searchParams
       );
-      const response = await serviceCenterAxios.get("/service-centers", {
+      const response = await axios.get("/service-centers", {
         params: searchParams,
       });
       return {
@@ -196,7 +128,7 @@ export const serviceCenterApi = {
         category,
         searchParams
       );
-      const response = await serviceCenterAxios.get("/service-centers", {
+      const response = await axios.get("/service-centers", {
         params: searchParams,
       });
       return {
