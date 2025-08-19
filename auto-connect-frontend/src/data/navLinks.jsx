@@ -22,6 +22,7 @@ import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashbo
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
+import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -297,6 +298,13 @@ function getNavLinks(userContext) {
       title: "Vehicle Passport",
       icon: "assignment",
       page: <VehiclePassportDashboard />,
+    });
+
+     nav.push({
+      path: [`/claimsrequestform`],
+      title: "Claims Request Form",
+      icon: "policy",
+      page: <ClaimRequestForm />,
     });
 
     // nav.push({

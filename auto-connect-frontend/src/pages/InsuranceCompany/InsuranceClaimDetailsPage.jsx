@@ -159,7 +159,7 @@ const InsuranceClaimDetailsPage = () => {
               </div>
               <button 
                 className="action-btn investigating-btn"
-                onClick={() => handleStatusChange('investigating')}
+                onClick={() => handleStatusChange('Investigating')}
               >
                 Start Investigation
               </button>
@@ -184,7 +184,7 @@ const InsuranceClaimDetailsPage = () => {
               <div className="investigation-actions">
                 <button 
                   className="action-btn processing-btn"
-                  onClick={() => handleStatusChange('processing-period-01')}
+                  onClick={() => handleStatusChange('Processing-Period-01')}
                 >
                   Investigation Complete - Proceed
                 </button>
@@ -218,7 +218,7 @@ const InsuranceClaimDetailsPage = () => {
           <button
             className="action-btn send-btn"
             onClick={() => setShowProviderOverlay(true)}
-            style={{ display: claim.status === 'processing-period-01' && !claim.providersSent ? 'block' : 'none' }}
+            style={{ display: claim.status === 'Processing-Period-01' && !claim.providersSent ? 'block' : 'none' }}
           >
             Select Service Providers
           </button>
@@ -441,11 +441,11 @@ const InsuranceClaimDetailsPage = () => {
   };
 
   const shouldShowRepairEstimate = () => {
-    return claim.status === 'processing-period-03' || claim.status === 'approved';
+    return claim.status === 'Processing-Period-03' || claim.status === 'approved';
   };
 
   const shouldShowActionButtons = () => {
-    return !['pending', 'investigating', 'processing-period-01', 'processing-period-02', 'processing-period-03'].includes(claim.status);
+    return !['Pending', 'Investigating', 'Processing-Period-01', 'Processing-Period-02', 'Processing-Period-03'].includes(claim.status);
   };
 
   if (!claim) return <div>No claim found.</div>;
