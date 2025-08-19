@@ -93,7 +93,7 @@ const PolicyDetailsTestData = [
     premium: 110000,
     startDate: "2024-03-05",
     endDate: "2025-03-04",
-    status: "Active"
+    status: "Inactive"
   },
   {
     policyNumber: "POL-2024-004",

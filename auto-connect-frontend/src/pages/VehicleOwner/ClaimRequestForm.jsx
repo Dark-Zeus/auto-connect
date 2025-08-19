@@ -37,11 +37,11 @@ const ClaimRequestForm = () => {
 
   // Company mock data
   const companyInfo = {
-    name: "SecureGuard Insurance Company",
-    email: "claims@secureguard.lk",
+    name: "ABC Insurance Company Ltd.",
+    email: "claims@abcinsurance.lk",
     phone: "+94 11 234 5678",
-    hotline: "+94 11 CLAIMS (252467)",
-    website: "www.secureguard.lk"
+    hotline: "011-252467",
+    website: "www.abcinsurance.lk"
   };
 
   const steps = [
