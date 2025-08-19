@@ -1,6 +1,7 @@
 const PolicyDetailsTestData = [
   {
     policyNumber: "POL-2024-001",
+    insuranceCompanyId: 'ins_001',
     customerName: "John Silva",
     nic: "912345678V",
     address: "No. 123, Galle Road, Colombo 03",
@@ -18,12 +19,13 @@ const PolicyDetailsTestData = [
     estimatedValue: 3500000,
     policyType: "Comprehensive",
     premium: 125000,
-    startDate: "2024-01-15",
-    endDate: "2025-01-14",
+    startDate: "2025-01-15",
+    endDate: "2026-01-15",
     status: "Active"
   },
   {
     policyNumber: "POL-2024-002", 
+    insuranceCompanyId: 'ins_001',
     customerName: "Mary Fernando",
     nic: "887654321V",
     address: "No. 45, Kandy Road, Peradeniya",
@@ -47,6 +49,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2023-145",
+    insuranceCompanyId: 'ins_001',
     customerName: "David Perera",
     nic: "923456789V",
     address: "No. 67, Main Street, Negombo",
@@ -70,6 +73,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-003",
+    insuranceCompanyId: 'ins_001',
     customerName: "Sarah Wickramasinghe",
     nic: "956789012V",
     address: "No. 89, Temple Road, Kandy",
@@ -93,6 +97,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-004",
+    insuranceCompanyId: 'ins_001',
     customerName: "Michael Rajapakse",
     nic: "901234567V",
     address: "No. 12, Lake Road, Nuwara Eliya",
@@ -116,6 +121,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-005",
+    insuranceCompanyId: 'ins_001',
     customerName: "Priya Jayawardena",
     nic: "934567890V",
     address: "No. 78, Hill Street, Badulla",
@@ -139,6 +145,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-006",
+    insuranceCompanyId: 'ins_001',
     customerName: "Ravi Mendis",
     nic: "867890123V",
     address: "No. 56, Sea Street, Matara",
@@ -162,6 +169,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2023-089",
+    insuranceCompanyId: 'ins_001',
     customerName: "Lakshmi Gunasekara",
     nic: "945678901V",
     address: "No. 34, Cross Road, Galle",
@@ -185,6 +193,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-007",
+    insuranceCompanyId: 'ins_001',
     customerName: "Chaminda Rodrigo",
     nic: "878901234V",
     address: "No. 91, Park Road, Anuradhapura",
@@ -208,6 +217,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-008",
+    insuranceCompanyId: 'ins_001',
     customerName: "Nisha Dissanayake",
     nic: "912345670V",
     address: "No. 23, School Lane, Kurunegala",
@@ -231,6 +241,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-009",
+    insuranceCompanyId: 'ins_001',
     customerName: "Ajith Bandara",
     nic: "923456781V",
     address: "No. 45, Market Street, Ratnapura",
@@ -254,6 +265,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-010",
+    insuranceCompanyId: 'ins_001',
     customerName: "Indira Senanayake",
     nic: "956789023V",
     address: "No. 67, River View, Polonnaruwa",
@@ -277,6 +289,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2023-201",
+    insuranceCompanyId: 'ins_001',
     customerName: "Tharaka Wijesinghe",
     nic: "889012345V",
     address: "No. 89, Station Road, Jaffna",
@@ -300,6 +313,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-011",
+    insuranceCompanyId: 'ins_001',
     customerName: "Sandya Ratnayake",
     nic: "901234578V",
     address: "No. 12, Garden Lane, Trincomalee",
@@ -323,6 +337,7 @@ const PolicyDetailsTestData = [
   },
   {
     policyNumber: "POL-2024-012",
+    insuranceCompanyId: 'ins_001',
     customerName: "Nuwan Abeysekera",
     nic: "934567892V",
     address: "No. 34, Beach Road, Batticaloa",

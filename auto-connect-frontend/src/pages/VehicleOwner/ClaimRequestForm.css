@@ -1030,7 +1030,6 @@
 
   .company-header {
     background: #1e40af !important;
-    -webkit-print-color-adjust: exact;
   }
 
   .progress-steps {

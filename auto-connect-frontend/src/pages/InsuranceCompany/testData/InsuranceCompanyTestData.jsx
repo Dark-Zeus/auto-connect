@@ -1,6 +1,7 @@
 // Test data for Insurance Company Profile
 export const insuranceCompanyTestData = {
   // Company Information
+  insuranceCompanyId: 'ins_001',
   firstName: 'ABC Insurance',
   lastName: 'Company Ltd.',
   email: 'contact@abcinsurance.com',

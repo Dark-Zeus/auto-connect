@@ -23,6 +23,7 @@ import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashbo
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
 import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
+import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -300,12 +301,29 @@ function getNavLinks(userContext) {
       page: <VehiclePassportDashboard />,
     });
 
-     nav.push({
-      path: [`/claimsrequestform`],
-      title: "Claims Request Form",
-      icon: "policy",
-      page: <ClaimRequestForm />,
-    });
+    nav.push({
+          title: "Insurance Management",
+          icon: "policy",
+          page: "Insurance Management",
+          defLinkSettings: {
+            title: "Insurance Management",
+            icon: "folder",
+          },
+          sub: [
+            {
+              path: [`/myinsurancedetailspage`],
+              title: "My Insurance Details",
+              icon: "person",
+              page: <MyInsuranceDetailsPage />,
+            },
+            {
+              path: [`/claimsrequestform`],
+              title: "Claims Request Form",
+              icon: "policy",
+              page: <ClaimRequestForm />,
+            }
+          ]
+        });
 
     // nav.push({
     //   title: "Documents",
