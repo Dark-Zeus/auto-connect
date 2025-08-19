@@ -122,9 +122,8 @@ const InsurancePolicyDetailsPage = () => {
       {/* Page Header */}
       <div className="page-header">
         <div className="header-left">
-          <h1 className="page-title">Policy Details</h1>
+          <h1 className="page-title">Policy Details - {policyDetails.policyNumber}</h1>
           <div className="policy-info-header">
-            <p className="policy-number-header">{policyDetails.policyNumber}</p>
             <span className={`status-badge-header ${getStatusBadgeClass(policyDetails.status)}`}>
               {policyDetails.status}
             </span>
@@ -203,7 +202,7 @@ const InsurancePolicyDetailsPage = () => {
           <div className="detail-item">
             <span className="detail-icon">📋</span>
             <div className="detail-content">
-              <p className="detail-label">Vehicle Registration Number</p>
+              <p className="detail-label">Vehicle Reg-No</p>
               <p className="detail-value">{policyDetails.registrationNumber}</p>
             </div>
           </div>

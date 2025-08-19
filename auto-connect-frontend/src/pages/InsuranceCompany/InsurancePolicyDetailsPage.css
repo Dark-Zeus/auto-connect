@@ -3,7 +3,7 @@
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   padding: 1.5rem;
-  background-color: #f8fafc;
+  background-color: transparent;
 }
 
 /* Page Header */
@@ -29,10 +29,12 @@
 
 .page-title {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 700 !important;
   color: #1f2937;
   margin: 0;
   line-height: 1.2;
+  margin-bottom: 2px !important;
+  
 }
 
 .policy-info-header {
