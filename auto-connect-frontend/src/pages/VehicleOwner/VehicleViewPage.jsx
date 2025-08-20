@@ -65,7 +65,7 @@ const VehicleViewPage = () => {
             </div>
         </div>
         <div className="tw:w-4/5 sm:tw:w-11/12 md:tw:w-4/5 lg:tw:w-[70%] tw:mx-auto tw:mt-8  tw:bg-gray-50 tw:rounded-xl">
-          <SimilarAds />
+          <SimilarAds vehicle={vehicleData} excludeId={vehicleData._id} />
         </div>
     </div>
   );
