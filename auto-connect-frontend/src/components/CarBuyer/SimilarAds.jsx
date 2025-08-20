@@ -2,14 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Fuel, Gauge } from 'lucide-react';
 import buyVehicleAPI from '../../services/buyVehicleApiService';
 import { useNavigate } from 'react-router-dom'; 
-// import vehicleImage from '../../assets/images/toyota-v8.jpg';
-// import tlc150_1 from '../../assets/images/lc150Photos/tlc150_1.jpg';
-// import tlc150_2 from '../../assets/images/lc150Photos/tlc150_2.jpg';
-// import tlc150_3 from '../../assets/images/lc150Photos/tlc150_3.jpg';
-// import tlc150_4 from '../../assets/images/lc150Photos/tlc150_4.jpg';
-// import tlc150_5 from '../../assets/images/lc150Photos/tlc150_5.jpg';
-// import tlc150_6 from '../../assets/images/lc150Photos/tlc150_6.jpg';
-// import tlc150_7 from '../../assets/images/lc150Photos/tlc150_7.jpg';
+import NoSimilarAds from "./NoSimilarAds";
 
 const SimilarAds = ({ vehicle, excludeId }) => {
   const [ads, setAds] = useState([]);
@@ -27,93 +20,11 @@ const SimilarAds = ({ vehicle, excludeId }) => {
       year: vehicle.year,
       excludeId: excludeId || vehicle._id
     }).then((data) => {
+      console.log("Fetched similar ads:", data);
       setAds(data);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [vehicle, excludeId]);
-
-  // const ads = [
-  //   {
-  //     id: 1,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 34,800,000",
-  //     image: vehicleImage,
-  //     year: "2014",
-  //     fuel: "Diesel",
-  //     mileage: "115,000 km",
-  //     location: "Colombo"
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 31,500,000",
-  //     image: tlc150_1,
-  //     year: "2014",
-  //     fuel: "Diesel",
-  //     mileage: "118,500 km",
-  //     location: "Kandy"
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 31,600,000",
-  //     image: tlc150_2,
-  //     year: "2014",
-  //     fuel: "Diesel",
-  //     mileage: "125,000 km",
-  //     location: "Galle"
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 33,200,000",
-  //     image: tlc150_3,
-  //     year: "2015",
-  //     fuel: "Diesel",
-  //     mileage: "112,000 km",
-  //     location: "Kaluthara"
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 36,500,000",
-  //     image: tlc150_6,
-  //     year: "2015",
-  //     fuel: "Diesel",
-  //     mileage: "138,000 km",
-  //     location: "Matara"
-  //   },
-  //   {
-  //     id: 6,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 31,000,000",
-  //     image: tlc150_5,
-  //     year: "2014",
-  //     fuel: "Diesel",
-  //     mileage: "135,000 km",
-  //     location: "Jaffna"
-  //   },
-  //   {
-  //     id: 7,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 30,500,000",
-  //     image: tlc150_4,
-  //     year: "2013",
-  //     fuel: "Diesel",
-  //     mileage: "120,000 km",
-  //     location: "Anuradhapura"
-  //   },
-  //   {
-  //     id: 8,
-  //     title: "Toyota Land Cruiser 150",
-  //     price: "LKR 29,850,000",
-  //     image: tlc150_7,
-  //     year: "2014",
-  //     fuel: "Diesel",
-  //     mileage: "165,000 km",
-  //     location: "Badulla"
-  //   }
-  // ];
 
   const itemsPerView = 4;
   const maxIndex = Math.max(0, ads.length - itemsPerView);
@@ -141,11 +52,7 @@ const SimilarAds = ({ vehicle, excludeId }) => {
   }
 
   if (!ads.length) {
-    return (
-      <div className="tw-w-full tw-bg-gray-50 tw-py-8 tw-px-4 tw-rounded-xl tw-text-center tw-text-lg tw-font-semibold tw-text-gray-600">
-        No similar ads found
-      </div>
-    );
+    return (<NoSimilarAds />);
   }
 
   const handleViewDetails = async (adId) => {
