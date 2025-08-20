@@ -1,4 +1,5 @@
 // src/services/addedVehicleApiService.js - FIXED VERSION
+import axios from "../utils/axios.js";
 import { toast } from "react-toastify";
 
 // Base configuration - Properly handle environment variables in React
@@ -515,122 +516,124 @@ export const addedVehicleAPI = {
     }
   },
 
-// Mark as completed - REAL IMPLEMENTATION
-async markCompleted(id, completionData = {}) {
-  try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error("Authentication token not found. Please log in again.");
+  // Mark as completed - REAL IMPLEMENTATION
+  async markCompleted(id, completionData = {}) {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error("Authentication token not found. Please log in again.");
+      }
+
+      console.log("✅ Marking vehicle as completed:", id, completionData);
+
+      const response = await fetch(
+        `${ADDED_VEHICLES_ENDPOINT}/${id}/complete`,
+        {
+          method: "PATCH",
+          headers: createHeaders(),
+          body: JSON.stringify(completionData),
+        }
+      );
+
+      console.log("📡 Mark completed response status:", response.status);
+
+      const data = await handleResponse(response);
+
+      console.log("✅ Mark completed success response:", data);
+
+      handleAddedVehicleSuccess(data, "mark added vehicle as completed");
+
+      return {
+        success: true,
+        data: data.data,
+        message: data.message || "Vehicle request marked as completed",
+      };
+    } catch (error) {
+      console.error("❌ Mark completed error:", error);
+      handleAddedVehicleError(error, "mark added vehicle as completed");
+
+      return {
+        success: false,
+        message: error.message || "Failed to mark vehicle as completed",
+        data: null,
+      };
+    }
+  },
+
+  // Validate update data before sending
+  validateUpdateData(updateData) {
+    const errors = [];
+
+    // Validate status
+    if (updateData.status) {
+      const validStatuses = ["ACTIVE", "PENDING", "COMPLETED", "CANCELLED"];
+      if (!validStatuses.includes(updateData.status)) {
+        errors.push("Invalid status value");
+      }
     }
 
-    console.log("✅ Marking vehicle as completed:", id, completionData);
+    // Validate priority
+    if (updateData.priority) {
+      const validPriorities = ["LOW", "MEDIUM", "HIGH", "URGENT"];
+      if (!validPriorities.includes(updateData.priority)) {
+        errors.push("Invalid priority value");
+      }
+    }
 
-    const response = await fetch(`${ADDED_VEHICLES_ENDPOINT}/${id}/complete`, {
-      method: "PATCH",
-      headers: createHeaders(),
-      body: JSON.stringify(completionData),
-    });
+    // Validate purpose
+    if (updateData.purpose) {
+      const validPurposes = [
+        "SERVICE_BOOKING",
+        "INSURANCE_CLAIM",
+        "MAINTENANCE_SCHEDULE",
+        "REPAIR_REQUEST",
+        "INSPECTION",
+        "SALE_LISTING",
+        "RENTAL",
+        "OTHER",
+      ];
+      if (!validPurposes.includes(updateData.purpose)) {
+        errors.push("Invalid purpose value");
+      }
+    }
 
-    console.log("📡 Mark completed response status:", response.status);
+    // Validate scheduled date
+    if (updateData.scheduledDate) {
+      const scheduledDate = new Date(updateData.scheduledDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    const data = await handleResponse(response);
-    
-    console.log("✅ Mark completed success response:", data);
-    
-    handleAddedVehicleSuccess(data, "mark added vehicle as completed");
-    
+      if (scheduledDate < today) {
+        errors.push("Scheduled date cannot be in the past");
+      }
+    }
+
+    // Validate notes length
+    if (updateData.notes && updateData.notes.length > 500) {
+      errors.push("Notes cannot exceed 500 characters");
+    }
+
+    // Validate phone number if provided
+    if (updateData.contactInfo?.phone) {
+      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      if (!phoneRegex.test(updateData.contactInfo.phone)) {
+        errors.push("Invalid phone number format");
+      }
+    }
+
+    // Validate email if provided
+    if (updateData.contactInfo?.email) {
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(updateData.contactInfo.email)) {
+        errors.push("Invalid email format");
+      }
+    }
+
     return {
-      success: true,
-      data: data.data,
-      message: data.message || "Vehicle request marked as completed",
+      isValid: errors.length === 0,
+      errors,
     };
-  } catch (error) {
-    console.error("❌ Mark completed error:", error);
-    handleAddedVehicleError(error, "mark added vehicle as completed");
-    
-    return {
-      success: false,
-      message: error.message || "Failed to mark vehicle as completed",
-      data: null,
-    };
-  }
-},
-
-// Validate update data before sending
-validateUpdateData(updateData) {
-  const errors = [];
-
-  // Validate status
-  if (updateData.status) {
-    const validStatuses = ["ACTIVE", "PENDING", "COMPLETED", "CANCELLED"];
-    if (!validStatuses.includes(updateData.status)) {
-      errors.push("Invalid status value");
-    }
-  }
-
-  // Validate priority
-  if (updateData.priority) {
-    const validPriorities = ["LOW", "MEDIUM", "HIGH", "URGENT"];
-    if (!validPriorities.includes(updateData.priority)) {
-      errors.push("Invalid priority value");
-    }
-  }
-
-  // Validate purpose
-  if (updateData.purpose) {
-    const validPurposes = [
-      "SERVICE_BOOKING",
-      "INSURANCE_CLAIM", 
-      "MAINTENANCE_SCHEDULE",
-      "REPAIR_REQUEST",
-      "INSPECTION",
-      "SALE_LISTING",
-      "RENTAL",
-      "OTHER"
-    ];
-    if (!validPurposes.includes(updateData.purpose)) {
-      errors.push("Invalid purpose value");
-    }
-  }
-
-  // Validate scheduled date
-  if (updateData.scheduledDate) {
-    const scheduledDate = new Date(updateData.scheduledDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    if (scheduledDate < today) {
-      errors.push("Scheduled date cannot be in the past");
-    }
-  }
-
-  // Validate notes length
-  if (updateData.notes && updateData.notes.length > 500) {
-    errors.push("Notes cannot exceed 500 characters");
-  }
-
-  // Validate phone number if provided
-  if (updateData.contactInfo?.phone) {
-    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-    if (!phoneRegex.test(updateData.contactInfo.phone)) {
-      errors.push("Invalid phone number format");
-    }
-  }
-
-  // Validate email if provided
-  if (updateData.contactInfo?.email) {
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(updateData.contactInfo.email)) {
-      errors.push("Invalid email format");
-    }
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors
-  };
-},
-
+  },
 
   // Export vehicles - FIXED
   async exportAddedVehicles(params = {}) {

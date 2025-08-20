@@ -1,49 +1,12 @@
-import axios from "axios";
+import axios from "../utils/axios.js";
 import { toast } from "react-toastify";
-
-// Create axios instance for time slot API
-const timeSlotAxios = axios.create({
-  baseURL: "/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add auth token to requests
-timeSlotAxios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Handle response errors
-timeSlotAxios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error("Time Slot API Error:", error);
-
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 export const timeSlotApi = {
   // Create or update time slots for a specific day
   createOrUpdateDaySlots: async (slotData) => {
     try {
-      console.log("🕒 Creating/updating day slots:", slotData);
-      const response = await timeSlotAxios.post("/time-slots", slotData);
+      console.log(" Creating/updating day slots:", slotData);
+      const response = await axios.post("/time-slots", slotData);
 
       toast.success(`Time slots for ${slotData.dayOfWeek} saved successfully!`);
 
@@ -53,7 +16,7 @@ export const timeSlotApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("❌ Error creating/updating slots:", error);
+      console.error(" Error creating/updating slots:", error);
       const message =
         error.response?.data?.message || "Failed to save time slots";
       toast.error(message);
@@ -68,8 +31,8 @@ export const timeSlotApi = {
   // Get all time slots for the service center
   getMyTimeSlots: async () => {
     try {
-      console.log("📅 Fetching service center time slots...");
-      const response = await timeSlotAxios.get("/time-slots/my-slots");
+      console.log(" Fetching service center time slots...");
+      const response = await axios.get("/time-slots");
 
       return {
         success: true,
@@ -77,7 +40,7 @@ export const timeSlotApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("❌ Error fetching time slots:", error);
+      console.error(" Error fetching time slots:", error);
       const message =
         error.response?.data?.message || "Failed to fetch time slots";
       toast.error(message);
@@ -92,7 +55,7 @@ export const timeSlotApi = {
   // Get time slot statistics
   getTimeSlotStats: async () => {
     try {
-      const response = await timeSlotAxios.get("/time-slots/stats");
+      const response = await axios.get("/time-slots/stats");
 
       return {
         success: true,
@@ -100,7 +63,7 @@ export const timeSlotApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("❌ Error fetching slot stats:", error);
+      console.error(" Error fetching slot stats:", error);
       const message =
         error.response?.data?.message || "Failed to fetch statistics";
       throw {
@@ -118,7 +81,7 @@ export const timeSlotApi = {
         serviceCenterId,
         date,
       });
-      const response = await timeSlotAxios.get("/time-slots/available", {
+      const response = await axios.get("/time-slots/available", {
         params: { serviceCenterId, date },
       });
 
@@ -128,7 +91,7 @@ export const timeSlotApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("❌ Error fetching available slots:", error);
+      console.error(" Error fetching available slots:", error);
       const message =
         error.response?.data?.message || "Failed to fetch available slots";
       throw {
@@ -142,8 +105,8 @@ export const timeSlotApi = {
   // Block specific dates or slots
   blockDateOrSlots: async (blockData) => {
     try {
-      console.log("🚫 Blocking date/slots:", blockData);
-      const response = await timeSlotAxios.post("/time-slots/block", blockData);
+      console.log(" Blocking date/slots:", blockData);
+      const response = await axios.post("/time-slots/block", blockData);
 
       toast.success("Date/slots blocked successfully!");
 
@@ -153,7 +116,7 @@ export const timeSlotApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("❌ Error blocking date/slots:", error);
+      console.error(" Error blocking date/slots:", error);
       const message =
         error.response?.data?.message || "Failed to block date/slots";
       toast.error(message);
@@ -168,11 +131,8 @@ export const timeSlotApi = {
   // Unblock specific dates
   unblockDate: async (unblockData) => {
     try {
-      console.log("✅ Unblocking date:", unblockData);
-      const response = await timeSlotAxios.post(
-        "/time-slots/unblock",
-        unblockData
-      );
+      console.log(" Unblocking date:", unblockData);
+      const response = await axios.post("/time-slots/unblock", unblockData);
 
       toast.success("Date unblocked successfully!");
 
@@ -197,7 +157,7 @@ export const timeSlotApi = {
   deleteDaySlots: async (dayOfWeek) => {
     try {
       console.log("🗑️ Deleting slots for day:", dayOfWeek);
-      const response = await timeSlotAxios.delete(`/time-slots/${dayOfWeek}`);
+      const response = await axios.delete(`/time-slots/${dayOfWeek}`);
 
       toast.success(`Time slots for ${dayOfWeek} deleted successfully!`);
 
@@ -206,7 +166,7 @@ export const timeSlotApi = {
         message: response.data.message,
       };
     } catch (error) {
-      console.error("❌ Error deleting day slots:", error);
+      console.error(" Error deleting day slots:", error);
       const message =
         error.response?.data?.message || "Failed to delete time slots";
       toast.error(message);
