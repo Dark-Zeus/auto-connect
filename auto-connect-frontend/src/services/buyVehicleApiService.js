@@ -278,6 +278,27 @@ incrementVehicleViews: async (vehicleId) => {
   }
 },
 
+fetchSimilarVehicles: async ({ make, model, fuelType, year, excludeId }) => {
+  try {
+    const token = getAuthToken();
+    if (!token) throw new Error("Authentication token not found. Please log in again.");
+
+    const params = new URLSearchParams({ make, model, fuelType, year });
+    if (excludeId) params.append("excludeId", excludeId);
+
+    const response = await fetch(`${BUY_VEHICLES_ENDPOINT}/similar?${params.toString()}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await handleResponse(response);
+    return data.data || [];
+  } catch (error) {
+    handleBuyVehicleError(error, "fetch similar vehicles");
+    return [];
+  }
+},
+
 };
 
 export default buyVehicleAPI;
