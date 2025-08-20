@@ -197,3 +197,38 @@ export const incrementVehicleViews = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const getSimilarVehicles = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    const { make, model, fuelType, year, excludeId } = req.query;
+
+    if (!make || !model || !fuelType || !year) {
+      return res.status(400).json({ success: false, message: "Missing required query parameters" });
+    }
+
+    // Calculate year range
+    const minYear = Number(year) - 3;
+    const maxYear = Number(year) + 3;
+
+    const filter = {
+      _id: { $ne: excludeId },
+      userId: { $ne: userId },
+      status: 1,
+      make,
+      model,
+      fuelType,
+      year: { $gte: minYear, $lte: maxYear }
+    };
+
+    if (excludeId) {
+      filter._id = { $ne: excludeId };
+    }
+
+    const vehicles = await ListVehicle.find(filter).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: vehicles });
+  } catch (err) {
+    console.error("Error fetching similar vehicles:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
