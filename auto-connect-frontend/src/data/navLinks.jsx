@@ -24,6 +24,8 @@ import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
 import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
 import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
+import ClaimHistoryPage from "@pages/VehicleOwner/ClaimHistoryPage";
+import UserClaimDetailsPage from "@pages/VehicleOwner/UserClaimDetailsPage";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -321,6 +323,19 @@ function getNavLinks(userContext) {
               title: "Claims Request Form",
               icon: "policy",
               page: <ClaimRequestForm />,
+            },
+            {
+              path: [`/claimhistorypage`],
+              title: "Claim History",
+              icon: "history",
+              page: <ClaimHistoryPage />,
+            },
+            {
+              path: [`/userclaimdetails/:claimId`],
+              title: "User Claim Details",
+              icon: "policy",
+              page: <UserClaimDetailsPage />,
+              hidden: true,
             }
           ]
         });

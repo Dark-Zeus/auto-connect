@@ -5,7 +5,7 @@ import PolicyDetailsTestData from "../InsuranceCompany/testData/PolicyDetailsTes
 const ClaimRequestForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    policyNumber: '',
+    vehicleNumber: '',
     incidentType: '',
     incidentDate: '',
     incidentTime: '',
@@ -45,7 +45,7 @@ const ClaimRequestForm = () => {
   };
 
   const steps = [
-    { id: 1, title: "Policy & Incident Details", icon: "📋" },
+    { id: 1, title: "Vehicle & Incident Details", icon: "📋" },
     { id: 2, title: "Evidence Collection", icon: "📸" },
     { id: 3, title: "Confirmation & Submit", icon: "✅" }
   ];
@@ -69,19 +69,19 @@ const ClaimRequestForm = () => {
     { key: 'right', label: 'Right Side', required: true }
   ];
 
-  // Handle policy number input and auto-fill details
-  const handlePolicyNumberChange = (e) => {
-    const policyNum = e.target.value.toUpperCase();
-    setFormData(prev => ({ ...prev, policyNumber: policyNum }));
+  // Handle vehicle number input and auto-fill details
+  const handleVehicleNumberChange = (e) => {
+    const vehicleNum = e.target.value.toUpperCase();
+    setFormData(prev => ({ ...prev, vehicleNumber: vehicleNum }));
 
-    if (policyNum.length >= 8) {
-      const policy = PolicyDetailsTestData.find(p => p.policyNumber === policyNum);
+    if (vehicleNum.length >= 6) { // Assuming vehicle numbers are at least 6 characters
+      const policy = PolicyDetailsTestData.find(p => p.vehicleNumber === vehicleNum);
       if (policy) {
         setPolicyDetails(policy);
-        setErrors(prev => ({ ...prev, policyNumber: '' }));
+        setErrors(prev => ({ ...prev, vehicleNumber: '' }));
       } else {
         setPolicyDetails(null);
-        setErrors(prev => ({ ...prev, policyNumber: 'Policy not found. Please check the policy number.' }));
+        setErrors(prev => ({ ...prev, vehicleNumber: 'Vehicle not found. Please check the vehicle number.' }));
       }
     } else {
       setPolicyDetails(null);
@@ -221,14 +221,14 @@ const ClaimRequestForm = () => {
 
     switch (step) {
       case 1:
-        if (!formData.policyNumber) newErrors.policyNumber = 'Policy number is required';
-        if (!policyDetails) newErrors.policyNumber = 'Valid policy required';
+        if (!formData.vehicleNumber) newErrors.vehicleNumber = 'Vehicle number is required';
+        if (!policyDetails) newErrors.vehicleNumber = 'Valid vehicle number required';
         if (!formData.incidentType) newErrors.incidentType = 'Incident type is required';
         if (!formData.incidentDate) newErrors.incidentDate = 'Incident date is required';
         if (!formData.incidentTime) newErrors.incidentTime = 'Incident time is required';
         if (!formData.incidentLocation) newErrors.incidentLocation = 'Incident location is required';
         if (!formData.description) newErrors.description = 'Incident description is required';
-        stepFields = ['policyNumber', 'incidentType', 'incidentDate', 'incidentTime', 'incidentLocation', 'description'];
+        stepFields = ['vehicleNumber', 'incidentType', 'incidentDate', 'incidentTime', 'incidentLocation', 'description'];
         break;
 
       case 2:
@@ -309,28 +309,28 @@ const ClaimRequestForm = () => {
         return (
           <div className="form-section">
             <div className="section-header">
-              <h3>📋 Policy & Incident Details</h3>
-              <p>Enter your policy number to auto-fill vehicle and customer details</p>
+              <h3>📋 Vehicle & Incident Details</h3>
+              <p>Enter your vehicle number to auto-fill vehicle and customer details</p>
             </div>
 
-            {/* Policy Number Input */}
+            {/* Vehicle Number Input */}
             <div className="input-group">
-              <label htmlFor="policyNumber">Policy Number *</label>
+              <label htmlFor="vehicleNumber">Vehicle Number *</label>
               <input
-                id="policyNumber"
+                id="vehicleNumber"
                 type="text"
-                value={formData.policyNumber}
-                onChange={handlePolicyNumberChange}
-                placeholder="Enter your policy number (e.g., POL-2024-001)"
-                className={errors.policyNumber ? 'error' : ''}
+                value={formData.vehicleNumber}
+                onChange={handleVehicleNumberChange}
+                placeholder="Enter your vehicle number (e.g., ABC-1234)"
+                className={errors.vehicleNumber ? 'error' : ''}
               />
-              {errors.policyNumber && <span className="error-message">{errors.policyNumber}</span>}
+              {errors.vehicleNumber && <span className="error-message">{errors.vehicleNumber}</span>}
             </div>
 
             {/* Policy Details Display */}
             {policyDetails && (
               <div className="policy-details-display">
-                <h4>✅ Policy Found</h4>
+                <h4>✅ Vehicle Found</h4>
                 <div className="details-grid">
                   <div className="detail-item">
                     <label>Customer Name:</label>
@@ -341,8 +341,8 @@ const ClaimRequestForm = () => {
                     <span>{policyDetails.vehicleModel}</span>
                   </div>
                   <div className="detail-item">
-                    <label>Vehicle Number:</label>
-                    <span>{policyDetails.vehicleNumber}</span>
+                    <label>Policy Number:</label>
+                    <span>{policyDetails.policyNumber}</span>
                   </div>
                   <div className="detail-item">
                     <label>Policy Type:</label>
@@ -354,7 +354,7 @@ const ClaimRequestForm = () => {
                   </div>
                   <div className="detail-item">
                     <label>Email:</label>
-                    <span>{policyDetails.email}</span>
+                    <span className="email-text break-long-text">{policyDetails.email}</span>
                   </div>
                 </div>
               </div>
@@ -584,8 +584,8 @@ const ClaimRequestForm = () => {
               <h4>Claim Summary</h4>
               <div className="summary-grid">
                 <div className="summary-item">
-                  <label>Policy Number:</label>
-                  <span>{formData.policyNumber}</span>
+                  <label>Vehicle Number:</label>
+                  <span>{formData.vehicleNumber}</span>
                 </div>
                 <div className="summary-item">
                   <label>Incident Type:</label>
