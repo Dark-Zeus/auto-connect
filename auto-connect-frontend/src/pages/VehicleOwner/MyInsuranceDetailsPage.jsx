@@ -511,7 +511,7 @@ const MyInsuranceDetailsPage = () => {
   return (
     <div className="my-insurance-page">
       {/* Header */}
-      <div className="page-header">
+      <div className="page-headerM">
         <h1 className="page-title">My Insurance Details</h1>
         <p className="page-subtitle">View and manage your vehicle insurance policies</p>
       </div>
