@@ -58,6 +58,9 @@ import InsurancePolicyManagement from "@pages/InsuranceCompany/InsurancePolicyMa
 import InsurancePolicyDetailsPage from "@pages/InsuranceCompany/InsurancePolicyDetailsPage";
 import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
+import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
+
+export default
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -741,6 +744,13 @@ function getNavLinks(userContext) {
           title: "Add New Policy",
           icon: "add_circle",
           page: <AddNewPolicyPage />,
+        },
+
+        {
+          path: [`/policytypesmanagement`],
+          title: "Policy Types Management",
+          icon: "category",
+          page: <PolicyTypesManagementPage />,
         },
 
 
