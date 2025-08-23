@@ -16,6 +16,18 @@ const InsuranceClaimsManagement = () => {
 
   const navigate = useNavigate();
 
+  // Define status priority order
+  const statusOrder = {
+    'Pending': 1,
+    'Investigating': 2,
+    'Processing-Period-01': 3,
+    'Processing-Period-02': 4,
+    'Processing-Period-03': 5,
+    'Approved': 6,
+    'Completed': 7,
+    'Rejected': 8
+  };
+
   // Clear all filters
   const clearFilters = () => {
     setSearchTerm('');
@@ -25,28 +37,41 @@ const InsuranceClaimsManagement = () => {
     setCurrentPage(1);
   };
 
-  // Filter claims
-  const filteredClaims = claims.filter(claim => {
-    const searchMatch =
-      claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      claim.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      claim.customer.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filter and sort claims
+  const filteredAndSortedClaims = claims
+    .filter(claim => {
+      const searchMatch =
+        claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim.customer.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const statusMatch = statusFilter ? claim.status.toLowerCase() === statusFilter.toLowerCase() : true;
+      const statusMatch = statusFilter ? claim.status.toLowerCase() === statusFilter.toLowerCase() : true;
 
-    const dateMatch =
-      (!startDate || new Date(claim.date) >= new Date(startDate)) &&
-      (!endDate || new Date(claim.date) <= new Date(endDate));
+      const dateMatch =
+        (!startDate || new Date(claim.date) >= new Date(startDate)) &&
+        (!endDate || new Date(claim.date) <= new Date(endDate));
 
-    return searchMatch && statusMatch && dateMatch;
-  });
+      return searchMatch && statusMatch && dateMatch;
+    })
+    .sort((a, b) => {
+      // First, sort by status priority
+      const statusA = statusOrder[a.status] || 999;
+      const statusB = statusOrder[b.status] || 999;
+      
+      if (statusA !== statusB) {
+        return statusA - statusB;
+      }
+      
+      // If status is the same, sort by date in descending order (newest first)
+      return new Date(b.date) - new Date(a.date);
+    });
 
   // Pagination logic
   const indexOfLastClaim = currentPage * claimsPerPage;
   const indexOfFirstClaim = indexOfLastClaim - claimsPerPage;
-  const currentClaims = filteredClaims.slice(indexOfFirstClaim, indexOfLastClaim);
+  const currentClaims = filteredAndSortedClaims.slice(indexOfFirstClaim, indexOfLastClaim);
 
-  const totalPages = Math.ceil(filteredClaims.length / claimsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedClaims.length / claimsPerPage);
 
   return (
     <div className="claim-management-page">
@@ -65,7 +90,7 @@ const InsuranceClaimsManagement = () => {
       <div className="filter-section">
         <input 
           type="text"
-          placeholder="Search by Claim ID, Vehicle number or Customer..."
+          placeholder="Claim ID, Vehicle number or Customer"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
@@ -83,6 +108,7 @@ const InsuranceClaimsManagement = () => {
           <option value="Processing-Period-02">Processing-Period-02</option>
           <option value="Processing-Period-03">Processing-Period-03</option>
           <option value="Approved">Approved</option>
+          <option value="Completed">Completed</option>
           <option value="Rejected">Rejected</option>
         </select>
 
@@ -137,7 +163,7 @@ const InsuranceClaimsManagement = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" style={{ textAlign: 'center', padding: '1rem' }}>
+              <td colSpan="8" style={{ textAlign: 'center', padding: '1rem' }}>
                 No claims found.
               </td>
             </tr>

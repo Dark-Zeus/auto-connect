@@ -22,6 +22,10 @@ import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashbo
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
+import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
+import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
+import ClaimHistoryPage from "@pages/VehicleOwner/ClaimHistoryPage";
+import UserClaimDetailsPage from "@pages/VehicleOwner/UserClaimDetailsPage";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -54,6 +58,9 @@ import InsurancePolicyManagement from "@pages/InsuranceCompany/InsurancePolicyMa
 import InsurancePolicyDetailsPage from "@pages/InsuranceCompany/InsurancePolicyDetailsPage";
 import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
+import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
+
+export default
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -298,6 +305,43 @@ function getNavLinks(userContext) {
       icon: "assignment",
       page: <VehiclePassportDashboard />,
     });
+
+    nav.push({
+          title: "Insurance Management",
+          icon: "policy",
+          page: "Insurance Management",
+          defLinkSettings: {
+            title: "Insurance Management",
+            icon: "folder",
+          },
+          sub: [
+            {
+              path: [`/myinsurancedetailspage`],
+              title: "My Insurance Details",
+              icon: "person",
+              page: <MyInsuranceDetailsPage />,
+            },
+            {
+              path: [`/claimsrequestform`],
+              title: "Claims Request Form",
+              icon: "policy",
+              page: <ClaimRequestForm />,
+            },
+            {
+              path: [`/claimhistorypage`],
+              title: "Claim History",
+              icon: "history",
+              page: <ClaimHistoryPage />,
+            },
+            {
+              path: [`/userclaimdetails/:claimId`],
+              title: "User Claim Details",
+              icon: "policy",
+              page: <UserClaimDetailsPage />,
+              hidden: true,
+            }
+          ]
+        });
 
     // nav.push({
     //   title: "Documents",
@@ -700,6 +744,13 @@ function getNavLinks(userContext) {
           title: "Add New Policy",
           icon: "add_circle",
           page: <AddNewPolicyPage />,
+        },
+
+        {
+          path: [`/policytypesmanagement`],
+          title: "Policy Types Management",
+          icon: "category",
+          page: <PolicyTypesManagementPage />,
         },
 
 
