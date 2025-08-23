@@ -6,44 +6,44 @@ import lc150_3 from '../../assets/images/lc150_3.jpg';
 import lc150_4 from '../../assets/images/lc150_4.jpg';
 import lc150_5 from '../../assets/images/lc150_5.jpg';
 import lc150_6 from '../../assets/images/lc150_6.jpg';
+import noImage from '../../assets/images/noImage.jpeg';
 
-const ImageViewer = ({ vehicle }) => {
+const ImageViewer = ({ photos }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const vehicleData = vehicle || {
-    name: 'lomitha',
-    mobile: '0767120123',
-    district: 'Matara',
-    city: 'Matara',
-    email: 'lomitha@example.com',
-    vehicleType: 'Car',
-    condition: 'Used',
-    make: 'Toyota',
-    model: 'Tercel',
-    year: '1998',
-    registeredYear: '1998',
-    price: '2565000',
-    ongoingLease: false,
-    transmission: 'Manual',
-    fuelType: 'Petrol',
-    engineCapacity: '1500',
-    mileage: '272000',
-    description: 'A well-maintained car with good fuel efficiency.',
-    images: [ lc150_1,
-    lc150_2,
-    lc150_3,
-    lc150_4,
-    lc150_5,
-    lc150_6],
-    views: '2164'
-  };
+  // const vehicleData = vehicle || {
+  //   name: 'lomitha',
+  //   mobile: '0767120123',
+  //   district: 'Matara',
+  //   city: 'Matara',
+  //   email: 'lomitha@example.com',
+  //   vehicleType: 'Car',
+  //   condition: 'Used',
+  //   make: 'Toyota',
+  //   model: 'Tercel',
+  //   year: '1998',
+  //   registeredYear: '1998',
+  //   price: '2565000',
+  //   ongoingLease: false,
+  //   transmission: 'Manual',
+  //   fuelType: 'Petrol',
+  //   engineCapacity: '1500',
+  //   mileage: '272000',
+  //   description: 'A well-maintained car with good fuel efficiency.',
+  //   images: [ lc150_1,
+  //   lc150_2,
+  //   lc150_3,
+  //   lc150_4,
+  //   lc150_5,
+  //   lc150_6],
+  //   views: '2164'
+  // };
 
   // Default image if none provided
-  const defaultImage = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop';
+  const defaultImage = noImage;  
+  const imageList = Array.isArray(photos) && photos.length > 0 ? photos : [defaultImage];
   
-  const imageList = vehicleData.images && vehicleData.images.length > 0 ? vehicleData.images : [defaultImage];
-
   const nextImage = () => {
     setCurrentIndex((prev) => (prev + 1) % imageList.length);
   };
@@ -92,7 +92,7 @@ const ImageViewer = ({ vehicle }) => {
                 className="tw:max-w-full tw:max-h-full tw:object-contain tw:rounded-lg tw:shadow-xl tw:transition-transform tw:duration-300 tw:cursor-pointer"
                 onClick={openFullscreen}
                 onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/800x600/6366f1/ffffff?text=Image+Not+Found';
+                  e.target.src = defaultImage;
                 }}
               />
             </div>
@@ -204,7 +204,7 @@ const ImageViewer = ({ vehicle }) => {
               alt={`Image ${currentIndex + 1}`}
               className="tw:max-w-full tw:max-h-full tw:object-contain tw:shadow-2xl"
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/1200x800/6366f1/ffffff?text=Image+Not+Found';
+                e.target.src = defaultImage;
               }}
             />
           </div>

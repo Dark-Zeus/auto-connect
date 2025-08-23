@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 
-const VehicleDescriptionBox = ({ vehicle }) => {
+const VehicleDescriptionBox = ({ description }) => {
   const [expanded, setExpanded] = useState(false);
+  const desc = description || '';
 
-  const vehicleData = vehicle || {
-    name: 'lomitha',
-    mobile: '0767120123',
-    district: 'Matara',
-    city: 'Akuressa',
-    email: 'lomitha@example.com',
-    vehicleType: 'Car',
-    condition: 'Used',
-    make: 'Toyota',
-    model: 'Tercel',
-    year: '1998',
-    registeredYear: '1998',
-    price: '2565000',
-    ongoingLease: false,
-    transmission: 'Manual',
-    fuelType: 'Petrol',
-    engineCapacity: '1500',
-    mileage: '272000',
-    description: 'Toyota Land Cruiser 150 in Akuressa. Well maintained. Family used. Company maintained. All services up to date. Updated documents and registration. Inspection on prior appointment can be arranged. Please call for more information.',
-    views: '2164'
-  };
+  // const vehicleData = vehicle || {
+  //   name: 'lomitha',
+  //   mobile: '0767120123',
+  //   district: 'Matara',
+  //   city: 'Akuressa',
+  //   email: 'lomitha@example.com',
+  //   vehicleType: 'Car',
+  //   condition: 'Used',
+  //   make: 'Toyota',
+  //   model: 'Tercel',
+  //   year: '1998',
+  //   registeredYear: '1998',
+  //   price: '2565000',
+  //   ongoingLease: false,
+  //   transmission: 'Manual',
+  //   fuelType: 'Petrol',
+  //   engineCapacity: '1500',
+  //   mileage: '272000',
+  //   description: 'Toyota Land Cruiser 150 in Akuressa. Well maintained. Family used. Company maintained. All services up to date. Updated documents and registration. Inspection on prior appointment can be arranged. Please call for more information.',
+  //   views: '2164'
+  // };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -34,10 +35,10 @@ const VehicleDescriptionBox = ({ vehicle }) => {
     return text.substring(0, maxLength) + '...';
   };
 
-  const shouldShowExpandButton = vehicleData.description.length > 200;
+  const shouldShowExpandButton = desc.length > 200;
 
   return (
-    <div className="tw:max-w-4xl tw:mx-auto tw:p-4">
+    <div className="tw:max-w-4xl tw:w-full tw:mx-auto tw:p-4">
       <div className="tw:bg-white tw:border tw:border-gray-200 tw:rounded-xl tw:shadow-sm tw:overflow-hidden">
         {/* Header */}
         <div className="tw:p-6 tw:border-b tw:border-gray-100">
@@ -48,8 +49,8 @@ const VehicleDescriptionBox = ({ vehicle }) => {
         <div className="tw:p-6">
           <p className="tw:text-gray-700 tw:leading-relaxed tw:text-base">
             {expanded || !shouldShowExpandButton 
-              ? vehicleData.description 
-              : truncateText(vehicleData.description, 200)
+              ? desc
+              : truncateText(desc, 200)
             }
           </p>
 

@@ -16,6 +16,7 @@ import {
 } from '@mui/icons-material';
 
 import { useNavigate } from 'react-router-dom';
+import buyVehicleApiService from "../../services/buyVehicleApiService";
 
 const ListedVehicleCard = ({ vehicle }) => {
 
@@ -28,8 +29,8 @@ const ListedVehicleCard = ({ vehicle }) => {
     }).format(price);
   };
 
-  const formatOdometer = (odometer) => {
-    return `${odometer.toLocaleString()} km`;
+  const formatOdometer = (mileage) => {
+    return `${mileage.toLocaleString()} km`;
   };
 
   const formatDate = (dateString) => {
@@ -42,9 +43,13 @@ const ListedVehicleCard = ({ vehicle }) => {
 
   const navigate = useNavigate();
 
-  const handleHeaderClick = () => {
-    // Default ref for navigation - will be replaced with actual routing
-    navigate('/vehicleview');
+  const handleHeaderClick = async () => {
+    try {
+      await buyVehicleApiService.incrementVehicleViews(vehicle._id);
+    } catch (err) {
+      // Optionally handle error (silent fail)
+    }
+    navigate('/vehicleview', { state: { vehicle } });
   };
 
   return (
@@ -70,15 +75,14 @@ const ListedVehicleCard = ({ vehicle }) => {
         <Box sx={{ width: '30%', height: '100%', p: 1.5, boxSizing: 'border-box' }}>
           <CardMedia
             component="img"
-            image={vehicle.image}
-            alt={`${vehicle.manufacturer} ${vehicle.model} ${vehicle.year}`}
+            image={vehicle.photos?.[0]}
+            alt={`${vehicle.make} ${vehicle.model} ${vehicle.year}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
           />
         </Box>
 
         <Box sx={{ width: '70%', height: '100%' }}>
           <CardContent className="tw:p-4 tw:h-full tw:flex tw:flex-col" sx={{ height: '100%', boxSizing: 'border-box', padding: '16px !important' }}>
-            {/* Clickable Header */}
             <Box 
               onClick={handleHeaderClick}
               className="tw:cursor-pointer tw:mb-3 tw:group"
@@ -89,12 +93,10 @@ const ListedVehicleCard = ({ vehicle }) => {
                 className="tw:font-bold tw:text-lg tw:mb-1 group-hover:tw:underline tw:transition-all"
                 style={{ color: '#4a618a', fontWeight: '600' }}
               >
-                {vehicle.manufacturer} {vehicle.model} {vehicle.year}
+                {vehicle.make} {vehicle.model} {vehicle.year}
               </Typography>
             </Box>
-            {/* Vehicle Details */}
             <Box className="tw:space-y-2 tw:flex-grow">
-              {/* Location */}
               <Box className="tw:flex tw:items-center tw:gap-2">
                 <LocationOn 
                   fontSize="small" 
@@ -108,7 +110,6 @@ const ListedVehicleCard = ({ vehicle }) => {
                   {vehicle.district}, {vehicle.city}
                 </Typography>
               </Box>
-              {/* Price */}
               <Box className="tw:flex tw:items-center tw:gap-2">
                 <AttachMoney 
                   fontSize="small" 
@@ -122,7 +123,6 @@ const ListedVehicleCard = ({ vehicle }) => {
                   {formatPrice(vehicle.price)}
                 </Typography>
               </Box>
-              {/* Odometer */}
               <Box className="tw:flex tw:items-center tw:gap-2">
                 <Speed 
                   fontSize="small" 
@@ -134,10 +134,9 @@ const ListedVehicleCard = ({ vehicle }) => {
                   fontSize={13}
                   fontWeight={600}
                 >
-                  {formatOdometer(vehicle.odometer)}
+                  {formatOdometer(vehicle.mileage)}
                 </Typography>
               </Box>
-              {/* Fuel Type */}
               <Box className="tw:flex tw:items-center tw:gap-2">
                 <LocalGasStation 
                   fontSize="small" 
@@ -156,14 +155,13 @@ const ListedVehicleCard = ({ vehicle }) => {
                 />
               </Box>
             </Box>
-            {/* Posted Date */}
             <Box className="tw:flex tw:justify-end tw:mt-3 tw:pt-2 tw:border-t tw:border-gray-300">
               <Typography 
                 variant="caption" 
                 className="tw:text-gray-500 tw:text-xs"
                 fontSize={12}
               >
-                Posted: {vehicle.postedDate}
+                Posted: {formatDate(vehicle.postedDate)}
               </Typography>
             </Box>
           </CardContent>

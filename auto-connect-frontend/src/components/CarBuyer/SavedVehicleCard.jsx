@@ -18,28 +18,17 @@ import {
 } from '@mui/icons-material';
 
 import { useNavigate } from 'react-router-dom';
+import buyVehicleAPI from "../../services/buyVehicleApiService";
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
 import lc150_1 from '../../assets/images/lc150_1.jpg';
 
-const SavedVehicleCard = ({ vehicle = null }) => {
+const SavedVehicleCard = ({ vehicle, onUnsave }) => {
   // State to manage saved/unsaved toggle
   const [isSaved, setIsSaved] = useState(true);
 
   // Use props or fallback to sample data
-  const vehicleData = vehicle || {
-    id: 1,
-    manufacturer: 'Toyota',
-    model: 'Land Cruiser 150',
-    year: 2008,
-    price: 32000000,
-    odometer: 135000,
-    fuelType: 'Diesel',
-    image: lc150_1,
-    postedDate: '2025-06-20',
-    district: 'Gampaha',
-    city: 'Katana'
-  };
+  const vehicleData = vehicle || {};
 
   const navigate = useNavigate();
 
@@ -65,13 +54,19 @@ const SavedVehicleCard = ({ vehicle = null }) => {
   };
 
   const handleHeaderClick = () => {
-    //console.log(`Maps to vehicle details for ${vehicleData.manufacturer} ${vehicleData.model}`);
-    navigate('/vehicleview');
+    navigate('/vehicleview', { state: { vehicle: vehicleData } });
   };
 
-  const handleBookmarkToggle = () => {
-    setIsSaved(!isSaved);
-    console.log(`Vehicle ${isSaved ? 'unsaved' : 'saved'}: ${vehicleData.manufacturer} ${vehicleData.model}`);
+  const handleBookmarkToggle = async () => {
+    if (isSaved) {
+      try {
+        await buyVehicleAPI.unsaveAd(vehicleData._id);
+        setIsSaved(false);
+        if (onUnsave) onUnsave(vehicleData._id);
+      } catch (error) {
+        // Optionally show error
+      }
+    }
   };
 
   return (
@@ -97,8 +92,8 @@ const SavedVehicleCard = ({ vehicle = null }) => {
         <Box sx={{ width: '30%', height: '100%', p: 1.5, boxSizing: 'border-box' }}>
           <CardMedia
             component="img"
-            image={vehicleData.image}
-            alt={`${vehicleData.manufacturer} ${vehicleData.model} ${vehicleData.year}`}
+            image={vehicleData.photos?.[0]}
+            alt={`${vehicleData.make} ${vehicleData.model} ${vehicleData.year}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
           />
         </Box>
@@ -137,7 +132,7 @@ const SavedVehicleCard = ({ vehicle = null }) => {
                 className="tw:font-bold tw:text-lg tw:mb-1 group-hover:tw:underline tw:transition-all"
                 style={{ color: '#4a618a', fontWeight: '600' }}
               >
-                {vehicleData.manufacturer} {vehicleData.model} {vehicleData.year}
+                {vehicleData.make} {vehicleData.model} {vehicleData.year}
               </Typography>
             </Box>
             {/* Vehicle Details */}
@@ -182,7 +177,7 @@ const SavedVehicleCard = ({ vehicle = null }) => {
                   fontSize={13}
                   fontWeight={600}
                 >
-                  {formatOdometer(vehicleData.odometer)}
+                  {formatOdometer(vehicleData.mileage)}
                 </Typography>
               </Box>
               {/* Fuel Type */}
@@ -211,7 +206,7 @@ const SavedVehicleCard = ({ vehicle = null }) => {
                 className="tw:text-gray-500 tw:text-xs"
                 fontSize={12}
               >
-                Posted: {vehicleData.postedDate}
+                Posted: {formatDate(vehicleData.createdAt)}
               </Typography>
             </Box>
           </CardContent>
