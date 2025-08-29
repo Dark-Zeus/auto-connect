@@ -60,6 +60,7 @@ import {
 import { toast } from "react-toastify";
 import { UserContext } from "../../contexts/UserContext";
 import bookingAPI from "../../services/bookingApiService";
+import ServiceCompletionForm from "../../components/ServiceProvider/ServiceCompletionForm";
 import "./vehicleServiceRequests.css";
 
 const VehicleServiceRequests = () => {
@@ -71,6 +72,7 @@ const VehicleServiceRequests = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [statusUpdateDialogOpen, setStatusUpdateDialogOpen] = useState(false);
+  const [completionFormOpen, setCompletionFormOpen] = useState(false);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -191,6 +193,13 @@ const VehicleServiceRequests = () => {
         return;
       }
 
+      // If status is being updated to COMPLETED, open completion form instead
+      if (statusUpdate.status === "COMPLETED") {
+        setStatusUpdateDialogOpen(false);
+        setCompletionFormOpen(true);
+        return;
+      }
+
       const updateData = {
         status: statusUpdate.status,
         message: statusUpdate.message,
@@ -242,6 +251,25 @@ const VehicleServiceRequests = () => {
       estimatedDuration: "",
     });
     setStatusUpdateDialogOpen(true);
+  };
+
+  // Open completion form dialog
+  const handleOpenCompletionForm = (booking) => {
+    setSelectedBooking(booking);
+    setCompletionFormOpen(true);
+  };
+
+  // Handle service completion
+  const handleServiceCompletion = (updatedBooking) => {
+    // Update the booking in the list
+    setBookings(prevBookings => 
+      prevBookings.map(booking => 
+        booking._id === updatedBooking._id ? updatedBooking : booking
+      )
+    );
+    setCompletionFormOpen(false);
+    setSelectedBooking(null);
+    toast.success("Service completed successfully!");
   };
 
   // Format date
@@ -495,6 +523,19 @@ const VehicleServiceRequests = () => {
                       >
                         View Details
                       </Button>
+                      
+                      {booking.status === "IN_PROGRESS" && (
+                        <Button
+                          size="small"
+                          startIcon={<CheckCircleIcon />}
+                          onClick={() => handleOpenCompletionForm(booking)}
+                          className="action-button"
+                          color="success"
+                        >
+                          Complete Service
+                        </Button>
+                      )}
+                      
                       {booking.status !== "COMPLETED" && booking.status !== "CANCELLED" && (
                         <Button
                           size="small"
@@ -689,6 +730,20 @@ const VehicleServiceRequests = () => {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
+            {statusUpdate.status === "CONFIRMED" && (
+              <Grid item xs={12}>
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  Confirming will automatically set the status to "In Progress" and mark work as started.
+                </Alert>
+              </Grid>
+            )}
+            {statusUpdate.status === "COMPLETED" && (
+              <Grid item xs={12}>
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  Selecting "Complete Service" will open the detailed service completion form.
+                </Alert>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
@@ -697,9 +752,8 @@ const VehicleServiceRequests = () => {
                   onChange={(e) => setStatusUpdate(prev => ({ ...prev, status: e.target.value }))}
                   label="Status"
                 >
-                  <MenuItem value="CONFIRMED">Confirm</MenuItem>
-                  <MenuItem value="IN_PROGRESS">Start Work</MenuItem>
-                  <MenuItem value="COMPLETED">Complete</MenuItem>
+                  <MenuItem value="CONFIRMED">Confirm & Start Work</MenuItem>
+                  <MenuItem value="COMPLETED">Complete Service</MenuItem>
                   <MenuItem value="REJECTED">Reject</MenuItem>
                 </Select>
               </FormControl>
@@ -763,6 +817,17 @@ const VehicleServiceRequests = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Service Completion Form Dialog */}
+      <ServiceCompletionForm
+        booking={selectedBooking}
+        open={completionFormOpen}
+        onClose={() => {
+          setCompletionFormOpen(false);
+          setSelectedBooking(null);
+        }}
+        onComplete={handleServiceCompletion}
+      />
     </Box>
   );
 };

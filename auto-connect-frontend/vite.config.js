@@ -5,6 +5,28 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    exclude: [
+      "chunk-23QYURXK",
+      "chunk-6P42ARR4", 
+      "chunk-QC7EJAK4",
+      "chunk-UZSTUZOU",
+      "chunk-GDND277X",
+      "chunk-UI2AT322",
+      "chunk-YQVPGENK", 
+      "chunk-TDHS752F",
+      "chunk-D2PLAWGQ",
+      "chunk-FN45G42L",
+      "chunk-JE7LBQU6",
+      "chunk-GTQ4RQ3E",
+      "chunk-P55PFNSL",
+      "chunk-AO4QLYQ3",
+      "chunk-KLSYPXTY",
+      "chunk-XN3HZA2D",
+      "chunk-YPSGIBTD",
+      "chunk-VNPMCTXB"
+    ]
+  },
   server: {
     proxy: {
       "/api": {

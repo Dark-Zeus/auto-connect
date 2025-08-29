@@ -111,6 +111,29 @@ const bookingAPI = {
       throw error;
     }
   },
+
+  // Submit service completion report (Service centers only)
+  submitServiceCompletionReport: async (id, reportData) => {
+    try {
+      const response = await axios.post(`/bookings/${id}/completion-report`, reportData);
+      const data = response.data;
+      return handleBookingSuccess(data, "completion report submitted");
+    } catch (error) {
+      handleBookingError(error, "submit completion report");
+      throw error;
+    }
+  },
+
+  // Get service completion report
+  getServiceCompletionReport: async (id) => {
+    try {
+      const response = await axios.get(`/bookings/${id}/completion-report`);
+      return response.data;
+    } catch (error) {
+      handleBookingError(error, "fetch completion report");
+      throw error;
+    }
+  },
 };
 
 export default bookingAPI;

@@ -515,6 +515,53 @@ const MyBookings = () => {
 
   return (
     <Box sx={{ backgroundColor: "#e9f7ef", minHeight: "100vh", py: 3 }}>
+      <style>
+        {`
+          .booking-grid-container {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+            gap: 24px !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 16px !important;
+            align-items: stretch !important;
+          }
+          
+          .booking-grid-container > div {
+            display: flex !important;
+            height: 100% !important;
+          }
+          
+          .booking-grid-container > div > .MuiPaper-root {
+            width: 100% !important;
+            height: 100% !important;
+          }
+          
+          @media (min-width: 900px) {
+            .booking-grid-container {
+              grid-template-columns: repeat(3, 1fr) !important;
+              gap: 24px !important;
+              padding: 0 32px !important;
+            }
+          }
+          
+          @media (max-width: 899px) and (min-width: 600px) {
+            .booking-grid-container {
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 20px !important;
+              padding: 0 24px !important;
+            }
+          }
+          
+          @media (max-width: 599px) {
+            .booking-grid-container {
+              grid-template-columns: 1fr !important;
+              gap: 16px !important;
+              padding: 0 16px !important;
+            }
+          }
+        `}
+      </style>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: "center", mb: 3 }}>
           <AssignmentTurnedIn sx={{ fontSize: 40, color: "#4a628a" }} />
@@ -595,56 +642,53 @@ const MyBookings = () => {
 
         {/* Tab Panel - only current tab's bookings with search */}
         <Box key={tabStatusOrder[activeTab].key} sx={{ width: "100%" }}>
-          <Grid
-            container
-            spacing={2}
-            justifyContent="center"
-            sx={{ maxWidth: 1200, mt: 0 }}
-          >
-            {isLoadingBookings ? (
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center", py: 4 }}
-              >
-                <CircularProgress />
-              </Grid>
-            ) : filteredBookings && filteredBookings.length > 0 ? (
-              filteredBookings.map((booking) => {
+          {isLoadingBookings ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : filteredBookings && filteredBookings.length > 0 ? (
+            <div className="booking-grid-container">
+              {filteredBookings.map((booking) => {
                 const canModify = canModifyBooking(booking);
                 return (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                    key={booking._id || booking.bookingId}
-                  >
+                  <div key={booking._id || booking.bookingId}>
                     <Paper
                       elevation={3}
                       sx={{
-                        p: 2,
-                        minHeight: 280,
-                        maxHeight: 350,
-                        minWidth: 350,
+                        p: 3,
+                        height: 400,
+                        width: '100%',
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "space-between",
-                        borderRadius: 2,
-                        boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+                        borderRadius: 3,
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "translateY(-4px)",
+                          boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+                        }
                       }}
                     >
-                      <Box>
+                      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <Box
                           sx={{
                             display: "flex",
                             justifyContent: "space-between",
-                            alignItems: "center",
-                            mb: 1,
+                            alignItems: "flex-start",
+                            mb: 2,
+                            gap: 1,
+                            minHeight: 60
                           }}
                         >
-                          <Typography sx={{ fontSize: 18, fontWeight: 700 }}>
+                          <Typography 
+                            sx={{ 
+                              fontSize: 18, 
+                              fontWeight: 700,
+                              flex: 1,
+                              lineHeight: 1.3,
+                              mr: 1
+                            }}
+                          >
                             {booking.serviceCenter?.businessInfo
                               ?.businessName || "Unknown Service Center"}
                           </Typography>
@@ -665,9 +709,15 @@ const MyBookings = () => {
                           />
                         </Box>
 
-                        <Box display="flex" alignItems="center" gap={1}>
+                        <Box display="flex" alignItems="center" gap={1} mb={1}>
                           <LocationOn fontSize="small" color="action" />
-                          <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                          <Typography 
+                            sx={{ 
+                              fontSize: 14, 
+                              fontWeight: 500,
+                              lineHeight: 1.4
+                            }}
+                          >
                             {booking.serviceCenter?.address?.fullAddress ||
                               "No address provided"}
                           </Typography>
@@ -677,10 +727,16 @@ const MyBookings = () => {
                           display="flex"
                           alignItems="center"
                           gap={1}
-                          mt={0.5}
+                          mb={1}
                         >
                           <CalendarToday fontSize="small" color="action" />
-                          <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                          <Typography 
+                            sx={{ 
+                              fontSize: 14, 
+                              fontWeight: 500,
+                              lineHeight: 1.4
+                            }}
+                          >
                             {new Date(
                               booking.preferredDate
                             ).toLocaleDateString()}{" "}
@@ -689,20 +745,37 @@ const MyBookings = () => {
                         </Box>
 
                         <Typography
-                          sx={{ fontSize: 14, fontWeight: 500, mt: 1 }}
+                          sx={{ 
+                            fontSize: 14, 
+                            fontWeight: 500, 
+                            mt: 1,
+                            mb: 1.5
+                          }}
                           color="text.secondary"
                         >
                           Booking ID: {booking.bookingId || booking._id}
                         </Typography>
 
                         <Typography
-                          sx={{ fontSize: 16, fontWeight: 500, mt: 1, mb: 0.5 }}
+                          sx={{ 
+                            fontSize: 16, 
+                            fontWeight: 600, 
+                            mt: 1, 
+                            mb: 1 
+                          }}
                         >
                           Services:
                         </Typography>
 
                         <Box
-                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
+                          sx={{ 
+                            display: "flex", 
+                            flexWrap: "wrap", 
+                            gap: 0.8,
+                            mb: 2,
+                            flex: 1,
+                            alignContent: 'flex-start'
+                          }}
                         >
                           {(booking.services || []).map((s, idx) => (
                             <Chip
@@ -720,285 +793,184 @@ const MyBookings = () => {
                       {/* Buttons */}
                       <Box
                         sx={{
-                          mt: 2,
+                          mt: 'auto',
+                          pt: 2,
                           display: "flex",
-                          justifyContent: "flex-end",
-                          gap: 1,
-                          flexWrap: "wrap",
-                          alignItems: "center",
+                          flexDirection: "column",
+                          gap: 1.5,
+                          borderTop: "1px solid #f0f0f0",
+                          minHeight: 60
                         }}
                       >
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => handleViewDetails(booking)}
-                          sx={{ fontSize: 13, fontWeight: 500 }}
-                        >
-                          View Details
-                        </Button>
-
-                        {booking.status === "PENDING" && (
-                          <>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              color="primary"
-                              startIcon={<EditIcon />}
-                              onClick={() => handleEdit(booking)}
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="error"
-                              startIcon={<CancelIcon />}
-                              onClick={() => handleCancel(booking._id)}
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                            >
-                              Cancel
-                            </Button>
-                          </>
-                        )}
-
-                        {booking.status === "CONFIRMED" && canModify && (
-                          <>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              color="primary"
-                              startIcon={<EditIcon />}
-                              onClick={() => handleEdit(booking)}
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="error"
-                              startIcon={<CancelIcon />}
-                              onClick={() => handleCancel(booking._id)}
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                            >
-                              Cancel
-                            </Button>
-                          </>
-                        )}
-
-                        {booking.status === "CONFIRMED" && !canModify && (
+                        {/* Primary Action Row */}
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                           <Button
                             variant="outlined"
                             size="small"
-                            disabled
-                            sx={{ fontSize: 13, fontWeight: 500 }}
+                            onClick={() => handleViewDetails(booking)}
+                            sx={{ fontSize: 12, fontWeight: 500, minWidth: 100 }}
                           >
-                            Too late to modify (&lt; 6h)
+                            View Details
                           </Button>
-                        )}
+                          
+                          {/* Status-specific actions */}
+                          <Box sx={{ display: "flex", gap: 1 }}>
 
-                        {booking.status === "COMPLETED" && (
-                          <>
-                            {booking.feedback?.rating ||
-                            bookingRatings[booking._id] ? (
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  gap: 1,
-                                  p: 2,
-                                  borderRadius: 3,
-                                  background:
-                                    "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
-                                  border: "2px solid #7AB2D3",
-                                  boxShadow:
-                                    "0 4px 15px rgba(122, 178, 211, 0.2)",
-                                  position: "relative",
-                                  overflow: "hidden",
-                                  "&::before": {
-                                    content: '""',
-                                    position: "absolute",
-                                    top: 0,
-                                    left: "-100%",
-                                    width: "100%",
-                                    height: "100%",
-                                    background:
-                                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
-                                    animation: "shine 3s ease-in-out infinite",
-                                  },
-                                  "@keyframes shine": {
-                                    "0%": { left: "-100%" },
-                                    "100%": { left: "100%" },
-                                  },
-                                }}
-                              >
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 0.5,
-                                    zIndex: 1,
-                                  }}
-                                >
-                                  <StarIcon
-                                    sx={{ color: "#7AB2D3", fontSize: 16 }}
-                                  />
-                                  <Typography
-                                    variant="caption"
-                                    sx={{
-                                      color: "#4A628A",
-                                      fontWeight: 700,
-                                      fontSize: "0.75rem",
-                                      textTransform: "uppercase",
-                                      letterSpacing: "0.5px",
-                                    }}
-                                  >
-                                    Your Rating
-                                  </Typography>
-                                  <StarIcon
-                                    sx={{ color: "#7AB2D3", fontSize: 16 }}
-                                  />
-                                </Box>
-                                <Rating
-                                  value={
-                                    booking.feedback?.rating ||
-                                    bookingRatings[booking._id]
-                                  }
-                                  readOnly
+                            {booking.status === "PENDING" && (
+                              <>
+                                <Button
+                                  variant="outlined"
                                   size="small"
-                                  icon={
-                                    <StarIcon
-                                      sx={{
-                                        color: "#7AB2D3",
-                                        fontSize: "1.2rem",
-                                      }}
-                                    />
-                                  }
-                                  emptyIcon={
-                                    <StarBorderIcon
-                                      sx={{
-                                        color: "#B9E5E8",
-                                        fontSize: "1.2rem",
-                                      }}
-                                    />
-                                  }
-                                  sx={{
-                                    zIndex: 1,
-                                    "& .MuiRating-iconFilled": {
-                                      color: "#7AB2D3",
-                                      filter:
-                                        "drop-shadow(0 2px 4px rgba(122,178,211,0.3))",
-                                    },
-                                  }}
-                                />
-                                <Typography
-                                  variant="caption"
-                                  sx={{
-                                    color: "#4A628A",
-                                    fontWeight: 600,
-                                    fontSize: "0.7rem",
-                                    zIndex: 1,
-                                  }}
+                                  color="primary"
+                                  startIcon={<EditIcon />}
+                                  onClick={() => handleEdit(booking)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 80 }}
                                 >
-                                  {booking.feedback?.rating === 1 ||
-                                  bookingRatings[booking._id] === 1
-                                    ? "Poor"
-                                    : booking.feedback?.rating === 2 ||
-                                      bookingRatings[booking._id] === 2
-                                    ? "Fair"
-                                    : booking.feedback?.rating === 3 ||
-                                      bookingRatings[booking._id] === 3
-                                    ? "Good"
-                                    : booking.feedback?.rating === 4 ||
-                                      bookingRatings[booking._id] === 4
-                                    ? "Very Good"
-                                    : "Excellent"}
-                                </Typography>
-                              </Box>
-                            ) : (
+                                  Edit
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="error"
+                                  startIcon={<CancelIcon />}
+                                  onClick={() => handleCancel(booking._id)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 90 }}
+                                >
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
+
+                            {booking.status === "CONFIRMED" && canModify && (
+                              <>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="primary"
+                                  startIcon={<EditIcon />}
+                                  onClick={() => handleEdit(booking)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 80 }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="error"
+                                  startIcon={<CancelIcon />}
+                                  onClick={() => handleCancel(booking._id)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 90 }}
+                                >
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
+
+                            {booking.status === "CONFIRMED" && !canModify && (
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                disabled
+                                sx={{ fontSize: 11, fontWeight: 500, minWidth: 160 }}
+                              >
+                                Too late to modify (&lt; 6h)
+                              </Button>
+                            )}
+
+                            {booking.status === "COMPLETED" && (
+                              <>
+                                  {booking.feedback?.rating ||
+                                  bookingRatings[booking._id] ? (
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                        p: 1,
+                                        borderRadius: 2,
+                                        background: "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
+                                        border: "1px solid #7AB2D3",
+                                        minWidth: 120
+                                      }}
+                                    >
+                                      <StarIcon sx={{ color: "#7AB2D3", fontSize: 16 }} />
+                                      <Rating
+                                        value={
+                                          booking.feedback?.rating ||
+                                          bookingRatings[booking._id]
+                                        }
+                                        readOnly
+                                        size="small"
+                                        sx={{
+                                          "& .MuiRating-iconFilled": {
+                                            color: "#7AB2D3",
+                                            fontSize: "1rem"
+                                          },
+                                        }}
+                                      />
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          color: "#4A628A",
+                                          fontWeight: 600,
+                                          fontSize: "0.75rem"
+                                        }}
+                                      >
+                                        Rated
+                                      </Typography>
+                                    </Box>
+                                  ) : (
+                                    <Button
+                                      variant="contained"
+                                      size="small"
+                                      startIcon={<StarIcon />}
+                                      sx={{
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        borderRadius: 2,
+                                        minWidth: 120,
+                                        background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+                                        "&:hover": {
+                                          background: "linear-gradient(45deg, #4A628A, #7AB2D3)",
+                                        }
+                                      }}
+                                      onClick={() => openRatingForBooking(booking)}
+                                    >
+                                      Rate Service
+                                    </Button>
+                                  )}
+                              </>
+                            )}
+
+                            {booking.status === "CANCELLED" && (
                               <Button
                                 variant="contained"
                                 size="small"
-                                startIcon={<StarIcon />}
-                                sx={{
-                                  fontSize: 13,
-                                  fontWeight: 600,
-                                  borderRadius: 3,
-                                  px: 2,
-                                  py: 1,
-                                  background:
-                                    "linear-gradient(45deg, #7AB2D3, #4A628A)",
-                                  color: "white",
-                                  textTransform: "none",
-                                  boxShadow:
-                                    "0 4px 15px rgba(122, 178, 211, 0.3)",
-                                  transition: "all 0.3s ease",
-                                  position: "relative",
-                                  overflow: "hidden",
-                                  "&::before": {
-                                    content: '""',
-                                    position: "absolute",
-                                    top: 0,
-                                    left: "-100%",
-                                    width: "100%",
-                                    height: "100%",
-                                    background:
-                                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
-                                    transition: "left 0.5s ease",
-                                  },
-                                  "&:hover": {
-                                    background:
-                                      "linear-gradient(45deg, #4A628A, #7AB2D3)",
-                                    transform: "translateY(-2px)",
-                                    boxShadow:
-                                      "0 8px 25px rgba(122, 178, 211, 0.4)",
-                                    "&::before": {
-                                      left: "100%",
-                                    },
-                                  },
-                                  "&:active": {
-                                    transform: "translateY(0px)",
-                                    boxShadow:
-                                      "0 4px 15px rgba(122, 178, 211, 0.3)",
-                                  },
-                                }}
-                                onClick={() => openRatingForBooking(booking)}
+                                color="primary"
+                                onClick={() => handleReschedule(booking)}
+                                sx={{ fontSize: 12, fontWeight: 500, minWidth: 100 }}
                               >
-                                Rate Service
+                                Reschedule
                               </Button>
                             )}
-                          </>
-                        )}
-
-                        {booking.status === "CANCELLED" && (
-                          <Button
-                            variant="contained"
-                            size="small"
-                            color="primary"
-                            onClick={() => handleReschedule(booking)}
-                            sx={{ fontSize: 13, fontWeight: 500 }}
-                          >
-                            Reschedule
-                          </Button>
-                        )}
+                          </Box>
+                        </Box>
                       </Box>
                     </Paper>
-                  </Grid>
+                  </div>
                 );
-              })
-            ) : (
-              <Grid item xs={12}>
-                <Typography
-                  variant="body1"
-                  sx={{ mt: 4, textAlign: "center", color: "#aaa" }}
-                >
-                  No {tabStatusOrder[activeTab].label.toLowerCase()} found.
-                </Typography>
-              </Grid>
-            )}
-          </Grid>
+              })}
+            </div>
+          ) : (
+            <Box sx={{ width: "100%" }}>
+              <Typography
+                variant="body1"
+                sx={{ mt: 4, textAlign: "center", color: "#aaa" }}
+              >
+                No {tabStatusOrder[activeTab].label.toLowerCase()} found.
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         {/* Enhanced Rating Dialog */}
