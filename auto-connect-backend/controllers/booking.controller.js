@@ -1,5 +1,6 @@
 // controllers/booking.controller.js
 import Booking from "../models/booking.model.js";
+import ServiceReport from "../models/ServiceReport.model.js";
 import User from "../models/user.model.js";
 import LOG from "../configs/log.config.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
@@ -86,6 +87,35 @@ export const createBooking = catchAsync(async (req, res, next) => {
 
   if (selectedDate < today) {
     return next(new AppError("Preferred date cannot be in the past", 400));
+  }
+
+  // Validate time slot for today - cannot book past time slots
+  const isToday = selectedDate.getTime() === today.getTime();
+  if (isToday) {
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+
+    // Parse the time slot (could be HH:MM or HH:MM-HH:MM format)
+    let slotStartTime;
+    if (preferredTimeSlot.includes("-")) {
+      // Format: HH:MM-HH:MM (take the start time)
+      slotStartTime = preferredTimeSlot.split("-")[0];
+    } else {
+      // Format: HH:MM
+      slotStartTime = preferredTimeSlot;
+    }
+
+    const [slotHour, slotMinute] = slotStartTime.split(":").map(Number);
+    const slotTime = slotHour * 60 + slotMinute;
+
+    if (slotTime <= currentTime) {
+      return next(
+        new AppError(
+          "Cannot book a time slot that has already passed today. Please select a future time slot.",
+          400
+        )
+      );
+    }
   }
 
   // Check for existing bookings at the same time slot
@@ -345,26 +375,31 @@ export const updateBookingStatus = catchAsync(async (req, res, next) => {
     }
 
     // Update booking status and response
-    booking.status = status;
-    booking.lastModifiedBy = req.user._id;
-
-    // Set appropriate timestamps
-    const now = new Date();
-    switch (status) {
-      case "CONFIRMED":
-        booking.timestamps.confirmedAt = now;
-        break;
-      case "IN_PROGRESS":
-        booking.timestamps.startedAt = now;
-        break;
-      case "COMPLETED":
-        booking.timestamps.completedAt = now;
-        break;
-      case "CANCELLED":
-      case "REJECTED":
-        booking.timestamps.cancelledAt = now;
-        break;
+    // Special handling: CONFIRMED automatically progresses to IN_PROGRESS
+    if (status === "CONFIRMED") {
+      booking.status = "IN_PROGRESS";
+      booking.timestamps.confirmedAt = new Date();
+      booking.timestamps.startedAt = new Date();
+    } else {
+      booking.status = status;
+      
+      // Set appropriate timestamps
+      const now = new Date();
+      switch (status) {
+        case "IN_PROGRESS":
+          booking.timestamps.startedAt = now;
+          break;
+        case "COMPLETED":
+          booking.timestamps.completedAt = now;
+          break;
+        case "CANCELLED":
+        case "REJECTED":
+          booking.timestamps.cancelledAt = now;
+          break;
+      }
     }
+    
+    booking.lastModifiedBy = req.user._id;
 
     // Update service center response
     if (message || proposedDate || proposedTimeSlot || estimatedDuration) {
@@ -780,6 +815,308 @@ export const getAvailableTimeSlots = catchAsync(async (req, res, next) => {
   }
 });
 
+// Submit service completion report (Service centers only)
+export const submitServiceCompletionReport = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const {
+    completedServices,
+    additionalWork,
+    totalCostBreakdown,
+    workStartTime,
+    workEndTime,
+    totalTimeSpent,
+    vehicleCondition,
+    technician,
+    qualityCheck,
+    recommendations,
+    customerNotification,
+  } = req.body;
+
+  // Only service centers can submit completion reports
+  if (req.user.role !== "service_center") {
+    return next(
+      new AppError("Only service centers can submit completion reports", 403)
+    );
+  }
+
+  try {
+    const booking = await Booking.findOne({
+      _id: id,
+      serviceCenter: req.user._id,
+      status: "IN_PROGRESS",
+      isActive: true,
+    });
+
+    if (!booking) {
+      return next(
+        new AppError(
+          "Booking not found, not in progress, or you don't have permission",
+          404
+        )
+      );
+    }
+
+    // Check if service report already exists
+    const existingReport = await ServiceReport.findOne({ booking: id });
+    if (existingReport) {
+      return next(new AppError("Service report already exists for this booking", 400));
+    }
+
+    // Validate required fields
+    if (!completedServices || !Array.isArray(completedServices) || completedServices.length === 0) {
+      return next(new AppError("At least one completed service is required", 400));
+    }
+
+    if (!technician || !technician.name) {
+      return next(new AppError("Technician information is required", 400));
+    }
+
+    if (!workStartTime || !workEndTime) {
+      return next(new AppError("Work start and end times are required", 400));
+    }
+
+    // Validate and calculate totals
+    let calculatedPartsTotal = 0;
+    let calculatedLaborTotal = 0;
+    let calculatedServicesTotal = 0;
+    let calculatedAdditionalWorkTotal = 0;
+
+    // Calculate parts and labor totals from completed services
+    completedServices.forEach(service => {
+      if (service.partsUsed && Array.isArray(service.partsUsed)) {
+        service.partsUsed.forEach(part => {
+          calculatedPartsTotal += parseFloat(part.totalPrice) || 0;
+        });
+      }
+      if (service.laborDetails) {
+        calculatedLaborTotal += parseFloat(service.laborDetails.laborCost) || 0;
+      }
+      calculatedServicesTotal += parseFloat(service.serviceCost) || 0;
+    });
+
+    // Calculate additional work total
+    if (additionalWork && Array.isArray(additionalWork)) {
+      additionalWork.forEach(work => {
+        calculatedAdditionalWorkTotal += parseFloat(work.cost) || 0;
+      });
+    }
+
+    // Calculate final total
+    const providedBreakdown = totalCostBreakdown || {};
+    const calculatedFinalTotal = 
+      calculatedPartsTotal + 
+      calculatedLaborTotal + 
+      calculatedServicesTotal + 
+      calculatedAdditionalWorkTotal + 
+      (parseFloat(providedBreakdown.taxes) || 0) - 
+      (parseFloat(providedBreakdown.discount) || 0);
+
+    // Create the service report
+    const serviceReport = await ServiceReport.create({
+      booking: booking._id,
+      serviceCenter: req.user._id,
+      vehicle: {
+        registrationNumber: booking.vehicle.registrationNumber,
+        make: booking.vehicle.make,
+        model: booking.vehicle.model,
+        year: booking.vehicle.year,
+      },
+      completedServices: completedServices.map(service => ({
+        serviceName: service.serviceName,
+        description: service.description || '',
+        partsUsed: service.partsUsed || [],
+        laborDetails: service.laborDetails || { hoursWorked: 0, laborRate: 0, laborCost: 0 },
+        serviceCost: parseFloat(service.serviceCost) || 0,
+        serviceStatus: service.serviceStatus || 'COMPLETED',
+        notes: service.notes || '',
+      })),
+      additionalWork: additionalWork || [],
+      totalCostBreakdown: {
+        partsTotal: calculatedPartsTotal,
+        laborTotal: calculatedLaborTotal,
+        servicesTotal: calculatedServicesTotal,
+        additionalWorkTotal: calculatedAdditionalWorkTotal,
+        taxes: parseFloat(providedBreakdown.taxes) || 0,
+        discount: parseFloat(providedBreakdown.discount) || 0,
+        finalTotal: calculatedFinalTotal,
+      },
+      workStartTime: new Date(workStartTime),
+      workEndTime: new Date(workEndTime),
+      totalTimeSpent: totalTimeSpent || '',
+      vehicleCondition: vehicleCondition || {},
+      technician: {
+        name: technician.name,
+        employeeId: technician.employeeId || '',
+        signature: technician.signature || '',
+      },
+      qualityCheck: qualityCheck || { performed: false },
+      recommendations: recommendations || [],
+      customerNotification: customerNotification || { notified: false },
+      reportGeneratedBy: req.user._id,
+    });
+
+    // Update booking with service report reference and status
+    booking.serviceReport = serviceReport._id;
+    booking.status = "COMPLETED";
+    booking.finalCost = calculatedFinalTotal;
+    booking.timestamps.completedAt = new Date();
+    booking.lastModifiedBy = req.user._id;
+
+    await booking.save();
+
+    // Populate and return updated booking
+    const updatedBooking = await Booking.findById(booking._id)
+      .populate("vehicleOwner", "firstName lastName email phone")
+      .populate("serviceCenter", "businessInfo.businessName email phone")
+      .populate("serviceReport")
+      .lean();
+
+    // Send completion notification email to customer
+    if (updatedBooking.vehicleOwner && updatedBooking.vehicleOwner.email) {
+      try {
+        await sendServiceCompletionEmail(updatedBooking);
+      } catch (emailError) {
+        LOG.error("Failed to send service completion email:", emailError);
+        // Don't fail the request if email fails
+      }
+    }
+
+    LOG.info({
+      message: "Service completion report submitted",
+      bookingId: booking.bookingId,
+      serviceReportId: serviceReport.reportId,
+      serviceCenterId: req.user._id,
+      finalCost: calculatedFinalTotal,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Service completion report submitted successfully",
+      data: {
+        booking: updatedBooking,
+        serviceReport: serviceReport,
+      },
+    });
+  } catch (error) {
+    LOG.error("Error submitting service completion report:", error);
+    return next(
+      new AppError("Failed to submit completion report. Please try again.", 500)
+    );
+  }
+});
+
+// Get service completion report (both service centers and vehicle owners)
+export const getServiceCompletionReport = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // First find the booking to check permissions
+    const booking = await Booking.findOne({
+      _id: id,
+      status: "COMPLETED",
+      isActive: true,
+    })
+      .populate("vehicleOwner", "firstName lastName email phone nicNumber")
+      .populate("serviceCenter", "businessInfo.businessName email phone address")
+      .lean();
+
+    if (!booking) {
+      return next(new AppError("Completed booking not found", 404));
+    }
+
+    // Check if user has permission to view this report
+    const canView =
+      booking.vehicleOwner._id.toString() === req.user._id.toString() ||
+      booking.serviceCenter._id.toString() === req.user._id.toString() ||
+      req.user.role === "system_admin";
+
+    if (!canView) {
+      return next(
+        new AppError("You don't have permission to view this report", 403)
+      );
+    }
+
+    // Get the service report
+    const serviceReport = await ServiceReport.findOne({
+      booking: id,
+      isActive: true,
+    })
+      .populate("reportGeneratedBy", "firstName lastName businessInfo.businessName")
+      .lean();
+
+    if (!serviceReport) {
+      return next(new AppError("Service completion report not available", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Service completion report retrieved successfully",
+      data: {
+        booking: booking,
+        serviceReport: serviceReport,
+      },
+    });
+  } catch (error) {
+    LOG.error("Error fetching service completion report:", error);
+    return next(
+      new AppError("Failed to fetch completion report. Please try again.", 500)
+    );
+  }
+});
+
+// Helper function to send service completion notification email
+const sendServiceCompletionEmail = async (booking) => {
+  const customerName = `${booking.vehicleOwner.firstName} ${booking.vehicleOwner.lastName}`;
+  const serviceCenterName =
+    booking.serviceCenter.businessInfo?.businessName || "Service Center";
+  
+  const subject = `Service Completed - ${booking.bookingId}`;
+
+  const emailContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #4CAF50;">Service Completed Successfully!</h2>
+      
+      <p>Dear ${customerName},</p>
+      
+      <p>Great news! Your vehicle service has been completed successfully.</p>
+      
+      <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3>Service Summary:</h3>
+        <p><strong>Booking ID:</strong> ${booking.bookingId}</p>
+        <p><strong>Service Center:</strong> ${serviceCenterName}</p>
+        <p><strong>Vehicle:</strong> ${booking.vehicle.registrationNumber} (${booking.vehicle.make} ${booking.vehicle.model})</p>
+        <p><strong>Completion Date:</strong> ${new Date(booking.timestamps.completedAt).toLocaleDateString()}</p>
+        <p><strong>Final Cost:</strong> LKR ${booking.finalCost?.toLocaleString() || 'N/A'}</p>
+      </div>
+      
+      <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <h4>What's Next?</h4>
+        <ul>
+          <li>You can view the detailed service report in your dashboard</li>
+          <li>Please rate your experience to help us improve</li>
+          <li>Contact the service center if you have any questions</li>
+        </ul>
+      </div>
+      
+      <p>Your vehicle is ready for pickup. Please contact the service center to arrange collection:</p>
+      <p><strong>Phone:</strong> ${booking.serviceCenter.phone || "Not provided"}</p>
+      <p><strong>Email:</strong> ${booking.serviceCenter.email}</p>
+      
+      <hr style="margin: 30px 0;">
+      <p style="color: #666; font-size: 12px;">
+        This is an automated notification from AutoConnect. Please do not reply to this email.
+      </p>
+    </div>
+  `;
+
+  await sendEmail({
+    email: booking.vehicleOwner.email,
+    subject: subject,
+    html: emailContent,
+    message: `Your vehicle service (${booking.bookingId}) has been completed successfully. Final cost: LKR ${booking.finalCost?.toLocaleString() || 'N/A'}`,
+  });
+};
+
 // Helper function to send booking status update email
 const sendBookingStatusUpdateEmail = async (booking, status, message) => {
   const customerName = `${booking.vehicleOwner.firstName} ${booking.vehicleOwner.lastName}`;
@@ -874,4 +1211,6 @@ export default {
   submitFeedback,
   getBookingStats,
   getAvailableTimeSlots,
+  submitServiceCompletionReport,
+  getServiceCompletionReport,
 };

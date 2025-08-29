@@ -9,6 +9,8 @@ import {
   submitFeedback,
   getBookingStats,
   getAvailableTimeSlots,
+  submitServiceCompletionReport,
+  getServiceCompletionReport,
 } from "../../../controllers/booking.controller.js";
 import { protect, restrictTo } from "../../../middleware/auth.middleware.js";
 import { validate } from "../../../utils/validation.util.js";
@@ -156,6 +158,171 @@ const bookingIdValidation = Joi.object({
   }),
 });
 
+const serviceCompletionReportValidation = Joi.object({
+  completedServices: Joi.array()
+    .items(
+      Joi.object({
+        serviceName: Joi.string().required().messages({
+          "any.required": "Service name is required",
+        }),
+        description: Joi.string().max(500).optional().allow(""),
+        partsUsed: Joi.array()
+          .items(
+            Joi.object({
+              partName: Joi.string().required().messages({
+                "any.required": "Part name is required",
+              }),
+              partNumber: Joi.string().optional().allow(""),
+              quantity: Joi.number().integer().min(1).required().messages({
+                "number.min": "Quantity must be at least 1",
+                "any.required": "Quantity is required",
+              }),
+              unitPrice: Joi.number().min(0).required().messages({
+                "number.min": "Unit price cannot be negative",
+                "any.required": "Unit price is required",
+              }),
+              totalPrice: Joi.number().min(0).required().messages({
+                "number.min": "Total price cannot be negative",
+                "any.required": "Total price is required",
+              }),
+              condition: Joi.string()
+                .valid("NEW", "REFURBISHED", "USED")
+                .default("NEW"),
+            })
+          )
+          .optional()
+          .default([]),
+        laborDetails: Joi.object({
+          hoursWorked: Joi.number().min(0).required().messages({
+            "number.min": "Hours worked cannot be negative",
+            "any.required": "Hours worked is required",
+          }),
+          laborRate: Joi.number().min(0).required().messages({
+            "number.min": "Labor rate cannot be negative",
+            "any.required": "Labor rate is required",
+          }),
+          laborCost: Joi.number().min(0).required().messages({
+            "number.min": "Labor cost cannot be negative",
+            "any.required": "Labor cost is required",
+          }),
+        })
+          .required()
+          .messages({
+            "any.required": "Labor details are required",
+          }),
+        serviceCost: Joi.number().min(0).required().messages({
+          "number.min": "Service cost cannot be negative",
+          "any.required": "Service cost is required",
+        }),
+        serviceStatus: Joi.string()
+          .valid("COMPLETED", "PARTIALLY_COMPLETED", "NOT_COMPLETED")
+          .default("COMPLETED"),
+        notes: Joi.string().max(1000).optional().allow(""),
+      })
+    )
+    .min(1)
+    .required()
+    .messages({
+      "array.min": "At least one completed service is required",
+      "any.required": "Completed services are required",
+    }),
+  additionalWork: Joi.array()
+    .items(
+      Joi.object({
+        workDescription: Joi.string().max(500).required().messages({
+          "any.required": "Work description is required",
+        }),
+        reason: Joi.string().max(500).required().messages({
+          "any.required": "Reason is required",
+        }),
+        cost: Joi.number().min(0).required().messages({
+          "number.min": "Cost cannot be negative",
+          "any.required": "Cost is required",
+        }),
+        customerApproved: Joi.boolean().default(false),
+        approvalDate: Joi.date().optional(),
+      })
+    )
+    .optional()
+    .default([]),
+  totalCostBreakdown: Joi.object({
+    taxes: Joi.number().min(0).default(0),
+    discount: Joi.number().min(0).default(0),
+  }).optional(),
+  workStartTime: Joi.date().optional(),
+  workEndTime: Joi.date().optional(),
+  totalTimeSpent: Joi.string().max(100).optional().allow(""),
+  vehicleCondition: Joi.object({
+    before: Joi.object({
+      mileage: Joi.number().min(0).optional(),
+      fuelLevel: Joi.string()
+        .valid("EMPTY", "1/4", "1/2", "3/4", "FULL")
+        .optional(),
+      externalCondition: Joi.string().max(500).optional().allow(""),
+      internalCondition: Joi.string().max(500).optional().allow(""),
+      photos: Joi.array().items(Joi.string()).optional().default([]),
+    }).optional(),
+    after: Joi.object({
+      mileage: Joi.number().min(0).optional(),
+      fuelLevel: Joi.string()
+        .valid("EMPTY", "1/4", "1/2", "3/4", "FULL")
+        .optional(),
+      externalCondition: Joi.string().max(500).optional().allow(""),
+      internalCondition: Joi.string().max(500).optional().allow(""),
+      photos: Joi.array().items(Joi.string()).optional().default([]),
+    }).optional(),
+  }).optional(),
+  technician: Joi.object({
+    name: Joi.string().required().messages({
+      "any.required": "Technician name is required",
+    }),
+    employeeId: Joi.string().optional().allow(""),
+    signature: Joi.string().optional().allow(""),
+  })
+    .required()
+    .messages({
+      "any.required": "Technician information is required",
+    }),
+  qualityCheck: Joi.object({
+    performed: Joi.boolean().default(false),
+    performedBy: Joi.string().optional().allow(""),
+    checklist: Joi.array()
+      .items(
+        Joi.object({
+          item: Joi.string().required(),
+          status: Joi.string().valid("PASS", "FAIL", "N/A").required(),
+          notes: Joi.string().optional().allow(""),
+        })
+      )
+      .optional()
+      .default([]),
+    overallRating: Joi.string()
+      .valid("EXCELLENT", "GOOD", "SATISFACTORY", "NEEDS_IMPROVEMENT")
+      .optional(),
+    notes: Joi.string().max(1000).optional().allow(""),
+  }).optional(),
+  recommendations: Joi.array()
+    .items(
+      Joi.object({
+        type: Joi.string()
+          .valid("IMMEDIATE", "SOON", "ROUTINE", "OBSERVATION")
+          .required(),
+        description: Joi.string().max(500).required(),
+        estimatedCost: Joi.number().min(0).optional(),
+        priority: Joi.string().valid("HIGH", "MEDIUM", "LOW").default("MEDIUM"),
+      })
+    )
+    .optional()
+    .default([]),
+  customerNotification: Joi.object({
+    notified: Joi.boolean().default(false),
+    notificationDate: Joi.date().optional(),
+    notificationMethod: Joi.string()
+      .valid("PHONE", "EMAIL", "SMS", "IN_PERSON")
+      .optional(),
+  }).optional(),
+});
+
 // Routes
 
 // Create new booking (Vehicle owners only)
@@ -221,6 +388,23 @@ router.post(
   validate(bookingIdValidation, "params"),
   validate(submitFeedbackValidation),
   submitFeedback
+);
+
+// Submit service completion report (Service centers only)
+router.post(
+  "/:id/completion-report",
+  restrictTo("service_center"),
+  validate(bookingIdValidation, "params"),
+  validate(serviceCompletionReportValidation),
+  submitServiceCompletionReport
+);
+
+// Get service completion report (Service centers and Vehicle owners)
+router.get(
+  "/:id/completion-report",
+  restrictTo("vehicle_owner", "service_center", "system_admin"),
+  validate(bookingIdValidation, "params"),
+  getServiceCompletionReport
 );
 
 export default router;

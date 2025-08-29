@@ -161,6 +161,12 @@ const bookingSchema = new mongoose.Schema(
       },
     },
 
+    // Reference to service completion report (stored in separate collection)
+    serviceReport: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ServiceReport",
+    },
+
     // Rating and feedback (after completion)
     feedback: {
       rating: {
