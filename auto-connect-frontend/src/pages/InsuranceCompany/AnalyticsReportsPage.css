@@ -128,7 +128,7 @@
   border: none;
   margin-top: 15px;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -277,14 +277,14 @@
 .analytics-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 .analytics-table th {
   padding: 0.75rem;
   text-align: left;
   border-bottom: 2px solid #e5e7eb;
-  font-size: 0.875rem;
+  font-size: 16px;
   font-weight: 600;
   color: #374151;
   background-color: #f9fafb;
@@ -389,6 +389,7 @@
 .summary-label {
   font-weight: 500;
   color: var(--text-dark);
+  font-size: 14px!important;
 }
 
 .summary-value {
@@ -433,7 +434,8 @@
 .performance-label {
   font-weight: 500;
   color: var(--text-dark);
-  font-size: 0.875rem;
+  font-size: 14px!important;
+
 }
 
 .performance-bar-container {
@@ -576,18 +578,26 @@
   color: var(--white);
   border: none;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
   transition: all 0.2s ease;
 }
 
 .export-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.export-button.green {
+  background-color: var(--success-color);
+}
+
+.export-button.green:hover {
+  background-color: green;
 }
 
 .export-button.purple {

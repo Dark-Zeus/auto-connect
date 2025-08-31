@@ -69,7 +69,7 @@ const InsuranceCompanyDashboard = () => {
     { title: "Claims Management", description: "Process, review and manage insurance claims efficiently", icon: <FileText />, iconBg: "linear-gradient(45deg, #7AB2D3, #4A628A)", buttonText: "Manage Claims", buttonColor: "btn-blue", action: "manage-claims", stats: `${totalClaims} Total Claims`, navigateTo: "/claimsmanagement" },
     // { title: "Customer Management", description: "Manage customer relationships and communications", icon: <Users />, iconBg: "linear-gradient(45deg, #4A628A, #7AB2D3)", buttonText: "View Customers", buttonColor: "btn-indigo", action: "manage-customers", stats: `${dashboardStats.totalCustomers.toLocaleString()} Customers` },
     { title: "Fraud Detection", description: "Monitor and investigate suspicious claims and activities", icon: <AlertTriangle />, iconBg: "linear-gradient(45deg, #4A628A, #B9E5E8)", buttonText: "Fraud Center", buttonColor: "btn-red", action: "fraud-detection", stats: `${rejectedClaims} Rejected Claims`, navigateTo: "/claimsmanagement?fraudMode=true" },
-    { title: "Analytics & Reports", description: "Generate detailed analytics and business reports", icon: <BarChart3 />, iconBg: "linear-gradient(45deg, #B9E5E8, #4A628A)", buttonText: "View Analytics", buttonColor: "btn-purple", action: "analytics", stats: "Real-time Data" }
+    { title: "Analytics & Reports", description: "Generate detailed analytics and business reports", icon: <BarChart3 />, iconBg: "linear-gradient(45deg, #B9E5E8, #4A628A)", buttonText: "View Analytics", buttonColor: "btn-purple", action: "analytics", stats: "Real-time Data" , navigateTo: "/analyticsreports" }
 
   ];
 
