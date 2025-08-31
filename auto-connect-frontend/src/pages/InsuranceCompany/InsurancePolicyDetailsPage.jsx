@@ -17,12 +17,39 @@ const InsurancePolicyDetailsPage = () => {
   const [newStatus, setNewStatus] = useState('');
   const [statusReason, setStatusReason] = useState('');
 
+  // Function to check if policy is expired
+  const checkIfExpired = (endDate) => {
+    const today = new Date();
+    const policyEndDate = new Date(endDate);
+    return policyEndDate < today;
+  };
+
+  // Function to update policy status automatically
+  const updatePolicyStatus = (policy) => {
+    if (policy && checkIfExpired(policy.endDate) && policy.status.toLowerCase() !== 'expired') {
+      // Update the policy status to expired
+      const updatedPolicy = { ...policy, status: 'Expired' };
+      
+      // Update in the original data source (in a real app, this would be an API call)
+      const policyIndex = PolicyDetailsTestData.findIndex(p => p.policyNumber === policy.policyNumber);
+      if (policyIndex !== -1) {
+        PolicyDetailsTestData[policyIndex].status = 'Expired';
+      }
+      
+      return updatedPolicy;
+    }
+    return policy;
+  };
+
   useEffect(() => {
     // Find policy details
-    const policy = PolicyDetailsTestData.find(policy => policy.policyNumber === policyNumber);
-    setPolicyDetails(policy);
-
+    let policy = PolicyDetailsTestData.find(policy => policy.policyNumber === policyNumber);
+    
     if (policy) {
+      // Check and update status if expired
+      policy = updatePolicyStatus(policy);
+      setPolicyDetails(policy);
+
       // Find current active claim for this vehicle
       const activeClaim = ClaimDetailsTestData.find(claim => 
         claim.vehicleNumber === policy.vehicleNumber && 
@@ -70,6 +97,16 @@ const InsurancePolicyDetailsPage = () => {
     setShowStatusModal(true);
   };
 
+  const handleRenewalPolicy = () => {
+    // Navigate to Add New Policy page with renewal flag and existing policy data
+    navigate('/addnewpolicy', { 
+      state: { 
+        isRenewal: true, 
+        existingPolicy: policyDetails 
+      } 
+    });
+  };
+
   const handleStatusSave = () => {
     if (newStatus && statusReason.trim()) {
       // Update the policy status
@@ -77,6 +114,12 @@ const InsurancePolicyDetailsPage = () => {
         ...prev,
         status: newStatus
       }));
+      
+      // Update in the original data source
+      const policyIndex = PolicyDetailsTestData.findIndex(p => p.policyNumber === policyDetails.policyNumber);
+      if (policyIndex !== -1) {
+        PolicyDetailsTestData[policyIndex].status = newStatus;
+      }
       
       // Here you would typically make an API call to save the status change
       console.log('Status changed to:', newStatus, 'Reason:', statusReason);
@@ -117,6 +160,9 @@ const InsurancePolicyDetailsPage = () => {
     }
   };
 
+  // Check if policy is expired
+  const isExpired = policyDetails.status.toLowerCase() === 'expired';
+
   return (
     <div className="policy-details-page">
       {/* Page Header */}
@@ -127,9 +173,19 @@ const InsurancePolicyDetailsPage = () => {
             <span className={`status-badge-header ${getStatusBadgeClass(policyDetails.status)}`}>
               {policyDetails.status}
             </span>
+            {isExpired && (
+              <span className="expired-notice">
+                ⚠️ Policy has expired on {policyDetails.endDate}
+              </span>
+            )}
           </div>
         </div>
         <div className="header-right">
+          {isExpired && (
+            <button className="renewal-btn" onClick={handleRenewalPolicy}>
+              🔄 Renew Policy
+            </button>
+          )}
           <button className="change-status-btn" onClick={handleStatusChange}>
             Change Status
           </button>
@@ -294,10 +350,29 @@ const InsurancePolicyDetailsPage = () => {
             <span className="detail-icon">📅</span>
             <div className="detail-content">
               <p className="detail-label">Policy End Date</p>
-              <p className="detail-value">{policyDetails.endDate}</p>
+              <p className="detail-value">
+                {policyDetails.endDate}
+                {isExpired && <span className="expired-indicator"> (Expired)</span>}
+              </p>
             </div>
           </div>
         </div>
+        
+        {/* Renewal Section for Expired Policies */}
+        {isExpired && (
+          <div className="renewal-section">
+            <div className="renewal-notice">
+              <div className="renewal-icon">⚠️</div>
+              <div className="renewal-content">
+                <h4>Policy Expired</h4>
+                <p>This policy expired on {policyDetails.endDate}. You can renew it to continue coverage.</p>
+              </div>
+              <button className="renewal-action-btn" onClick={handleRenewalPolicy}>
+                🔄 Renew Policy
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Current Active Claim Section */}

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AddNewPolicyPage.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Move this OUTSIDE of AddNewPolicyPage
 const FormField = ({
@@ -62,12 +62,17 @@ const FormField = ({
 
 const AddNewPolicyPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+
+  // Check if this is a renewal
+  const isRenewal = location.state?.isRenewal || false;
+  const existingPolicy = location.state?.existingPolicy || null;
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -97,6 +102,39 @@ const AddNewPolicyPage = () => {
     policyStartDate: '',
     policyEndDate: ''
   });
+
+  // Pre-fill form data if this is a renewal
+  useEffect(() => {
+    if (isRenewal && existingPolicy) {
+      setFormData({
+        // Customer Personal Details (pre-filled from existing policy)
+        vehicleOwnerName: existingPolicy.customerName || '',
+        nic: existingPolicy.nic || '',
+        address: existingPolicy.address || '',
+        email: existingPolicy.email || '',
+        contactNo: existingPolicy.contactNo || '',
+        
+        // Vehicle Information (pre-filled from existing policy)
+        vehicleType: existingPolicy.vehicleType || '',
+        vehicleNumber: existingPolicy.vehicleNumber || '',
+        vehicleRegistrationNumber: existingPolicy.registrationNumber || '',
+        engineCapacity: existingPolicy.engineCapacity || '',
+        chassisNumber: existingPolicy.chassisNumber || '',
+        vehicleModel: existingPolicy.vehicleModel || '',
+        vehicleMake: existingPolicy.vehicleMake || '',
+        manufactureYear: existingPolicy.manufactureYear || '',
+        fuelType: existingPolicy.fuelType || '',
+        estimatedValue: existingPolicy.estimatedValue?.toString() || '',
+        
+        // Policy Information (will be updated with new values)
+        policyNumber: '', // Will be auto-generated
+        policyType: existingPolicy.policyType || '',
+        premiumAmount: '',
+        policyStartDate: '',
+        policyEndDate: ''
+      });
+    }
+  }, [isRenewal, existingPolicy]);
 
   // Generate policy number on component mount
   useEffect(() => {
@@ -296,7 +334,8 @@ const AddNewPolicyPage = () => {
     if (validateStep(4)) {
       // Here you would typically send the data to your backend
       console.log('Policy Data:', formData);
-      alert('Policy created successfully!');
+      const message = isRenewal ? 'Policy renewed successfully!' : 'Policy created successfully!';
+      alert(message);
       navigate('/policymanagement');
     } else {
       alert('Please complete all requirements before submitting.');
@@ -353,6 +392,12 @@ const AddNewPolicyPage = () => {
         return (
           <div className="step-content">
             <h3 className="step-title">Customer Personal Details</h3>
+            {isRenewal && (
+              <div className="renewal-notice">
+                <span className="renewal-icon">🔄</span>
+                <span>Renewing policy for existing customer. You can update the details if needed.</span>
+              </div>
+            )}
             <div className="form-grid">
               <FormField
                 name="vehicleOwnerName"
@@ -421,6 +466,12 @@ const AddNewPolicyPage = () => {
         return (
           <div className="step-content">
             <h3 className="step-title">Vehicle Information</h3>
+            {isRenewal && (
+              <div className="renewal-notice">
+                <span className="renewal-icon">🚗</span>
+                <span>Vehicle information from previous policy. Update if any changes occurred.</span>
+              </div>
+            )}
             <div className="form-grid">
               <FormField
                 type="select"
@@ -567,6 +618,12 @@ const AddNewPolicyPage = () => {
         return (
           <div className="step-content">
             <h3 className="step-title">Policy Information</h3>
+            {isRenewal && (
+              <div className="renewal-notice">
+                <span className="renewal-icon">🛡️</span>
+                <span>Setting up new policy details for renewal. Premium will be recalculated based on current vehicle value.</span>
+              </div>
+            )}
             <div className="form-grid">
               <FormField
                 name="policyNumber"
@@ -625,6 +682,20 @@ const AddNewPolicyPage = () => {
         return (
           <div className="step-content">
             <h3 className="step-title">Confirmation</h3>
+            
+            {/* Renewal Notice */}
+            {isRenewal && (
+              <div className="renewal-confirmation-notice">
+                <div className="renewal-header">
+                  <span className="renewal-icon">🔄</span>
+                  <h4>Policy Renewal Confirmation</h4>
+                </div>
+                <p>You are renewing policy for vehicle <strong>{formData.vehicleNumber}</strong></p>
+                {existingPolicy && (
+                  <p>Previous policy <strong>{existingPolicy.policyNumber}</strong> expired on <strong>{existingPolicy.endDate}</strong></p>
+                )}
+              </div>
+            )}
             
             {/* Summary Section */}
             <div className="confirmation-summary">
@@ -709,8 +780,15 @@ const AddNewPolicyPage = () => {
     <div className="add-policy-page">
       {/* Header */}
       <div className="page-header">
-        <h1 className="page-title">Add New Insurance Policy</h1>
-        <p className="page-subtitle">Create a new insurance policy for customer</p>
+        <h1 className="page-title">
+          {isRenewal ? 'Renew Policy' : 'Add New Insurance Policy'}
+        </h1>
+        <p className="page-subtitle">
+          {isRenewal 
+            ? 'Renew an existing insurance policy for customer' 
+            : 'Create a new insurance policy for customer'
+          }
+        </p>
       </div>
 
       {/* Progress Steps */}
@@ -747,7 +825,7 @@ const AddNewPolicyPage = () => {
           </button>
         ) : (
           <button type="button" className="nav-btn submit-btn" onClick={handleSubmit}>
-            Create Policy
+            {isRenewal ? 'Renew Policy' : 'Create Policy'}
           </button>
         )}
       </div>

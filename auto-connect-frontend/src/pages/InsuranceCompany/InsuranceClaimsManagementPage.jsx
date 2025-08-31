@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
 import './InsuranceClaimsManagementPage.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
+
+// Status color mapping
+const getStatusColor = (status) => {
+  const statusColors = {
+    'Pending': 'status-pending',
+    'Investigating': 'status-investigating',
+    'Processing-Period-01': 'status-processing-1',
+    'Processing-Period-02': 'status-processing-2',
+    'Processing-Period-03': 'status-processing-3',
+    'Approved': 'status-approved',
+    'Completed': 'status-completed',
+    'Rejected': 'status-rejected'
+  };
+  return statusColors[status] || 'status-default';
+};
 
 const InsuranceClaimsManagement = () => {
   const [claims] = useState([...ClaimDetailsTestData]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isFraudMode = new URLSearchParams(location.search).get('fraudMode') === 'true';
+
+  const [statusFilter, setStatusFilter] = useState(isFraudMode ? 'Rejected' : '');
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [claimsPerPage, setClaimsPerPage] = useState(10);
-
-  const navigate = useNavigate();
 
   // Define status priority order
   const statusOrder = {
@@ -31,7 +49,9 @@ const InsuranceClaimsManagement = () => {
   // Clear all filters
   const clearFilters = () => {
     setSearchTerm('');
-    setStatusFilter('');
+    if (!isFraudMode) {
+      setStatusFilter('');
+    }
     setStartDate('');
     setEndDate('');
     setCurrentPage(1);
@@ -80,8 +100,8 @@ const InsuranceClaimsManagement = () => {
       <div className="page-header">
         <div className="header-content">
           <div className="header-title">
-            <h2>Claims Management</h2>
-            <p>View, search, and filter all insurance claims. Click on a claim to view details.</p>
+            <h2>{isFraudMode ? 'Fraud Detection Center' : 'Claims Management'}</h2>
+            <p>{isFraudMode ? 'Monitor and investigate rejected claims for potential fraudulent activities.' : 'View, search, and filter all insurance claims. Click on a claim to view details.'}</p>
           </div>
         </div>
       </div>
@@ -99,7 +119,9 @@ const InsuranceClaimsManagement = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="filter-select"
+          className={`filter-select ${isFraudMode ? 'filter-disabled' : ''}`}
+          disabled={isFraudMode}
+          title={isFraudMode ? "Status filter is locked to Rejected claims only" : ""}
         >
           <option value="">All Status</option>
           <option value="Pending">Pending</option>
@@ -157,14 +179,18 @@ const InsuranceClaimsManagement = () => {
                 <td>{claim.vehicleNumber}</td>
                 <td>{claim.type}</td>
                 <td>{claim.amount.toLocaleString()}</td>
-                <td>{claim.status}</td>
+                <td>
+                  <span className={`status-badge ${getStatusColor(claim.status)}`}>
+                    {claim.status}
+                  </span>
+                </td>
                 <td>{claim.date}</td>
               </tr>
             ))
           ) : (
             <tr>
               <td colSpan="8" style={{ textAlign: 'center', padding: '1rem' }}>
-                No claims found.
+                {isFraudMode ? 'No rejected claims found.' : 'No claims found.'}
               </td>
             </tr>
           )}
