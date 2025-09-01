@@ -1,5 +1,5 @@
 // controllers/booking.controller.js
-import Booking from "../models/booking.model.js";
+import Booking from "../models/Booking.model.js";
 import ServiceReport from "../models/ServiceReport.model.js";
 import User from "../models/user.model.js";
 import LOG from "../configs/log.config.js";
@@ -911,8 +911,14 @@ export const submitServiceCompletionReport = catchAsync(async (req, res, next) =
       (parseFloat(providedBreakdown.taxes) || 0) - 
       (parseFloat(providedBreakdown.discount) || 0);
 
+    // Generate report ID
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substr(2, 5);
+    const reportId = `SR-${timestamp}-${random}`.toUpperCase();
+
     // Create the service report
     const serviceReport = await ServiceReport.create({
+      reportId: reportId,
       booking: booking._id,
       serviceCenter: req.user._id,
       vehicle: {
@@ -925,8 +931,10 @@ export const submitServiceCompletionReport = catchAsync(async (req, res, next) =
         serviceName: service.serviceName,
         description: service.description || '',
         partsUsed: service.partsUsed || [],
+        partsRequired: service.partsRequired || false,
         laborDetails: service.laborDetails || { hoursWorked: 0, laborRate: 0, laborCost: 0 },
         serviceCost: parseFloat(service.serviceCost) || 0,
+        serviceAmount: parseFloat(service.serviceAmount) || 0,
         serviceStatus: service.serviceStatus || 'COMPLETED',
         notes: service.notes || '',
       })),
@@ -998,7 +1006,14 @@ export const submitServiceCompletionReport = catchAsync(async (req, res, next) =
       },
     });
   } catch (error) {
-    LOG.error("Error submitting service completion report:", error);
+    LOG.error("Error submitting service completion report:", {
+      error: error.message,
+      stack: error.stack,
+      name: error.name,
+      code: error.code,
+      details: error
+    });
+    console.error("Detailed error:", error);
     return next(
       new AppError("Failed to submit completion report. Please try again.", 500)
     );

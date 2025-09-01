@@ -214,6 +214,7 @@ const serviceCompletionReportValidation = Joi.object({
           "number.min": "Service cost cannot be negative",
           "any.required": "Service cost is required",
         }),
+        partsRequired: Joi.boolean().optional().default(false),
         serviceStatus: Joi.string()
           .valid("COMPLETED", "PARTIALLY_COMPLETED", "NOT_COMPLETED")
           .default("COMPLETED"),
