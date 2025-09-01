@@ -48,7 +48,7 @@ import { toast } from "react-toastify";
 import { UserContext } from "../../contexts/UserContext";
 import bookingAPI from "../../services/bookingApiService";
 
-const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
+const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }) => {
   const { userContext } = useContext(UserContext);
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -98,7 +98,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
       },
     },
     technician: {
-      name: userContext?.user?.firstName + " " + userContext?.user?.lastName || "",
+      name: `${userContext?.user?.firstName || ""} ${userContext?.user?.lastName || ""}`.trim() || "Unknown Technician",
       employeeId: userContext?.user?._id || "",
     },
     qualityCheck: {
@@ -127,8 +127,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
           laborRate: 2000, // Default rate per hour
           laborCost: 0,
         },
-        serviceCost: 0,
-        serviceAmount: 5000, // Default service amount
+        serviceCost: 5000, // Default service cost
         serviceStatus: "COMPLETED",
         notes: "",
       }));
@@ -150,7 +149,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
       laborTotal += service.laborDetails.laborCost || 0;
       partsTotal += 
         service.partsUsed?.reduce((sum, part) => sum + (part.totalPrice || 0), 0) || 0;
-      servicesTotal += (service.serviceCost || 0) + (service.serviceAmount || 0);
+      servicesTotal += (service.serviceCost || 0);
     });
 
     const additionalWorkTotal = formData.additionalWork.reduce(
@@ -173,41 +172,267 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
     };
   };
 
-  // Handle form submission
+  // Comprehensive validation functions
+  const validateForm = () => {
+    const errors = [];
+    const warnings = [];
+
+    // 1. Validate Work Time Duration
+    const startTime = new Date(formData.workStartTime);
+    const endTime = new Date(formData.workEndTime);
+    const timeDiffHours = (endTime - startTime) / (1000 * 60 * 60);
+
+    if (startTime >= endTime) {
+      errors.push("Work end time must be after work start time");
+    }
+
+    if (timeDiffHours > 168) { // 7 days
+      errors.push("Work duration cannot exceed 7 days");
+    }
+
+    // 2. Validate Hours Worked against actual time duration
+    const totalHoursWorked = formData.completedServices.reduce((total, service) => {
+      return total + (parseFloat(service.laborDetails.hoursWorked) || 0);
+    }, 0);
+
+    if (totalHoursWorked > timeDiffHours + 2) { // Allow 2 hours buffer
+      errors.push(`Total hours worked (${totalHoursWorked.toFixed(1)}h) cannot exceed the actual work duration (${timeDiffHours.toFixed(1)}h)`);
+    }
+
+    if (totalHoursWorked > 24) {
+      warnings.push("Total hours worked exceeds 24 hours - please verify this is correct");
+    }
+
+    // 3. Validate Mileage
+    const beforeMileage = parseFloat(formData.vehicleCondition.before.mileage) || 0;
+    const afterMileage = parseFloat(formData.vehicleCondition.after.mileage) || 0;
+
+    if (beforeMileage < 0 || afterMileage < 0) {
+      errors.push("Mileage cannot be negative");
+    }
+
+    if (beforeMileage === 0 && afterMileage === 0) {
+      warnings.push("Both before and after mileage are 0 - please verify this is correct");
+    }
+
+    if (afterMileage < beforeMileage) {
+      errors.push("After mileage cannot be less than before mileage");
+    }
+
+    const mileageDiff = afterMileage - beforeMileage;
+    if (mileageDiff > 1000) { // Reasonable limit for service duration
+      warnings.push(`Mileage increase (${mileageDiff} km) seems high for a service - please verify`);
+    }
+
+    // 4. Validate Service Costs
+    formData.completedServices.forEach((service, index) => {
+      const serviceCost = parseFloat(service.serviceCost) || 0;
+      const hoursWorked = parseFloat(service.laborDetails.hoursWorked) || 0;
+      const laborRate = parseFloat(service.laborDetails.laborRate) || 0;
+      const laborCost = parseFloat(service.laborDetails.laborCost) || 0;
+
+      if (serviceCost < 0) {
+        errors.push(`Service ${index + 1}: Service cost cannot be negative`);
+      }
+
+      if (serviceCost > 1000000) { // 1 million reasonable max
+        errors.push(`Service ${index + 1}: Service cost seems unreasonably high`);
+      }
+
+      if (hoursWorked < 0) {
+        errors.push(`Service ${index + 1}: Hours worked cannot be negative`);
+      }
+
+      if (laborRate < 0) {
+        errors.push(`Service ${index + 1}: Labor rate cannot be negative`);
+      }
+
+      if (laborRate > 50000) { // 50k per hour seems excessive
+        warnings.push(`Service ${index + 1}: Labor rate (LKR ${laborRate}/hour) seems very high`);
+      }
+
+      // Validate labor cost calculation
+      const expectedLaborCost = hoursWorked * laborRate;
+      const laborCostDiff = Math.abs(laborCost - expectedLaborCost);
+      if (laborCostDiff > 0.01) { // Allow for rounding
+        errors.push(`Service ${index + 1}: Labor cost (LKR ${laborCost}) doesn't match hours × rate (${hoursWorked} × ${laborRate} = LKR ${expectedLaborCost})`);
+      }
+
+      // Validate parts costs
+      service.partsUsed?.forEach((part, partIndex) => {
+        const quantity = parseFloat(part.quantity) || 0;
+        const unitPrice = parseFloat(part.unitPrice) || 0;
+        const totalPrice = parseFloat(part.totalPrice) || 0;
+
+        if (quantity <= 0) {
+          errors.push(`Service ${index + 1}, Part ${partIndex + 1}: Quantity must be greater than 0`);
+        }
+
+        if (unitPrice < 0) {
+          errors.push(`Service ${index + 1}, Part ${partIndex + 1}: Unit price cannot be negative`);
+        }
+
+        if (unitPrice > 1000000) {
+          warnings.push(`Service ${index + 1}, Part ${partIndex + 1}: Unit price seems very high`);
+        }
+
+        const expectedTotal = quantity * unitPrice;
+        if (Math.abs(totalPrice - expectedTotal) > 0.01) {
+          errors.push(`Service ${index + 1}, Part ${partIndex + 1}: Total price doesn't match quantity × unit price`);
+        }
+      });
+    });
+
+    // 5. Validate Discount and Total Cost
+    const totals = calculateTotals();
+    const discount = parseFloat(formData.totalCostBreakdown.discount) || 0;
+    const subtotal = totals.partsTotal + totals.laborTotal + totals.servicesTotal + totals.additionalWorkTotal;
+
+    if (discount < 0) {
+      errors.push("Discount cannot be negative");
+    }
+
+    if (discount > subtotal) {
+      errors.push("Discount cannot exceed the subtotal amount");
+    }
+
+    if (discount > subtotal * 0.8) { // 80% discount seems excessive
+      warnings.push("Discount exceeds 80% of subtotal - please verify this is correct");
+    }
+
+    // 6. Validate Tax
+    const taxRate = parseFloat(formData.totalCostBreakdown.taxRate) || 0;
+    if (taxRate < 0) {
+      errors.push("Tax rate cannot be negative");
+    }
+
+    if (taxRate > 50) { // 50% tax seems excessive
+      warnings.push("Tax rate exceeds 50% - please verify this is correct");
+    }
+
+    // 7. Validate Technician Information
+    if (!formData.technician.name || formData.technician.name.trim() === "" || formData.technician.name === "Unknown Technician") {
+      errors.push("Technician name is required");
+    }
+
+    // 8. Validate at least one completed service
+    if (!formData.completedServices || formData.completedServices.length === 0) {
+      errors.push("At least one completed service is required");
+    }
+
+    // 9. Validate fuel level progression (optional warning)
+    const beforeFuel = formData.vehicleCondition.before.fuelLevel;
+    const afterFuel = formData.vehicleCondition.after.fuelLevel;
+    const fuelLevels = ["EMPTY", "1/4", "1/2", "3/4", "FULL"];
+    
+    if (beforeFuel && afterFuel) {
+      const beforeIndex = fuelLevels.indexOf(beforeFuel);
+      const afterIndex = fuelLevels.indexOf(afterFuel);
+      
+      if (afterIndex < beforeIndex - 1) { // Allow for some fuel consumption
+        warnings.push("Fuel level decreased significantly during service - please verify");
+      }
+    }
+
+    return { errors, warnings };
+  };
+
+  // Handle form submission with validation
   const handleSubmit = async () => {
     try {
+      // Validate form before submission
+      const validation = validateForm();
+      
+      if (validation.errors.length > 0) {
+        toast.error(`Please fix the following errors:\n${validation.errors.join('\n')}`);
+        return;
+      }
+
+      if (validation.warnings.length > 0) {
+        const confirmed = window.confirm(
+          `Please review the following warnings:\n${validation.warnings.join('\n')}\n\nDo you want to continue?`
+        );
+        if (!confirmed) {
+          return;
+        }
+      }
+
       setLoading(true);
 
       const totals = calculateTotals();
 
       const submissionData = {
-        bookingId: booking._id,
-        vehicle: {
-          registrationNumber: booking.vehicle.registrationNumber,
-          make: booking.vehicle.make,
-          model: booking.vehicle.model,
-          year: booking.vehicle.year,
-        },
-        completedServices: formData.completedServices,
-        additionalWork: formData.additionalWork,
+        completedServices: formData.completedServices.map(service => ({
+          serviceName: service.serviceName,
+          description: service.description || '',
+          partsUsed: service.partsUsed || [],
+          partsRequired: service.partsRequired || false,
+          laborDetails: {
+            hoursWorked: parseFloat(service.laborDetails.hoursWorked) || 0,
+            laborRate: parseFloat(service.laborDetails.laborRate) || 0,
+            laborCost: parseFloat(service.laborDetails.laborCost) || 0,
+          },
+          serviceCost: parseFloat(service.serviceCost) || 0,
+          serviceStatus: service.serviceStatus || 'COMPLETED',
+          notes: service.notes || '',
+        })),
+        additionalWork: formData.additionalWork || [],
         totalCostBreakdown: {
-          ...formData.totalCostBreakdown,
-          ...totals,
+          taxes: parseFloat(formData.totalCostBreakdown.taxAmount) || 0,
+          discount: parseFloat(formData.totalCostBreakdown.discount) || 0,
         },
-        workStartTime: new Date(formData.workStartTime),
-        workEndTime: new Date(formData.workEndTime),
-        vehicleCondition: formData.vehicleCondition,
-        technician: formData.technician,
-        qualityCheck: formData.qualityCheck,
-        recommendations: formData.recommendations,
-        customerNotification: formData.customerNotification,
+        workStartTime: formData.workStartTime,
+        workEndTime: formData.workEndTime,
+        vehicleCondition: {
+          before: Object.fromEntries(
+            Object.entries({
+              mileage: formData.vehicleCondition.before.mileage ? parseFloat(formData.vehicleCondition.before.mileage) : undefined,
+              fuelLevel: formData.vehicleCondition.before.fuelLevel || undefined,
+              externalCondition: formData.vehicleCondition.before.externalCondition || '',
+              internalCondition: formData.vehicleCondition.before.internalCondition || '',
+            }).filter(([_, value]) => value !== undefined)
+          ),
+          after: Object.fromEntries(
+            Object.entries({
+              mileage: formData.vehicleCondition.after.mileage ? parseFloat(formData.vehicleCondition.after.mileage) : undefined,
+              fuelLevel: formData.vehicleCondition.after.fuelLevel || undefined,
+              externalCondition: formData.vehicleCondition.after.externalCondition || '',
+              internalCondition: formData.vehicleCondition.after.internalCondition || '',
+            }).filter(([_, value]) => value !== undefined)
+          ),
+        },
+        technician: {
+          name: formData.technician.name || '',
+          employeeId: formData.technician.employeeId || '',
+          signature: formData.technician.signature || '',
+        },
+        qualityCheck: Object.fromEntries(
+          Object.entries({
+            performed: Boolean(formData.qualityCheck.performed),
+            performedBy: formData.qualityCheck.performedBy || '',
+            overallRating: formData.qualityCheck.overallRating || undefined,
+            notes: formData.qualityCheck.notes || '',
+          }).filter(([_, value]) => value !== undefined)
+        ),
+        recommendations: formData.recommendations || [],
+        customerNotification: Object.fromEntries(
+          Object.entries({
+            notified: Boolean(formData.customerNotification.notified),
+            notificationMethod: formData.customerNotification.notificationMethod || undefined,
+          }).filter(([_, value]) => value !== undefined)
+        ),
       };
 
-      const response = await bookingAPI.completeService(submissionData);
+      const response = await bookingAPI.submitServiceCompletionReport(booking._id, submissionData);
 
       if (response.success) {
         toast.success("Service completion report submitted successfully!");
-        onSuccess();
+        if (onSuccess) onSuccess();
+        if (onComplete) {
+          // Pass the updated booking data from the response
+          const updatedBooking = response.data?.booking || response.data;
+          onComplete(updatedBooking);
+        }
         onClose();
       } else {
         toast.error(response.message || "Failed to submit service report");
@@ -220,8 +445,54 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
     }
   };
 
-  // Update service field
+  // Real-time field validation helpers
+  const validateFieldValue = (field, value, serviceIndex = null) => {
+    const numValue = parseFloat(value) || 0;
+    
+    switch (field) {
+      case 'laborDetails.hoursWorked':
+        if (numValue < 0) return { error: 'Hours worked cannot be negative' };
+        if (numValue > 24) return { warning: 'Hours worked exceeds 24 hours' };
+        
+        // Check against work duration if available
+        const startTime = new Date(formData.workStartTime);
+        const endTime = new Date(formData.workEndTime);
+        const maxHours = (endTime - startTime) / (1000 * 60 * 60);
+        if (maxHours > 0 && numValue > maxHours) {
+          return { warning: `Hours exceed work duration (${maxHours.toFixed(1)}h)` };
+        }
+        break;
+        
+      case 'laborDetails.laborRate':
+        if (numValue < 0) return { error: 'Labor rate cannot be negative' };
+        if (numValue > 50000) return { warning: 'Labor rate seems very high' };
+        break;
+        
+      case 'serviceCost':
+        if (numValue < 0) return { error: 'Service cost cannot be negative' };
+        if (numValue > 1000000) return { warning: 'Service cost seems very high' };
+        break;
+        
+      default:
+        return null;
+    }
+    
+    return null;
+  };
+
+  // Update service field with validation
   const updateService = (serviceIndex, field, value) => {
+    // Validate the field value
+    const validation = validateFieldValue(field, value, serviceIndex);
+    if (validation?.error) {
+      toast.error(validation.error);
+      return; // Don't update if there's an error
+    }
+    
+    if (validation?.warning) {
+      toast.warning(validation.warning);
+    }
+
     setFormData((prev) => ({
       ...prev,
       completedServices: prev.completedServices.map((service, index) => {
@@ -233,11 +504,11 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
               [laborField]: value,
             };
 
-            // Auto-calculate labor cost
+            // Auto-calculate labor cost with validation
             if (laborField === "hoursWorked" || laborField === "laborRate") {
-              updatedLaborDetails.laborCost =
-                (updatedLaborDetails.hoursWorked || 0) *
-                (updatedLaborDetails.laborRate || 0);
+              const hoursWorked = parseFloat(updatedLaborDetails.hoursWorked) || 0;
+              const laborRate = parseFloat(updatedLaborDetails.laborRate) || 0;
+              updatedLaborDetails.laborCost = hoursWorked * laborRate;
             }
 
             return { ...service, laborDetails: updatedLaborDetails };
@@ -288,8 +559,31 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
     }));
   };
 
-  // Update part in service
+  // Update part in service with validation
   const updatePartInService = (serviceIndex, partIndex, field, value) => {
+    const numValue = parseFloat(value) || 0;
+    
+    // Validate part fields
+    if (field === 'quantity') {
+      if (numValue <= 0) {
+        toast.error('Part quantity must be greater than 0');
+        return;
+      }
+      if (numValue > 1000) {
+        toast.warning('Part quantity seems very high');
+      }
+    }
+    
+    if (field === 'unitPrice') {
+      if (numValue < 0) {
+        toast.error('Part unit price cannot be negative');
+        return;
+      }
+      if (numValue > 1000000) {
+        toast.warning('Part unit price seems very high');
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       completedServices: prev.completedServices.map((service, index) => {
@@ -298,9 +592,11 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
             if (pIndex === partIndex) {
               const updatedPart = { ...part, [field]: value };
               
-              // Auto-calculate total price
+              // Auto-calculate total price with validation
               if (field === "quantity" || field === "unitPrice") {
-                updatedPart.totalPrice = (updatedPart.quantity || 0) * (updatedPart.unitPrice || 0);
+                const quantity = parseFloat(updatedPart.quantity) || 0;
+                const unitPrice = parseFloat(updatedPart.unitPrice) || 0;
+                updatedPart.totalPrice = quantity * unitPrice;
               }
               
               return updatedPart;
@@ -313,6 +609,111 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
         return service;
       }),
     }));
+  };
+
+  // Validate mileage input
+  const validateMileage = (value, type) => {
+    const numValue = parseFloat(value) || 0;
+    
+    if (numValue < 0) {
+      toast.error(`${type} mileage cannot be negative`);
+      return false;
+    }
+    
+    if (numValue === 0) {
+      toast.warning(`${type} mileage is 0 - please verify this is correct`);
+    }
+    
+    if (numValue > 999999) {
+      toast.warning(`${type} mileage seems very high`);
+    }
+    
+    return true;
+  };
+
+  // Validate discount
+  const validateDiscount = (discountValue) => {
+    const discount = parseFloat(discountValue) || 0;
+    const totals = calculateTotals();
+    const subtotal = totals.partsTotal + totals.laborTotal + totals.servicesTotal + totals.additionalWorkTotal;
+    
+    if (discount < 0) {
+      toast.error('Discount cannot be negative');
+      return false;
+    }
+    
+    if (discount > subtotal) {
+      toast.error('Discount cannot exceed the subtotal amount');
+      return false;
+    }
+    
+    if (discount > subtotal * 0.8) {
+      toast.warning('Discount exceeds 80% of subtotal - please verify this is correct');
+    }
+    
+    return true;
+  };
+
+  // Validate work time
+  const validateWorkTime = (startTime, endTime) => {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diffHours = (end - start) / (1000 * 60 * 60);
+    
+    if (start >= end) {
+      toast.error('Work end time must be after work start time');
+      return false;
+    }
+    
+    if (diffHours > 168) { // 7 days
+      toast.error('Work duration cannot exceed 7 days');
+      return false;
+    }
+    
+    if (diffHours < 0.5) { // 30 minutes minimum
+      toast.warning('Work duration is less than 30 minutes - please verify');
+    }
+    
+    return true;
+  };
+
+  // Enhanced form data update with validation
+  const updateFormData = (path, value, skipValidation = false) => {
+    // Pre-validation based on field type
+    if (!skipValidation) {
+      if (path.includes('mileage')) {
+        const mileageType = path.includes('before') ? 'Before' : 'After';
+        if (!validateMileage(value, mileageType)) return;
+      }
+      
+      if (path.includes('discount')) {
+        if (!validateDiscount(value)) return;
+      }
+      
+      if (path === 'workStartTime' || path === 'workEndTime') {
+        const currentStart = path === 'workStartTime' ? value : formData.workStartTime;
+        const currentEnd = path === 'workEndTime' ? value : formData.workEndTime;
+        if (currentStart && currentEnd) {
+          if (!validateWorkTime(currentStart, currentEnd)) return;
+        }
+      }
+    }
+
+    // Update the form data
+    setFormData((prev) => {
+      const keys = path.split('.');
+      const result = { ...prev };
+      let current = result;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current[keys[i]] = { ...current[keys[i]] };
+        current = current[keys[i]];
+      }
+      
+      current[keys[keys.length - 1]] = value;
+      return result;
+    });
   };
 
   // Add additional work
@@ -1618,45 +2019,102 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
       maxWidth="lg"
       fullWidth
       PaperProps={{
-        sx: { minHeight: "80vh" },
+        sx: { 
+          minHeight: "80vh",
+          borderRadius: '20px',
+          overflow: 'hidden',
+          boxShadow: '0 32px 64px rgba(74, 98, 138, 0.15)',
+        },
       }}
     >
       <DialogTitle 
         sx={{ 
-          py: 4,
-          backgroundColor: colors.primaryLight,
-          borderBottom: `1px solid ${colors.primaryMedium}`,
+          py: 5,
+          background: `linear-gradient(135deg, ${colors.primaryBlue} 0%, ${colors.primaryDark} 100%)`,
+          boxShadow: '0 4px 16px rgba(74, 98, 138, 0.2)',
         }}
       >
         <Box sx={{ textAlign: 'center' }}>
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontWeight: 600, 
-              color: colors.primaryDark, 
-              mb: 1,
-              fontSize: '1.75rem'
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
+            <CheckCircleIcon sx={{ fontSize: '2.5rem', color: colors.white }} />
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700, 
+                color: colors.white, 
+                fontSize: '2rem',
+                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
             Service Completion Form
           </Typography>
+          </Box>
           <Typography 
-            variant="subtitle1" 
+            variant="h6" 
             sx={{ 
-              color: colors.grayMedium, 
-              fontWeight: 400 
+              color: colors.white, 
+              fontWeight: 400,
+              opacity: 0.95,
+              fontSize: '1.1rem'
             }}
           >
-            Booking ID: {booking.bookingId} | Vehicle: {booking.vehicle?.registrationNumber}
+            {booking.vehicle?.make} {booking.vehicle?.model} • {booking.vehicle?.registrationNumber} • Booking #{booking.bookingId}
           </Typography>
         </Box>
       </DialogTitle>
 
-      <DialogContent dividers>
-        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-          {steps.map((label) => (
+      <DialogContent 
+        dividers
+        sx={{
+          background: `linear-gradient(180deg, ${colors.primaryLight} 0%, ${colors.white} 20%, ${colors.white} 100%)`,
+          px: 4,
+          py: 5,
+        }}
+      >
+        <Stepper 
+          activeStep={activeStep} 
+          sx={{ 
+            mb: 6,
+            '& .MuiStepLabel-root .Mui-completed': {
+              color: colors.primaryBlue,
+            },
+            '& .MuiStepLabel-root .Mui-active': {
+              color: colors.primaryDark,
+            },
+            '& .MuiStepConnector-alternativeLabel': {
+              top: 10,
+              left: 'calc(-50% + 16px)',
+              right: 'calc(50% + 16px)',
+            },
+            '& .MuiStepConnector-alternativeLabel.Mui-active .MuiStepConnector-line, & .MuiStepConnector-alternativeLabel.Mui-completed .MuiStepConnector-line': {
+              borderColor: colors.primaryBlue,
+              borderWidth: 2,
+            },
+          }}
+        >
+          {steps.map((label, index) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel 
+                StepIconProps={{
+                  sx: {
+                    '&.Mui-completed': {
+                      color: colors.primaryBlue,
+                    },
+                    '&.Mui-active': {
+                      color: colors.primaryDark,
+                    },
+                  }
+                }}
+                sx={{
+                  '& .MuiStepLabel-label': {
+                    fontSize: '1rem',
+                    fontWeight: activeStep === index ? 600 : 400,
+                    color: activeStep === index ? colors.primaryDark : colors.grayMedium,
+                  },
+                }}
+              >
+                {label}
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -1664,18 +2122,53 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
         {getStepContent(activeStep)}
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, justifyContent: "space-between" }}>
+      <DialogActions 
+        sx={{ 
+          p: 4, 
+          justifyContent: "space-between",
+          background: `linear-gradient(180deg, ${colors.white} 0%, ${colors.primaryLight} 100%)`,
+          borderTop: `1px solid ${colors.primaryMedium}`,
+        }}
+      >
         <Button
           disabled={activeStep === 0}
           onClick={handleBack}
           size="large"
-          sx={{ minWidth: 120 }}
+          variant="outlined"
+          sx={{ 
+            minWidth: 140,
+            borderRadius: '12px',
+            borderColor: colors.primaryMedium,
+            color: colors.primaryDark,
+            '&:hover': {
+              borderColor: colors.primaryBlue,
+              backgroundColor: colors.primaryLight,
+            },
+            '&:disabled': {
+              borderColor: colors.grayLight,
+              color: colors.grayMedium,
+            }
+          }}
         >
           Back
         </Button>
 
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Button onClick={onClose} size="large" sx={{ minWidth: 120 }}>
+        <Box sx={{ display: "flex", gap: 3 }}>
+          <Button 
+            onClick={onClose} 
+            size="large" 
+            variant="outlined"
+            sx={{ 
+              minWidth: 140,
+              borderRadius: '12px',
+              borderColor: colors.grayMedium,
+              color: colors.grayDark,
+              '&:hover': {
+                borderColor: colors.grayDark,
+                backgroundColor: colors.grayLight,
+              }
+            }}
+          >
             Cancel
           </Button>
 
@@ -1685,8 +2178,25 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
               onClick={handleSubmit}
               disabled={loading}
               size="large"
-              sx={{ minWidth: 120 }}
-              startIcon={loading ? <CircularProgress size={20} /> : <CheckCircleIcon />}
+              sx={{ 
+                minWidth: 180,
+                borderRadius: '12px',
+                background: `linear-gradient(135deg, ${colors.primaryBlue} 0%, ${colors.primaryDark} 100%)`,
+                boxShadow: '0 4px 16px rgba(74, 98, 138, 0.3)',
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+                '&:hover': {
+                  boxShadow: '0 8px 24px rgba(74, 98, 138, 0.4)',
+                  transform: 'translateY(-2px)',
+                },
+                '&:disabled': {
+                  background: colors.grayMedium,
+                  boxShadow: 'none',
+                  transform: 'none',
+                }
+              }}
+              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <CheckCircleIcon />}
             >
               {loading ? "Submitting..." : "Complete Service"}
             </Button>
@@ -1695,7 +2205,19 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess }) => {
               variant="contained"
               onClick={handleNext}
               size="large"
-              sx={{ minWidth: 120 }}
+              sx={{ 
+                minWidth: 140,
+                borderRadius: '12px',
+                background: `linear-gradient(135deg, ${colors.primaryBlue} 0%, ${colors.primaryDark} 100%)`,
+                boxShadow: '0 4px 16px rgba(74, 98, 138, 0.3)',
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+                '&:hover': {
+                  boxShadow: '0 8px 24px rgba(74, 98, 138, 0.4)',
+                  transform: 'translateY(-2px)',
+                }
+              }}
             >
               Next
             </Button>

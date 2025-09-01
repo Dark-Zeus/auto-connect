@@ -261,15 +261,36 @@ const VehicleServiceRequests = () => {
 
   // Handle service completion
   const handleServiceCompletion = (updatedBooking) => {
-    // Update the booking in the list
+    // Update the booking status to COMPLETED and update the booking in the list
+    const completedBooking = {
+      ...updatedBooking,
+      status: "COMPLETED",
+      timestamps: {
+        ...updatedBooking.timestamps,
+        completedAt: new Date().toISOString()
+      }
+    };
+
     setBookings(prevBookings => 
       prevBookings.map(booking => 
-        booking._id === updatedBooking._id ? updatedBooking : booking
+        booking._id === completedBooking._id ? completedBooking : booking
       )
     );
+    
+    // Close the form and clear selection
     setCompletionFormOpen(false);
     setSelectedBooking(null);
-    toast.success("Service completed successfully!");
+    
+    // Automatically switch to the "Completed" tab (index 4)
+    setSelectedTab(4);
+    
+    // Show success message
+    toast.success("Service completed successfully! Moved to Completed tab.");
+    
+    // Refresh the bookings to ensure the latest data is displayed
+    setTimeout(() => {
+      fetchBookings(1);
+    }, 500);
   };
 
   // Format date
