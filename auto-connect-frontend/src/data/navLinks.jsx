@@ -22,6 +22,7 @@ import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashbo
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
+import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -237,6 +238,13 @@ function getNavLinks(userContext) {
           icon: "edit",
           page: <UpdateVehicleAd />,
           hidden: true, // TODO: Hide from navigation, only for direct access
+        },
+        {
+          path: [`/payment-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <PaymentSuccessPage />,
+          hidden: true,
         },
       ],
     });
