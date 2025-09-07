@@ -11,6 +11,7 @@ import vehicleRoute from "./vehicle.route.js";
 import addedVehicleRoute from "./addedVehicle.route.js";
 import listVehicleRoute from "./listVehicle.route.js";
 import buyVehicleRoute from "./buyVehicle.route.js";
+import paymentRoute from "./payment.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -41,6 +42,8 @@ router.use("/added-vehicles", generalLimiter, addedVehicleRoute);
 router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
 router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
+
+router.use("/payments", generalLimiter, paymentRoute);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
