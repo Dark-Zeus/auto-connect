@@ -23,6 +23,8 @@ const listVehicleSchema = new mongoose.Schema({
     photos: [String],
     views: { type: Number, default: 0 }, // <--- important
     status: { type: Number, default: 1 }, // 1 for active, 0 for inactive
+    paymentStatus: {type: String, enum: ['pending', 'completed', 'failed'], default: 'pending'},
+    checkoutSessionId: { type: String, index: true },
     promotion: { type: Number, default: 0 } // 0 for no promotion, 1 for promoted
     }, { timestamps: true });
 
