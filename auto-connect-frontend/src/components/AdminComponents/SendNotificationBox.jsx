@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Send, Trash2, Users, Bell, AlertTriangle, Gift, Megaphone } from "lucide-react";
 import ConfirmationBox from "./ConfirmationBox";
+import { notificationAPI, handleNotificationError, handleNotificationSuccess } from "../../services/notificationApiService";
 
 const receiverOptions = [
   { value: "All Users", label: "All Users", icon: <Users className="tw:w-4 tw:h-4 tw:text-blue-500" /> },
@@ -17,7 +18,7 @@ const typeOptions = [
   { value: "Offer", label: "Offer", icon: <Gift className="tw:w-4 tw:h-4 tw:text-pink-500" /> },
 ];
 
-function SendNotificationBox({ onSend }) {
+function SendNotificationBox() {
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState(receiverOptions[0].value);
   const [type, setType] = useState(typeOptions[0].value);
@@ -29,12 +30,22 @@ function SendNotificationBox({ onSend }) {
     }
   };
 
-  const confirmSend = () => {
-    onSend({ message, receiver, type });
-    setShowConfirm(false);
-    setMessage("");
-    setReceiver(receiverOptions[0].value);
-    setType(typeOptions[0].value);
+  const confirmSend = async () => {
+    try {
+      const response = await notificationAPI.createNotification({
+        message,
+        receiver,
+        type,
+      });
+      handleNotificationSuccess(response, "send");
+      setShowConfirm(false);
+      setMessage("");
+      setReceiver(receiverOptions[0].value);
+      setType(typeOptions[0].value);
+    } catch (error) {
+      handleNotificationError(error, "send");
+      setShowConfirm(false);
+    }
   };
 
   const handleClear = () => {
