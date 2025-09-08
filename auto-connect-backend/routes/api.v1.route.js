@@ -11,6 +11,7 @@ import vehicleRoute from "./vehicle.route.js";
 import addedVehicleRoute from "./addedVehicle.route.js";
 import listVehicleRoute from "./listVehicle.route.js";
 import subscriptionRoute from "./subscription.route.js";
+import notificationRoute from "./notificationRoute.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -42,6 +43,9 @@ router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
 // Subscription routes
 router.use("/subscriptions", generalLimiter, subscriptionRoute);
+
+// Notification routes
+router.use("/notifications", generalLimiter, notificationRoute);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -98,6 +102,14 @@ router.get("/docs", (req, res) => {
           "GET /subscriptions/:id - Get subscription details",
           "PUT /subscriptions/:id - Update subscription",
           "DELETE /subscriptions/:id - Delete subscription",
+        ],
+      },
+
+      notifications: {
+        description: "Notification management for admins",
+        routes: [
+          "GET /notifications - List all notifications",
+          "POST /notifications/ - Create a new notification",
         ],
       },
 
