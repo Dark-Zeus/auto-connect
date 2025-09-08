@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { X, Zap, TrendingUp, Star, Check, Shield, Users } from "lucide-react";
+import { X, Star, Shield, Check, Users } from "lucide-react";
+import {
+  subscriptionAPI,
+  handleSubscriptionSuccess,
+  handleSubscriptionError,
+} from "@/services/subscriptionApiService";
 
-export default function AddPlanModal({ onSave, onClose }) {
+export default function AddPlanModal({ onSuccess, onClose }) {
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -9,31 +14,42 @@ export default function AddPlanModal({ onSave, onClose }) {
     costPerAd: "",
     validityPeriod: "",
     adsPerMonth: "",
-    freePromotion: "",
+    promotionVoucher: "", // ✅ matches backend field
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
-    onClose();
+    setLoading(true);
+    try {
+      const res = await subscriptionAPI.createSubscription(formData);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "create subscription");
+        if (onSuccess) onSuccess(res.data); // update parent list if needed
+        onClose();
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "create subscription");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Field icons
   const fieldIcons = {
     title: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
     price: <Shield className="tw:w-5 tw:h-5 tw:text-blue-500" />,
     costPerAd: <Check className="tw:w-5 tw:h-5 tw:text-green-600" />,
     validityPeriod: <Shield className="tw:w-5 tw:h-5 tw:text-blue-500" />,
     adsPerMonth: <Users className="tw:w-5 tw:h-5 tw:text-indigo-500" />,
-    freePromotion: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
+    promotionVoucher: <Star className="tw:w-5 tw:h-5 tw:text-yellow-500" />,
   };
 
-  // Field definitions as a variable (not inline)
   const fields = [
     {
       label: "Plan Title",
@@ -57,7 +73,7 @@ export default function AddPlanModal({ onSave, onClose }) {
       placeholder: "Enter ads per month",
     },
     {
-      label: "Free Promotion",
+      label: "Free Promotion (Days)",
       name: "promotionVoucher",
       placeholder: "Enter promotion days",
     },
@@ -65,7 +81,7 @@ export default function AddPlanModal({ onSave, onClose }) {
 
   return (
     <div className="tw:fixed tw:inset-0 tw:z-999 tw:bg-black/40 tw:flex tw:items-center tw:justify-center tw:p-4">
-      <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:rounded-2xl tw:p-8 tw:w-full tw:max-w-2xl tw:shadow-2xl tw:relative tw:animate-fadeIn tw:border-2 tw:border-blue-200/50">
+      <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:rounded-2xl tw:p-8 tw:w-full tw:max-w-2xl tw:shadow-2xl tw:relative tw:border-2 tw:border-blue-200/50">
         {/* Header */}
         <div className="tw:flex tw:justify-between tw:items-center tw:mb-6">
           <h2 className="tw:text-2xl tw:font-extrabold tw:text-blue-700">
@@ -109,14 +125,16 @@ export default function AddPlanModal({ onSave, onClose }) {
               type="button"
               onClick={onClose}
               className="tw:bg-gray-100 tw:text-gray-700 tw:px-5 tw:py-2.5 tw:rounded-lg hover:tw:bg-gray-200 tw:transition tw:duration-200 tw:font-semibold"
+              disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="tw:bg-gradient-to-r tw:from-blue-600 tw:to-blue-700 tw:text-white tw:px-6 tw:py-2.5 tw:rounded-lg hover:tw:from-blue-700 hover:tw:to-blue-800 tw:transition tw:duration-200 tw:font-semibold tw:shadow-lg"
+              disabled={loading}
             >
-              Save Plan
+              {loading ? "Saving..." : "Save Plan"}
             </button>
           </div>
         </form>
