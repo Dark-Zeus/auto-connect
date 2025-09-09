@@ -242,6 +242,21 @@ const claimDetailsTestData = [
     images: ['/uploads/claim10_img1.jpg', '/uploads/claim10_img2.jpg'],
     policeReport: '/uploads/weather_report_010.pdf',
     comments: 'Weather damage confirmed, proceeding with service provider selection'
+  },
+  {
+    id: 'CLM-2025-011',
+    customer: 'Mali Fernando',
+    vehicle: 'Hyundai Elantra',
+    vehicleNumber: 'WER-0909',
+    type: 'Hail Damage',
+    amount: 95000,
+    status: 'Rejected',
+    date: '2025-08-08',
+    priority: 'normal',
+    accidentReport: 'Hail damage to roof and hood during severe weather. Multiple small dents across vehicle surface. Weather report confirms hail in area.',
+    images: ['/uploads/claim10_img1.jpg', '/uploads/claim10_img2.jpg'],
+    policeReport: '/uploads/weather_report_010.pdf',
+    comments: 'Weather damage confirmed, proceeding with service provider selection'
   }
 ];
 

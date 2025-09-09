@@ -59,6 +59,7 @@ import InsurancePolicyDetailsPage from "@pages/InsuranceCompany/InsurancePolicyD
 import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
 import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
+import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
 
 export default
 
@@ -782,6 +783,13 @@ function getNavLinks(userContext) {
         icon: "assignment",
         page: <InsuranceClaimDetailsPage />,
         hidden: true, 
+      });
+
+        nav.push({
+        path: [`/analyticsreports`],
+        title: "Analytics & Reports",
+        icon: "analytics",
+        page: <AnalyticsReportsPage />,
       });
 
       nav.push({
