@@ -14,6 +14,7 @@ import bookingRoutes from "./api.v1/booking/booking.route.js";
 import operatingHoursRoutes from "./api.v1/operatingHours/operatingHours.route.js";
 import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
 import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
+import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -47,6 +48,7 @@ router.use("/bookings", bookingRoutes);
 router.use("/services", operatingHoursRoutes);
 router.use("/time-slots", timeSlotRoutes);
 router.use("/weekly-schedule", weeklyScheduleRoutes);
+router.use("/vehicle-history", vehicleHistoryRoutes);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -125,6 +127,15 @@ router.get("/docs", (req, res) => {
           "PATCH /bookings/:id/status - Update booking status (service centers)",
           "PATCH /bookings/:id/cancel - Cancel booking (vehicle owners)",
           "POST /bookings/:id/feedback - Submit feedback (vehicle owners)",
+        ],
+      },
+      "vehicle-history": {
+        description: "Vehicle service history dashboard (service centers only)",
+        routes: [
+          "GET /vehicle-history/dashboard-stats - Get dashboard statistics",
+          "GET /vehicle-history/recent-services - Get recent services with pagination",
+          "GET /vehicle-history/top-vehicles - Get top vehicles by service history",
+          "GET /vehicle-history/analytics - Get performance analytics",
         ],
       },
 
