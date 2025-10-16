@@ -112,7 +112,7 @@ const VehicleFilterForm = ({ onFilter }) => {
 
       <form className="tw:p-6 tw:space-y-6" onSubmit={handleSubmit}>
         {/* Urgent Checkbox */}
-        <div className="tw:space-y-2">
+        {/* <div className="tw:space-y-2">
           <label className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:font-medium tw:text-gray-700">
             <input
               type="checkbox"
@@ -130,7 +130,7 @@ const VehicleFilterForm = ({ onFilter }) => {
               Urgent
             </span>
           </label>
-        </div>
+        </div> */}
 
         {/* District */}
         <div className="tw:space-y-2">
