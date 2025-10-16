@@ -233,7 +233,7 @@ const VehicleDetails = ({ vehicle }) => {
     { label: 'Manufacturer', value: vehicleData.make || 'N/A' },
     { label: 'Model', value: vehicleData.model || 'N/A' },
     { label: 'Model Year', value: vehicleData.year || 'N/A' },
-    { label: 'Registered Year', value: vehicleData.registeredYear || 'N/A' },
+    //{ label: 'Registered Year', value: vehicleData.registeredYear || 'N/A' },
     { label: 'Condition', value: vehicleData.condition || 'N/A' },
     { label: 'Transmission', value: vehicleData.transmission || 'N/A' },
     { label: 'Fuel Type', value: vehicleData.fuelType || 'N/A' },
