@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import buyVehicleApiService from "../../services/buyVehicleApiService";
 import noImage from "../../assets/images/noImage.jpeg";
+import bumpUpBadge from "../../assets/images/promotions/bumpUp.png";
 
 const ListedVehicleCard = ({ vehicle }) => {
   const navigate = useNavigate();
@@ -35,10 +36,8 @@ const ListedVehicleCard = ({ vehicle }) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     if (Number.isNaN(date.getTime())) return "N/A";
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "2-digit",
-    });
+    // Format as yyyy-mm-dd
+    return date.toISOString().slice(0, 10);
   };
 
   const postedTimestamp =
@@ -57,7 +56,7 @@ const ListedVehicleCard = ({ vehicle }) => {
 
   return (
     <Card
-      className="tw:bg-white tw:shadow-lg tw:transition-all tw:mb-1.5"
+      className="tw:bg-white tw:shadow-lg tw:transition-all tw:mb-1.5 tw:relative"
       sx={{
         width: "50vw",
         height: "15vh",
@@ -74,6 +73,15 @@ const ListedVehicleCard = ({ vehicle }) => {
         },
       }}
     >
+      {vehicle?.promotion === 1 && (
+        <Box className="tw:absolute tw:top-3 tw:right-3 tw:w-10 tw:h-10 tw:flex tw:items-center tw:justify-center">
+          <img
+            src={bumpUpBadge}
+            alt="Bump Up"
+            className="tw:w-full tw:h-full tw:object-contain"
+          />
+        </Box>
+      )}
       <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
         <Box sx={{ width: "30%", height: "100%", p: 1.5, boxSizing: "border-box" }}>
           <CardMedia
