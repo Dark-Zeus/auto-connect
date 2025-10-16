@@ -270,16 +270,34 @@ const VehicleAdPromotion = () => {
   };
 
   return (
-    <div className="tw:min-h-screen tw:bg-gray-50 tw:rounded-xl">
+    <div className="tw:min-h-4xl tw:bg-gray-50 tw:rounded-xl">
       <div className="tw:max-w-4xl tw:mx-auto tw:p-6 tw:space-y-6">
-        <div className="tw:text-center">
-          <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-2">
-            Make your ad stand out!
-          </h1>
-          <p className="tw:text-gray-600">
-            Get up to 10 times more responses by boosting your ad. Select ad boosts below.
-          </p>
-        </div>
+        <div className="tw:flex tw:justify-center tw:items-center tw:py-8">
+  <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-blue-100 tw:rounded-2xl tw:shadow-lg tw:p-8 tw:flex tw:flex-col tw:items-center tw:max-w-xl tw:w-full">
+    <div className="tw:flex tw:items-center tw:gap-3 tw:mb-4">
+      {/* <span className="tw:inline-block tw:bg-yellow-400 tw:text-white tw:font-bold tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:shadow">
+        NEW
+      </span> */}
+      <span className="tw:text-blue-700 tw:font-semibold tw:text-2xl">
+        Bump Up Promotion
+      </span>
+    </div>
+    <img
+      src={bumpUp}
+      alt="Bump Up"
+      className="tw:w-24 tw:h-24 tw:object-contain tw:mb-4 tw:drop-shadow"
+    />
+    <h1 className="tw:text-2xl md:tw:text-3xl tw:font-extrabold tw:text-gray-800 tw:mb-2 tw:text-center">
+      Boost your ad to the top!
+    </h1>
+    <p className="tw:text-gray-600 tw:text-base md:tw:text-lg tw:mb-2 tw:text-center">
+      Instantly get up to <span className="tw:font-bold tw:text-blue-600">10x</span> more responses by bumping your ad daily.
+    </p>
+    <p className="tw:text-gray-500 tw:text-sm tw:text-center">
+      Your ad will appear at the top of search results every day for the duration you choose.
+    </p>
+  </div>
+</div>
 
         {errorMessage && (
           <div className="tw:rounded-lg tw:bg-red-50 tw:border tw:border-red-200 tw:p-3 tw:text-sm tw:text-red-600">
@@ -389,28 +407,6 @@ const VehicleAdPromotion = () => {
           </div>
         )}
 
-        <div className="tw:bg-white tw:rounded-xl tw:p-6 tw:shadow-sm tw:border tw:border-blue-200">
-          <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
-            <h3 className="tw:text-lg tw:font-semibold tw:text-gray-800">
-              Payment Summary
-            </h3>
-            <button
-              onClick={() => setSelectedPromotions([])}
-              className="tw:text-red-400 tw:hover:text-red-600 tw:transition-colors"
-            >
-              <X className="tw:w-5 tw:h-5" />
-            </button>
-          </div>
-          <div className="tw:flex tw:items-center tw:justify-between tw:mb-6">
-            <span className="tw:text-gray-700">Total</span>
-            <span className="tw:text-2xl tw:font-bold tw:text-gray-800">
-              LKR {getTotalPrice().toLocaleString()}
-            </span>
-          </div>
-          <button className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-700 tw:transition-all tw:hover:cursor-pointer">
-            Continue
-          </button>
-        </div>
       </div>
 
       <Modal />
