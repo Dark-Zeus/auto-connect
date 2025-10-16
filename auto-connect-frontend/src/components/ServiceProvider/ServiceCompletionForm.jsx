@@ -43,6 +43,9 @@ import {
   Person as PersonIcon,
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
+  CloudUpload as CloudUploadIcon,
+  AttachFile as AttachFileIcon,
+  Description as DescriptionIcon,
 } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { UserContext } from "../../contexts/UserContext";
@@ -53,18 +56,28 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Define color scheme - Using project's color palette
+  // Define custom color palette using CSS variables
   const colors = {
-    primaryLight: "#DFF2EB",
-    primaryMedium: "#B9E5E8",
-    primaryBlue: "#7AB2D3",
-    primaryDark: "#4A628A",
-    white: "#ffffff",
-    grayLight: "#f8f9fa",
-    grayMedium: "#6c757d",
-    grayDark: "#495057",
-    textDark: "#2c3e50",
-    textLight: "#ecf0f1",
+    primary: {
+      light: "var(--primary-light, #DFF2EB)",
+      medium: "var(--primary-medium, #B9E5E8)",
+      blue: "var(--primary-blue, #7AB2D3)",
+      dark: "var(--primary-dark, #4A628A)"
+    },
+    neutral: {
+      white: "var(--white, #ffffff)",
+      grayLight: "var(--gray-light, #f8f9fa)",
+      grayMedium: "var(--gray-medium, #6c757d)",
+      grayDark: "var(--gray-dark, #495057)",
+      textDark: "var(--text-dark, #2c3e50)",
+      textLight: "var(--text-light, #ecf0f1)"
+    },
+    state: {
+      success: "var(--success-color, #27ae60)",
+      error: "var(--error-color, #e74c3c)",
+      warning: "var(--warning-color, #f39c12)",
+      info: "var(--info-color, #3498db)"
+    }
   };
 
   const [formData, setFormData] = useState({
@@ -112,6 +125,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
       notified: false,
       notificationMethod: "PHONE",
     },
+    supportingDocuments: [],
   });
 
   // Initialize completed services when booking changes
@@ -421,6 +435,13 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
             notificationMethod: formData.customerNotification.notificationMethod || undefined,
           }).filter(([_, value]) => value !== undefined)
         ),
+        supportingDocuments: formData.supportingDocuments.map(doc => ({
+          fileName: doc.fileName,
+          fileType: doc.fileType,
+          fileSize: doc.fileSize,
+          description: doc.description || '',
+          file: doc.file
+        })),
       };
 
       const response = await bookingAPI.submitServiceCompletionReport(booking._id, submissionData);
@@ -749,69 +770,144 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
     }));
   };
 
+  // Handle file upload
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+
+    files.forEach((file) => {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`File type not supported: ${file.name}`);
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        toast.error(`File too large: ${file.name}. Maximum size is 5MB.`);
+        return;
+      }
+
+      // Create file object
+      const fileObj = {
+        id: Date.now() + Math.random(),
+        file: file,
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+        description: '',
+        uploadStatus: 'pending'
+      };
+
+      setFormData((prev) => ({
+        ...prev,
+        supportingDocuments: [...prev.supportingDocuments, fileObj],
+      }));
+    });
+
+    // Clear the input
+    event.target.value = '';
+  };
+
+  // Remove supporting document
+  const removeSupportingDocument = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      supportingDocuments: prev.supportingDocuments.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Update document description
+  const updateDocumentDescription = (index, description) => {
+    setFormData((prev) => ({
+      ...prev,
+      supportingDocuments: prev.supportingDocuments.map((doc, i) =>
+        i === index ? { ...doc, description } : doc
+      ),
+    }));
+  };
+
   // Render service details step
   const renderServiceDetails = () => (
-    <Box sx={{ py: 4 }}>
+    <Box sx={{ py: 2 }}>
       {/* Page Title */}
-      <Typography 
-        variant="h4" 
-        sx={{ 
-          mb: 6, 
-          fontWeight: 600, 
-          color: colors.textDark,
+      <Typography
+        variant="h4"
+        sx={{
+          mb: 5,
+          fontWeight: 700,
+          color: colors.neutral.textDark,
           textAlign: 'center',
-          letterSpacing: '0.5px'
+          letterSpacing: '-0.025em',
+          fontSize: { xs: '1.75rem', md: '2.125rem' }
         }}
       >
         Vehicle & Service Information
       </Typography>
-      
+
       {/* Vehicle & Service Overview */}
-      <Paper 
-        elevation={1} 
-        sx={{ 
-          p: 6, 
-          mb: 6, 
-          borderRadius: 3,
-          border: `1px solid ${colors.primaryMedium}`,
-          backgroundColor: colors.white,
+      <Paper
+        elevation={0}
+        sx={{
+          p: { xs: 4, md: 6 },
+          mb: 4,
+          borderRadius: 4,
+          border: `2px solid ${colors.primary.medium}`,
+          backgroundColor: colors.primary.light,
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            borderColor: colors.primary.blue,
+            boxShadow: `0 4px 12px rgba(74, 98, 138, 0.15)`
+          }
         }}
       >
-        <Grid container spacing={6}>
+        <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                mb: 4, 
-                fontWeight: 600, 
-                color: colors.primaryDark,
-                fontSize: '1.25rem'
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 3,
+                fontWeight: 600,
+                color: colors.neutral.textDark,
+                fontSize: '1.125rem'
               }}
             >
               Vehicle Details
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-                <Typography sx={{ fontWeight: 500, color: colors.grayMedium }}>Registration:</Typography>
-                <Typography sx={{ fontWeight: 600, color: colors.textDark }}>
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2.5,
+              p: 3,
+              backgroundColor: colors.neutral.white,
+              borderRadius: 3,
+              border: `1px solid ${colors.primary.medium}`,
+            }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 0.5 }}>
+                <Typography sx={{ fontWeight: 500, color: colors.neutral.grayMedium, fontSize: '0.925rem' }}>Registration:</Typography>
+                <Typography sx={{ fontWeight: 700, color: colors.neutral.textDark, fontSize: '0.925rem' }}>
                   {booking?.vehicle?.registrationNumber}
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-                <Typography sx={{ fontWeight: 500, color: colors.grayMedium }}>Make:</Typography>
-                <Typography sx={{ fontWeight: 600, color: colors.textDark }}>
+              <Divider sx={{ my: 0.5, borderColor: colors.primary.medium }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 0.5 }}>
+                <Typography sx={{ fontWeight: 500, color: colors.neutral.grayMedium, fontSize: '0.925rem' }}>Make:</Typography>
+                <Typography sx={{ fontWeight: 700, color: colors.neutral.textDark, fontSize: '0.925rem' }}>
                   {booking?.vehicle?.make}
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-                <Typography sx={{ fontWeight: 500, color: colors.grayMedium }}>Model:</Typography>
-                <Typography sx={{ fontWeight: 600, color: colors.textDark }}>
+              <Divider sx={{ my: 0.5, borderColor: colors.primary.medium }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 0.5 }}>
+                <Typography sx={{ fontWeight: 500, color: colors.neutral.grayMedium, fontSize: '0.925rem' }}>Model:</Typography>
+                <Typography sx={{ fontWeight: 700, color: colors.neutral.textDark, fontSize: '0.925rem' }}>
                   {booking?.vehicle?.model}
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-                <Typography sx={{ fontWeight: 500, color: colors.grayMedium }}>Year:</Typography>
-                <Typography sx={{ fontWeight: 600, color: colors.textDark }}>
+              <Divider sx={{ my: 0.5, borderColor: colors.primary.medium }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 0.5 }}>
+                <Typography sx={{ fontWeight: 500, color: colors.neutral.grayMedium, fontSize: '0.925rem' }}>Year:</Typography>
+                <Typography sx={{ fontWeight: 700, color: colors.neutral.textDark, fontSize: '0.925rem' }}>
                   {booking?.vehicle?.year}
                 </Typography>
               </Box>
@@ -819,32 +915,42 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
           </Grid>
           
           <Grid item xs={12} md={6}>
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                mb: 4, 
-                fontWeight: 600, 
-                color: colors.primaryDark,
-                fontSize: '1.25rem'
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 3,
+                fontWeight: 600,
+                color: colors.neutral.textDark,
+                fontSize: '1.125rem'
               }}
             >
               Original Services Requested
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-              {booking?.services?.map((service, index) => (
-                <Chip 
-                  key={index} 
-                  label={service} 
-                  sx={{ 
-                    backgroundColor: colors.primaryLight,
-                    color: colors.primaryDark,
-                    fontWeight: 500,
-                    fontSize: '0.9rem',
-                    height: 36,
-                    border: `1px solid ${colors.primaryMedium}`
-                  }}
-                />
-              ))}
+            <Box sx={{
+              p: 3,
+              backgroundColor: colors.neutral.white,
+              borderRadius: 3,
+              border: `1px solid ${colors.primary.medium}`,
+            }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
+                {booking?.services?.map((service, index) => (
+                  <Chip
+                    key={index}
+                    label={service}
+                    sx={{
+                      backgroundColor: colors.primary.light,
+                      color: colors.primary.dark,
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                      height: 36,
+                      border: `1px solid ${colors.primary.medium}`,
+                      '&:hover': {
+                        backgroundColor: colors.primary.medium
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
             </Box>
           </Grid>
 
@@ -857,23 +963,30 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               onChange={(e) => setFormData(prev => ({ ...prev, workStartTime: e.target.value }))}
               InputLabelProps={{ shrink: true }}
               sx={{
+                '& .MuiInputLabel-root': {
+                  fontWeight: 500,
+                  color: colors.neutral.grayDark
+                },
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  backgroundColor: colors.grayLight,
+                  borderRadius: 3,
+                  backgroundColor: colors.neutral.white,
+                  fontSize: '0.925rem',
                   '& fieldset': {
-                    borderColor: colors.primaryMedium,
+                    borderColor: colors.primary.medium,
+                    borderWidth: '2px',
                   },
                   '&:hover fieldset': {
-                    borderColor: colors.primaryBlue,
+                    borderColor: colors.primary.blue,
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: colors.primaryDark,
+                    borderColor: colors.primary.dark,
+                    borderWidth: '2px',
                   },
                 },
               }}
             />
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
@@ -883,17 +996,24 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               onChange={(e) => setFormData(prev => ({ ...prev, workEndTime: e.target.value }))}
               InputLabelProps={{ shrink: true }}
               sx={{
+                '& .MuiInputLabel-root': {
+                  fontWeight: 500,
+                  color: colors.neutral.grayDark
+                },
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  backgroundColor: colors.grayLight,
+                  borderRadius: 3,
+                  backgroundColor: colors.neutral.white,
+                  fontSize: '0.925rem',
                   '& fieldset': {
-                    borderColor: colors.primaryMedium,
+                    borderColor: colors.primary.medium,
+                    borderWidth: '2px',
                   },
                   '&:hover fieldset': {
-                    borderColor: colors.primaryBlue,
+                    borderColor: colors.primary.blue,
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: colors.primaryDark,
+                    borderColor: colors.primary.dark,
+                    borderWidth: '2px',
                   },
                 },
               }}
@@ -903,78 +1023,115 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
       </Paper>
 
       {/* Vehicle Condition Documentation */}
-      <Paper 
-        elevation={1} 
-        sx={{ 
-          p: 6, 
-          borderRadius: 3,
-          border: `1px solid ${colors.primaryMedium}`,
-          backgroundColor: colors.white,
+      <Paper
+        elevation={0}
+        sx={{
+          p: { xs: 4, md: 6 },
+          borderRadius: 4,
+          border: `2px solid ${colors.primary.medium}`,
+          backgroundColor: colors.primary.light,
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            borderColor: colors.primary.blue,
+            boxShadow: `0 4px 12px rgba(74, 98, 138, 0.15)`
+          }
         }}
       >
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            mb: 6, 
-            fontWeight: 600, 
-            color: colors.primaryDark,
-            fontSize: '1.25rem',
-            textAlign: 'center'
+        <Typography
+          variant="h5"
+          sx={{
+            mb: 4,
+            fontWeight: 700,
+            color: colors.neutral.textDark,
+            fontSize: '1.5rem',
+            textAlign: 'center',
+            letterSpacing: '-0.025em'
           }}
         >
           Vehicle Condition Documentation
         </Typography>
         
-        <Grid container spacing={6}>
+        <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
-            <Typography 
-              variant="subtitle1" 
-              sx={{ 
-                mb: 4, 
-                fontWeight: 600, 
-                color: colors.textDark,
-                fontSize: '1.1rem',
-                textAlign: 'center'
-              }}
-            >
-              Before Service
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <TextField
-                fullWidth
-                label="Mileage (km)"
-                type="number"
-                value={formData.vehicleCondition.before.mileage}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  vehicleCondition: {
-                    ...prev.vehicleCondition,
-                    before: { ...prev.vehicleCondition.before, mileage: e.target.value }
-                  }
-                }))}
+            <Paper sx={{
+              p: 4,
+              backgroundColor: colors.neutral.white,
+              borderRadius: 3,
+              border: `1px solid ${colors.primary.medium}`,
+              height: 'fit-content'
+            }}>
+              <Typography
+                variant="h6"
                 sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: colors.grayLight,
-                  },
+                  mb: 3,
+                  fontWeight: 600,
+                  color: colors.neutral.textDark,
+                  fontSize: '1.125rem',
+                  textAlign: 'center'
                 }}
-              />
-              <FormControl fullWidth>
-                <InputLabel>Fuel Level</InputLabel>
-                <Select
-                  value={formData.vehicleCondition.before.fuelLevel}
+              >
+                Before Service
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <TextField
+                  fullWidth
+                  label="Mileage (km)"
+                  type="number"
+                  value={formData.vehicleCondition.before.mileage}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
                     vehicleCondition: {
                       ...prev.vehicleCondition,
-                      before: { ...prev.vehicleCondition.before, fuelLevel: e.target.value }
+                      before: { ...prev.vehicleCondition.before, mileage: e.target.value }
                     }
                   }))}
                   sx={{
-                    borderRadius: 2,
-                    backgroundColor: colors.grayLight,
+                    '& .MuiInputLabel-root': {
+                      fontWeight: 500,
+                      color: colors.neutral.grayDark
+                    },
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 3,
+                      backgroundColor: colors.neutral.grayLight,
+                      fontSize: '0.925rem',
+                      '& fieldset': {
+                        borderColor: colors.primary.medium,
+                      },
+                      '&:hover fieldset': {
+                        borderColor: colors.primary.blue,
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: colors.primary.dark,
+                      },
+                    },
                   }}
-                >
+                />
+                <FormControl fullWidth>
+                  <InputLabel sx={{ fontWeight: 500, color: colors.neutral.grayDark }}>Fuel Level</InputLabel>
+                  <Select
+                    value={formData.vehicleCondition.before.fuelLevel}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      vehicleCondition: {
+                        ...prev.vehicleCondition,
+                        before: { ...prev.vehicleCondition.before, fuelLevel: e.target.value }
+                      }
+                    }))}
+                    sx={{
+                      borderRadius: 3,
+                      backgroundColor: colors.neutral.grayLight,
+                      fontSize: '0.925rem',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: colors.primary.medium,
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: colors.primary.blue,
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: colors.primary.dark,
+                      },
+                    }}
+                  >
                   <MenuItem value="EMPTY">Empty</MenuItem>
                   <MenuItem value="1/4">1/4 Tank</MenuItem>
                   <MenuItem value="1/2">1/2 Tank</MenuItem>
@@ -982,78 +1139,124 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   <MenuItem value="FULL">Full Tank</MenuItem>
                 </Select>
               </FormControl>
-              <TextField
-                fullWidth
-                label="External Condition Notes"
-                multiline
-                rows={4}
-                value={formData.vehicleCondition.before.externalCondition}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  vehicleCondition: {
-                    ...prev.vehicleCondition,
-                    before: { ...prev.vehicleCondition.before, externalCondition: e.target.value }
-                  }
-                }))}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: colors.grayLight,
-                  },
-                }}
-              />
-            </Box>
+                <TextField
+                  fullWidth
+                  label="External Condition Notes"
+                  multiline
+                  rows={4}
+                  value={formData.vehicleCondition.before.externalCondition}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    vehicleCondition: {
+                      ...prev.vehicleCondition,
+                      before: { ...prev.vehicleCondition.before, externalCondition: e.target.value }
+                    }
+                  }))}
+                  sx={{
+                    '& .MuiInputLabel-root': {
+                      fontWeight: 500,
+                      color: colors.neutral.grayDark
+                    },
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 3,
+                      backgroundColor: colors.neutral.grayLight,
+                      fontSize: '0.925rem',
+                      '& fieldset': {
+                        borderColor: colors.primary.medium,
+                      },
+                      '&:hover fieldset': {
+                        borderColor: colors.primary.blue,
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: colors.primary.dark,
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            </Paper>
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
-            <Typography 
-              variant="subtitle1" 
-              sx={{ 
-                mb: 4, 
-                fontWeight: 600, 
-                color: colors.textDark,
-                fontSize: '1.1rem',
-                textAlign: 'center'
-              }}
-            >
-              After Service
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <TextField
-                fullWidth
-                label="Mileage (km)"
-                type="number"
-                value={formData.vehicleCondition.after.mileage}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  vehicleCondition: {
-                    ...prev.vehicleCondition,
-                    after: { ...prev.vehicleCondition.after, mileage: e.target.value }
-                  }
-                }))}
+            <Paper sx={{
+              p: 4,
+              backgroundColor: colors.neutral.white,
+              borderRadius: 3,
+              border: `1px solid ${colors.primary.medium}`,
+              height: 'fit-content'
+            }}>
+              <Typography
+                variant="h6"
                 sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: colors.grayLight,
-                  },
+                  mb: 3,
+                  fontWeight: 600,
+                  color: colors.neutral.textDark,
+                  fontSize: '1.125rem',
+                  textAlign: 'center'
                 }}
-              />
-              <FormControl fullWidth>
-                <InputLabel>Fuel Level</InputLabel>
-                <Select
-                  value={formData.vehicleCondition.after.fuelLevel}
+              >
+                After Service
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <TextField
+                  fullWidth
+                  label="Mileage (km)"
+                  type="number"
+                  value={formData.vehicleCondition.after.mileage}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
                     vehicleCondition: {
                       ...prev.vehicleCondition,
-                      after: { ...prev.vehicleCondition.after, fuelLevel: e.target.value }
+                      after: { ...prev.vehicleCondition.after, mileage: e.target.value }
                     }
                   }))}
                   sx={{
-                    borderRadius: 2,
-                    backgroundColor: colors.grayLight,
+                    '& .MuiInputLabel-root': {
+                      fontWeight: 500,
+                      color: colors.neutral.grayDark
+                    },
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 3,
+                      backgroundColor: colors.neutral.grayLight,
+                      fontSize: '0.925rem',
+                      '& fieldset': {
+                        borderColor: colors.primary.medium,
+                      },
+                      '&:hover fieldset': {
+                        borderColor: colors.primary.blue,
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: colors.primary.dark,
+                      },
+                    },
                   }}
-                >
+                />
+                <FormControl fullWidth>
+                  <InputLabel sx={{ fontWeight: 500, color: colors.neutral.grayDark }}>Fuel Level</InputLabel>
+                  <Select
+                    value={formData.vehicleCondition.after.fuelLevel}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      vehicleCondition: {
+                        ...prev.vehicleCondition,
+                        after: { ...prev.vehicleCondition.after, fuelLevel: e.target.value }
+                      }
+                    }))}
+                    sx={{
+                      borderRadius: 3,
+                      backgroundColor: colors.neutral.grayLight,
+                      fontSize: '0.925rem',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: colors.primary.medium,
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: colors.primary.blue,
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: colors.primary.dark,
+                      },
+                    }}
+                  >
                   <MenuItem value="EMPTY">Empty</MenuItem>
                   <MenuItem value="1/4">1/4 Tank</MenuItem>
                   <MenuItem value="1/2">1/2 Tank</MenuItem>
@@ -1061,27 +1264,42 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   <MenuItem value="FULL">Full Tank</MenuItem>
                 </Select>
               </FormControl>
-              <TextField
-                fullWidth
-                label="External Condition Notes"
-                multiline
-                rows={4}
-                value={formData.vehicleCondition.after.externalCondition}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  vehicleCondition: {
-                    ...prev.vehicleCondition,
-                    after: { ...prev.vehicleCondition.after, externalCondition: e.target.value }
-                  }
-                }))}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: colors.grayLight,
-                  },
-                }}
-              />
-            </Box>
+                <TextField
+                  fullWidth
+                  label="External Condition Notes"
+                  multiline
+                  rows={4}
+                  value={formData.vehicleCondition.after.externalCondition}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    vehicleCondition: {
+                      ...prev.vehicleCondition,
+                      after: { ...prev.vehicleCondition.after, externalCondition: e.target.value }
+                    }
+                  }))}
+                  sx={{
+                    '& .MuiInputLabel-root': {
+                      fontWeight: 500,
+                      color: colors.neutral.grayDark
+                    },
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 3,
+                      backgroundColor: colors.neutral.grayLight,
+                      fontSize: '0.925rem',
+                      '& fieldset': {
+                        borderColor: colors.primary.medium,
+                      },
+                      '&:hover fieldset': {
+                        borderColor: colors.primary.blue,
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: colors.primary.dark,
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
       </Paper>
@@ -1099,7 +1317,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
           variant="h4"
           sx={{
             fontWeight: 600,
-            color: colors.textDark,
+            color: colors.neutral.textDark,
             textAlign: "center",
             mb: 8,
             letterSpacing: '0.5px'
@@ -1118,8 +1336,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   p: 6,
                   mb: 6,
                   borderRadius: 3,
-                  backgroundColor: colors.primaryLight,
-                  border: `1px solid ${colors.primaryMedium}`,
+                  backgroundColor: colors.primary.light,
+                  border: `1px solid ${colors.primary.medium}`,
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
@@ -1128,20 +1346,20 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       width: 48,
                       height: 48,
                       borderRadius: 2,
-                      backgroundColor: colors.primaryDark,
+                      backgroundColor: colors.primary.dark,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       mr: 3,
                     }}
                   >
-                    <ServiceIcon sx={{ color: colors.white, fontSize: 24 }} />
+                    <ServiceIcon sx={{ color: colors.neutral.white, fontSize: 24 }} />
                   </Box>
                   <Typography 
                     variant="h5" 
                     sx={{ 
                       fontWeight: 600, 
-                      color: colors.primaryDark,
+                      color: colors.primary.dark,
                       fontSize: '1.5rem'
                     }}
                   >
@@ -1159,7 +1377,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      backgroundColor: colors.white,
+                      backgroundColor: colors.neutral.white,
                     },
                   }}
                 />
@@ -1172,8 +1390,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   p: 6,
                   mb: 6,
                   borderRadius: 3,
-                  backgroundColor: colors.white,
-                  border: `1px solid ${colors.primaryMedium}`,
+                  backgroundColor: colors.neutral.white,
+                  border: `1px solid ${colors.primary.medium}`,
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", mb: 6 }}>
@@ -1182,21 +1400,21 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       width: 48,
                       height: 48,
                       borderRadius: 2,
-                      backgroundColor: colors.primaryDark,
+                      backgroundColor: colors.primary.dark,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       mr: 3,
                     }}
                   >
-                    <WorkIcon sx={{ color: colors.white, fontSize: 24 }} />
+                    <WorkIcon sx={{ color: colors.neutral.white, fontSize: 24 }} />
                   </Box>
                   <Box>
                     <Typography
                       variant="h5"
                       sx={{ 
                         fontWeight: 600, 
-                        color: colors.primaryDark,
+                        color: colors.primary.dark,
                         fontSize: '1.5rem',
                         mb: 0.5,
                       }}
@@ -1205,7 +1423,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                     </Typography>
                     <Typography
                       variant="body1"
-                      sx={{ color: colors.grayMedium, fontWeight: 400 }}
+                      sx={{ color: colors.neutral.grayMedium, fontWeight: 400 }}
                     >
                       Enter hours worked and hourly rate
                     </Typography>
@@ -1225,19 +1443,19 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <TimeIcon sx={{ color: colors.primaryBlue }} />
+                            <TimeIcon sx={{ color: colors.primary.blue }} />
                           </InputAdornment>
                         ),
                       }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
-                          backgroundColor: colors.grayLight,
+                          backgroundColor: colors.neutral.grayLight,
                           borderRadius: 2,
                           "&:hover fieldset": {
-                            borderColor: colors.primaryBlue,
+                            borderColor: colors.primary.blue,
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: colors.primaryDark,
+                            borderColor: colors.primary.dark,
                           },
                         },
                       }}
@@ -1256,19 +1474,19 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <MoneyIcon sx={{ color: colors.primaryBlue }} />
+                            <MoneyIcon sx={{ color: colors.primary.blue }} />
                           </InputAdornment>
                         ),
                       }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
-                          backgroundColor: colors.grayLight,
+                          backgroundColor: colors.neutral.grayLight,
                           borderRadius: 2,
                           "&:hover fieldset": {
-                            borderColor: colors.primaryBlue,
+                            borderColor: colors.primary.blue,
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: colors.primaryDark,
+                            borderColor: colors.primary.dark,
                           },
                         },
                       }}
@@ -1280,16 +1498,16 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       elevation={1}
                       sx={{
                         p: 4,
-                        backgroundColor: colors.primaryLight,
+                        backgroundColor: colors.primary.light,
                         borderRadius: 2,
                         textAlign: "center",
-                        border: `1px solid ${colors.primaryMedium}`,
+                        border: `1px solid ${colors.primary.medium}`,
                       }}
                     >
                       <Typography 
                         variant="subtitle2" 
                         sx={{ 
-                          color: colors.grayMedium, 
+                          color: colors.neutral.grayMedium, 
                           fontWeight: 500,
                           mb: 1,
                           textTransform: 'uppercase',
@@ -1301,7 +1519,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       <Typography 
                         variant="h4" 
                         sx={{ 
-                          color: colors.primaryDark, 
+                          color: colors.primary.dark, 
                           fontWeight: 600,
                         }}
                       >
@@ -1319,8 +1537,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   p: 6,
                   mb: 6,
                   borderRadius: 3,
-                  backgroundColor: colors.white,
-                  border: `1px solid ${colors.primaryMedium}`,
+                  backgroundColor: colors.neutral.white,
+                  border: `1px solid ${colors.primary.medium}`,
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", mb: 6 }}>
@@ -1329,21 +1547,21 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       width: 48,
                       height: 48,
                       borderRadius: 2,
-                      backgroundColor: colors.primaryDark,
+                      backgroundColor: colors.primary.dark,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       mr: 3,
                     }}
                   >
-                    <ServiceIcon sx={{ color: colors.white, fontSize: 24 }} />
+                    <ServiceIcon sx={{ color: colors.neutral.white, fontSize: 24 }} />
                   </Box>
                   <Box>
                     <Typography
                       variant="h5"
                       sx={{ 
                         fontWeight: 600, 
-                        color: colors.primaryDark,
+                        color: colors.primary.dark,
                         fontSize: '1.5rem',
                         mb: 0.5,
                       }}
@@ -1352,7 +1570,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                     </Typography>
                     <Typography
                       variant="body1"
-                      sx={{ color: colors.grayMedium, fontWeight: 400 }}
+                      sx={{ color: colors.neutral.grayMedium, fontWeight: 400 }}
                     >
                       Add additional parts used during service
                     </Typography>
@@ -1363,9 +1581,9 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   sx={{
                     p: 4,
                     mb: 4,
-                    backgroundColor: colors.primaryLight,
+                    backgroundColor: colors.primary.light,
                     borderRadius: 2,
-                    border: `1px solid ${colors.primaryMedium}`,
+                    border: `1px solid ${colors.primary.medium}`,
                   }}
                 >
                   <FormControlLabel
@@ -1376,9 +1594,9 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                           updateService(serviceIndex, "partsRequired", e.target.checked)
                         }
                         sx={{
-                          color: colors.primaryBlue,
+                          color: colors.primary.blue,
                           "&.Mui-checked": { 
-                            color: colors.primaryDark,
+                            color: colors.primary.dark,
                           },
                           mr: 2,
                         }}
@@ -1388,7 +1606,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       <Typography
                         variant="body1"
                         sx={{ 
-                          color: colors.textDark, 
+                          color: colors.neutral.textDark, 
                           fontWeight: 500,
                         }}
                       >
@@ -1415,13 +1633,13 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                         sx={{
                           borderRadius: 2,
                           textTransform: "none",
-                          backgroundColor: colors.primaryDark,
-                          color: colors.white,
+                          backgroundColor: colors.primary.dark,
+                          color: colors.neutral.white,
                           fontWeight: 600,
                           px: 6,
                           py: 2,
                           "&:hover": {
-                            backgroundColor: colors.primaryBlue,
+                            backgroundColor: colors.primary.blue,
                           },
                         }}
                       >
@@ -1435,8 +1653,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                         elevation={1}
                         sx={{
                           borderRadius: 2,
-                          border: `1px solid ${colors.primaryMedium}`,
-                          backgroundColor: colors.white,
+                          border: `1px solid ${colors.primary.medium}`,
+                          backgroundColor: colors.neutral.white,
                           mb: 4,
                         }}
                       >
@@ -1444,10 +1662,10 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                           <TableHead>
                             <TableRow
                               sx={{
-                                backgroundColor: colors.primaryLight,
+                                backgroundColor: colors.primary.light,
                                 "& .MuiTableCell-head": {
                                   fontWeight: 600,
-                                  color: colors.primaryDark,
+                                  color: colors.primary.dark,
                                   py: 2,
                                 },
                               }}
@@ -1467,11 +1685,11 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                                 key={partIndex}
                                 sx={{
                                   "&:hover": { 
-                                    backgroundColor: colors.grayLight,
+                                    backgroundColor: colors.neutral.grayLight,
                                   },
                                   "& .MuiTableCell-root": { 
                                     py: 3,
-                                    borderBottom: `1px solid ${colors.primaryMedium}`,
+                                    borderBottom: `1px solid ${colors.primary.medium}`,
                                   },
                                 }}
                               >
@@ -1548,8 +1766,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                                     variant="body1"
                                     sx={{
                                       fontWeight: 600,
-                                      color: colors.primaryDark,
-                                      backgroundColor: colors.primaryLight,
+                                      color: colors.primary.dark,
+                                      backgroundColor: colors.primary.light,
                                       px: 2,
                                       py: 1,
                                       borderRadius: "8px",
@@ -1614,16 +1832,16 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       elevation={1}
                       sx={{
                         p: 4,
-                        backgroundColor: colors.primaryLight,
+                        backgroundColor: colors.primary.light,
                         borderRadius: 2,
                         textAlign: "center",
-                        border: `1px solid ${colors.primaryMedium}`,
+                        border: `1px solid ${colors.primary.medium}`,
                       }}
                     >
                       <Typography 
                         variant="subtitle2" 
                         sx={{ 
-                          color: colors.grayMedium, 
+                          color: colors.neutral.grayMedium, 
                           fontWeight: 500,
                           mb: 1,
                           textTransform: 'uppercase',
@@ -1635,7 +1853,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                       <Typography 
                         variant="h4" 
                         sx={{ 
-                          color: colors.primaryDark, 
+                          color: colors.primary.dark, 
                           fontWeight: 600,
                         }}
                       >
@@ -1653,13 +1871,13 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                   <Box
                     sx={{
                       p: 4,
-                      backgroundColor: colors.grayLight,
+                      backgroundColor: colors.neutral.grayLight,
                       borderRadius: 2,
-                      border: `1px solid ${colors.primaryMedium}`,
+                      border: `1px solid ${colors.primary.medium}`,
                       textAlign: 'center'
                     }}
                   >
-                    <Typography variant="body1" sx={{ color: colors.grayMedium, fontWeight: 400 }}>
+                    <Typography variant="body1" sx={{ color: colors.neutral.grayMedium, fontWeight: 400 }}>
                       No additional parts were needed for this service.
                     </Typography>
                   </Box>
@@ -1686,7 +1904,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
           variant="h4"
           sx={{
             fontWeight: 600,
-            color: colors.textDark,
+            color: colors.neutral.textDark,
             textAlign: "center",
             mb: 6,
             letterSpacing: '0.5px'
@@ -1699,13 +1917,13 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
           sx={{
             p: 4,
             mb: 6,
-            backgroundColor: colors.primaryLight,
+            backgroundColor: colors.primary.light,
             borderRadius: 2,
-            border: `1px solid ${colors.primaryMedium}`,
+            border: `1px solid ${colors.primary.medium}`,
             textAlign: 'center'
           }}
         >
-          <Typography variant="body1" sx={{ color: colors.textDark, fontWeight: 500 }}>
+          <Typography variant="body1" sx={{ color: colors.neutral.textDark, fontWeight: 500 }}>
             Please review all details carefully before submitting the service completion report.
             This will update the booking status and notify the customer.
           </Typography>
@@ -1719,8 +1937,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               sx={{
                 p: 6,
                 borderRadius: 3,
-                backgroundColor: colors.white,
-                border: `1px solid ${colors.primaryMedium}`,
+                backgroundColor: colors.neutral.white,
+                border: `1px solid ${colors.primary.medium}`,
                 mb: 4,
               }}
             >
@@ -1728,7 +1946,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                 variant="h5"
                 sx={{ 
                   fontWeight: 600, 
-                  color: colors.primaryDark, 
+                  color: colors.primary.dark, 
                   mb: 4,
                   fontSize: '1.5rem'
                 }}
@@ -1741,18 +1959,18 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                     key={index}
                     label={`${service} - LKR 5,000`}
                     sx={{
-                      backgroundColor: colors.primaryLight,
-                      color: colors.primaryDark,
+                      backgroundColor: colors.primary.light,
+                      color: colors.primary.dark,
                       fontWeight: 500,
                       fontSize: '0.9rem',
                       height: 36,
-                      border: `1px solid ${colors.primaryMedium}`
+                      border: `1px solid ${colors.primary.medium}`
                     }}
                   />
                 ))}
               </Box>
-              <Box sx={{ p: 3, backgroundColor: colors.primaryLight, borderRadius: 2 }}>
-                <Typography variant="h6" sx={{ color: colors.primaryDark, fontWeight: 600, textAlign: 'center' }}>
+              <Box sx={{ p: 3, backgroundColor: colors.primary.light, borderRadius: 2 }}>
+                <Typography variant="h6" sx={{ color: colors.primary.dark, fontWeight: 600, textAlign: 'center' }}>
                   Original Services Total: LKR {originalServicesTotal.toLocaleString()}
                 </Typography>
               </Box>
@@ -1766,8 +1984,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               sx={{ 
                 p: 6, 
                 borderRadius: 3,
-                backgroundColor: colors.white,
-                border: `1px solid ${colors.primaryMedium}`,
+                backgroundColor: colors.neutral.white,
+                border: `1px solid ${colors.primary.medium}`,
                 mb: 4,
               }}
             >
@@ -1775,7 +1993,7 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                 variant="h5" 
                 sx={{ 
                   mb: 4, 
-                  color: colors.primaryDark,
+                  color: colors.primary.dark,
                   fontWeight: 600,
                   fontSize: '1.5rem'
                 }}
@@ -1788,28 +2006,28 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                     key={index} 
                     sx={{ 
                       p: 4, 
-                      backgroundColor: colors.grayLight, 
+                      backgroundColor: colors.neutral.grayLight, 
                       borderRadius: 2,
-                      border: `1px solid ${colors.primaryMedium}`,
+                      border: `1px solid ${colors.primary.medium}`,
                     }}
                   >
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: colors.textDark }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: colors.neutral.textDark }}>
                       {service.serviceName}
                     </Typography>
                     <Grid container spacing={4}>
                       <Grid item xs={12} sm={6}>
-                        <Typography variant="body1" sx={{ color: colors.grayMedium }}>
+                        <Typography variant="body1" sx={{ color: colors.neutral.grayMedium }}>
                           <strong>Hours:</strong> {service.laborDetails.hoursWorked} hrs
                         </Typography>
-                        <Typography variant="body1" sx={{ color: colors.grayMedium }}>
+                        <Typography variant="body1" sx={{ color: colors.neutral.grayMedium }}>
                           <strong>Rate:</strong> LKR {service.laborDetails.laborRate}/hr
                         </Typography>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Typography variant="body1" sx={{ color: colors.grayMedium }}>
+                        <Typography variant="body1" sx={{ color: colors.neutral.grayMedium }}>
                           <strong>Parts Used:</strong> {service.partsUsed?.length || 0} parts
                         </Typography>
-                        <Typography variant="body1" sx={{ color: colors.grayMedium }}>
+                        <Typography variant="body1" sx={{ color: colors.neutral.grayMedium }}>
                           <strong>Additional Parts:</strong> {service.partsRequired ? "Yes" : "No"}
                         </Typography>
                       </Grid>
@@ -1827,8 +2045,8 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               sx={{
                 p: 6,
                 borderRadius: 3,
-                backgroundColor: colors.white,
-                border: `1px solid ${colors.primaryMedium}`,
+                backgroundColor: colors.neutral.white,
+                border: `1px solid ${colors.primary.medium}`,
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 6 }}>
@@ -1837,20 +2055,20 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                     width: 48,
                     height: 48,
                     borderRadius: 2,
-                    backgroundColor: colors.primaryDark,
+                    backgroundColor: colors.primary.dark,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     mr: 3,
                   }}
                 >
-                  <MoneyIcon sx={{ color: colors.white, fontSize: 24 }} />
+                  <MoneyIcon sx={{ color: colors.neutral.white, fontSize: 24 }} />
                 </Box>
                 <Typography
                   variant="h5"
                   sx={{ 
                     fontWeight: 600, 
-                    color: colors.primaryDark,
+                    color: colors.primary.dark,
                     fontSize: '1.5rem'
                   }}
                 >
@@ -1895,9 +2113,9 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                         LKR {totals.additionalWorkTotal.toLocaleString()}
                       </TableCell>
                     </TableRow>
-                    <TableRow sx={{ backgroundColor: colors.primaryLight }}>
-                      <TableCell sx={{ fontWeight: 700, color: colors.primaryDark }}>Subtotal:</TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 700, color: colors.primaryDark }}>
+                    <TableRow sx={{ backgroundColor: colors.primary.light }}>
+                      <TableCell sx={{ fontWeight: 700, color: colors.primary.dark }}>Subtotal:</TableCell>
+                      <TableCell align="right" sx={{ fontWeight: 700, color: colors.primary.dark }}>
                         LKR {(originalServicesTotal + totals.subtotal).toLocaleString()}
                       </TableCell>
                     </TableRow>
@@ -1917,15 +2135,15 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
                     </TableRow>
                     <TableRow 
                       sx={{ 
-                        backgroundColor: colors.primaryDark,
+                        backgroundColor: colors.primary.dark,
                       }}
                     >
-                      <TableCell sx={{ fontWeight: 700, fontSize: "1.2rem", color: colors.white }}>
+                      <TableCell sx={{ fontWeight: 700, fontSize: "1.2rem", color: colors.neutral.white }}>
                         FINAL TOTAL:
                       </TableCell>
                       <TableCell
                         align="right"
-                        sx={{ fontWeight: 700, fontSize: "1.2rem", color: colors.white }}
+                        sx={{ fontWeight: 700, fontSize: "1.2rem", color: colors.neutral.white }}
                       >
                         LKR {(originalServicesTotal + totals.finalTotal).toLocaleString()}
                       </TableCell>
@@ -1978,6 +2196,247 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               }}
             />
           </Grid>
+
+          {/* Supporting Documents Upload Section */}
+          <Grid item xs={12}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 4, md: 6 },
+                borderRadius: 4,
+                backgroundColor: colors.primary.light,
+                border: `2px solid ${colors.primary.medium}`,
+                mt: 3,
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  borderColor: colors.primary.blue,
+                  boxShadow: `0 4px 12px rgba(74, 98, 138, 0.15)`
+                }
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 5 }}>
+                <Box
+                  sx={{
+                    width: 56,
+                    height: 56,
+                    borderRadius: 3,
+                    background: `linear-gradient(135deg, ${colors.primary.blue} 0%, ${colors.primary.dark} 100%)`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mr: 3,
+                    boxShadow: `0 4px 12px rgba(74, 98, 138, 0.3)`,
+                  }}
+                >
+                  <DescriptionIcon sx={{ color: colors.neutral.white, fontSize: 28 }} />
+                </Box>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: colors.neutral.textDark,
+                    fontSize: '1.5rem',
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  Supporting Documents
+                </Typography>
+              </Box>
+
+              <Paper
+                sx={{
+                  p: 4,
+                  mb: 4,
+                  backgroundColor: colors.neutral.white,
+                  borderRadius: 3,
+                  border: `1px solid ${colors.primary.medium}`,
+                  textAlign: 'center'
+                }}
+              >
+                <Typography variant="body1" sx={{ color: colors.neutral.grayDark, fontWeight: 500, mb: 2, fontSize: '1rem' }}>
+                  Upload any additional documents related to the service completion (photos, receipts, warranty documents, etc.)
+                </Typography>
+                <Typography variant="body2" sx={{ color: colors.neutral.grayMedium, fontSize: '0.875rem' }}>
+                  Supported formats: JPG, PNG, PDF, DOC, DOCX (Max size: 5MB per file)
+                </Typography>
+              </Paper>
+
+              {/* File Upload Button */}
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 5 }}>
+                <Button
+                  variant="contained"
+                  component="label"
+                  startIcon={<CloudUploadIcon />}
+                  size="large"
+                  sx={{
+                    borderRadius: 4,
+                    textTransform: "none",
+                    background: `linear-gradient(135deg, ${colors.primary.blue} 0%, ${colors.primary.dark} 100%)`,
+                    color: colors.neutral.white,
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                    px: 8,
+                    py: 3,
+                    boxShadow: `0 4px 12px rgba(74, 98, 138, 0.3)`,
+                    transition: 'all 0.2s ease-in-out',
+                    "&:hover": {
+                      background: `linear-gradient(135deg, ${colors.primary.dark} 0%, ${colors.primary.dark} 100%)`,
+                      boxShadow: `0 6px 20px rgba(74, 98, 138, 0.4)`,
+                      transform: 'translateY(-2px)'
+                    },
+                  }}
+                >
+                  Upload Documents
+                  <input
+                    type="file"
+                    multiple
+                    hidden
+                    accept="image/*,.pdf,.doc,.docx"
+                    onChange={handleFileUpload}
+                  />
+                </Button>
+              </Box>
+
+              {/* Uploaded Documents List */}
+              {formData.supportingDocuments.length > 0 && (
+                <TableContainer
+                  component={Paper}
+                  elevation={0}
+                  sx={{
+                    borderRadius: 3,
+                    border: `2px solid ${colors.primary.medium}`,
+                    backgroundColor: colors.neutral.white,
+                    overflow: 'hidden'
+                  }}
+                >
+                  <Table>
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          backgroundColor: colors.primary.light,
+                          "& .MuiTableCell-head": {
+                            fontWeight: 700,
+                            color: colors.neutral.textDark,
+                            py: 3,
+                            fontSize: '0.925rem',
+                            borderBottom: `2px solid ${colors.primary.medium}`
+                          },
+                        }}
+                      >
+                        <TableCell>Document Name</TableCell>
+                        <TableCell align="center">Type</TableCell>
+                        <TableCell align="center">Size</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell align="center">Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {formData.supportingDocuments.map((document, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:hover": {
+                              backgroundColor: colors.neutral.grayLight,
+                            },
+                            "& .MuiTableCell-root": {
+                              py: 3.5,
+                              borderBottom: `1px solid ${colors.primary.medium}`,
+                              fontSize: '0.925rem'
+                            },
+                          }}
+                        >
+                          <TableCell>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                              <AttachFileIcon sx={{ color: colors.primary.blue, fontSize: 22 }} />
+                              <Typography variant="body2" sx={{ fontWeight: 600, color: colors.neutral.textDark }}>
+                                {document.fileName}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              label={document.fileType.split('/')[1].toUpperCase()}
+                              size="small"
+                              sx={{
+                                backgroundColor: colors.primary.light,
+                                color: colors.primary.dark,
+                                fontWeight: 600,
+                                fontSize: '0.75rem',
+                                height: 28
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="center">
+                            <Typography variant="body2">
+                              {(document.fileSize / 1024).toFixed(1)} KB
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <TextField
+                              size="small"
+                              placeholder="Optional description..."
+                              value={document.description}
+                              onChange={(e) =>
+                                updateDocumentDescription(index, e.target.value)
+                              }
+                              sx={{
+                                minWidth: 200,
+                                '& .MuiOutlinedInput-root': {
+                                  borderRadius: 2,
+                                  backgroundColor: colors.neutral.grayLight,
+                                  fontSize: '0.875rem',
+                                  '& fieldset': {
+                                    borderColor: colors.primary.medium,
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: colors.primary.blue,
+                                  },
+                                  '&.Mui-focused fieldset': {
+                                    borderColor: colors.primary.dark,
+                                  },
+                                },
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="center">
+                            <IconButton
+                              onClick={() => removeSupportingDocument(index)}
+                              size="small"
+                              sx={{
+                                color: colors.state.error,
+                                '&:hover': {
+                                  backgroundColor: colors.neutral.grayLight,
+                                  color: colors.state.error
+                                }
+                              }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+
+              {formData.supportingDocuments.length === 0 && (
+                <Paper
+                  sx={{
+                    p: 6,
+                    backgroundColor: colors.primary.light,
+                    borderRadius: 3,
+                    border: `2px dashed ${colors.primary.medium}`,
+                    textAlign: 'center'
+                  }}
+                >
+                  <Typography variant="body1" sx={{ color: colors.neutral.grayMedium, fontWeight: 500, fontSize: '1rem' }}>
+                    No documents uploaded yet. Click "Upload Documents" to add supporting files.
+                  </Typography>
+                </Paper>
+              )}
+            </Paper>
+          </Grid>
         </Grid>
       </Box>
     );
@@ -2019,43 +2478,46 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
       maxWidth="lg"
       fullWidth
       PaperProps={{
-        sx: { 
-          minHeight: "80vh",
-          borderRadius: '20px',
+        sx: {
+          minHeight: "85vh",
+          borderRadius: 4,
           overflow: 'hidden',
-          boxShadow: '0 32px 64px rgba(74, 98, 138, 0.15)',
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
+          border: `1px solid ${colors.primary.medium}`,
         },
       }}
     >
-      <DialogTitle 
-        sx={{ 
-          py: 5,
-          background: `linear-gradient(135deg, ${colors.primaryBlue} 0%, ${colors.primaryDark} 100%)`,
-          boxShadow: '0 4px 16px rgba(74, 98, 138, 0.2)',
+      <DialogTitle
+        sx={{
+          py: 6,
+          background: `linear-gradient(135deg, ${colors.primary.blue} 0%, ${colors.primary.dark} 100%)`,
+          boxShadow: '0 4px 20px rgba(74, 98, 138, 0.25)',
         }}
       >
         <Box sx={{ textAlign: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
-            <CheckCircleIcon sx={{ fontSize: '2.5rem', color: colors.white }} />
-            <Typography 
-              variant="h4" 
-              sx={{ 
-                fontWeight: 700, 
-                color: colors.white, 
-                fontSize: '2rem',
-                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-          >
-            Service Completion Form
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3, mb: 2 }}>
+            <CheckCircleIcon sx={{ fontSize: '3rem', color: colors.neutral.white, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 800,
+                color: colors.neutral.white,
+                fontSize: '2.25rem',
+                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                letterSpacing: '-0.025em'
+              }}
+            >
+              Service Completion Form
+            </Typography>
           </Box>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              color: colors.white, 
-              fontWeight: 400,
+          <Typography
+            variant="h6"
+            sx={{
+              color: colors.neutral.white,
+              fontWeight: 500,
               opacity: 0.95,
-              fontSize: '1.1rem'
+              fontSize: '1.125rem',
+              textShadow: '0 1px 2px rgba(0,0,0,0.1)'
             }}
           >
             {booking.vehicle?.make} {booking.vehicle?.model} • {booking.vehicle?.registrationNumber} • Booking #{booking.bookingId}
@@ -2063,53 +2525,63 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
         </Box>
       </DialogTitle>
 
-      <DialogContent 
+      <DialogContent
         dividers
         sx={{
-          background: `linear-gradient(180deg, ${colors.primaryLight} 0%, ${colors.white} 20%, ${colors.white} 100%)`,
-          px: 4,
-          py: 5,
+          background: `linear-gradient(180deg, ${colors.neutral.white} 0%, #ffffff 15%, #ffffff 100%)`,
+          px: { xs: 3, md: 5 },
+          py: 6,
         }}
       >
-        <Stepper 
-          activeStep={activeStep} 
-          sx={{ 
-            mb: 6,
+        <Stepper
+          activeStep={activeStep}
+          sx={{
+            mb: 8,
             '& .MuiStepLabel-root .Mui-completed': {
-              color: colors.primaryBlue,
+              color: colors.primary.blue,
             },
             '& .MuiStepLabel-root .Mui-active': {
-              color: colors.primaryDark,
+              color: colors.primary.dark,
+            },
+            '& .MuiStepIcon-root': {
+              fontSize: '2rem',
+              '&.Mui-completed': {
+                color: colors.state.success,
+              },
+              '&.Mui-active': {
+                color: colors.primary.blue,
+              }
             },
             '& .MuiStepConnector-alternativeLabel': {
-              top: 10,
+              top: 16,
               left: 'calc(-50% + 16px)',
               right: 'calc(50% + 16px)',
             },
             '& .MuiStepConnector-alternativeLabel.Mui-active .MuiStepConnector-line, & .MuiStepConnector-alternativeLabel.Mui-completed .MuiStepConnector-line': {
-              borderColor: colors.primaryBlue,
-              borderWidth: 2,
+              borderColor: colors.primary.dark,
+              borderWidth: 3,
             },
           }}
         >
           {steps.map((label, index) => (
             <Step key={label}>
-              <StepLabel 
+              <StepLabel
                 StepIconProps={{
                   sx: {
                     '&.Mui-completed': {
-                      color: colors.primaryBlue,
+                      color: colors.state.success,
                     },
                     '&.Mui-active': {
-                      color: colors.primaryDark,
+                      color: colors.primary.blue,
                     },
                   }
                 }}
                 sx={{
                   '& .MuiStepLabel-label': {
-                    fontSize: '1rem',
-                    fontWeight: activeStep === index ? 600 : 400,
-                    color: activeStep === index ? colors.primaryDark : colors.grayMedium,
+                    fontSize: '1.125rem',
+                    fontWeight: activeStep === index ? 700 : 500,
+                    color: activeStep === index ? colors.primary.dark : colors.neutral.grayMedium,
+                    mt: 1
                   },
                 }}
               >
@@ -2122,12 +2594,12 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
         {getStepContent(activeStep)}
       </DialogContent>
 
-      <DialogActions 
-        sx={{ 
-          p: 4, 
+      <DialogActions
+        sx={{
+          p: 5,
           justifyContent: "space-between",
-          background: `linear-gradient(180deg, ${colors.white} 0%, ${colors.primaryLight} 100%)`,
-          borderTop: `1px solid ${colors.primaryMedium}`,
+          background: `linear-gradient(180deg, #ffffff 0%, ${colors.neutral.grayLight} 100%)`,
+          borderTop: `2px solid ${colors.primary.medium}`,
         }}
       >
         <Button
@@ -2135,18 +2607,23 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
           onClick={handleBack}
           size="large"
           variant="outlined"
-          sx={{ 
+          sx={{
             minWidth: 140,
-            borderRadius: '12px',
-            borderColor: colors.primaryMedium,
-            color: colors.primaryDark,
+            borderRadius: 3,
+            borderWidth: 2,
+            borderColor: colors.primary.medium,
+            color: colors.neutral.grayDark,
+            fontWeight: 600,
+            fontSize: '1rem',
+            py: 1.5,
             '&:hover': {
-              borderColor: colors.primaryBlue,
-              backgroundColor: colors.primaryLight,
+              borderColor: colors.primary.blue,
+              backgroundColor: colors.neutral.white,
+              borderWidth: 2,
             },
             '&:disabled': {
-              borderColor: colors.grayLight,
-              color: colors.grayMedium,
+              borderColor: colors.primary.medium,
+              color: colors.neutral.grayMedium,
             }
           }}
         >
@@ -2154,18 +2631,24 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
         </Button>
 
         <Box sx={{ display: "flex", gap: 3 }}>
-          <Button 
-            onClick={onClose} 
-            size="large" 
+          <Button
+            onClick={onClose}
+            size="large"
             variant="outlined"
-            sx={{ 
+            sx={{
               minWidth: 140,
-              borderRadius: '12px',
-              borderColor: colors.grayMedium,
-              color: colors.grayDark,
+              borderRadius: 3,
+              borderWidth: 2,
+              borderColor: colors.primary.medium,
+              color: colors.neutral.grayDark,
+              fontWeight: 600,
+              fontSize: '1rem',
+              py: 1.5,
               '&:hover': {
-                borderColor: colors.grayDark,
-                backgroundColor: colors.grayLight,
+                borderColor: colors.state.error,
+                backgroundColor: colors.neutral.grayLight,
+                color: colors.state.error,
+                borderWidth: 2,
               }
             }}
           >
@@ -2178,25 +2661,27 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               onClick={handleSubmit}
               disabled={loading}
               size="large"
-              sx={{ 
-                minWidth: 180,
-                borderRadius: '12px',
-                background: `linear-gradient(135deg, ${colors.primaryBlue} 0%, ${colors.primaryDark} 100%)`,
-                boxShadow: '0 4px 16px rgba(74, 98, 138, 0.3)',
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
+              sx={{
+                minWidth: 200,
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${colors.state.success} 0%, ${colors.state.success} 100%)`,
+                boxShadow: '0 4px 16px rgba(34, 197, 94, 0.3)',
+                py: 2,
+                fontSize: '1.125rem',
+                fontWeight: 700,
+                transition: 'all 0.2s ease-in-out',
                 '&:hover': {
-                  boxShadow: '0 8px 24px rgba(74, 98, 138, 0.4)',
+                  background: `linear-gradient(135deg, ${colors.state.success} 0%, ${colors.state.success} 100%)`,
+                  boxShadow: '0 8px 24px rgba(34, 197, 94, 0.4)',
                   transform: 'translateY(-2px)',
                 },
                 '&:disabled': {
-                  background: colors.grayMedium,
+                  background: colors.neutral.grayMedium,
                   boxShadow: 'none',
                   transform: 'none',
                 }
               }}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <CheckCircleIcon />}
+              startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon />}
             >
               {loading ? "Submitting..." : "Complete Service"}
             </Button>
@@ -2205,15 +2690,17 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
               variant="contained"
               onClick={handleNext}
               size="large"
-              sx={{ 
+              sx={{
                 minWidth: 140,
-                borderRadius: '12px',
-                background: `linear-gradient(135deg, ${colors.primaryBlue} 0%, ${colors.primaryDark} 100%)`,
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${colors.primary.blue} 0%, ${colors.primary.dark} 100%)`,
                 boxShadow: '0 4px 16px rgba(74, 98, 138, 0.3)',
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
+                py: 2,
+                fontSize: '1.125rem',
+                fontWeight: 700,
+                transition: 'all 0.2s ease-in-out',
                 '&:hover': {
+                  background: `linear-gradient(135deg, ${colors.primary.dark} 0%, ${colors.primary.dark} 100%)`,
                   boxShadow: '0 8px 24px rgba(74, 98, 138, 0.4)',
                   transform: 'translateY(-2px)',
                 }
