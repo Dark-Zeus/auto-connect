@@ -226,7 +226,7 @@ function getNavLinks(userContext) {
           hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
-          path: [`/vehicle-ad-promotion`],
+          path: [`/vehicle-ad-promotion/:id`],
           title: "Ad Promotion",
           icon: "trending_up",
           page: <VehicleAdPromotionPage />,
