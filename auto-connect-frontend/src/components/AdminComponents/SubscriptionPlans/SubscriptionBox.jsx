@@ -87,7 +87,7 @@ export default function SubscriptionBox({ subscriptions, onEdit, onDelete }) {
           );
         })
       ) : (
-        <p className="tw-col-span-3 tw:text-center tw:text-gray-500 tw:text-lg">
+        <p className="tw:col-span-3 tw:text-center tw:text-gray-500 tw:text-lg">
           No subscription plans found.
         </p>
       )}
