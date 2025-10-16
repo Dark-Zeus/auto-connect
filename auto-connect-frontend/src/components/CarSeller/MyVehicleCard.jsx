@@ -105,7 +105,17 @@ const ListedVehicleCard = ({ vehicle = null }) => {
       });
       setConfirmOpen(true);
     } else if (type === 'promote') {
-      navigate('/vehicle-ad-promotion');}
+      setConfirmProps({
+        title: 'Promote Vehicle',
+        message: 'Boost this vehicle ad with a promotion?',
+        onOK: () => {
+          setConfirmOpen(false);
+          navigate(`/vehicle-ad-promotion/${vehicleData.id}`);
+        },
+        onCancel: () => setConfirmOpen(false)
+      });
+      setConfirmOpen(true);
+    }
   };
 
   return (
