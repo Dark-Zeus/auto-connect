@@ -1,22 +1,39 @@
 import ListVehicle from "../models/listVehicle.model.js";
 import SavedAd from "../models/saveListedVehicle.model.js";
 import ReportAd from "../models/reportAds.model.js";
+import { catchAsync } from "../utils/catchAsync.util.js";
 
-export const getAvailableVehicles = async (req, res) => {
-  try {
-    const userId = req.user?.id || req.user?._id; // Get the current user's ID
-    if (!userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
+export const getAvailableVehicles = catchAsync(async (req, res, next) => {
+  const userId = req.user?.id || req.user?._id;
 
-    // Fetch vehicles not listed by the current user
-    const availableVehicles = await ListVehicle.find({ userId: { $ne: userId }, status: 1 }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: availableVehicles });
-  } catch (err) {
-    console.error("Error fetching available vehicles:", err);
-    res.status(500).json({ success: false, message: err.message });
+  const filter = { status: 1 };
+  if (userId) {
+    filter.userId = { $ne: userId };
   }
-};
+
+  const vehicles = await ListVehicle.find(filter).lean().exec();
+
+  const enriched = vehicles
+    .map((vehicle) => {
+      const lastBump = vehicle?.bumpSchedule?.lastBumpTime;
+      const effectiveCreatedAt =
+        vehicle?.promotion === 1 && lastBump ? lastBump : vehicle?.createdAt;
+
+      return {
+        ...vehicle,
+        effectiveCreatedAt,
+      };
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.effectiveCreatedAt) - new Date(a.effectiveCreatedAt)
+    );
+
+  res.status(200).json({
+    success: true,
+    data: enriched,
+  });
+});
 
 export const getVehicleById = async (req, res) => {
   try {
