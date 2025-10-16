@@ -25,8 +25,26 @@ const listVehicleSchema = new mongoose.Schema({
     status: { type: Number, default: 1 }, // 1 for active, 0 for inactive
     paymentStatus: {type: String, enum: ['pending', 'completed', 'failed'], default: 'pending'},
     checkoutSessionId: { type: String, index: true },
-    promotion: { type: Number, default: 0 } // 0 for no promotion, 1 for promoted
+    promotion: { type: Number, enum: [0, 1], default: 0 } // 0 for no promotion, 1 for promoted
     }, { timestamps: true });
+
+    listVehicleSchema.virtual("bumpSchedule", {
+    ref: "BumpSchedule",
+    localField: "_id",
+    foreignField: "adId",
+    justOne: true,
+    });
+
+    listVehicleSchema.set("toObject", { virtuals: true });
+    listVehicleSchema.set("toJSON", { virtuals: true });
+
+    listVehicleSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: "bumpSchedule",
+        select: "lastBumpTime nextBumpTime remainingBumps isActive",
+    });
+    next();
+    });
 
     listVehicleSchema.statics.updateVehicleAd = async function (id, userId, updateData) {
         // Only allow the owner to update
