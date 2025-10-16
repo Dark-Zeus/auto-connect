@@ -342,6 +342,34 @@ const serviceReportSchema = new mongoose.Schema(
       default: "SUBMITTED",
     },
 
+    // Supporting documents
+    supportingDocuments: [{
+      fileName: {
+        type: String,
+        required: true,
+      },
+      fileUrl: {
+        type: String,
+        required: true,
+      },
+      fileType: {
+        type: String,
+        required: true,
+      },
+      fileSize: {
+        type: Number,
+        required: true,
+      },
+      uploadedAt: {
+        type: Date,
+        default: Date.now,
+      },
+      description: {
+        type: String,
+        maxlength: [200, "Document description cannot exceed 200 characters"],
+      },
+    }],
+
     // Soft delete
     isActive: {
       type: Boolean,

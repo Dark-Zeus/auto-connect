@@ -830,6 +830,7 @@ export const submitServiceCompletionReport = catchAsync(async (req, res, next) =
     qualityCheck,
     recommendations,
     customerNotification,
+    supportingDocuments,
   } = req.body;
 
   // Only service centers can submit completion reports
@@ -916,6 +917,35 @@ export const submitServiceCompletionReport = catchAsync(async (req, res, next) =
     const random = Math.random().toString(36).substr(2, 5);
     const reportId = `SR-${timestamp}-${random}`.toUpperCase();
 
+    // Process uploaded supporting documents
+    let processedSupportingDocuments = [];
+    if (req.files && req.files.length > 0) {
+      processedSupportingDocuments = req.files.map((file, index) => {
+        // Get document description from request body if provided
+        const docDescriptions = supportingDocuments || [];
+        const description = docDescriptions[index]?.description || '';
+
+        return {
+          fileName: file.originalname,
+          fileUrl: `/uploads/vehicles/documents/${id}/${file.filename}`,
+          fileType: file.mimetype,
+          fileSize: file.size,
+          description: description,
+        };
+      });
+
+      LOG.info({
+        message: "Supporting documents processed",
+        bookingId: id,
+        documentCount: processedSupportingDocuments.length,
+        documents: processedSupportingDocuments.map(doc => ({
+          fileName: doc.fileName,
+          fileType: doc.fileType,
+          fileSize: doc.fileSize
+        }))
+      });
+    }
+
     // Create the service report
     const serviceReport = await ServiceReport.create({
       reportId: reportId,
@@ -960,6 +990,7 @@ export const submitServiceCompletionReport = catchAsync(async (req, res, next) =
       qualityCheck: qualityCheck || { performed: false },
       recommendations: recommendations || [],
       customerNotification: customerNotification || { notified: false },
+      supportingDocuments: processedSupportingDocuments,
       reportGeneratedBy: req.user._id,
     });
 

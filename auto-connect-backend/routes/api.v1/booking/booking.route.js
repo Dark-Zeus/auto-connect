@@ -14,6 +14,7 @@ import {
 } from "../../../controllers/booking.controller.js";
 import { protect, restrictTo } from "../../../middleware/auth.middleware.js";
 import { validate } from "../../../utils/validation.util.js";
+import { uploadMultiple, handleMulterError } from "../../../configs/multer.config.js";
 import Joi from "joi";
 
 const router = express.Router();
@@ -395,6 +396,8 @@ router.post(
 router.post(
   "/:id/completion-report",
   restrictTo("service_center"),
+  uploadMultiple.array("supportingDocuments", 10),
+  handleMulterError,
   validate(bookingIdValidation, "params"),
   validate(serviceCompletionReportValidation),
   submitServiceCompletionReport
