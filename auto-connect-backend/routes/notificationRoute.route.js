@@ -1,5 +1,5 @@
 import express from "express";
-import { addNotification,viewNotifications } from "../controllers/notifications.controller.js";
+import { addNotification,viewAllSentNotifications } from "../controllers/notifications.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
@@ -11,6 +11,6 @@ router.use(protect);
 router.post("/", addNotification);
 
 // Get all notifications for the authenticated user
-router.get("/", viewNotifications);
+router.get("/", viewAllSentNotifications);
 
 export default router;

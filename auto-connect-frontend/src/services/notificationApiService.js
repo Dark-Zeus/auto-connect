@@ -71,7 +71,7 @@ async function request(endpoint = "", { method = "GET", body, params } = {}) {
 // Notification API wrapper
 export const notificationAPI = {
   // Get all notifications
-  getNotifications: (params = {}) =>
+  getAllSentNotifications: (params = {}) =>
     request("/notifications", { params }),
 
   // Create a new notification

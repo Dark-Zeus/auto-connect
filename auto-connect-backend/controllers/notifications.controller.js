@@ -4,15 +4,23 @@ import LOG from "../configs/log.config.js";
 // Add a new notification
 export const addNotification = async (req, res) => {
   try {
-    let { receiver, type, message } = req.body;
+    let { receiver, receiverGroup, type, message } = req.body;
 
-    // Handle "All Users" case by not saving receiver
-    if (receiver === "All Users") {
-      receiver = undefined;
+    if (!message || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "Message and type are required",
+      });
+    }
+
+    // If sending to all users, ignore receiver
+    if (receiverGroup === "All Users") {
+      receiver = null;
     }
 
     const newNotification = await NotificationService.createNotification({
       receiver,
+      receiverGroup,
       type,
       message,
     });
@@ -37,34 +45,23 @@ export const addNotification = async (req, res) => {
 };
 
 // View all notifications for a user (includes broadcasts)
-export const viewNotifications = async (req, res) => {
+export const viewAllSentNotifications = async (req, res) => {
   try {
-    const userId = req.user?._id || req.query.receiver;
-
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "Receiver user ID is required",
-      });
-    }
-
-    // Fetch both targeted notifications and broadcasts
-    const notifications = await NotificationService.getNotificationsByUserOrBroadcast(
-      userId
-    );
+    // Fetch all notifications, newest first
+    const notifications = await NotificationService.getAllNotifications();
 
     LOG.info(
       { count: notifications.length },
-      "Notifications fetched successfully"
+      "All notifications fetched successfully"
     );
 
     res.status(200).json({
       success: true,
       data: notifications,
-      message: "Notifications fetched successfully",
+      message: "All sent notifications fetched successfully",
     });
   } catch (error) {
-    LOG.error({ err: error }, "Error fetching notifications");
+    LOG.error({ err: error }, "Error fetching all sent notifications");
     res.status(500).json({
       success: false,
       message: error.message,
@@ -72,7 +69,8 @@ export const viewNotifications = async (req, res) => {
   }
 };
 
-// View a notification by ID
+
+// View a single notification
 export const viewNotificationById = async (req, res) => {
   try {
     const { id } = req.params;

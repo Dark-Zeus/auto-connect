@@ -108,10 +108,11 @@ router.get("/docs", (req, res) => {
       notifications: {
         description: "Notification management for admins",
         routes: [
-          "GET /notifications - List all notifications",
-          "POST /notifications/ - Create a new notification",
+          "GET /notifications - List all sent notifications (for Sent Notifications table)",
+          "POST /notifications/ - Create a new notification"
         ],
       },
+
 
       admin: {
         description: "Administrative functions",

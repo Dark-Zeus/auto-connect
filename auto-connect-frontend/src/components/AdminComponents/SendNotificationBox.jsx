@@ -30,13 +30,21 @@ function SendNotificationBox() {
     }
   };
 
-  const confirmSend = async () => {
+const confirmSend = async () => {
     try {
-      const response = await notificationAPI.createNotification({
+      const payload = {
         message,
-        receiver,
         type,
-      });
+      };
+
+      // If category is "All Users" / "Vehicle Owners" / etc.
+      if (["All Users", "Vehicle Owners", "Registered Users", "Insurance Company", "Service Center"].includes(receiver)) {
+        payload.receiverGroup = receiver;
+      } else {
+        payload.receiver = receiver; // for targeting specific user by ObjectId
+      }
+
+      const response = await notificationAPI.createNotification(payload);
       handleNotificationSuccess(response, "send");
       setShowConfirm(false);
       setMessage("");
@@ -47,6 +55,7 @@ function SendNotificationBox() {
       setShowConfirm(false);
     }
   };
+
 
   const handleClear = () => {
     setMessage("");
