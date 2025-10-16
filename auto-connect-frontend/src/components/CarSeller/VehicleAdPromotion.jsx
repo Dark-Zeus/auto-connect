@@ -147,7 +147,7 @@ const VehicleAdPromotion = () => {
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="tw:text-gray-400 tw:hover:text-gray-700 tw:transition-colors"
+                className="tw:text-gray-400 tw:hover:text-red-600 tw:transition-all tw:hover:cursor-pointer"
               >
                 <X className="tw:w-5 tw:h-5" />
               </button>
@@ -213,7 +213,7 @@ const VehicleAdPromotion = () => {
                   </span>
                 </label>
 
-                <label className="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer">
+                {/* <label className="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer">
                   <input
                     type="radio"
                     name="schedule"
@@ -225,7 +225,7 @@ const VehicleAdPromotion = () => {
                   <span className="tw:font-medium tw:text-gray-700">
                     Schedule bump
                   </span>
-                </label>
+                </label> */}
               </div>
 
               {selectedSchedule === "schedule" && (
@@ -259,7 +259,7 @@ const VehicleAdPromotion = () => {
             <button
               onClick={handleContinue}
               disabled={isSubmitting}
-              className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-700 tw:disabled:opacity-60 tw:transition-colors"
+              className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-700 tw:disabled:opacity-60 tw:transition-colors tw:hover:cursor-pointer"
             >
               {isSubmitting ? "Activating..." : `Activate • LKR ${price.toLocaleString()}`}
             </button>
@@ -407,7 +407,7 @@ const VehicleAdPromotion = () => {
               LKR {getTotalPrice().toLocaleString()}
             </span>
           </div>
-          <button className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-700 tw:transition-colors">
+          <button className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-700 tw:transition-all tw:hover:cursor-pointer">
             Continue
           </button>
         </div>
