@@ -4,7 +4,9 @@ import {
   getDashboardStats,
   getRecentServices,
   getTopVehicles,
-  getPerformanceAnalytics
+  getPerformanceAnalytics,
+  getOwnerVehicles,
+  getVehicleCompleteHistory
 } from "../../../controllers/vehicleHistory.controller.js";
 import { protect, restrictTo } from "../../../middleware/auth.middleware.js";
 import { validate } from "../../../utils/validation.util.js";
@@ -30,8 +32,31 @@ const vehicleLimitValidation = Joi.object({
   limit: Joi.number().integer().min(1).max(50).optional().default(10)
 });
 
-// Routes (All routes are restricted to service centers only)
+const vehicleIdValidation = Joi.object({
+  vehicleId: Joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+    'string.pattern.base': 'Vehicle ID must be a valid MongoDB ObjectId'
+  })
+});
 
+// Routes
+
+// Vehicle Owner Routes
+// Get vehicle owner's vehicles list
+router.get(
+  "/owner/vehicles",
+  restrictTo("vehicle_owner"),
+  getOwnerVehicles
+);
+
+// Get complete history for a specific vehicle
+router.get(
+  "/owner/vehicles/:vehicleId",
+  restrictTo("vehicle_owner"),
+  validate(vehicleIdValidation, "params"),
+  getVehicleCompleteHistory
+);
+
+// Service Center Routes
 // Get dashboard statistics
 router.get(
   "/dashboard-stats",

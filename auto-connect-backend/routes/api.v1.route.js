@@ -15,6 +15,7 @@ import operatingHoursRoutes from "./api.v1/operatingHours/operatingHours.route.j
 import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
 import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
 import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.js";
+import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -49,6 +50,7 @@ router.use("/services", operatingHoursRoutes);
 router.use("/time-slots", timeSlotRoutes);
 router.use("/weekly-schedule", weeklyScheduleRoutes);
 router.use("/vehicle-history", vehicleHistoryRoutes);
+router.use("/vehicle-passport", vehiclePassportRoutes);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -136,6 +138,15 @@ router.get("/docs", (req, res) => {
           "GET /vehicle-history/recent-services - Get recent services with pagination",
           "GET /vehicle-history/top-vehicles - Get top vehicles by service history",
           "GET /vehicle-history/analytics - Get performance analytics",
+          "GET /vehicle-history/owner/vehicles - Get vehicle owner's vehicles list",
+          "GET /vehicle-history/owner/vehicles/:vehicleId - Get complete history for a specific vehicle",
+        ],
+      },
+      "vehicle-passport": {
+        description: "Vehicle passport system - comprehensive vehicle documentation (vehicle owners only)",
+        routes: [
+          "GET /vehicle-passport/vehicles - Get all vehicles for passport selection",
+          "GET /vehicle-passport/vehicles/:vehicleId - Get complete vehicle passport data",
         ],
       },
 

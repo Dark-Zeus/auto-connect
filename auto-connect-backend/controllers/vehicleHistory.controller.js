@@ -2,6 +2,7 @@
 import Booking from "../models/Booking.model.js";
 import ServiceReport from "../models/ServiceReport.model.js";
 import User from "../models/user.model.js";
+import Vehicle from "../models/vehicle.model.js";
 import LOG from "../configs/log.config.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";
@@ -665,6 +666,231 @@ export const getPerformanceAnalytics = catchAsync(async (req, res, next) => {
         mostProfitableCategory: serviceTrends[0]?.serviceName || "N/A",
         revenuePerVehicle: 23500 // This would need to be calculated
       }
+    }
+  });
+});
+
+// Get vehicle owner's vehicles list
+export const getOwnerVehicles = catchAsync(async (req, res, next) => {
+  // Only vehicle owners can access their vehicles
+  if (req.user.role !== "vehicle_owner") {
+    return next(new AppError("Only vehicle owners can access vehicle history", 403));
+  }
+
+  const ownerNIC = req.user.nicNumber;
+
+  // Get all vehicles owned by this user
+  const vehicles = await Vehicle.find({
+    ownerNIC: ownerNIC,
+    isActive: true
+  }).select({
+    registrationNumber: 1,
+    vehicleDetails: 1,
+    currentOwner: 1,
+    createdAt: 1,
+    engineNumber: 1,
+    chassisNumber: 1
+  }).sort({ createdAt: -1 });
+
+  // Format the response
+  const formattedVehicles = vehicles.map(vehicle => ({
+    id: vehicle._id,
+    registrationNumber: vehicle.registrationNumber,
+    make: vehicle.vehicleDetails?.make || 'Unknown',
+    model: vehicle.vehicleDetails?.model || 'Unknown',
+    year: vehicle.vehicleDetails?.year || 'Unknown',
+    engineNumber: vehicle.engineNumber,
+    chassisNumber: vehicle.chassisNumber,
+    registeredDate: vehicle.createdAt?.toISOString().split('T')[0] || 'Unknown',
+    ownerName: vehicle.currentOwner?.name || req.user.fullName
+  }));
+
+  res.status(200).json({
+    success: true,
+    data: {
+      vehicles: formattedVehicles,
+      totalVehicles: formattedVehicles.length
+    }
+  });
+});
+
+// Get complete history for a specific vehicle
+export const getVehicleCompleteHistory = catchAsync(async (req, res, next) => {
+  // Only vehicle owners can access their vehicle history
+  if (req.user.role !== "vehicle_owner") {
+    return next(new AppError("Only vehicle owners can access vehicle history", 403));
+  }
+
+  const { vehicleId } = req.params;
+  const ownerNIC = req.user.nicNumber;
+
+  // Validate vehicle ownership
+  const vehicle = await Vehicle.findOne({
+    _id: vehicleId,
+    ownerNIC: ownerNIC,
+    isActive: true
+  });
+
+  if (!vehicle) {
+    return next(new AppError("Vehicle not found or you don't have access to this vehicle", 404));
+  }
+
+  // Get all bookings for this vehicle
+  const bookings = await Booking.aggregate([
+    {
+      $match: {
+        $or: [
+          { "vehicle.registrationNumber": vehicle.registrationNumber },
+          { vehicleOwner: req.user._id }
+        ],
+        isActive: true
+      }
+    },
+    {
+      $lookup: {
+        from: "service_reports",
+        localField: "_id",
+        foreignField: "booking",
+        as: "serviceReport"
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "serviceCenter",
+        foreignField: "_id",
+        as: "serviceCenterDetails"
+      }
+    },
+    {
+      $project: {
+        bookingId: 1,
+        services: 1,
+        status: 1,
+        finalCost: 1,
+        estimatedCost: 1,
+        "timestamps.bookedAt": 1,
+        "timestamps.confirmedAt": 1,
+        "timestamps.startedAt": 1,
+        "timestamps.completedAt": 1,
+        feedback: 1,
+        serviceReport: { $arrayElemAt: ["$serviceReport", 0] },
+        serviceCenterDetails: { $arrayElemAt: ["$serviceCenterDetails", 0] },
+        specialRequests: 1,
+        notes: 1
+      }
+    },
+    { $sort: { "timestamps.bookedAt": -1 } }
+  ]);
+
+  // Get registration history (from vehicle collection)
+  const registrationHistory = {
+    registeredDate: vehicle.createdAt,
+    registrationNumber: vehicle.registrationNumber,
+    chassisNumber: vehicle.chassisNumber,
+    engineNumber: vehicle.engineNumber,
+    make: vehicle.vehicleDetails?.make,
+    model: vehicle.vehicleDetails?.model,
+    year: vehicle.vehicleDetails?.year,
+    engineCapacity: vehicle.vehicleDetails?.engineCapacity,
+    fuelType: vehicle.vehicleDetails?.fuelType,
+    transmission: vehicle.vehicleDetails?.transmission,
+    bodyType: vehicle.vehicleDetails?.bodyType,
+    color: vehicle.vehicleDetails?.color,
+    mileage: vehicle.vehicleDetails?.mileage,
+    ownershipHistory: vehicle.ownershipHistory || [],
+    currentOwner: vehicle.currentOwner
+  };
+
+  // Format service history
+  const serviceHistory = bookings.map(booking => {
+    const serviceReport = booking.serviceReport;
+
+    return {
+      id: booking.bookingId,
+      type: 'service',
+      date: booking.timestamps.bookedAt,
+      status: booking.status,
+      description: booking.services.join(", "),
+      serviceCenter: booking.serviceCenterDetails ?
+        `${booking.serviceCenterDetails.businessInfo?.businessName || booking.serviceCenterDetails.firstName + ' ' + booking.serviceCenterDetails.lastName}` :
+        'Unknown Service Center',
+      cost: booking.finalCost || booking.estimatedCost || 0,
+      technician: serviceReport?.technician?.name || 'Not assigned',
+      completedServices: serviceReport?.completedServices || [],
+      partsUsed: serviceReport?.completedServices?.flatMap(service => service.partsUsed || []) || [],
+      laborDetails: serviceReport?.completedServices?.map(service => service.laborDetails) || [],
+      totalCostBreakdown: serviceReport?.totalCostBreakdown || null,
+      nextServiceDue: serviceReport?.nextServiceRecommendation || null,
+      feedback: booking.feedback,
+      specialRequests: booking.specialRequests,
+      notes: booking.notes,
+      timestamps: booking.timestamps,
+      supportingDocuments: serviceReport?.supportingDocuments || []
+    };
+  });
+
+  // Placeholder for accident history (to be implemented)
+  const accidentHistory = [
+    // This will be implemented when accident model is created
+    // {
+    //   id: 'accident_001',
+    //   type: 'accident',
+    //   date: '2024-01-15',
+    //   description: 'Minor collision - front bumper damage',
+    //   location: 'Colombo-Kandy Road, Kegalle',
+    //   severity: 'Minor',
+    //   insuranceClaim: 'CLM-2024-001',
+    //   repairCost: 45000,
+    //   status: 'Resolved'
+    // }
+  ];
+
+  // Combine all history and sort by date
+  const completeHistory = [
+    {
+      id: 'registration',
+      type: 'registration',
+      date: vehicle.createdAt,
+      description: `Vehicle registered in the system`,
+      details: registrationHistory
+    },
+    ...serviceHistory,
+    ...accidentHistory
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Calculate statistics
+  const statistics = {
+    totalServices: serviceHistory.length,
+    totalServiceCost: serviceHistory.reduce((sum, service) => sum + (service.cost || 0), 0),
+    averageServiceCost: serviceHistory.length > 0 ?
+      serviceHistory.reduce((sum, service) => sum + (service.cost || 0), 0) / serviceHistory.length : 0,
+    lastServiceDate: serviceHistory.length > 0 ? serviceHistory[0].date : null,
+    totalAccidents: accidentHistory.length,
+    averageRating: serviceHistory
+      .filter(service => service.feedback?.rating)
+      .reduce((sum, service, _, array) => sum + service.feedback.rating / array.length, 0) || 0,
+    servicesCompleted: serviceHistory.filter(service => service.status === 'COMPLETED').length,
+    servicesPending: serviceHistory.filter(service => ['PENDING', 'CONFIRMED', 'IN_PROGRESS'].includes(service.status)).length
+  };
+
+  res.status(200).json({
+    success: true,
+    data: {
+      vehicle: {
+        id: vehicle._id,
+        registrationNumber: vehicle.registrationNumber,
+        make: vehicle.vehicleDetails?.make,
+        model: vehicle.vehicleDetails?.model,
+        year: vehicle.vehicleDetails?.year,
+        engineNumber: vehicle.engineNumber,
+        chassisNumber: vehicle.chassisNumber
+      },
+      registrationHistory,
+      completeHistory,
+      serviceHistory,
+      accidentHistory, // Placeholder for future implementation
+      statistics
     }
   });
 });
