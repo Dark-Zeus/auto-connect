@@ -357,23 +357,31 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                 </button>
                 
                 <button
-                  onClick={() => handleConfirm('promote')}
+                  onClick={vehicleData.promotion === 1 ? undefined : () => handleConfirm('promote')}
+                  disabled={vehicleData.promotion === 1}
                   className="tw:px-3 tw:py-2 tw:text-white tw:font-bold tw:border-none tw:rounded-md tw:transition-all tw:duration-200 tw:w-30"
                   style={{
-                    background: 'linear-gradient(135deg, #059669, #047857)',
-                    fontSize: '14px'
+                    background: vehicleData.promotion === 1 
+                      ? '#9ca3af' 
+                      : 'linear-gradient(135deg, #059669, #047857)',
+                    fontSize: '14px',
+                    cursor: vehicleData.promotion === 1 ? 'not-allowed' : 'pointer',
+                    opacity: vehicleData.promotion === 1 ? 0.6 : 1
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, #047857, #065f46)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.cursor = 'pointer';
+                    if (vehicleData.promotion !== 1) {
+                      e.target.style.background = 'linear-gradient(135deg, #047857, #065f46)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
-                    e.target.style.transform = 'translateY(0)';
+                    if (vehicleData.promotion !== 1) {
+                      e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                      e.target.style.transform = 'translateY(0)';
+                    }
                   }}
                 >
-                  Promote
+                  {vehicleData.promotion === 1 ? 'Promoted' : 'Promote'}
                 </button>
               </Box>
             </Box>
