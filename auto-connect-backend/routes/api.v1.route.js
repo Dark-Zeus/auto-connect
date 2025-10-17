@@ -19,11 +19,14 @@ import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.j
 import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
 
 import listVehicleRoute from "./listVehicle.route.js";
+
+import subscriptionRoute from "./subscription.route.js";
+import notificationRoute from "./notificationRoute.route.js";
+
 import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
 import adRoute from "./ad.route.js";
 import promotionPaymentRoute from "./promotionPayment.route.js";
-
 
 // Import rate limiters for specific routes
 import {
@@ -62,6 +65,12 @@ router.use("/vehicle-passport", vehiclePassportRoutes);
 
 router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
+// Subscription routes
+router.use("/subscriptions", generalLimiter, subscriptionRoute);
+
+// Notification routes
+router.use("/notifications", generalLimiter, notificationRoute);
+
 router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
 
 router.use("/payments", generalLimiter, paymentRoute);
@@ -71,6 +80,7 @@ router.use("/ads", generalLimiter, adRoute);
 
 // Promotion payments (separate from listing payments)
 router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
+
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -169,6 +179,26 @@ router.get("/docs", (req, res) => {
           "GET /vehicle-passport/vehicles/:vehicleId - Get complete vehicle passport data",
         ],
       },
+
+      subscriptions: {
+        description: "Subscription management for users",
+        routes: [
+          "GET /subscriptions - List all subscriptions",
+          "POST /subscriptions - Create a new subscription",
+          "GET /subscriptions/:id - Get subscription details",
+          "PUT /subscriptions/:id - Update subscription",
+          "DELETE /subscriptions/:id - Delete subscription",
+        ],
+      },
+
+      notifications: {
+        description: "Notification management for admins",
+        routes: [
+          "GET /notifications - List all sent notifications (for Sent Notifications table)",
+          "POST /notifications/ - Create a new notification"
+        ],
+      },
+
 
       admin: {
         description: "Administrative functions",

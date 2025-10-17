@@ -1,13 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SubscriptionBox from "@components/AdminComponents/SubscriptionPlans/SubscriptionBox";
 import AddPlanModal from "@components/AdminComponents/SubscriptionPlans/AddSubscriptionPlan";
+import {
+  subscriptionAPI,
+  handleSubscriptionSuccess,
+  handleSubscriptionError,
+} from "@/services/subscriptionApiService";
 
 export default function Subscriptions() {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [subscriptions, setSubscriptions] = useState([]);
 
-  const handleAddPlan = (newPlan) => {
-    console.log("New Plan Added:", newPlan);
-    // TODO: Add the new plan to the data/state or trigger API
+  // Fetch subscriptions on mount
+  useEffect(() => {
+    fetchSubscriptions();
+  }, []);
+
+  const fetchSubscriptions = async () => {
+    try {
+      const res = await subscriptionAPI.getSubscriptions();
+      if (res.success) {
+        setSubscriptions(res.data); // expects array with _id
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "fetch subscriptions");
+    }
+  };
+
+  // Add new subscription
+  const handleAddPlan = async (newPlan) => {
+    try {
+      const res = await subscriptionAPI.createSubscription(newPlan);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "create subscription");
+        setSubscriptions((prev) => [...prev, res.data]);
+        setShowAddModal(false);
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "create subscription");
+    }
+  };
+
+  // Edit subscription
+  const handleEditPlan = async (updatedPlan) => {
+    try {
+      const res = await subscriptionAPI.updateSubscription(updatedPlan._id, updatedPlan);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "update subscription");
+        setSubscriptions((prev) =>
+          prev.map((sub) => (sub._id === updatedPlan._id ? res.data : sub))
+        );
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "update subscription");
+    }
+  };
+
+  // Delete subscription
+  const handleDeletePlan = async (id) => {
+    try {
+      const res = await subscriptionAPI.deleteSubscription(id);
+      if (res.success) {
+        handleSubscriptionSuccess(res, "delete subscription");
+        setSubscriptions((prev) => prev.filter((sub) => sub._id !== id));
+      }
+    } catch (err) {
+      handleSubscriptionError(err, "delete subscription");
+    }
   };
 
   return (
@@ -25,7 +84,12 @@ export default function Subscriptions() {
         </button>
       </div>
 
-      <SubscriptionBox />
+      {/* Pass subscriptions and handlers to SubscriptionBox */}
+      <SubscriptionBox
+        subscriptions={subscriptions}
+        onEdit={handleEditPlan}
+        onDelete={handleDeletePlan}
+      />
 
       {showAddModal && (
         <AddPlanModal

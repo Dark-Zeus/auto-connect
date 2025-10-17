@@ -35,7 +35,7 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
     { label: "Cost Per Ad (LKR)", name: "costPerAd", placeholder: "Enter cost per ad" },
     { label: "Validity Period (Days)", name: "validityPeriod", placeholder: "e.g. 30, 90, 365" },
     { label: "Ads Per Month", name: "adsPerMonth", placeholder: "Enter ads per month" },
-    { label: "Free Promotion", name: "freePromotion", placeholder: "Enter promotion days" },
+    { label: "Free Promotion", name: "promotionVoucher", placeholder: "Enter promotion days" },
   ];
 
   return (
