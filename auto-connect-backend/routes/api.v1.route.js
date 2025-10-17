@@ -19,6 +19,10 @@ import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.j
 import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
 
 import listVehicleRoute from "./listVehicle.route.js";
+import buyVehicleRoute from "./buyVehicle.route.js";
+import paymentRoute from "./payment.route.js";
+import adRoute from "./ad.route.js";
+import promotionPaymentRoute from "./promotionPayment.route.js";
 
 
 // Import rate limiters for specific routes
@@ -58,6 +62,15 @@ router.use("/vehicle-passport", vehiclePassportRoutes);
 
 router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
+router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
+
+router.use("/payments", generalLimiter, paymentRoute);
+
+// Promotions
+router.use("/ads", generalLimiter, adRoute);
+
+// Promotion payments (separate from listing payments)
+router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
 
 // API Documentation route
 router.get("/docs", (req, res) => {

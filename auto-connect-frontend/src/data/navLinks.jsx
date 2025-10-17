@@ -22,6 +22,9 @@ import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashbo
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
+
+import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
+import PromotionPaymentSuccessPage from "@pages/VehicleOwner/PromotionPaymentSuccessPage";
 import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
 import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
 import ClaimHistoryPage from "@pages/VehicleOwner/ClaimHistoryPage";
@@ -236,7 +239,7 @@ function getNavLinks(userContext) {
           hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
-          path: [`/vehicle-ad-promotion`],
+          path: [`/vehicle-ad-promotion/:id`],
           title: "Ad Promotion",
           icon: "trending_up",
           page: <VehicleAdPromotionPage />,
@@ -248,6 +251,20 @@ function getNavLinks(userContext) {
           icon: "edit",
           page: <UpdateVehicleAd />,
           hidden: true, // TODO: Hide from navigation, only for direct access
+        },
+        {
+          path: [`/payment-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <PaymentSuccessPage />,
+          hidden: true,
+        },
+        {
+          path: [`/promotion-payment-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <PromotionPaymentSuccessPage />,
+          hidden: true,
         },
       ],
     });
