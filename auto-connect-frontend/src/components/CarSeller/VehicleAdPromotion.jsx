@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Plus, X } from "lucide-react";
-import { activateVehicleBump } from "../../services/adPromotionApiService";
+import { createPromotionCheckoutSession } from "../../services/adPromotionApiService";
 import bumpUp from "../../assets/images/promotions/bumpUp.png";
 
 const VehicleAdPromotion = () => {
@@ -51,14 +51,8 @@ const VehicleAdPromotion = () => {
     setSelectedPromotions((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const getTotalPrice = () => {
-    return selectedPromotions.reduce((total, promo) => total + promo.price, 0);
-  };
-
   const handleContinue = async () => {
-    if (!selectedPromotion) {
-      return;
-    }
+    if (!selectedPromotion) return;
 
     if (!vehicleId) {
       setErrorMessage("Vehicle identifier is missing.");
@@ -85,45 +79,54 @@ const VehicleAdPromotion = () => {
       payload.startAt = startDateTime.toISOString();
     }
 
+    const price = promotionOptions[selectedPromotion].pricing[selectedDuration];
+
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
 
     try {
-      await activateVehicleBump(vehicleId, payload);
+      // Save pending promotion to be finalized on promotion success page
+      const pending = {
+        type: selectedPromotion,
+        adId: vehicleId,
+        payload,
+        price,
+      };
+      localStorage.setItem("pendingPromotionData", JSON.stringify(pending));
 
-      const price = promotionOptions[selectedPromotion].pricing[
-        selectedDuration
-      ];
+      // Create Stripe checkout session via separate promotion payments API
+      const { data } = await createPromotionCheckoutSession(
+        price,
+        promotionOptions[selectedPromotion].title || "Ad Bump Promotion",
+        { adId: vehicleId, promoType: selectedPromotion, durationDays }
+      );
 
-      setSelectedPromotions((prev) => [
-        ...prev.filter((promo) => promo.type !== selectedPromotion),
-        {
-          type: selectedPromotion,
-          duration: durationDays,
-          schedule: selectedSchedule,
-          price,
-          startAt: payload.startAt ?? null,
-        },
-      ]);
+      const sessionUrl = data?.sessionUrl;
+      const sessionId = data?.sessionId;
 
-      setSuccessMessage("Bump promotion activated successfully.");
-      setShowModal(false);
-      setSelectedPromotion(null);
+      if (sessionUrl) {
+        window.location.href = sessionUrl;
+        return;
+      }
+      if (sessionId) {
+        window.location.href = `/promotion-payment-success?session_id=${encodeURIComponent(sessionId)}`;
+        return;
+      }
+
+      throw new Error("Failed to create payment session.");
     } catch (error) {
       setErrorMessage(
-        error?.response?.data?.message ||
-          "Failed to activate bump promotion. Please try again."
+        error?.response?.data?.error ||
+          error?.message ||
+          "Failed to start payment. Please try again."
       );
-    } finally {
       setIsSubmitting(false);
     }
   };
 
   const Modal = () => {
-    if (!showModal || !selectedPromotion) {
-      return null;
-    }
+    if (!showModal || !selectedPromotion) return null;
 
     const promo = promotionOptions[selectedPromotion];
     const price = promo.pricing[selectedDuration];
@@ -213,7 +216,8 @@ const VehicleAdPromotion = () => {
                   </span>
                 </label>
 
-                {/* <label className="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer">
+                {/*
+                <label className="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer">
                   <input
                     type="radio"
                     name="schedule"
@@ -225,7 +229,8 @@ const VehicleAdPromotion = () => {
                   <span className="tw:font-medium tw:text-gray-700">
                     Schedule bump
                   </span>
-                </label> */}
+                </label>
+                */}
               </div>
 
               {selectedSchedule === "schedule" && (
@@ -261,7 +266,9 @@ const VehicleAdPromotion = () => {
               disabled={isSubmitting}
               className="tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:px-6 tw:rounded-lg tw:font-semibold tw:hover:bg-blue-700 tw:disabled:opacity-60 tw:transition-colors tw:hover:cursor-pointer"
             >
-              {isSubmitting ? "Activating..." : `Activate • LKR ${price.toLocaleString()}`}
+              {isSubmitting
+                ? "Redirecting to payment..."
+                : `Activate • LKR ${price.toLocaleString()}`}
             </button>
           </div>
         </div>
@@ -273,31 +280,34 @@ const VehicleAdPromotion = () => {
     <div className="tw:min-h-4xl tw:bg-gray-50 tw:rounded-xl">
       <div className="tw:max-w-4xl tw:mx-auto tw:p-6 tw:space-y-6">
         <div className="tw:flex tw:justify-center tw:items-center tw:py-8">
-  <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-blue-100 tw:rounded-2xl tw:shadow-lg tw:p-8 tw:flex tw:flex-col tw:items-center tw:max-w-xl tw:w-full">
-    <div className="tw:flex tw:items-center tw:gap-3 tw:mb-4">
-      {/* <span className="tw:inline-block tw:bg-yellow-400 tw:text-white tw:font-bold tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:shadow">
-        NEW
-      </span> */}
-      <span className="tw:text-blue-700 tw:font-semibold tw:text-2xl">
-        Bump Up Promotion
-      </span>
-    </div>
-    <img
-      src={bumpUp}
-      alt="Bump Up"
-      className="tw:w-24 tw:h-24 tw:object-contain tw:mb-4 tw:drop-shadow"
-    />
-    <h1 className="tw:text-2xl md:tw:text-3xl tw:font-extrabold tw:text-gray-800 tw:mb-2 tw:text-center">
-      Boost your ad to the top!
-    </h1>
-    <p className="tw:text-gray-600 tw:text-base md:tw:text-lg tw:mb-2 tw:text-center">
-      Instantly get up to <span className="tw:font-bold tw:text-blue-600">10x</span> more responses by bumping your ad daily.
-    </p>
-    <p className="tw:text-gray-500 tw:text-sm tw:text-center">
-      Your ad will appear at the top of search results every day for the duration you choose.
-    </p>
-  </div>
-</div>
+          <div className="tw:bg-gradient-to-br tw:from-blue-50 tw:to-blue-100 tw:rounded-2xl tw:shadow-lg tw:p-8 tw:flex tw:flex-col tw:items-center tw:max-w-xl tw:w-full">
+            <div className="tw:flex tw:items-center tw:gap-3 tw:mb-4">
+              {/* <span className="tw:inline-block tw:bg-yellow-400 tw:text-white tw:font-bold tw:px-3 tw:py-1 tw:rounded-full tw:text-xs tw:shadow">
+                NEW
+              </span> */}
+              <span className="tw:text-blue-700 tw:font-semibold tw:text-2xl">
+                Bump Up Promotion
+              </span>
+            </div>
+            <img
+              src={bumpUp}
+              alt="Bump Up"
+              className="tw:w-24 tw:h-24 tw:object-contain tw:mb-4 tw:drop-shadow"
+            />
+            <h1 className="tw:text-2xl md:tw:text-3xl tw:font-extrabold tw:text-gray-800 tw:mb-2 tw:text-center">
+              Boost your ad to the top!
+            </h1>
+            <p className="tw:text-gray-600 tw:text-base md:tw:text-lg tw:mb-2 tw:text-center">
+              Instantly get up to{" "}
+              <span className="tw:font-bold tw:text-blue-600">10x</span> more
+              responses by bumping your ad daily.
+            </p>
+            <p className="tw:text-gray-500 tw:text-sm tw:text-center">
+              Your ad will appear at the top of search results every day for the
+              duration you choose.
+            </p>
+          </div>
+        </div>
 
         {errorMessage && (
           <div className="tw:rounded-lg tw:bg-red-50 tw:border tw:border-red-200 tw:p-3 tw:text-sm tw:text-red-600">
@@ -351,7 +361,7 @@ const VehicleAdPromotion = () => {
                     </div>
                     <button
                       onClick={() => handleAddPromotion(key)}
-                      className="tw:w-10 tw:h-10 tw:bg-blue-600 tw:text-white tw:rounded-full tw:flex tw:items-center tw:justify-center tw:hover:bg-blue-700 tw:transition-colors"
+                      className="tw:w-10 tw:h-10 tw:bg-blue-600 tw:text-white tw:rounded-full tw:flex tw:items-center tw:justify-center tw:hover:bg-blue-700 tw:transition-all tw:hover:cursor-pointer"
                     >
                       <Plus className="tw:w-5 tw:h-5" />
                     </button>
@@ -386,7 +396,10 @@ const VehicleAdPromotion = () => {
                         {promotionOptions[promo.type].title}
                       </div>
                       <div className="tw:text-sm tw:text-gray-600">
-                        {promo.duration} days • {promo.schedule === "boost-now" ? "Boost now" : "Scheduled"}
+                        {promo.duration} days •{" "}
+                        {promo.schedule === "boost-now"
+                          ? "Boost now"
+                          : "Scheduled"}
                       </div>
                     </div>
                   </div>
@@ -406,7 +419,6 @@ const VehicleAdPromotion = () => {
             </div>
           </div>
         )}
-
       </div>
 
       <Modal />
