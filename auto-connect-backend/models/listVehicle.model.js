@@ -41,7 +41,7 @@ const listVehicleSchema = new mongoose.Schema({
     listVehicleSchema.pre(/^find/, function (next) {
     this.populate({
         path: "bumpSchedule",
-        select: "lastBumpTime nextBumpTime remainingBumps isActive",
+        select: "createdAt lastBumpTime nextBumpTime remainingBumps isActive intervalHours",
     });
     next();
     });
