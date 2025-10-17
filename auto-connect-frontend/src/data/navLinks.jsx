@@ -23,6 +23,7 @@ import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashbo
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
 import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
+import PromotionPaymentSuccessPage from "@pages/VehicleOwner/PromotionPaymentSuccessPage";
 
 // System Admin
 import DashboardHome from "@pages/Admin/DashboardHome";
@@ -244,6 +245,13 @@ function getNavLinks(userContext) {
           title: "Payment Success",
           icon: "check_circle",
           page: <PaymentSuccessPage />,
+          hidden: true,
+        },
+        {
+          path: [`/promotion-payment-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <PromotionPaymentSuccessPage />,
           hidden: true,
         },
       ],
