@@ -7,6 +7,7 @@ const router = express.Router({ mergeParams: true });
 import healthRoute from "./health.route.js";
 import authRoute from "./auth.route.js";
 import adminRoute from "./admin.route.js";
+
 import vehicleRoute from "./api.v1/vehicle/vehicle.route.js";
 import addedVehicleRoute from "./api.v1/addedVehicle/addedVehicle.route.js";
 import serviceCenterRoutes from "./api.v1/serviceCenter/serviceCenter.route.js";
@@ -16,6 +17,9 @@ import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
 import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
 import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.js";
 import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
+
+import listVehicleRoute from "./listVehicle.route.js";
+
 
 // Import rate limiters for specific routes
 import {
@@ -51,6 +55,9 @@ router.use("/time-slots", timeSlotRoutes);
 router.use("/weekly-schedule", weeklyScheduleRoutes);
 router.use("/vehicle-history", vehicleHistoryRoutes);
 router.use("/vehicle-passport", vehiclePassportRoutes);
+
+router.use("/list-vehicles", generalLimiter, listVehicleRoute);
+
 
 // API Documentation route
 router.get("/docs", (req, res) => {

@@ -31,8 +31,11 @@ import {
   StarBorder as StarBorderIcon,
   ThumbUp as ThumbUpIcon,
 } from "@mui/icons-material";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { Snackbar, Alert } from "@mui/material";
 
 import OverlayWindow from "@components/OverlayWindow";
 import BookingDetailsPage from "./BookingDetailsPage";
@@ -323,6 +326,10 @@ const MyBookings = () => {
   const [submittingRating, setSubmittingRating] = useState(false);
   const [overlayBooking, setOverlayBooking] = useState(null); //overlay window
   const [overlayContent, setOverlayContent] = useState(null);
+  const [reviewText, setReviewText] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);

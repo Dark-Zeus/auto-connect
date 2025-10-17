@@ -88,7 +88,7 @@ function OwnerView() {
 
     // Filter by transmission
     if (filter) {
-      filtered = filtered.filter((o) => o.transmission === filter);
+      filtered = filtered.filter((o) => o.district === filter);
     }
 
     // Sort
@@ -111,6 +111,12 @@ function OwnerView() {
     currentPage * itemsPerPage
   );
 
+  const handleReset = () => {
+    setFilter("");
+    setSearch("");
+    setSort("");
+  };
+
   return (
     <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
       <h1 className="tw:text-3xl tw:font-bold tw:text-gray-800 tw:mb-4">Vehicle Owner List</h1>
@@ -122,6 +128,7 @@ function OwnerView() {
         onFilter={setFilter}
         sort={sort}
         onSort={setSort}
+        onReset={handleReset}
       />
 
     <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 tw:gap-6 lg:tw:grid-cols-3 tw:mx-auto tw:max-w-7xl">

@@ -17,31 +17,37 @@ import {
 } from '@mui/icons-material';
 
 import toyotaImage from '../../assets/images/toyota-v8.jpg';
+import noImage from '../../assets/images/noImage.jpeg';
 import Confirm from '../atoms/Confirm';
 import { useNavigate } from 'react-router-dom';
+import listVehicleAPI from '../../services/listVehicleApiService';
 
 const ListedVehicleCard = ({ vehicle = null }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmProps, setConfirmProps] = useState({});
   const navigate = useNavigate();
 
-  const vehicleData = vehicle || {
-    id: 1,
-    manufacturer: 'Toyota',
-    model: 'Land Cruiser 150',
-    vehicleType: 'SUV',
-    year: 2008,
-    price: 32000000,
-    odometer: 135000,
-    fuelType: 'Diesel',
-    engineCapacity: 3000,
-    transmission: 'Automatic',
-    image: toyotaImage,
-    postedDate: '2025-06-20',
-    district: 'Gampaha',
-    city: 'Katana',
-    views: 120
-  };
+  const vehicleData = vehicle
+    ? {
+        id: vehicle._id,
+        manufacturer: vehicle.make,
+        model: vehicle.model,
+        vehicleType: vehicle.vehicleType,
+        year: vehicle.year,
+        price: vehicle.price,
+        odometer: vehicle.mileage,
+        fuelType: vehicle.fuelType,
+        engineCapacity: vehicle.engineCapacity,
+        transmission: vehicle.transmission,
+        image: vehicle.photos?.[0] || noImage,
+        postedDate: vehicle.createdAt?.slice(0, 10),
+        district: vehicle.district,
+        city: vehicle.city,
+        views: vehicle.views,
+      }
+    : {
+        // ...existing hardcoded fallback...
+      };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-LK', {
@@ -74,7 +80,16 @@ const ListedVehicleCard = ({ vehicle = null }) => {
       setConfirmProps({
         title: 'Delete Vehicle',
         message: 'Are you sure you want to delete this vehicle listing?',
-        onOK: () => setConfirmOpen(false),
+        onOK: async () => {
+        setConfirmOpen(false);
+        try {
+          await listVehicleAPI.deleteListing(vehicleData.id);
+          navigate('/marketplace/my-ads');
+          window.location.reload();
+        } catch (err) {
+          // Error handled by API service
+        }
+      },
         onCancel: () => setConfirmOpen(false)
       });
       setConfirmOpen(true);
@@ -84,7 +99,7 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         message: 'Do you want to edit this vehicle listing?',
         onOK: () => {
           setConfirmOpen(false);
-          navigate('/update-vehicle-ad');
+          navigate(`/update-vehicle-ad/${vehicleData.id}`); // Pass ID in route
         },
         onCancel: () => setConfirmOpen(false)
       });

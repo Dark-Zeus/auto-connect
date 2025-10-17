@@ -39,7 +39,7 @@ const initialNotifications = Array.from({ length: 34 }, (_, i) => ({
   source: sources[i % sources.length],
 }));
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 10;
 
 function NotificationTable() {
   const [notifications, setNotifications] = useState(initialNotifications);
