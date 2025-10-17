@@ -553,16 +553,374 @@ export const getAddedVehicleById = (req, res) => {
   res.status(501).json({ success: false, message: "Not implemented yet" });
 };
 
-export const updateAddedVehicle = (req, res) => {
-  res.status(501).json({ success: false, message: "Not implemented yet" });
+export const updateAddedVehicle = async (req, res) => {
+  try {
+    console.log("🔧 updateAddedVehicle hit for ID:", req.params.id);
+    console.log("📋 Update data:", req.body);
+
+    const { id } = req.params;
+    const updateData = { ...req.body };
+
+    // Remove fields that shouldn't be updated directly
+    delete updateData.vehicleId;
+    delete updateData.addedBy;
+    delete updateData.vehicleOwner;
+    delete updateData.createdBy;
+    delete updateData._id;
+
+    // Find the added vehicle and check ownership
+    const addedVehicle = await AddedVehicle.findOne({
+      _id: id,
+      addedBy: req.user._id,
+      isActive: true,
+    });
+
+    if (!addedVehicle) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Added vehicle not found or you don't have permission to update it",
+      });
+    }
+
+    console.log("🔍 Found added vehicle:", {
+      id: addedVehicle._id,
+      currentStatus: addedVehicle.status,
+      currentPriority: addedVehicle.priority,
+    });
+
+    // Validate scheduled date if provided
+    if (updateData.scheduledDate) {
+      const scheduledDateTime = new Date(updateData.scheduledDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (scheduledDateTime < today) {
+        return res.status(400).json({
+          success: false,
+          message: "Scheduled date cannot be in the past",
+        });
+      }
+    }
+
+    // Update tracking information
+    updateData.lastModifiedBy = req.user._id;
+    updateData["tracking.lastUpdated"] = new Date();
+    updateData["tracking.updatedBy"] = req.user._id;
+
+    // If status is being changed, add status change tracking
+    if (updateData.status && updateData.status !== addedVehicle.status) {
+      updateData["tracking.statusChangedAt"] = new Date();
+      updateData["tracking.statusChangedBy"] = req.user._id;
+
+      // Add status change note to notes
+      const statusChangeNote = `\n[${new Date().toISOString()}] Status changed from ${
+        addedVehicle.status
+      } to ${updateData.status} by ${req.user.firstName} ${req.user.lastName}`;
+      updateData.notes = (addedVehicle.notes || "") + statusChangeNote;
+    }
+
+    console.log("💾 Updating with data:", updateData);
+
+    // Update the record
+    const updatedAddedVehicle = await AddedVehicle.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+        context: "query", // This ensures validators run properly
+      }
+    )
+      .populate({
+        path: "vehicleId",
+        select:
+          "registrationNumber make model yearOfManufacture color fuelType verificationStatus",
+      })
+      .populate({
+        path: "addedBy",
+        select: "firstName lastName email",
+      })
+      .populate({
+        path: "vehicleOwner",
+        select: "firstName lastName email nicNumber",
+      });
+
+    if (!updatedAddedVehicle) {
+      return res.status(404).json({
+        success: false,
+        message: "Failed to update added vehicle",
+      });
+    }
+
+    console.log("✅ Successfully updated added vehicle:", {
+      id: updatedAddedVehicle._id,
+      newStatus: updatedAddedVehicle.status,
+      newPriority: updatedAddedVehicle.priority,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Added vehicle updated successfully",
+      data: {
+        addedVehicle: updatedAddedVehicle,
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error in updateAddedVehicle:", error);
+
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(
+        (err) => err.message
+      );
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: validationErrors,
+      });
+    }
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid ID format provided",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to update added vehicle",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
+    });
+  }
 };
 
-export const deleteAddedVehicle = (req, res) => {
-  res.status(501).json({ success: false, message: "Not implemented yet" });
+
+export const deleteAddedVehicle = async (req, res) => {
+  try {
+    console.log("🗑️ deleteAddedVehicle hit for ID:", req.params.id);
+
+    const { id } = req.params;
+
+    // Find the added vehicle and check ownership
+    const addedVehicle = await AddedVehicle.findOne({
+      _id: id,
+      addedBy: req.user._id,
+      isActive: true,
+    }).populate("vehicleId", "registrationNumber");
+
+    if (!addedVehicle) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Added vehicle not found or you don't have permission to delete it",
+      });
+    }
+
+    console.log("🔍 Found added vehicle to delete:", {
+      id: addedVehicle._id,
+      registration: addedVehicle.vehicleId?.registrationNumber,
+      status: addedVehicle.status,
+    });
+
+    // Perform soft delete by setting isActive to false
+    addedVehicle.isActive = false;
+    addedVehicle.lastModifiedBy = req.user._id;
+    addedVehicle.tracking.lastUpdated = new Date();
+    addedVehicle.tracking.updatedBy = req.user._id;
+    addedVehicle.tracking.deletedAt = new Date();
+    addedVehicle.tracking.deletedBy = req.user._id;
+
+    // Add deletion note
+    const deletionNote = `\n[${new Date().toISOString()}] Vehicle request deleted by ${
+      req.user.firstName
+    } ${req.user.lastName}`;
+    addedVehicle.notes = (addedVehicle.notes || "") + deletionNote;
+
+    await addedVehicle.save();
+
+    console.log(
+      "✅ Successfully soft deleted added vehicle:",
+      addedVehicle._id
+    );
+
+    res.status(200).json({
+      success: true,
+      message: `Vehicle request for ${
+        addedVehicle.vehicleId?.registrationNumber || "vehicle"
+      } removed successfully`,
+      data: {
+        deletedVehicle: {
+          _id: addedVehicle._id,
+          isActive: addedVehicle.isActive,
+          deletedAt: addedVehicle.tracking.deletedAt,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error in deleteAddedVehicle:", error);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid ID format provided",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete added vehicle",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
+    });
+  }
 };
 
-export const markVehicleCompleted = (req, res) => {
-  res.status(501).json({ success: false, message: "Not implemented yet" });
+export const markVehicleCompleted = async (req, res) => {
+  try {
+    console.log("✅ markVehicleCompleted hit for ID:", req.params.id);
+    console.log("📋 Completion data:", req.body);
+
+    const { id } = req.params;
+    const { notes: completionNotes, serviceDetails } = req.body;
+
+    // Find the added vehicle and check ownership
+    const addedVehicle = await AddedVehicle.findOne({
+      _id: id,
+      addedBy: req.user._id,
+      isActive: true,
+    }).populate("vehicleId", "registrationNumber make model");
+
+    if (!addedVehicle) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Added vehicle not found or you don't have permission to complete it",
+      });
+    }
+
+    console.log("🔍 Found added vehicle to complete:", {
+      id: addedVehicle._id,
+      registration: addedVehicle.vehicleId?.registrationNumber,
+      currentStatus: addedVehicle.status,
+    });
+
+    // Check if already completed
+    if (addedVehicle.status === "COMPLETED") {
+      return res.status(400).json({
+        success: false,
+        message: "Vehicle request is already marked as completed",
+      });
+    }
+
+    // Update status to completed
+    addedVehicle.status = "COMPLETED";
+    addedVehicle.tracking.completedAt = new Date();
+    addedVehicle.tracking.completedBy = req.user._id;
+    addedVehicle.tracking.lastUpdated = new Date();
+    addedVehicle.tracking.updatedBy = req.user._id;
+    addedVehicle.lastModifiedBy = req.user._id;
+
+    // Update service details if provided
+    if (serviceDetails) {
+      if (serviceDetails.actualCost !== undefined) {
+        addedVehicle.serviceDetails.actualCost = serviceDetails.actualCost;
+      }
+      if (serviceDetails.actualDuration) {
+        addedVehicle.serviceDetails.actualDuration =
+          serviceDetails.actualDuration;
+      }
+      if (serviceDetails.serviceCenter) {
+        addedVehicle.serviceDetails.actualServiceCenter =
+          serviceDetails.serviceCenter;
+      }
+      if (serviceDetails.warranty) {
+        addedVehicle.serviceDetails.warranty = serviceDetails.warranty;
+      }
+    }
+
+    // Add completion notes
+    const completionNote = `\n[${new Date().toISOString()}] Service completed by ${
+      req.user.firstName
+    } ${req.user.lastName}`;
+    const fullCompletionNote = completionNotes
+      ? `${completionNote}\nCompletion Notes: ${completionNotes}`
+      : completionNote;
+
+    addedVehicle.notes = (addedVehicle.notes || "") + fullCompletionNote;
+
+    await addedVehicle.save();
+
+    // Populate the response
+    await addedVehicle.populate([
+      {
+        path: "vehicleId",
+        select: "registrationNumber make model yearOfManufacture color",
+      },
+      {
+        path: "addedBy",
+        select: "firstName lastName email",
+      },
+      {
+        path: "tracking.completedBy",
+        select: "firstName lastName",
+      },
+    ]);
+
+    console.log("✅ Successfully marked vehicle as completed:", {
+      id: addedVehicle._id,
+      registration: addedVehicle.vehicleId?.registrationNumber,
+      completedAt: addedVehicle.tracking.completedAt,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Service request for ${
+        addedVehicle.vehicleId?.registrationNumber || "vehicle"
+      } marked as completed successfully`,
+      data: {
+        addedVehicle: {
+          _id: addedVehicle._id,
+          status: addedVehicle.status,
+          vehicleId: addedVehicle.vehicleId,
+          purpose: addedVehicle.purpose,
+          priority: addedVehicle.priority,
+          scheduledDate: addedVehicle.scheduledDate,
+          contactInfo: addedVehicle.contactInfo,
+          location: addedVehicle.location,
+          notes: addedVehicle.notes,
+          serviceDetails: addedVehicle.serviceDetails,
+          tracking: addedVehicle.tracking,
+          addedBy: addedVehicle.addedBy,
+          createdAt: addedVehicle.createdAt,
+          updatedAt: addedVehicle.updatedAt,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error in markVehicleCompleted:", error);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid ID format provided",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to mark vehicle as completed",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
+    });
+  }
 };
 
 export const exportAddedVehicles = (req, res) => {

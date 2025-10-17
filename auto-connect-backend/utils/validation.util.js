@@ -560,19 +560,27 @@ export const searchFilterValidation = Joi.object({
 });
 
 // Enhanced validation middleware with detailed debugging
-export const validate = (schema) => {
+export const validate = (schema, target = "body") => {
   return (req, res, next) => {
     console.log("🔍 === VALIDATION DEBUG START ===");
     console.log("📝 Request URL:", req.method, req.url);
+    console.log("🎯 Validation Target:", target);
     console.log("📦 Request Body:", JSON.stringify(req.body, null, 2));
     console.log("🔗 Content-Type:", req.headers["content-type"]);
     console.log("📊 Body Keys:", Object.keys(req.body || {}));
 
-    const { error, value } = schema.validate(req.body, {
+    if (target === "params") {
+      console.log("🔢 Request Params:", JSON.stringify(req.params, null, 2));
+      console.log("📊 Params Keys:", Object.keys(req.params || {}));
+    }
+
+    const dataToValidate = target === "params" ? req.params : req.body;
+
+    const { error, value } = schema.validate(dataToValidate, {
       abortEarly: false,
       allowUnknown: false,
       stripUnknown: true,
-      context: { role: req.body.role }, // Pass role for conditional validation
+      context: target === "body" ? { role: req.body?.role } : undefined,
     });
 
     if (error) {
@@ -605,9 +613,10 @@ export const validate = (schema) => {
         debug:
           process.env.NODE_ENV === "development"
             ? {
-                receivedFields: Object.keys(req.body || {}),
+                receivedFields: Object.keys(dataToValidate || {}),
                 expectedFields: Object.keys(schema.describe().keys || {}),
-                receivedData: req.body,
+                receivedData: dataToValidate,
+                target,
               }
             : undefined,
       });
@@ -616,7 +625,11 @@ export const validate = (schema) => {
     console.log("✅ === VALIDATION PASSED ===");
     console.log("🔍 === VALIDATION DEBUG END ===");
 
-    req.body = value; // Use validated/sanitized data
+    if (target === "params") {
+      req.params = value;
+    } else {
+      req.body = value; // Use validated/sanitized data
+    }
     next();
   };
 };

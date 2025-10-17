@@ -1,4 +1,5 @@
-// src/pages/VehicleOwner/AddedVehicles.jsx
+// src/pages/VehicleOwner/AddedVehicles.jsx - UPDATED WITH FULL FUNCTIONALITY
+
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -54,6 +55,9 @@ import {
 } from "@mui/icons-material";
 import { UserContext } from "../../contexts/UserContext";
 import { addedVehicleAPI } from "../../services/addedVehicleApiService";
+import EditVehicleDialog from "../../components/dialogs/EditVehicleDialog";
+import CompletionDialog from "../../components/dialogs/CompletionDialog";
+import "./AddedVehicles.css";
 
 const AddedVehicles = () => {
   const navigate = useNavigate();
@@ -70,6 +74,7 @@ const AddedVehicles = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [completionDialogOpen, setCompletionDialogOpen] = useState(false);
   const [vehicleStats, setVehicleStats] = useState({
     totalRequests: 0,
     pendingRequests: 0,
@@ -214,45 +219,105 @@ const AddedVehicles = () => {
     fetchAddedVehicles(page, searchTerm, filterStatus, filterPurpose);
   };
 
-  // Handle update added vehicle (placeholder for now)
+  // Handle update added vehicle - REAL IMPLEMENTATION
   const handleUpdateVehicle = async (updatedData) => {
     try {
-      // This will be implemented when you need the update functionality
-      toast.info("Update functionality will be implemented soon");
-      setEditDialogOpen(false);
+      console.log("🔧 Updating vehicle:", selectedVehicle._id, updatedData);
+
+      const response = await addedVehicleAPI.updateAddedVehicle(
+        selectedVehicle._id,
+        updatedData
+      );
+
+      if (response.success) {
+        toast.success("Vehicle updated successfully");
+        setEditDialogOpen(false);
+        setSelectedVehicle(null);
+        // Refresh the data to show updated information
+        await fetchAddedVehicles(
+          pagination.page,
+          searchTerm,
+          filterStatus,
+          filterPurpose
+        );
+        await fetchStats();
+      } else {
+        toast.error(response.message || "Failed to update vehicle");
+      }
     } catch (error) {
       console.error("Error updating vehicle:", error);
       toast.error("Failed to update vehicle");
     }
   };
 
-  // Handle delete added vehicle (placeholder for now)
+  // Handle delete added vehicle - REAL IMPLEMENTATION
   const handleDeleteVehicle = async () => {
     try {
-      // This will be implemented when you need the delete functionality
-      toast.info("Delete functionality will be implemented soon");
-      setDeleteDialogOpen(false);
+      console.log("🗑️ Deleting vehicle:", selectedVehicle._id);
+
+      const response = await addedVehicleAPI.deleteAddedVehicle(
+        selectedVehicle._id
+      );
+
+      if (response.success) {
+        toast.success("Vehicle request removed successfully");
+        setDeleteDialogOpen(false);
+        setSelectedVehicle(null);
+        // Refresh the data to remove deleted item
+        await fetchAddedVehicles(
+          pagination.page,
+          searchTerm,
+          filterStatus,
+          filterPurpose
+        );
+        await fetchStats();
+      } else {
+        toast.error(response.message || "Failed to remove vehicle");
+      }
     } catch (error) {
       console.error("Error deleting vehicle:", error);
       toast.error("Failed to remove vehicle");
     }
   };
 
-  // Handle mark as completed (placeholder for now)
-  const handleMarkCompleted = async (vehicleId) => {
+  // Handle mark as completed - REAL IMPLEMENTATION
+  const handleMarkCompleted = async (completionData) => {
     try {
-      // This will be implemented when you need the completion functionality
-      toast.info("Mark completed functionality will be implemented soon");
+      console.log(
+        "✅ Marking vehicle as completed:",
+        selectedVehicle._id,
+        completionData
+      );
+
+      const response = await addedVehicleAPI.markCompleted(
+        selectedVehicle._id,
+        completionData
+      );
+
+      if (response.success) {
+        toast.success("Vehicle service marked as completed successfully");
+        setCompletionDialogOpen(false);
+        setSelectedVehicle(null);
+        // Refresh the data to show updated status
+        await fetchAddedVehicles(
+          pagination.page,
+          searchTerm,
+          filterStatus,
+          filterPurpose
+        );
+        await fetchStats();
+      } else {
+        toast.error(response.message || "Failed to mark vehicle as completed");
+      }
     } catch (error) {
       console.error("Error marking as completed:", error);
-      toast.error("Failed to mark as completed");
+      toast.error("Failed to mark vehicle as completed");
     }
   };
 
   // Handle export (placeholder for now)
   const handleExport = async () => {
     try {
-      // This will be implemented when you need export functionality
       toast.info("Export functionality will be implemented soon");
     } catch (error) {
       console.error("Error exporting vehicles:", error);
@@ -492,7 +557,10 @@ const AddedVehicles = () => {
                   <Tooltip title="Mark as completed">
                     <IconButton
                       size="small"
-                      onClick={() => handleMarkCompleted(addedVehicle._id)}
+                      onClick={() => {
+                        setSelectedVehicle(addedVehicle);
+                        setCompletionDialogOpen(true);
+                      }}
                       sx={{ color: "success.main" }}
                     >
                       <CompletedIcon />
@@ -583,36 +651,19 @@ const AddedVehicles = () => {
     </Zoom>
   );
 
-  // Edit Dialog Component (placeholder)
-  const EditDialog = () => (
-    <Dialog
-      open={editDialogOpen}
-      onClose={() => setEditDialogOpen(false)}
-      maxWidth="sm"
-      fullWidth
-    >
-      <DialogTitle>Edit Added Vehicle</DialogTitle>
-      <DialogContent>
-        <Typography>Edit functionality will be implemented soon.</Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-        <Button onClick={() => handleUpdateVehicle({})} variant="contained">
-          Save Changes
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-
-  // Delete Dialog Component (placeholder)
+  // Delete Dialog Component
   const DeleteDialog = () => (
     <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-      <DialogTitle>Confirm Removal</DialogTitle>
+      <DialogTitle sx={{ color: "error.main" }}>Confirm Removal</DialogTitle>
       <DialogContent>
         <Typography>
           Are you sure you want to remove{" "}
-          {selectedVehicle?.vehicleId?.registrationNumber} from your service
-          requests? This action cannot be undone.
+          <strong>{selectedVehicle?.vehicleId?.registrationNumber}</strong> from
+          your service requests?
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          This action cannot be undone. The vehicle request will be permanently
+          removed from your list.
         </Typography>
       </DialogContent>
       <DialogActions>
@@ -950,7 +1001,26 @@ const AddedVehicles = () => {
       </Box>
 
       {/* Dialogs */}
-      <EditDialog />
+      <EditVehicleDialog
+        open={editDialogOpen}
+        onClose={() => {
+          setEditDialogOpen(false);
+          setSelectedVehicle(null);
+        }}
+        selectedVehicle={selectedVehicle}
+        onUpdate={handleUpdateVehicle}
+      />
+
+      <CompletionDialog
+        open={completionDialogOpen}
+        onClose={() => {
+          setCompletionDialogOpen(false);
+          setSelectedVehicle(null);
+        }}
+        selectedVehicle={selectedVehicle}
+        onComplete={handleMarkCompleted}
+      />
+
       <DeleteDialog />
     </Container>
   );
