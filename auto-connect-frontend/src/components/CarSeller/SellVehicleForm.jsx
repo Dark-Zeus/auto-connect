@@ -24,7 +24,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
     engineCapacity: '',
     mileage: '',
     description: '',
-    registrationNumber: '',
+    // registrationNumber: '',
     name: fixedName || '',
     email: fixedEmail || ''
   });
@@ -229,7 +229,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
       engineCapacity: '',
       mileage: '',
       description: '',
-      registrationNumber: ''
+      // registrationNumber: ''
     });
     setPhotos(Array(6).fill(null));
     setErrors({});
@@ -502,7 +502,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
           </div>
 
           {/* Vehicle Report */}
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+          {/* <div className="tw:p-8 tw:border-b tw:border-slate-200">
             <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
               <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
                 <ClipboardCheckIcon className="tw:w-5 tw:h-5 tw:text-white" />
@@ -525,7 +525,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
                 />
                 {errors.registrationNumber && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.registrationNumber}</p>}
               </div>
-          </div>
+          </div> */}
 
           {/* Photos */}
           <div className="tw:p-8 tw:border-b tw:border-slate-200">

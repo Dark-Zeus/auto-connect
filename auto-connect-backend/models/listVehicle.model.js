@@ -19,7 +19,7 @@ const listVehicleSchema = new mongoose.Schema({
     engineCapacity: Number,
     mileage: { type: Number, required: true },
     description: String,
-    registrationNumber: { type: String, required: true },
+    // registrationNumber: { type: String, required: true },
     photos: [String],
     views: { type: Number, default: 0 }, // <--- important
     status: { type: Number, default: 1 }, // 1 for active, 0 for inactive
