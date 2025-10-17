@@ -20,7 +20,7 @@ const bumpScheduleSchema = new mongoose.Schema(
     },
     nextBumpTime: {
       type: Date,
-      required: true,
+      required: null, // allow null when no more bumps are remaining
     },
     lastBumpTime: {
       type: Date,
