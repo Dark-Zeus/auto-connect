@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Container,
@@ -17,20 +17,31 @@ import {
   DialogActions,
   DialogContent,
   Rating,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import {
   LocationOn,
   CalendarToday,
   AssignmentTurnedIn,
   Search as SearchIcon,
+  Edit as EditIcon,
+  Cancel as CancelIcon,
+  Star as StarIcon,
+  StarBorder as StarBorderIcon,
+  ThumbUp as ThumbUpIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import { Snackbar, Alert } from "@mui/material";
 
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { Snackbar, Alert } from "@mui/material";
 
 import OverlayWindow from "@components/OverlayWindow";
 import BookingDetailsPage from "./BookingDetailsPage";
 import ServiceBookingForm from "@components/ServiceBookingForm";
+import { UserContext } from "@contexts/UserContext";
+import { bookingApi } from "@services/bookingApi";
 
 const serviceCenters = [
   // Your serviceCenters data unchanged
@@ -204,23 +215,116 @@ const mockBookings = [
 ];
 
 const tabStatusOrder = [
-  { key: "Confirmed", label: "Confirmed Services" },
-  { key: "Pending", label: "Pending Services" },
-  { key: "Completed", label: "Completed Services" },
-  { key: "Cancelled", label: "Cancelled Services" },
+  { key: "PENDING", label: "Pending Services" },
+  { key: "COMPLETED", label: "Completed Services" },
+  { key: "CANCELLED", label: "Cancelled Services" },
 ];
 
 const MyBookings = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const userContext = useContext(UserContext);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState(0);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  // Real booking data state
+  const [bookings, setBookings] = useState([]);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(true);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 0,
+    totalResults: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
+
+  // Check for success message from booking creation
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setShowSuccessMessage(true);
+      toast.success(location.state.successMessage, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Clear the state to prevent showing message on refresh
+      window.history.replaceState({}, document.title);
+
+      // Hide the alert after 10 seconds
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 10000);
+    }
+  }, [location.state]);
+
+  // Fetch user bookings
+  const fetchBookings = async (status = null, page = 1) => {
+    try {
+      setIsLoadingBookings(true);
+      const params = {
+        page,
+        limit: 10,
+        ...(status && { status }),
+        ...(searchTerm && { search: searchTerm }),
+      };
+
+      console.log("🔍 Fetching bookings with params:", params);
+      const response = await bookingApi.getUserBookings(params);
+
+      if (response.success) {
+        console.log("✅ Bookings fetched successfully:", response.data);
+        setBookings(response.data.bookings || []);
+        setPagination(response.data.pagination || {});
+      } else {
+        console.error("❌ Failed to fetch bookings:", response);
+        toast.error("Failed to load bookings");
+        setBookings([]);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching bookings:", error);
+      toast.error("Failed to load bookings");
+      setBookings([]);
+    } finally {
+      setIsLoadingBookings(false);
+    }
+  };
+
+  // Load bookings on component mount and tab change
+  useEffect(() => {
+    const activeStatus = tabStatusOrder[activeTab].key;
+    fetchBookings(activeStatus);
+  }, [activeTab]);
+
+  // Reload bookings when search term changes (with debounce)
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      const debounceTimer = setTimeout(() => {
+        const activeStatus = tabStatusOrder[activeTab].key;
+        fetchBookings(activeStatus);
+      }, 500);
+
+      return () => clearTimeout(debounceTimer);
+    } else {
+      // If search is cleared, reload without search
+      const activeStatus = tabStatusOrder[activeTab].key;
+      fetchBookings(activeStatus);
+    }
+  }, [searchTerm]);
 
   // Store ratings keyed by booking id
   const [bookingRatings, setBookingRatings] = useState({});
   const [ratingDialogOpen, setRatingDialogOpen] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
+  const [currentComment, setCurrentComment] = useState("");
   const [bookingToRate, setBookingToRate] = useState(null);
-  const [overlayBooking, setOverlayBooking] = useState(null);//overlay window
+  const [submittingRating, setSubmittingRating] = useState(false);
+  const [overlayBooking, setOverlayBooking] = useState(null); //overlay window
   const [overlayContent, setOverlayContent] = useState(null);
   const [reviewText, setReviewText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -232,114 +336,269 @@ const MyBookings = () => {
     setSearchTerm(""); // clear search on tab change
   };
 
-  const groupedBookings = {
-    Confirmed: mockBookings.filter((b) => b.status === "Confirmed"),
-    Pending: mockBookings.filter((b) => b.status === "Pending"),
-    Completed: mockBookings.filter((b) => b.status === "Completed"),
-    Cancelled: mockBookings.filter((b) => b.status === "Cancelled"),
+  // Helper function to check if booking can be edited/cancelled (6 hours before appointment)
+  const canModifyBooking = (booking) => {
+    const now = new Date();
+    const appointmentDateTime = new Date(
+      `${booking.preferredDate}T${booking.preferredTimeSlot}`
+    );
+    const timeDifference = appointmentDateTime.getTime() - now.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    return (
+      hoursDifference >= 6 &&
+      (booking.status === "CONFIRMED" || booking.status === "PENDING")
+    );
   };
 
-  const activeKey = tabStatusOrder[activeTab].key;
-  const allBookings = groupedBookings[activeKey];
+  // Filter bookings based on current tab
+  const filteredBookings = bookings.filter((booking) => {
+    const activeStatus = tabStatusOrder[activeTab].key;
+    // Show CONFIRMED bookings in PENDING tab
+    if (activeStatus === "PENDING") {
+      return booking.status === "PENDING" || booking.status === "CONFIRMED";
+    }
+    return booking.status === activeStatus;
+  });
 
-  const searchedBookings = searchTerm
-    ? allBookings.filter((booking) => {
-        const s = searchTerm.toLowerCase();
-        return (
-          booking.id.toLowerCase().includes(s) ||
-          booking.centerName.toLowerCase().includes(s) ||
-          booking.services.some((service) => service.toLowerCase().includes(s))
-        );
-      })
-    : allBookings;
+  const handleViewDetails = (booking) => {
+    // Convert booking data to match the existing BookingDetailsPage format
+    const convertedBooking = {
+      id: booking.bookingId || booking._id,
+      centerName:
+        booking.serviceCenter?.businessInfo?.businessName ||
+        "Unknown Service Center",
+      location:
+        booking.serviceCenter?.address?.fullAddress || "No address provided",
+      date: new Date(booking.preferredDate).toISOString().split("T")[0],
+      time: booking.preferredTimeSlot,
+      services: booking.services || [],
+      status: booking.status,
+      vehicle: booking.vehicle,
+      contactInfo: booking.contactInfo,
+      specialRequests: booking.additionalNotes,
+      estimatedCost: booking.estimatedCost || 0,
+      createdAt: booking.createdAt,
+      updatedAt: booking.updatedAt,
+      serviceCenterResponse: booking.serviceCenterResponse, // Include service center response
+      feedback: booking.feedback, // Include feedback if available
+    };
 
-      const handleViewDetails = (booking) => {
-  const matchedProvider = serviceCenters.find(
-    (center) =>
-      center.name === booking.centerName &&
-      center.location === booking.location
-  );
-  if (matchedProvider) {
+    setOverlayBooking(convertedBooking);
     setOverlayContent(
-      <BookingDetailsPage center={matchedProvider} booking={booking} />
+      <BookingDetailsPage
+        booking={convertedBooking}
+        onClose={() => setOverlayContent(null)}
+      />
     );
-  } else {
-    alert("Provider not found.");
-  }
-};
-
-const handleEdit = (booking) => {
-  const matchedProvider = serviceCenters.find(
-    (center) =>
-      center.name === booking.centerName &&
-      center.location === booking.location
-  );
-  if (matchedProvider) {
-    setOverlayContent(
-      <ServiceBookingForm center={matchedProvider} booking={booking} />
-    );
-  } else {
-    alert("Provider not found for edit.");
-  }
-};
-
-  const handleCancel = (bookingId) => {
-    alert(`Booking ${bookingId} cancelled.`);
   };
 
-const handleReschedule = handleEdit;
+  const handleEdit = async (booking) => {
+    if (!canModifyBooking(booking)) {
+      toast.error("Cannot edit booking less than 6 hours before appointment");
+      return;
+    }
+
+    // Navigate to booking form with edit mode
+    navigate("/book-service", {
+      state: {
+        editMode: true,
+        booking: booking,
+        serviceCenter: booking.serviceCenter,
+      },
+    });
+  };
+
+  const handleCancel = async (bookingId, reason = "Cancelled by user") => {
+    try {
+      const response = await bookingApi.cancelBooking(bookingId, reason);
+      if (response.success) {
+        toast.success("Booking cancelled successfully!");
+        // Refresh bookings
+        const activeStatus = tabStatusOrder[activeTab].key;
+        fetchBookings(activeStatus);
+      }
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      toast.error("Failed to cancel booking");
+    }
+  };
+
+  const handleReschedule = handleEdit;
 
   // Open rating dialog for selected booking
-const openRatingForBooking = (booking) => {
-  const existing = bookingRatings[booking.id] || {};
-  setBookingToRate(booking);
-  setCurrentRating(existing.rating || 0);
-  setReviewText(existing.review || "");
-  setRatingDialogOpen(true);
-};
-
+  const openRatingForBooking = (booking) => {
+    setBookingToRate(booking);
+    setCurrentRating(0);
+    setCurrentComment("");
+    setRatingDialogOpen(true);
+  };
 
   // Submit rating
-const submitRating = () => {
-  if (!currentRating || currentRating < 1) {
-    alert("Please select a rating.");
-    return;
-  }
+  const submitRating = async () => {
+    if (!currentRating || currentRating < 1) {
+      toast.error("Please select a rating.");
+      return;
+    }
 
-  // Store both rating and review (you can adapt this as needed)
-  setBookingRatings((prev) => ({
-    ...prev,
-    [bookingToRate.id]: {
-      rating: currentRating,
-      review: reviewText,
-    },
-  }));
+    setSubmittingRating(true);
 
-  setSnackbarMessage(`Thanks for rating booking ID: ${bookingToRate.id} with ${currentRating} stars.`);
-  setSnackbarOpen(true);
+    try {
+      const feedbackData = {
+        rating: currentRating,
+        comment: currentComment.trim() || undefined,
+      };
 
+      const response = await bookingApi.submitFeedback(
+        bookingToRate._id,
+        feedbackData
+      );
 
-  // Reset dialog state
-  setCurrentRating(0);
-  setReviewText("");
-  setRatingDialogOpen(false);
-};
+      if (response.success) {
+        // Update local state to show the rating was submitted
+        setBookingRatings((prev) => ({
+          ...prev,
+          [bookingToRate._id]: currentRating,
+        }));
 
+        // Success animation feedback
+        toast.success(
+          `🌟 Rating submitted successfully! Thank you for your ${
+            currentRating === 1
+              ? "honest"
+              : currentRating === 2
+              ? "valuable"
+              : currentRating === 3
+              ? "helpful"
+              : currentRating === 4
+              ? "positive"
+              : "excellent"
+          } feedback!`,
+          {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            style: {
+              background: "linear-gradient(135deg, #7AB2D3, #4A628A)",
+              color: "white",
+              borderRadius: "12px",
+              boxShadow: "0 8px 32px rgba(122, 178, 211, 0.3)",
+              fontSize: "14px",
+              fontWeight: "600",
+            },
+          }
+        );
 
+        // Close dialog with slight delay to show success feedback
+        setTimeout(() => {
+          setRatingDialogOpen(false);
+          setCurrentRating(0);
+          setCurrentComment("");
+        }, 1000);
 
+        // Refresh bookings to get updated data
+        const activeStatus = tabStatusOrder[activeTab].key;
+        await fetchBookings(activeStatus);
+      }
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      toast.error("Failed to submit rating. Please try again.", {
+        position: "top-center",
+        style: {
+          background: "linear-gradient(135deg, #495057, #6c757d)",
+          color: "white",
+          borderRadius: "12px",
+          fontSize: "14px",
+          fontWeight: "600",
+        },
+      });
+    } finally {
+      setSubmittingRating(false);
+    }
+  };
 
   return (
     <Box sx={{ backgroundColor: "#e9f7ef", minHeight: "100vh", py: 3 }}>
+      <style>
+        {`
+          .booking-grid-container {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+            gap: 24px !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 16px !important;
+            align-items: stretch !important;
+          }
+          
+          .booking-grid-container > div {
+            display: flex !important;
+            height: 100% !important;
+          }
+          
+          .booking-grid-container > div > .MuiPaper-root {
+            width: 100% !important;
+            height: 100% !important;
+          }
+          
+          @media (min-width: 900px) {
+            .booking-grid-container {
+              grid-template-columns: repeat(3, 1fr) !important;
+              gap: 24px !important;
+              padding: 0 32px !important;
+            }
+          }
+          
+          @media (max-width: 899px) and (min-width: 600px) {
+            .booking-grid-container {
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 20px !important;
+              padding: 0 24px !important;
+            }
+          }
+          
+          @media (max-width: 599px) {
+            .booking-grid-container {
+              grid-template-columns: 1fr !important;
+              gap: 16px !important;
+              padding: 0 16px !important;
+            }
+          }
+        `}
+      </style>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: "center", mb: 3 }}>
           <AssignmentTurnedIn sx={{ fontSize: 40, color: "#4a628a" }} />
           <Typography sx={{ fontSize: 32, fontWeight: 700 }}>
             My Bookings
           </Typography>
-          <Typography sx={{ fontSize: 14, fontWeight: 500 }} color="text.secondary">
+          <Typography
+            sx={{ fontSize: 14, fontWeight: 500 }}
+            color="text.secondary"
+          >
             Review your upcoming and past vehicle service appointments.
           </Typography>
         </Box>
+
+        {/* Success message */}
+        {showSuccessMessage && (
+          <Alert
+            severity="success"
+            sx={{ mb: 3 }}
+            onClose={() => setShowSuccessMessage(false)}
+          >
+            <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+              🎉 Booking Confirmed!
+            </Typography>
+            <Typography variant="body2">
+              Your service appointment has been successfully booked. You can
+              view and manage it below.
+            </Typography>
+          </Alert>
+        )}
 
         {/* Search bar only */}
         <Paper sx={{ p: 2, mb: 3 }}>
@@ -389,288 +648,668 @@ const submitRating = () => {
         <Divider sx={{ mb: 2 }} />
 
         {/* Tab Panel - only current tab's bookings with search */}
-        <Box key={activeKey} sx={{ width: "100%" }}>
-          <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: 1200, mt: 0 }}>
-            {searchedBookings && searchedBookings.length > 0 ? (
-              searchedBookings.map((booking) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                  key={booking.id + booking.time + booking.status}
-                >
-                  <Paper
-                    elevation={3}
-                    sx={{
-                      p: 2,
-                      minHeight: 280,
-                      maxHeight: 350,
-                      minWidth: 350,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      borderRadius: 2,
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    <Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          mb: 1,
-                        }}
-                      >
-                        <Typography sx={{ fontSize: 18, fontWeight: 700 }}>
-                          {booking.centerName}
-                        </Typography>
-                        <Chip
-                          label={booking.status}
-                          color={
-                            booking.status === "Confirmed"
-                              ? "success"
-                              : booking.status === "Pending"
-                              ? "warning"
-                              : booking.status === "Completed"
-                              ? "default"
-                              : "error"
-                          }
-                          variant="outlined"
-                          size="small"
-                          sx={{ fontSize: 12, fontWeight: 500 }}
-                        />
-                      </Box>
-
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <LocationOn fontSize="small" color="action" />
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          {booking.location}
-                        </Typography>
-                      </Box>
-
-                      <Box display="flex" alignItems="center" gap={1} mt={0.5}>
-                        <CalendarToday fontSize="small" color="action" />
-                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                          {booking.date} at {booking.time}
-                        </Typography>
-                      </Box>
-
-                      <Typography
-                        sx={{ fontSize: 14, fontWeight: 500, mt: 1 }}
-                        color="text.secondary"
-                      >
-                        Booking ID: {booking.id}
-                      </Typography>
-
-                      <Typography
-                        sx={{ fontSize: 16, fontWeight: 500, mt: 1, mb: 0.5 }}
-                      >
-                        Services:
-                      </Typography>
-
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {booking.services.map((s, idx) => (
-                          <Chip
-                            key={idx}
-                            label={s}
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                            sx={{ fontSize: 12, fontWeight: 500 }}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-
-                    {/* Buttons */}
-                    <Box
+        <Box key={tabStatusOrder[activeTab].key} sx={{ width: "100%" }}>
+          {isLoadingBookings ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : filteredBookings && filteredBookings.length > 0 ? (
+            <div className="booking-grid-container">
+              {filteredBookings.map((booking) => {
+                const canModify = canModifyBooking(booking);
+                return (
+                  <div key={booking._id || booking.bookingId}>
+                    <Paper
+                      elevation={3}
                       sx={{
-                        mt: 2,
+                        p: 3,
+                        height: 400,
+                        width: '100%',
                         display: "flex",
-                        justifyContent: "flex-end",
-                        gap: 1,
-                        flexWrap: "wrap",
-                        alignItems: "center"
+                        flexDirection: "column",
+                        borderRadius: 3,
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "translateY(-4px)",
+                          boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+                        }
                       }}
                     >
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleViewDetails(booking)}
-                        sx={{ fontSize: 13, fontWeight: 500 }}
-                      >
-                        View Details
-                      </Button>
+                      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                            mb: 2,
+                            gap: 1,
+                            minHeight: 60
+                          }}
+                        >
+                          <Typography 
+                            sx={{ 
+                              fontSize: 18, 
+                              fontWeight: 700,
+                              flex: 1,
+                              lineHeight: 1.3,
+                              mr: 1
+                            }}
+                          >
+                            {booking.serviceCenter?.businessInfo
+                              ?.businessName || "Unknown Service Center"}
+                          </Typography>
+                          <Chip
+                            label={booking.status}
+                            color={
+                              booking.status === "CONFIRMED"
+                                ? "success"
+                                : booking.status === "PENDING"
+                                ? "warning"
+                                : booking.status === "COMPLETED"
+                                ? "default"
+                                : "error"
+                            }
+                            variant="outlined"
+                            size="small"
+                            sx={{ fontSize: 12, fontWeight: 500 }}
+                          />
+                        </Box>
 
-                      {booking.status === "Pending" && (
-                        <>
+                        <Box display="flex" alignItems="center" gap={1} mb={1}>
+                          <LocationOn fontSize="small" color="action" />
+                          <Typography 
+                            sx={{ 
+                              fontSize: 14, 
+                              fontWeight: 500,
+                              lineHeight: 1.4
+                            }}
+                          >
+                            {booking.serviceCenter?.address?.fullAddress ||
+                              "No address provided"}
+                          </Typography>
+                        </Box>
+
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          gap={1}
+                          mb={1}
+                        >
+                          <CalendarToday fontSize="small" color="action" />
+                          <Typography 
+                            sx={{ 
+                              fontSize: 14, 
+                              fontWeight: 500,
+                              lineHeight: 1.4
+                            }}
+                          >
+                            {new Date(
+                              booking.preferredDate
+                            ).toLocaleDateString()}{" "}
+                            at {booking.preferredTimeSlot}
+                          </Typography>
+                        </Box>
+
+                        <Typography
+                          sx={{ 
+                            fontSize: 14, 
+                            fontWeight: 500, 
+                            mt: 1,
+                            mb: 1.5
+                          }}
+                          color="text.secondary"
+                        >
+                          Booking ID: {booking.bookingId || booking._id}
+                        </Typography>
+
+                        <Typography
+                          sx={{ 
+                            fontSize: 16, 
+                            fontWeight: 600, 
+                            mt: 1, 
+                            mb: 1 
+                          }}
+                        >
+                          Services:
+                        </Typography>
+
+                        <Box
+                          sx={{ 
+                            display: "flex", 
+                            flexWrap: "wrap", 
+                            gap: 0.8,
+                            mb: 2,
+                            flex: 1,
+                            alignContent: 'flex-start'
+                          }}
+                        >
+                          {(booking.services || []).map((s, idx) => (
+                            <Chip
+                              key={idx}
+                              label={s}
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              sx={{ fontSize: 12, fontWeight: 500 }}
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+
+                      {/* Buttons */}
+                      <Box
+                        sx={{
+                          mt: 'auto',
+                          pt: 2,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1.5,
+                          borderTop: "1px solid #f0f0f0",
+                          minHeight: 60
+                        }}
+                      >
+                        {/* Primary Action Row */}
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                           <Button
                             variant="outlined"
                             size="small"
-                            color="primary"
-                            onClick={() => handleEdit(booking)}
-                            sx={{ fontSize: 13, fontWeight: 500 }}
+                            onClick={() => handleViewDetails(booking)}
+                            sx={{ fontSize: 12, fontWeight: 500, minWidth: 100 }}
                           >
-                            Edit
+                            View Details
                           </Button>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            color="error"
-                            onClick={() => handleCancel(booking.id)}
-                            sx={{ fontSize: 13, fontWeight: 500 }}
-                          >
-                            Cancel
-                          </Button>
-                        </>
-                      )}
+                          
+                          {/* Status-specific actions */}
+                          <Box sx={{ display: "flex", gap: 1 }}>
 
-                      {booking.status === "Confirmed" && (
-                        <Button
-                          variant="contained"
-                          size="small"
-                          color="error"
-                          onClick={() => handleCancel(booking.id)}
-                          sx={{ fontSize: 13, fontWeight: 500 }}
-                        >
-                          Cancel
-                        </Button>
-                      )}
+                            {booking.status === "PENDING" && (
+                              <>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="primary"
+                                  startIcon={<EditIcon />}
+                                  onClick={() => handleEdit(booking)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 80 }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="error"
+                                  startIcon={<CancelIcon />}
+                                  onClick={() => handleCancel(booking._id)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 90 }}
+                                >
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
 
-                      {booking.status === "Completed" && (
-                        <>
-                          {bookingRatings[booking.id] ? (
-                            <Rating
-                              value={bookingRatings[booking.id].rating}
-                              readOnly
-                              size="small"
-                              sx={{
-                                color: "#ffb400",
-                                "& .MuiRating-iconFilled": {
-                                  color: "#ffb400",
-                                },
-                              }}
-/>
-                          ) : (
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="primary"
-                              sx={{ fontSize: 13, fontWeight: 500 }}
-                              onClick={() => openRatingForBooking(booking)}
-                            >
-                              Rate
-                            </Button>
-                          )}
-                        </>
-                      )}
+                            {booking.status === "CONFIRMED" && canModify && (
+                              <>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="primary"
+                                  startIcon={<EditIcon />}
+                                  onClick={() => handleEdit(booking)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 80 }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="error"
+                                  startIcon={<CancelIcon />}
+                                  onClick={() => handleCancel(booking._id)}
+                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 90 }}
+                                >
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
 
-                      {booking.status === "Cancelled" && (
-                        <Button
-                          variant="contained"
-                          size="small"
-                          color="primary"
-                          onClick={() => handleReschedule(booking)}
-                          sx={{ fontSize: 13, fontWeight: 500 }}
-                        >
-                          Reschedule
-                        </Button>
-                      )}
-                    </Box>
-                  </Paper>
-                </Grid>
-              ))
-            ) : (
-              <Grid item xs={12}>
-                <Typography variant="body1" sx={{ mt: 4, textAlign: "center", color: "#aaa" }}>
-                  No {tabStatusOrder[activeTab].label.toLowerCase()} found.
-                </Typography>
-              </Grid>
-            )}
-          </Grid>
+                            {booking.status === "CONFIRMED" && !canModify && (
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                disabled
+                                sx={{ fontSize: 11, fontWeight: 500, minWidth: 160 }}
+                              >
+                                Too late to modify (&lt; 6h)
+                              </Button>
+                            )}
+
+                            {booking.status === "COMPLETED" && (
+                              <>
+                                  {booking.feedback?.rating ||
+                                  bookingRatings[booking._id] ? (
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                        p: 1,
+                                        borderRadius: 2,
+                                        background: "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
+                                        border: "1px solid #7AB2D3",
+                                        minWidth: 120
+                                      }}
+                                    >
+                                      <StarIcon sx={{ color: "#7AB2D3", fontSize: 16 }} />
+                                      <Rating
+                                        value={
+                                          booking.feedback?.rating ||
+                                          bookingRatings[booking._id]
+                                        }
+                                        readOnly
+                                        size="small"
+                                        sx={{
+                                          "& .MuiRating-iconFilled": {
+                                            color: "#7AB2D3",
+                                            fontSize: "1rem"
+                                          },
+                                        }}
+                                      />
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          color: "#4A628A",
+                                          fontWeight: 600,
+                                          fontSize: "0.75rem"
+                                        }}
+                                      >
+                                        Rated
+                                      </Typography>
+                                    </Box>
+                                  ) : (
+                                    <Button
+                                      variant="contained"
+                                      size="small"
+                                      startIcon={<StarIcon />}
+                                      sx={{
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        borderRadius: 2,
+                                        minWidth: 120,
+                                        background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+                                        "&:hover": {
+                                          background: "linear-gradient(45deg, #4A628A, #7AB2D3)",
+                                        }
+                                      }}
+                                      onClick={() => openRatingForBooking(booking)}
+                                    >
+                                      Rate Service
+                                    </Button>
+                                  )}
+                              </>
+                            )}
+
+                            {booking.status === "CANCELLED" && (
+                              <Button
+                                variant="contained"
+                                size="small"
+                                color="primary"
+                                onClick={() => handleReschedule(booking)}
+                                sx={{ fontSize: 12, fontWeight: 500, minWidth: 100 }}
+                              >
+                                Reschedule
+                              </Button>
+                            )}
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Paper>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Box sx={{ width: "100%" }}>
+              <Typography
+                variant="body1"
+                sx={{ mt: 4, textAlign: "center", color: "#aaa" }}
+              >
+                No {tabStatusOrder[activeTab].label.toLowerCase()} found.
+              </Typography>
+            </Box>
+          )}
         </Box>
 
-        {/* Rating Dialog */}
-     <Dialog open={ratingDialogOpen} onClose={() => setRatingDialogOpen(false)}>
-        <DialogTitle>Rate Completed Service</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, p: 3 }}
+        {/* Enhanced Rating Dialog */}
+        <Dialog
+          open={ratingDialogOpen}
+          onClose={() => setRatingDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
+              boxShadow: "0 20px 40px rgba(74, 98, 138, 0.15)",
+              overflow: "hidden",
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "4px",
+                background:
+                  "linear-gradient(90deg, #DFF2EB, #B9E5E8, #7AB2D3, #4A628A)",
+                animation: "shimmer 2s ease-in-out infinite",
+              },
+              "@keyframes shimmer": {
+                "0%": { transform: "translateX(-100%)" },
+                "100%": { transform: "translateX(100%)" },
+              },
+            },
+          }}
         >
-          <Typography>
-            Rate your experience with {bookingToRate?.centerName}
-          </Typography>
-          <Rating
-              name="rating"
-              value={currentRating}
-              onChange={(e, newValue) => setCurrentRating(newValue)}
-              size="large"
+          <DialogTitle
+            sx={{
+              textAlign: "center",
+              pb: 1,
+              pt: 4,
+              background: "transparent",
+              position: "relative",
+            }}
+          >
+            <Box
               sx={{
-                color: "#ffb400", // Yellow for selected stars
-                "& .MuiRating-iconFilled": {
-                  color: "#ffb400",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                mb: 1,
+              }}
+            >
+              <StarIcon sx={{ color: "#7AB2D3", fontSize: 28 }} />
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Rate Your Experience
+              </Typography>
+              <StarIcon sx={{ color: "#7AB2D3", fontSize: 28 }} />
+            </Box>
+          </DialogTitle>
+          <DialogContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 3,
+              p: 4,
+              background: "transparent",
+            }}
+          >
+            <Box
+              sx={{
+                textAlign: "center",
+                p: 2,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.9)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid #B9E5E8",
+                boxShadow: "0 8px 32px rgba(74, 98, 138, 0.1)",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: "center",
+                  color: "#2c3e50",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                How was your experience with
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#4A628A",
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                }}
+              >
+                {bookingToRate?.serviceCenter?.businessInfo?.businessName ||
+                  bookingToRate?.centerName}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
+                p: 3,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.95)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid #B9E5E8",
+                boxShadow: "0 8px 32px rgba(74, 98, 138, 0.1)",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#6c757d",
+                  fontWeight: 500,
+                  mb: 1,
+                }}
+              >
+                Click to rate (1-5 stars)
+              </Typography>
+
+              <Rating
+                name="rating"
+                value={currentRating}
+                onChange={(e, newValue) => setCurrentRating(newValue)}
+                size="large"
+                icon={
+                  <StarIcon sx={{ color: "#7AB2D3", fontSize: "2.5rem" }} />
+                }
+                emptyIcon={
+                  <StarBorderIcon
+                    sx={{ color: "#B9E5E8", fontSize: "2.5rem" }}
+                  />
+                }
+                sx={{
+                  my: 1,
+                  "& .MuiRating-iconFilled": {
+                    color: "#7AB2D3",
+                    filter: "drop-shadow(0 2px 4px rgba(122, 178, 211, 0.3))",
+                    transform: "scale(1)",
+                    transition: "all 0.2s ease",
+                  },
+                  "& .MuiRating-iconHover": {
+                    color: "#4A628A",
+                    transform: "scale(1.1)",
+                    filter: "drop-shadow(0 4px 8px rgba(74, 98, 138, 0.4))",
+                  },
+                  "& .MuiRating-iconEmpty": {
+                    color: "#B9E5E8",
+                    transition: "all 0.2s ease",
+                  },
+                  "& .MuiRating-icon": {
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      transform: "scale(1.15)",
+                      filter:
+                        "drop-shadow(0 4px 12px rgba(122, 178, 211, 0.5))",
+                    },
+                  },
+                }}
+              />
+
+              {currentRating > 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mt: 1,
+                    opacity: 0,
+                    animation: "fadeIn 0.5s ease forwards",
+                  }}
+                >
+                  <ThumbUpIcon sx={{ color: "#7AB2D3", fontSize: 20 }} />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#4A628A",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {currentRating === 1 && "Poor"}
+                    {currentRating === 2 && "Fair"}
+                    {currentRating === 3 && "Good"}
+                    {currentRating === 4 && "Very Good"}
+                    {currentRating === 5 && "Excellent"}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Share your thoughts (Optional)"
+              placeholder="Tell us about your experience..."
+              value={currentComment}
+              onChange={(e) => setCurrentComment(e.target.value)}
+              variant="outlined"
+              sx={{
+                mt: 1,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 3,
+                  background: "rgba(255,255,255,0.9)",
+                  backdropFilter: "blur(10px)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.95)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
+                  },
+                  "&.Mui-focused": {
+                    background: "rgba(255,255,255,1)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 12px 35px rgba(0,0,0,0.15)",
+                  },
                 },
-                "& .MuiRating-iconHover": {
-                  color: "#ffcc33",
+                "& .MuiInputLabel-root": {
+                  color: "#6c757d",
+                  fontWeight: 500,
                 },
               }}
             />
 
-          <TextField
-            label="Write a review"
-            multiline
-            rows={4}
-            fullWidth
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setRatingDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={submitRating}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-
+            <style>
+              {`
+                @keyframes fadeIn {
+                  from { opacity: 0; transform: translateY(10px); }
+                  to { opacity: 1; transform: translateY(0); }
+                }
+              `}
+            </style>
+          </DialogContent>
+          <DialogActions
+            sx={{
+              p: 4,
+              pt: 2,
+              background: "transparent",
+              gap: 2,
+            }}
+          >
+            <Button
+              onClick={() => setRatingDialogOpen(false)}
+              disabled={submittingRating}
+              variant="outlined"
+              sx={{
+                borderRadius: 3,
+                px: 3,
+                py: 1,
+                fontWeight: 600,
+                border: "2px solid #6c757d",
+                color: "#495057",
+                background: "rgba(255,255,255,0.8)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  border: "2px solid #4A628A",
+                  background: "rgba(255,255,255,0.95)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 25px rgba(74, 98, 138, 0.1)",
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={submitRating}
+              disabled={!currentRating || currentRating < 1 || submittingRating}
+              startIcon={
+                submittingRating ? (
+                  <CircularProgress size={20} sx={{ color: "white" }} />
+                ) : (
+                  <StarIcon sx={{ color: "white" }} />
+                )
+              }
+              sx={{
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                fontWeight: 700,
+                fontSize: "1rem",
+                background:
+                  currentRating > 0
+                    ? "linear-gradient(45deg, #7AB2D3, #4A628A)"
+                    : "linear-gradient(45deg, #B9E5E8, #6c757d)",
+                color: "white",
+                transition: "all 0.3s ease",
+                boxShadow: "0 4px 15px rgba(122, 178, 211, 0.3)",
+                "&:hover": {
+                  background:
+                    currentRating > 0
+                      ? "linear-gradient(45deg, #4A628A, #7AB2D3)"
+                      : "linear-gradient(45deg, #6c757d, #B9E5E8)",
+                  transform: "translateY(-3px)",
+                  boxShadow: "0 8px 25px rgba(122, 178, 211, 0.4)",
+                },
+                "&:disabled": {
+                  background: "linear-gradient(45deg, #B9E5E8, #6c757d)",
+                  color: "rgba(255,255,255,0.7)",
+                  transform: "none",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              {submittingRating ? "Submitting..." : "Submit Rating"}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {overlayContent && (
           <OverlayWindow closeWindowFunction={() => setOverlayContent(null)}>
             {overlayContent}
           </OverlayWindow>
         )}
-
-        <Snackbar
-  open={snackbarOpen}
-  autoHideDuration={4000}
-  onClose={() => setSnackbarOpen(false)}
-  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
->
-  <Alert
-    onClose={() => setSnackbarOpen(false)}
-    severity="success"
-    variant="filled" 
-    sx={{
-      width: '100%',
-      bgcolor: '#ffffff !important',  
-      color: '#000000 !important',    
-      fontWeight: 400,
-      fontSize: 16,
-      borderRadius: 2,
-      boxShadow: 3,
-      borderColor: '#000000 !important',
-    }}
-  >
-    {snackbarMessage}
-  </Alert>
-</Snackbar>
-
-
-
-
       </Container>
     </Box>
   );

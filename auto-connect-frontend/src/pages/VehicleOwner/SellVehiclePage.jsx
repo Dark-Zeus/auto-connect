@@ -5,6 +5,16 @@ import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import React, { useEffect, useState, useContext } from "react";
+import { processPayment } from "../../services/stripeApiService";
+
+const handleVehicleSubmission = async (vehicleData) => {
+  try {
+    // vehicleData already saved in localStorage by form; just start Stripe Checkout
+    await processPayment(vehicleData);
+  } catch (error) {
+    console.error("Payment start failed:", error);
+  }
+};
 
 const SellVehiclePage = () => {
   const [fixedName, setFixedName] = useState("");
@@ -39,6 +49,23 @@ const SellVehiclePage = () => {
     fetchUser();
   }, [user, navigate]);
 
+  // const handleVehicleSubmission = async (vehicleData) => {
+  //   try {
+  //     // Call the Stripe payment API and wait for confirmation
+  //     const paymentResponse = await stripeApiService.processPayment(vehicleData.price); // Assuming price is part of vehicleData
+  //     if (paymentResponse.success) {
+  //       // Proceed to create the vehicle listing after successful payment
+  //       await userApiService.createVehicleListing(vehicleData);
+  //       toast.success("Vehicle listing created successfully!");
+  //       navigate("/my-ads"); // Redirect to user's ads page
+  //     } else {
+  //       toast.error("Payment failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     toast.error("An error occurred during submission. Please try again.");
+  //   }
+  // };
+
   if (loading) return <div>Loading...</div>;
   return (
     <div className="tw:min-h-screen tw:w-full tw:bg-transparent tw:py-8 tw:px-4 tw:overflow-auto">
@@ -48,6 +75,7 @@ const SellVehiclePage = () => {
           fixedName={fixedName}
           fixedEmail={fixedEmail}
           userId={userId}
+          onSubmit={handleVehicleSubmission}
         />
       </div>
     </div>    

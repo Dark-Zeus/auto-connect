@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
 const BookingDetailsPage = ({ booking: bookingProp }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,12 +30,17 @@ const BookingDetailsPage = ({ booking: bookingProp }) => {
 
   return (
     <Box sx={{ minHeight: "90vh", py: 10 }}>
-        <Paper sx={{ p: { xs: 3, sm: 4, md: 5 }, borderRadius: 4, boxShadow: 3 }}>
-          <Typography fontSize={24} fontWeight={700} gutterBottom>
-            Booking Details
-          </Typography>
-          <Divider sx={{ my: 2 }} />
+      <Paper sx={{ p: { xs: 3, sm: 4, md: 5 }, borderRadius: 4, boxShadow: 3 }}>
+        <Typography fontSize={24} fontWeight={700} gutterBottom>
+          Booking Details
+        </Typography>
+        <Divider sx={{ my: 2 }} />
 
+        {/* Basic Information */}
+        <Box sx={{ mb: 3 }}>
+          <Typography fontSize={18} fontWeight={600} gutterBottom>
+            Basic Information:
+          </Typography>
           <Typography fontSize={16} fontWeight={500}>
             <strong>Booking ID:</strong> {booking.id}
           </Typography>
@@ -52,36 +56,224 @@ const BookingDetailsPage = ({ booking: bookingProp }) => {
           <Typography fontSize={14} fontWeight={400}>
             <strong>Location:</strong> {booking.location}
           </Typography>
+        </Box>
 
-          <Box sx={{ my: 2 }}>
+        {/* Vehicle Information */}
+        {booking.vehicle && (
+          <Box sx={{ mb: 3 }}>
             <Typography fontSize={18} fontWeight={600} gutterBottom>
-              Services:
+              Vehicle Information:
             </Typography>
-            <Grid container spacing={1}>
-              {booking.services.map((s, idx) => (
-                <Grid item key={idx}>
-                  <Chip
-                    label={s}
-                    color="primary"
-                    variant="outlined"
-                    sx={{ fontSize: 12, fontWeight: 500 }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <Typography fontSize={16} fontWeight={500}>
+              <strong>Registration:</strong>{" "}
+              {booking.vehicle.registrationNumber}
+            </Typography>
+            <Typography fontSize={16} fontWeight={500}>
+              <strong>Make & Model:</strong> {booking.vehicle.make}{" "}
+              {booking.vehicle.model}
+            </Typography>
+            <Typography fontSize={16} fontWeight={500}>
+              <strong>Year:</strong> {booking.vehicle.year}
+            </Typography>
           </Box>
+        )}
 
-          <Typography fontSize={16} fontWeight={500}>
-            <strong>Status:</strong> {booking.status}
+        {/* Services */}
+        <Box sx={{ mb: 3 }}>
+          <Typography fontSize={18} fontWeight={600} gutterBottom>
+            Requested Services:
+          </Typography>
+          <Grid container spacing={1}>
+            {booking.services.map((s, idx) => (
+              <Grid item key={idx}>
+                <Chip
+                  label={s}
+                  color="primary"
+                  variant="outlined"
+                  sx={{ fontSize: 12, fontWeight: 500 }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* Special Requests */}
+        {booking.specialRequests && (
+          <Box sx={{ mb: 3 }}>
+            <Typography fontSize={18} fontWeight={600} gutterBottom>
+              Special Requests:
+            </Typography>
+            <Typography fontSize={16} fontWeight={400}>
+              {booking.specialRequests}
+            </Typography>
+          </Box>
+        )}
+
+        {/* Status */}
+        <Box sx={{ mb: 3 }}>
+          <Typography fontSize={18} fontWeight={600} gutterBottom>
+            Current Status:
+          </Typography>
+          <Chip
+            label={booking.status}
+            color={
+              booking.status === "COMPLETED"
+                ? "success"
+                : booking.status === "CONFIRMED"
+                ? "primary"
+                : booking.status === "IN_PROGRESS"
+                ? "warning"
+                : booking.status === "CANCELLED" ||
+                  booking.status === "REJECTED"
+                ? "error"
+                : "default"
+            }
+            sx={{ fontSize: 14, fontWeight: 500, px: 2, py: 1 }}
+          />
+        </Box>
+
+        {/* Service Center Response */}
+        {booking.serviceCenterResponse && (
+          <Box
+            sx={{ my: 3, p: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}
+          >
+            <Typography fontSize={18} fontWeight={600} gutterBottom>
+              Service Center Response:
+            </Typography>
+
+            {booking.serviceCenterResponse.message && (
+              <Typography fontSize={16} fontWeight={400} sx={{ mb: 2 }}>
+                <strong>Message:</strong>{" "}
+                {booking.serviceCenterResponse.message}
+              </Typography>
+            )}
+
+            {booking.serviceCenterResponse.proposedDate && (
+              <Typography fontSize={16} fontWeight={400}>
+                <strong>Proposed Date:</strong>{" "}
+                {new Date(
+                  booking.serviceCenterResponse.proposedDate
+                ).toLocaleDateString()}
+              </Typography>
+            )}
+
+            {booking.serviceCenterResponse.proposedTimeSlot && (
+              <Typography fontSize={16} fontWeight={400}>
+                <strong>Proposed Time:</strong>{" "}
+                {booking.serviceCenterResponse.proposedTimeSlot}
+              </Typography>
+            )}
+
+            {booking.serviceCenterResponse.estimatedDuration && (
+              <Typography fontSize={16} fontWeight={400}>
+                <strong>Estimated Duration:</strong>{" "}
+                {booking.serviceCenterResponse.estimatedDuration}
+              </Typography>
+            )}
+
+            {booking.serviceCenterResponse.responseDate && (
+              <Typography
+                fontSize={14}
+                fontWeight={400}
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                <strong>Response Date:</strong>{" "}
+                {new Date(
+                  booking.serviceCenterResponse.responseDate
+                ).toLocaleString()}
+              </Typography>
+            )}
+          </Box>
+        )}
+
+        {/* Customer Feedback */}
+        {booking.feedback && (
+          <Box
+            sx={{ my: 3, p: 2, backgroundColor: "#e8f5e8", borderRadius: 2 }}
+          >
+            <Typography fontSize={18} fontWeight={600} gutterBottom>
+              Your Feedback:
+            </Typography>
+
+            <Typography fontSize={16} fontWeight={400}>
+              <strong>Rating:</strong> {booking.feedback.rating}/5 stars
+            </Typography>
+
+            {booking.feedback.comment && (
+              <Typography fontSize={16} fontWeight={400} sx={{ mt: 1 }}>
+                <strong>Comment:</strong> {booking.feedback.comment}
+              </Typography>
+            )}
+
+            {booking.feedback.submittedAt && (
+              <Typography
+                fontSize={14}
+                fontWeight={400}
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                <strong>Submitted:</strong>{" "}
+                {new Date(booking.feedback.submittedAt).toLocaleString()}
+              </Typography>
+            )}
+          </Box>
+        )}
+
+        {/* Contact Information */}
+        {booking.contactInfo && (
+          <Box sx={{ mb: 3 }}>
+            <Typography fontSize={18} fontWeight={600} gutterBottom>
+              Contact Information:
+            </Typography>
+            <Typography fontSize={16} fontWeight={400}>
+              <strong>Phone:</strong> {booking.contactInfo.phone}
+            </Typography>
+            <Typography fontSize={16} fontWeight={400}>
+              <strong>Email:</strong> {booking.contactInfo.email}
+            </Typography>
+            {booking.contactInfo.preferredContactMethod && (
+              <Typography fontSize={16} fontWeight={400}>
+                <strong>Preferred Contact:</strong>{" "}
+                {booking.contactInfo.preferredContactMethod}
+              </Typography>
+            )}
+          </Box>
+        )}
+
+        {/* Pricing Information */}
+        <Box sx={{ mb: 3 }}>
+          <Typography fontSize={18} fontWeight={600} gutterBottom>
+            Pricing:
           </Typography>
           <Typography fontSize={16} fontWeight={500}>
-            <strong>Estimated Price:</strong> Rs. 9,500
+            <strong>Estimated Price:</strong> Rs.{" "}
+            {booking.estimatedCost || 9500}
           </Typography>
           <Typography fontSize={16} fontWeight={500}>
             <strong>Booking Fee Paid:</strong> Rs. 500
           </Typography>
-         
-        </Paper>
+        </Box>
+
+        {/* Booking Timeline */}
+        <Box sx={{ mb: 3 }}>
+          <Typography fontSize={18} fontWeight={600} gutterBottom>
+            Booking Timeline:
+          </Typography>
+          {booking.createdAt && (
+            <Typography fontSize={14} fontWeight={400} color="text.secondary">
+              <strong>Booked on:</strong>{" "}
+              {new Date(booking.createdAt).toLocaleString()}
+            </Typography>
+          )}
+          {booking.updatedAt && booking.updatedAt !== booking.createdAt && (
+            <Typography fontSize={14} fontWeight={400} color="text.secondary">
+              <strong>Last updated:</strong>{" "}
+              {new Date(booking.updatedAt).toLocaleString()}
+            </Typography>
+          )}
+        </Box>
+      </Paper>
     </Box>
   );
 };

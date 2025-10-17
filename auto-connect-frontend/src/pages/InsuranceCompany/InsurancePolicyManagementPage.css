@@ -1,0 +1,296 @@
+.policy-management-page {
+  padding: 2rem;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  gap: 2rem;
+  position: relative;
+}
+
+.header-content {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.page-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 24px;
+  order: 1;
+}
+
+.page-header p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  order: 2;
+}
+
+/* Add New Policy Button - positioned in top right corner */
+.add-policy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.8rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.add-policy-btn:hover {
+  background-color: #0056b3;
+}
+
+.add-policy-btn:active {
+  background-color: #004085;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input,
+.filter-select {
+  padding: 1rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.search-input {
+  flex: 1 1 300px;
+}
+
+.filter-select {
+  flex: 1 1 150px;
+}
+
+.search-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Table Styling */
+.policies-table {
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.policies-table thead th {
+  background-color: #e9ecef;
+  text-align: left;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.policies-table tbody tr {
+  background-color: white;
+}
+
+.policies-table tbody td {
+  padding: 12px;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.policies-table tbody tr:hover {
+  background-color: #f5f9ff;
+  cursor: pointer;
+}
+
+/* Wrap table and pagination */
+.table-wrapper {
+  display: inline-block;
+  width: 100%;
+}
+
+/* Pagination container aligned to right */
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background-color: #4588aa;
+  color: white;
+  border-color: #4588aa;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.policies-per-page {
+  padding: 0.4rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}
+
+.expired-row {
+  background-color: #fff5f5;
+}
+
+.expired-row:hover {
+  background-color: #fed7d7;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-expired {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-cancelled {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-default {
+  background: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+.actions-cell {
+  text-align: center;
+  padding: 0.5rem !important;
+}
+
+.renew-btn-table {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.renew-btn-table:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.clear-filters-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #5a6268;
+}
+
+.table-summary {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.expired-indicator {
+  color: #dc3545;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .page-header {
+    padding-top: 4rem; /* Add space for absolute positioned button */
+  }
+  
+  .add-policy-btn {
+    position: static;
+    align-self: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-section {
+    flex-direction: column;
+  }
+  
+  .search-input,
+  .filter-select {
+    flex: 1 1 auto;
+  }
+}
