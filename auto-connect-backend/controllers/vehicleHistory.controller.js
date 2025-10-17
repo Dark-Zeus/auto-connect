@@ -685,22 +685,30 @@ export const getOwnerVehicles = catchAsync(async (req, res, next) => {
     isActive: true
   }).select({
     registrationNumber: 1,
-    vehicleDetails: 1,
+    make: 1,
+    model: 1,
+    yearOfManufacture: 1,
     currentOwner: 1,
     createdAt: 1,
     engineNumber: 1,
-    chassisNumber: 1
+    chassisNumber: 1,
+    color: 1,
+    fuelType: 1,
+    mileage: 1
   }).sort({ createdAt: -1 });
 
   // Format the response
   const formattedVehicles = vehicles.map(vehicle => ({
     id: vehicle._id,
     registrationNumber: vehicle.registrationNumber,
-    make: vehicle.vehicleDetails?.make || 'Unknown',
-    model: vehicle.vehicleDetails?.model || 'Unknown',
-    year: vehicle.vehicleDetails?.year || 'Unknown',
+    make: vehicle.make || 'Unknown',
+    model: vehicle.model || 'Unknown',
+    year: vehicle.yearOfManufacture || 'Unknown',
     engineNumber: vehicle.engineNumber,
     chassisNumber: vehicle.chassisNumber,
+    color: vehicle.color,
+    fuelType: vehicle.fuelType,
+    mileage: vehicle.mileage,
     registeredDate: vehicle.createdAt?.toISOString().split('T')[0] || 'Unknown',
     ownerName: vehicle.currentOwner?.name || req.user.fullName
   }));
@@ -789,15 +797,18 @@ export const getVehicleCompleteHistory = catchAsync(async (req, res, next) => {
     registrationNumber: vehicle.registrationNumber,
     chassisNumber: vehicle.chassisNumber,
     engineNumber: vehicle.engineNumber,
-    make: vehicle.vehicleDetails?.make,
-    model: vehicle.vehicleDetails?.model,
-    year: vehicle.vehicleDetails?.year,
-    engineCapacity: vehicle.vehicleDetails?.engineCapacity,
-    fuelType: vehicle.vehicleDetails?.fuelType,
-    transmission: vehicle.vehicleDetails?.transmission,
-    bodyType: vehicle.vehicleDetails?.bodyType,
-    color: vehicle.vehicleDetails?.color,
-    mileage: vehicle.vehicleDetails?.mileage,
+    make: vehicle.make,
+    model: vehicle.model,
+    year: vehicle.yearOfManufacture,
+    engineCapacity: vehicle.cylinderCapacity,
+    fuelType: vehicle.fuelType,
+    transmission: vehicle.transmission,
+    bodyType: vehicle.classOfVehicle,
+    color: vehicle.color,
+    mileage: vehicle.mileage,
+    seatingCapacity: vehicle.seatingCapacity,
+    weight: vehicle.weight,
+    country: vehicle.country,
     ownershipHistory: vehicle.ownershipHistory || [],
     currentOwner: vehicle.currentOwner
   };
@@ -880,11 +891,13 @@ export const getVehicleCompleteHistory = catchAsync(async (req, res, next) => {
       vehicle: {
         id: vehicle._id,
         registrationNumber: vehicle.registrationNumber,
-        make: vehicle.vehicleDetails?.make,
-        model: vehicle.vehicleDetails?.model,
-        year: vehicle.vehicleDetails?.year,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.yearOfManufacture,
         engineNumber: vehicle.engineNumber,
-        chassisNumber: vehicle.chassisNumber
+        chassisNumber: vehicle.chassisNumber,
+        color: vehicle.color,
+        fuelType: vehicle.fuelType
       },
       registrationHistory,
       completeHistory,

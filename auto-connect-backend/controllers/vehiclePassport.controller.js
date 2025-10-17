@@ -59,18 +59,18 @@ export const getVehiclePassport = catchAsync(async (req, res, next) => {
   const vehicleInfo = {
     id: vehicle._id,
     plateNumber: vehicle.registrationNumber,
-    make: vehicle.vehicleDetails?.make || 'Unknown',
-    model: vehicle.vehicleDetails?.model || 'Unknown',
-    year: vehicle.vehicleDetails?.year || 'Unknown',
-    color: vehicle.vehicleDetails?.color || 'Unknown',
+    make: vehicle.make || 'Unknown',
+    model: vehicle.model || 'Unknown',
+    year: vehicle.yearOfManufacture || 'Unknown',
+    color: vehicle.color || 'Unknown',
     vin: vehicle.chassisNumber || 'Unknown', // Using chassis as VIN equivalent
     engineNumber: vehicle.engineNumber || 'Unknown',
-    currentMileage: vehicle.vehicleDetails?.mileage || 0,
+    currentMileage: vehicle.mileage || 0,
     registrationDate: vehicle.createdAt?.toISOString().split('T')[0] || 'Unknown',
-    fuelType: vehicle.vehicleDetails?.fuelType || 'Unknown',
-    transmission: vehicle.vehicleDetails?.transmission || 'Unknown',
-    engineCapacity: vehicle.vehicleDetails?.engineCapacity || 'Unknown',
-    bodyType: vehicle.vehicleDetails?.bodyType || 'Unknown',
+    fuelType: vehicle.fuelType || 'Unknown',
+    transmission: vehicle.transmission || 'Unknown',
+    engineCapacity: vehicle.cylinderCapacity || 'Unknown',
+    bodyType: vehicle.classOfVehicle || 'Unknown',
     owner: {
       name: vehicle.currentOwner?.name || req.user.fullName || 'Unknown',
       phone: req.user.phoneNumber || 'Not provided',
@@ -178,7 +178,10 @@ export const getPassportVehicles = catchAsync(async (req, res, next) => {
     {
       $project: {
         registrationNumber: 1,
-        vehicleDetails: 1,
+        make: 1,
+        model: 1,
+        yearOfManufacture: 1,
+        color: 1,
         engineNumber: 1,
         chassisNumber: 1,
         createdAt: 1,
@@ -209,10 +212,10 @@ export const getPassportVehicles = catchAsync(async (req, res, next) => {
   const formattedVehicles = vehicles.map(vehicle => ({
     id: vehicle._id,
     plateNumber: vehicle.registrationNumber,
-    make: vehicle.vehicleDetails?.make || 'Unknown',
-    model: vehicle.vehicleDetails?.model || 'Unknown',
-    year: vehicle.vehicleDetails?.year || 'Unknown',
-    color: vehicle.vehicleDetails?.color || 'Unknown',
+    make: vehicle.make || 'Unknown',
+    model: vehicle.model || 'Unknown',
+    year: vehicle.yearOfManufacture || 'Unknown',
+    color: vehicle.color || 'Unknown',
     registrationDate: vehicle.createdAt?.toISOString().split('T')[0] || 'Unknown',
     totalServices: vehicle.totalServices || 0,
     lastServiceDate: vehicle.lastServiceDate?.toISOString().split('T')[0] || 'Never',
@@ -350,11 +353,11 @@ async function getEmissionRecords(vehicleId) {
 // Helper function to calculate vehicle value
 async function calculateVehicleValue(vehicle) {
   const currentYear = new Date().getFullYear();
-  const vehicleYear = parseInt(vehicle.vehicleDetails?.year) || currentYear;
+  const vehicleYear = parseInt(vehicle.yearOfManufacture) || currentYear;
   const age = currentYear - vehicleYear;
 
   // Simple depreciation calculation (would be more complex in real implementation)
-  const baseValue = getBaseValue(vehicle.vehicleDetails?.make, vehicle.vehicleDetails?.model);
+  const baseValue = getBaseValue(vehicle.make, vehicle.model);
   const depreciationRate = 0.15; // 15% per year
   const currentValue = baseValue * Math.pow(1 - depreciationRate, age);
 
@@ -439,7 +442,7 @@ async function getRecentActivity(registrationNumber, ownerId) {
 // Helper function to calculate vehicle health score
 function calculateVehicleHealthScore(serviceRecords, vehicle) {
   const currentYear = new Date().getFullYear();
-  const vehicleYear = parseInt(vehicle.vehicleDetails?.year) || currentYear;
+  const vehicleYear = parseInt(vehicle.yearOfManufacture) || currentYear;
   const age = currentYear - vehicleYear;
 
   let score = 100;
