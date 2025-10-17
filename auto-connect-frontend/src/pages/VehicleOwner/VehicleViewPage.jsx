@@ -57,7 +57,7 @@ const VehicleViewPage = () => {
                 />
                 <ImageViewer photos={vehicleData.photos} />
                 <VehicleDescriptionBox description={vehicleData.description} /> 
-                <OwnershipHistoryCheck /> 
+                {/* <OwnershipHistoryCheck />  */}
                 <SecurityTips />
             </div>
             <div className="tw:w-1/3 tw:flex tw:flex-col">
