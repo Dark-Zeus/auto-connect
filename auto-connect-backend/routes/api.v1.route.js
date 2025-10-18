@@ -12,6 +12,7 @@ import addedVehicleRoute from "./addedVehicle.route.js";
 import listVehicleRoute from "./listVehicle.route.js";
 import subscriptionRoute from "./subscription.route.js";
 import notificationRoute from "./notificationRoute.route.js";
+import contactRoute from "./contactRequest.routes.js";
 
 // Import rate limiters for specific routes
 import {
@@ -46,6 +47,9 @@ router.use("/subscriptions", generalLimiter, subscriptionRoute);
 
 // Notification routes
 router.use("/notifications", generalLimiter, notificationRoute);
+
+// Contact Request routes
+router.use("/usercontacts", generalLimiter, contactRoute);
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -110,6 +114,17 @@ router.get("/docs", (req, res) => {
         routes: [
           "GET /notifications - List all sent notifications (for Sent Notifications table)",
           "POST /notifications/ - Create a new notification"
+        ],
+      },
+
+      usercontacts: {
+        description: "Contact request management",
+        routes: [
+          "POST /usercontacts/ - Create new contact request",
+          "GET /usercontacts/ - Get all contact requests",
+          "PUT /usercontacts/:id - Update contact request (status or reply)",
+          "DELETE /usercontacts/:id - Delete contact request",
+          "PUT /usercontacts/:id/reply - Reply to contact request and mark as resolved"
         ],
       },
 
