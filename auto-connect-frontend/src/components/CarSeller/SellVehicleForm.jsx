@@ -7,9 +7,9 @@ import userApiService from '../../services/userApiService';
 import { UserContext } from "../../contexts/UserContext";
 import { toast } from "react-toastify";
 
-const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
+const VehicleListingForm = ({ fixedName, fixedEmail, fixedPhone, userId, onSubmit }) => {
   const [formData, setFormData] = useState({
-    mobile: '',
+    mobile: fixedPhone || '',
     district: '',
     city: '',
     vehicleType: '',
@@ -41,12 +41,28 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      name: fixedName || "",
-      email: fixedEmail || ""
-    }));
-  }, [fixedName, fixedEmail]);
+    const fetchUserData = async () => {
+      try {
+        setIsLoading(true);
+        const userData = await userApiService.getUserById(userId);
+        setFormData((prev) => ({
+          ...prev,
+          name: userData.name || fixedName || "",
+          email: userData.email || fixedEmail || "",
+          mobile: userData.phone || fixedPhone || "" // Update mobile from userData
+        }));
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast.error("Failed to load user information");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId, fixedName, fixedEmail, fixedPhone]);
 
   const handleSnackbarClose = (event, reason) => {
   if (reason === 'clickaway') {
@@ -603,10 +619,9 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
                   type="tel"
                   name="mobile"
                   value={formData.mobile}
-                  onChange={handleInputChange}
-                  className={`tw:text-black tw:w-full tw:px-4 tw:py-3 tw:border ${errors.mobile ? 'tw:border-red-500' : 'tw:border-slate-300'} tw:rounded-lg focus:tw:ring-2 focus:tw:ring-slate-500 focus:tw:border-transparent tw:transition-all`}
-                  placeholder="07xxxxxxxx"
-                  required
+                  className="tw:w-full tw:px-4 tw:py-3 tw:bg-slate-100 tw:rounded-lg tw:text-slate-700" // Changed styling to match read-only fields
+                  placeholder={isLoading ? 'Loading...' : '07xxxxxxxx'}
+                  readOnly // Make it read-only
                 />
                 {errors.mobile && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.mobile}</p>}
               </div>
