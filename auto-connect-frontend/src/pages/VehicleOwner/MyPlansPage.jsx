@@ -254,7 +254,7 @@ const MyPlansPage = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate("/marketplace/subscription")}
-                  className="tw:flex-1 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:px-6 tw:py-4 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:transition-all"
+                  className="tw:flex-1 tw:bg-gradient-to-r tw:from-blue-500 tw:to-blue-600 tw:text-white tw:px-6 tw:py-4 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:transition-all tw:hover:cursor-pointer"
                 >
                   Change Plan
                 </motion.button>
@@ -265,7 +265,7 @@ const MyPlansPage = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCancelClick}
                     disabled={cancelProcessing}
-                    className={`tw:flex-1 tw:bg-red-600 tw:text-white tw:px-6 tw:py-4 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:bg-red-700 tw:transition-all ${
+                    className={`tw:flex-1 tw:bg-red-600 tw:text-white tw:px-6 tw:py-4 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:bg-red-700 tw:transition-all tw:hover:cursor-pointer ${
                       cancelProcessing ? "tw:opacity-70 tw:cursor-not-allowed" : ""
                     }`}
                   >
