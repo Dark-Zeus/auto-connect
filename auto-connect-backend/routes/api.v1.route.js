@@ -24,6 +24,7 @@ import subscriptionRoute from "./subscription.route.js";
 import notificationRoute from "./notificationRoute.route.js";
 import contactRoute from "./contactRequest.routes.js";
 import DashboardRoute from "./dashboard.route.js";
+import getVehicleOwnersRoute from "./getVehicleOwners.route.js";
 
 import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
@@ -78,6 +79,9 @@ router.use("/notifications", generalLimiter, notificationRoute);
 
 // Dashboard routes
 router.use("/dashboard", generalLimiter, DashboardRoute);
+
+// Vehicle Owners route
+router.use("/users/vehicleowners", generalLimiter, getVehicleOwnersRoute);
 
 router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
 
@@ -222,6 +226,13 @@ router.get("/docs", (req, res) => {
         description: "Dashboard statistics and analytics",
         routes: [
           "GET /dashboard - Get total number of users",
+        ],
+      },
+
+      users: {
+        description: "Fetch all users with role = vehicle_owner",
+        routes: [
+          "GET /users/vehicleowners - Retrieve all vehicle owners",
         ],
       },
 
