@@ -17,6 +17,7 @@ import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
 import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
 import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.js";
 import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
+import reviewsRoutes from "./api.v1/reviews/reviews.route.js";
 
 import listVehicleRoute from "./listVehicle.route.js";
 
@@ -62,6 +63,7 @@ router.use("/time-slots", timeSlotRoutes);
 router.use("/weekly-schedule", weeklyScheduleRoutes);
 router.use("/vehicle-history", vehicleHistoryRoutes);
 router.use("/vehicle-passport", vehiclePassportRoutes);
+router.use("/reviews", reviewsRoutes);
 
 router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 

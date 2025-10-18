@@ -8,6 +8,7 @@ import {
   cancelBooking,
   submitFeedback,
   getBookingStats,
+  getDashboardStats,
   getAvailableTimeSlots,
   submitServiceCompletionReport,
   getServiceCompletionReport,
@@ -105,11 +106,14 @@ const updateBookingStatusValidation = Joi.object({
       "PENDING",
       "CONFIRMED",
       "IN_PROGRESS",
-      "COMPLETED",
+      // "COMPLETED", - Removed: Use completion report endpoint instead
       "CANCELLED",
       "REJECTED"
     )
-    .required(),
+    .required()
+    .messages({
+      "any.only": "Invalid status. To complete a service, please use the completion report endpoint.",
+    }),
   message: Joi.string().max(500).optional().allow(""),
   proposedDate: Joi.date().optional(),
   proposedTimeSlot: Joi.string()
@@ -350,6 +354,13 @@ router.get(
   getBookingStats
 );
 
+// Get dashboard statistics (Service centers only)
+router.get(
+  "/dashboard-stats",
+  restrictTo("service_center"),
+  getDashboardStats
+);
+
 // Get available time slots for a specific date and service center
 router.get(
   "/available-slots",
@@ -392,12 +403,41 @@ router.post(
   submitFeedback
 );
 
+// Middleware to parse JSON strings from FormData
+const parseFormDataJSON = (req, res, next) => {
+  if (req.body) {
+    // Parse JSON strings back to objects/arrays
+    const fieldsToParse = [
+      'completedServices',
+      'additionalWork',
+      'totalCostBreakdown',
+      'vehicleCondition',
+      'technician',
+      'qualityCheck',
+      'recommendations',
+      'customerNotification'
+    ];
+
+    fieldsToParse.forEach(field => {
+      if (req.body[field] && typeof req.body[field] === 'string') {
+        try {
+          req.body[field] = JSON.parse(req.body[field]);
+        } catch (error) {
+          console.error(`Failed to parse ${field}:`, error);
+        }
+      }
+    });
+  }
+  next();
+};
+
 // Submit service completion report (Service centers only)
 router.post(
   "/:id/completion-report",
   restrictTo("service_center"),
   uploadMultiple.array("supportingDocuments", 10),
   handleMulterError,
+  parseFormDataJSON, // Parse JSON strings before validation
   validate(bookingIdValidation, "params"),
   validate(serviceCompletionReportValidation),
   submitServiceCompletionReport
