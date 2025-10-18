@@ -1,69 +1,6 @@
 // services/vehicleApiService.js (FIXED VERSION)
-import axios from "axios";
+import axios from "../utils/axios.js";
 import { toast } from "react-toastify";
-
-// FIXED: Handle both VITE_ and REACT_APP_ environment variables
-const API_BASE_URL =
-  import.meta.env.VITE_REACT_APP_BACKEND_API_URL ||
-  import.meta.env.REACT_APP_BACKEND_URL + "/api/v1" ||
-  "http://localhost:3000/api/v1"; // Backend is on port 3000
-
-console.log("Environment variables:", {
-  VITE_REACT_APP_BACKEND_API_URL: import.meta.env
-    .VITE_REACT_APP_BACKEND_API_URL,
-  REACT_APP_BACKEND_URL: import.meta.env.REACT_APP_BACKEND_URL,
-  REACT_APP_FRONTEND_URL: import.meta.env.REACT_APP_FRONTEND_URL,
-  Final_API_BASE_URL: API_BASE_URL,
-}); // Debug log
-
-const vehicleAxios = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 30000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add request interceptor to include auth token
-vehicleAxios.interceptors.request.use(
-  (config) => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    console.log(
-      "Making API request:",
-      config.method.toUpperCase(),
-      config.url,
-      config.params
-    );
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for error handling
-vehicleAxios.interceptors.response.use(
-  (response) => {
-    console.log("API response:", response.status, response.data);
-    return response;
-  },
-  (error) => {
-    console.error("API error:", error.response?.data || error.message);
-
-    if (error.response?.status === 401) {
-      // Handle unauthorized - redirect to login
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      window.location.href = "/auth/login";
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 // Vehicle API endpoints
 export const vehicleAPI = {
@@ -71,7 +8,7 @@ export const vehicleAPI = {
   getVehicles: async (params = {}) => {
     try {
       console.log("Fetching vehicles with params:", params);
-      const response = await vehicleAxios.get("/vehicles", { params });
+      const response = await axios.get("/vehicles", { params });
       return {
         success: true,
         data: response.data.data,
@@ -90,7 +27,7 @@ export const vehicleAPI = {
   // Get vehicles by owner NIC (alternative endpoint)
   getVehiclesByNIC: async (nicNumber, params = {}) => {
     try {
-      const response = await vehicleAxios.get(`/vehicles/owner/${nicNumber}`, {
+      const response = await axios.get(`/vehicles/owner/${nicNumber}`, {
         params,
       });
       return {
@@ -110,7 +47,7 @@ export const vehicleAPI = {
   // Get vehicle statistics
   getStats: async (params = {}) => {
     try {
-      const response = await vehicleAxios.get("/vehicles/stats", { params });
+      const response = await axios.get("/vehicles/stats", { params });
       return {
         success: true,
         data: response.data.data,
@@ -129,7 +66,7 @@ export const vehicleAPI = {
   // Get single vehicle
   getVehicle: async (vehicleId) => {
     try {
-      const response = await vehicleAxios.get(`/vehicles/${vehicleId}`);
+      const response = await axios.get(`/vehicles/${vehicleId}`);
       return {
         success: true,
         data: response.data.data,
@@ -164,7 +101,7 @@ export const vehicleAPI = {
         }
       });
 
-      const response = await vehicleAxios.post("/vehicles", formData, {
+      const response = await axios.post("/vehicles", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -201,15 +138,11 @@ export const vehicleAPI = {
         }
       });
 
-      const response = await vehicleAxios.patch(
-        `/vehicles/${vehicleId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.patch(`/vehicles/${vehicleId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return {
         success: true,
@@ -228,7 +161,7 @@ export const vehicleAPI = {
   // Delete vehicle
   deleteVehicle: async (vehicleId) => {
     try {
-      const response = await vehicleAxios.delete(`/vehicles/${vehicleId}`);
+      const response = await axios.delete(`/vehicles/${vehicleId}`);
       return {
         success: true,
         message: response.data.message,
@@ -245,7 +178,7 @@ export const vehicleAPI = {
   // Export vehicles
   exportVehicles: async (params = {}) => {
     try {
-      const response = await vehicleAxios.get("/vehicles/export", { params });
+      const response = await axios.get("/vehicles/export", { params });
       return {
         success: true,
         data: response.data.data,
@@ -263,9 +196,7 @@ export const vehicleAPI = {
   // Verify vehicle (admin only)
   verifyVehicle: async (vehicleId) => {
     try {
-      const response = await vehicleAxios.patch(
-        `/vehicles/${vehicleId}/verify`
-      );
+      const response = await axios.patch(`/vehicles/${vehicleId}/verify`);
       return {
         success: true,
         data: response.data.data,
@@ -283,12 +214,9 @@ export const vehicleAPI = {
   // Reject vehicle (admin only)
   rejectVehicle: async (vehicleId, rejectionReason) => {
     try {
-      const response = await vehicleAxios.patch(
-        `/vehicles/${vehicleId}/reject`,
-        {
-          rejectionReason,
-        }
-      );
+      const response = await axios.patch(`/vehicles/${vehicleId}/reject`, {
+        rejectionReason,
+      });
       return {
         success: true,
         data: response.data.data,

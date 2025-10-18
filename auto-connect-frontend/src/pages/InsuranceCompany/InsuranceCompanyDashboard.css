@@ -1,0 +1,640 @@
+/* Insurance Dashboard Styles */
+:root {
+  --primary-light: #DFF2EB;
+  --primary-medium: #B9E5E8;
+  --primary-blue: #7AB2D3;
+  --primary-dark: #4A628A;
+  --white: #ffffff;
+  --gray-light: #f8f9fa;
+  --gray-medium: #6c757d;
+  --text-dark: #2c3e50;
+  --shadow-light: rgba(74, 98, 138, 0.1);
+  --shadow-medium: rgba(74, 98, 138, 0.2);
+  --shadow-strong: rgba(74, 98, 138, 0.3);
+}
+
+.dashboard-page {
+  min-height: 100vh;
+  background-color: transparent;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.dashboard-content {
+  padding: 2rem 0 4rem !important;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.welcome-section {
+  margin-bottom: 0.5rem;
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%) !important;
+  border-radius: 20px !important;
+  padding: 2.5rem !important;
+  box-shadow: 0 8px 32px var(--shadow-light) !important;
+  border: 1px solid var(--primary-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 100px;
+  background: linear-gradient(45deg, var(--primary-medium), var(--primary-blue));
+  border-radius: 50%;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.welcome-title {
+  color: var(--text-dark) !important;
+  font-weight: 600 !important;
+  margin-bottom: 0.75rem !important;
+  position: relative;
+  z-index: 2;
+  font-size: 2rem;
+}
+
+.welcome-text {
+  color: var(--gray-medium) !important;
+  line-height: 1.6 !important;
+  font-size: 16px !important;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+
+.dashboard-grid {
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+}
+
+.dashboard-card {
+  height: 100%;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 24px var(--shadow-light) !important;
+  border: 1px solid var(--primary-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background: var(--white) !important;
+  min-width: 250px;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow-medium) !important;
+}
+
+.card-content {
+  padding: 2rem !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.card-icon svg {
+  font-size: 1.75rem !important;
+  color: var(--white);
+}
+
+.card-title {
+  color: var(--text-dark) !important;
+  font-weight: 600 !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 1.25rem;
+  margin: 0;
+  font-size:18px !important;
+}
+
+.card-description {
+  color: var(--gray-medium) !important;
+  line-height: 1.5 !important;
+  flex: 1;
+  margin-bottom: 1rem !important;
+  font-size: 14px !important;
+}
+
+.card-stats {
+  color: var(--primary-blue) !important;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.card-button {
+  border-radius: 25px !important;
+  padding: 0.5rem 1.5rem !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2rem;
+  min-width: 120px;
+}
+
+.card-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px var(--shadow-light) !important;
+}
+
+.btn-blue {
+  background-color: #2563eb;
+}
+
+.btn-blue:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-teal {
+  background-color: #0d9488;
+}
+
+.btn-teal:hover {
+  background-color: #0f766e;
+}
+
+.btn-indigo {
+  background-color: #4f46e5;
+}
+
+.btn-indigo:hover {
+  background-color: #4338ca;
+}
+
+.btn-green {
+  background-color: #059669;
+}
+
+.btn-green:hover {
+  background-color: #047857;
+}
+
+.btn-purple {
+  background-color: #7c3aed;
+}
+
+.btn-purple:hover {
+  background-color: #6d28d9;
+}
+
+.btn-red {
+  background-color: #dc2626;
+}
+
+.btn-red:hover {
+  background-color: #b91c1c;
+}
+
+.stats-section {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  min-height: 50px;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: transparent;
+ 
+}
+
+.stat-card {
+  background: var(--white) !important;
+  border-radius: 16px !important;
+  padding: 3rem !important;
+  text-align: center;
+  box-shadow: 0 4px 24px var(--shadow-light) !important;
+  border: 1px solid var(--primary-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: linear-gradient(45deg, var(--primary-blue), var(--primary-dark));
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--shadow-medium) !important;
+}
+
+.stat-number {
+  color: var(--primary-blue) !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.5rem !important;
+  background: linear-gradient(45deg, var(--primary-blue), var(--primary-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.stat-label {
+  color: var(--gray-medium) !important;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 1rem !important;
+  margin: 0 0 0.5rem 0;
+}
+
+.stat-trend {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.claims-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px var(--shadow-light);
+  border: 1px solid var(--primary-light);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  color: var(--text-dark);
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.claims-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.claim-card {
+  background: var(--white);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.claim-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.claim-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.claim-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.priority-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.claim-id {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.claim-customer {
+  font-size: 0.85rem;
+  color: var(--gray-medium);
+  margin: 0;
+}
+
+.claim-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.claim-details {
+  margin-bottom: 1rem;
+}
+
+.claim-detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.claim-detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.claim-detail-item svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.5rem;
+  color: var(--gray-medium);
+}
+
+.claim-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.claim-date {
+  font-size: 0.75rem;
+  color: var(--gray-medium);
+}
+
+.view-details-btn {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.view-details-btn:hover {
+  color: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+  .claims-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .claim-card {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .claims-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .claims-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== ENHANCED PIE CHART STYLES ===== */
+.charts-section {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Enhanced Chart Card - New Design */
+.enhanced-chart-card {
+  flex: 1;
+  min-width: 300px;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  border: 1px solid var(--primary-light);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enhanced-chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow-medium);
+}
+
+/* Chart Header with Icon */
+.chart-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 16px;
+}
+
+.chart-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-blue);
+}
+
+.enhanced-chart-title {
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 16px !important;
+  margin: 0;
+}
+
+/* Chart Container */
+.enhanced-chart-container {
+  position: relative;
+  
+}
+
+/* Decorative Background Element */
+.enhanced-chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(45deg, var(--primary-medium), var(--primary-light));
+  border-radius: 50%;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.enhanced-chart-container > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Enhanced Legend Styles */
+.enhanced-legend {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  justify-content: center;
+  align-items: center;
+}
+
+.enhanced-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.enhanced-legend-item:hover {
+  background: rgba(122, 178, 211, 0.1);
+  transform: translateX(4px);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid white;
+}
+
+.legend-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* Pie Chart Center Text Styles */
+.pie-chart-center-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.pie-chart-center-subtext {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Active Pie Slice Glow Effect */
+.recharts-pie-sector {
+  filter: drop-shadow(0 0 8px rgba(74, 98, 138, 0.2));
+  transition: all 0.3s ease;
+}
+
+.recharts-pie-sector:hover {
+  filter: drop-shadow(0 0 12px rgba(74, 98, 138, 0.4));
+}
+
+/* Custom Tooltip Styles for Enhanced Charts */
+.recharts-tooltip-wrapper {
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(74, 98, 138, 0.15) !important;
+  border: 1px solid var(--primary-light) !important;
+  padding: 8px !important;
+}
+
+.recharts-default-tooltip {
+  background: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.recharts-tooltip-label {
+  color: var(--text-dark) !important;
+  font-weight: 600 !important;
+  margin-bottom: 4px !important;
+}
+
+.recharts-tooltip-item {
+  color: var(--gray-medium) !important;
+  font-weight: 500 !important;
+}
+
+/* Fallback for Original Chart Cards */
+.chart-card {
+  flex: 1;
+  min-width: 300px;
+  min-height: 300px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+}
+
+.chart-title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.claims-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+.claims-table th, .claims-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid #e5e7eb;
+}
+.claims-table tr:hover {
+  background-color: #f3f4f6;
+  cursor: pointer;
+}

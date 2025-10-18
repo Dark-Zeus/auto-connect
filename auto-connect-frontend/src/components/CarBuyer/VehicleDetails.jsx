@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -32,6 +32,7 @@ import {
 import WhatsAppSVG from '../../assets/images/whatsapp.svg';
 import ReportAd from '@components/CarBuyer/ReportAd';
 import Inquire from '@components/CarBuyer/Inquire';
+import buyVehicleAPI from "../../services/buyVehicleApiService";
 
 // Import SVG icons (these would be your actual imports)
 const MobileIcon = () => (
@@ -42,27 +43,7 @@ const MobileIcon = () => (
 
 const VehicleDetails = ({ vehicle }) => {
 
-  const vehicleData = vehicle || {
-    name: 'Lomitha',
-    mobile: '0767120123',
-    district: 'Matara',
-    city: 'Akuressa',
-    email: 'jlomitha95@gmail.com.com',
-    vehicleType: 'SUV',
-    condition: 'Used',
-    make: 'Toyota',
-    model: 'Land Cruiser 150',
-    year: '2015',
-    registeredYear: '2015',
-    price: '32000000',
-    ongoingLease: false,
-    transmission: 'Automatic',
-    fuelType: 'Diesel',
-    engineCapacity: '3000',
-    mileage: '135000',
-    description: 'A well-maintained car with good fuel efficiency.',
-    views: '2164'
-  };
+  const vehicleData = vehicle || {};
 
   const [showMobile, setShowMobile] = useState(false);
   const [views] = useState(parseInt(vehicleData.views) || 0);
@@ -72,8 +53,10 @@ const VehicleDetails = ({ vehicle }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [inquireDialogOpen, setInquireDialogOpen] = useState(false);
+  const [alreadyReported, setAlreadyReported] = useState(false);
 
   const formatPrice = (price) => {
+    if (!price) return 'Negotiable';
     return new Intl.NumberFormat('en-LK', {
       style: 'currency',
       currency: 'LKR',
@@ -91,25 +74,113 @@ const VehicleDetails = ({ vehicle }) => {
     setShowMobile(!showMobile);
   };
 
-  const handleSaveAd = () => {
-    setIsSaved(!isSaved);
-    setSnackbarMessage(isSaved ? 'Advertisement removed from saved items' : 'Advertisement saved successfully');
-    setSnackbarSeverity('success');
-    setSnackbarOpen(true);
-  };
-
-  const handleReportAd = () => {
-    setReportDialogOpen(true);
-  };
-
-  const handleReportSubmit = (reportData) => {
-    // Handle the report submission - send to backend, etc.
-    console.log('Report submitted:', reportData);
+  useEffect(() => {
+  if (vehicle && vehicle._id) {
+    // Store vehicle ID for debugging
+    console.log("Checking if vehicle is saved:", vehicle._id);
     
-    // Show success message
-    setSnackbarMessage('Report submitted successfully. We will review it shortly.');
-    setSnackbarSeverity('success');
-    setSnackbarOpen(true);
+    // Define async function to check saved status
+    async function checkSavedStatus() {
+      try {
+        // Get all saved ads
+        const savedAds = await buyVehicleAPI.fetchSavedAds();
+        console.log("Retrieved saved ads:", savedAds);
+        
+        // Check if current vehicle is in saved ads
+        let found = false;
+        
+        if (Array.isArray(savedAds)) {
+          savedAds.forEach(ad => {
+            // Check different possible formats of vehicleId
+            if (
+              (ad.vehicleId === vehicle._id) || 
+              (ad.vehicleId?._id === vehicle._id) ||
+              (ad._id === vehicle._id)
+            ) {
+              found = true;
+              console.log("Found vehicle in saved ads:", ad);
+            }
+          });
+        }
+        
+        console.log("Setting isSaved to:", found);
+        setIsSaved(found);
+      } catch (error) {
+        console.error("Error checking saved status:", error);
+        setIsSaved(false);
+      }
+    }
+    
+    // Call the async function
+    checkSavedStatus();
+  }
+}, [vehicle]);
+
+  const handleSaveAd = async () => {
+    try {
+      if (isSaved) {
+        await buyVehicleAPI.unsaveAd(vehicle._id);
+        setIsSaved(false);
+        setSnackbarMessage('Advertisement unsaved successfully');
+        setSnackbarSeverity('info');
+      } else {
+        await buyVehicleAPI.saveAd(vehicle._id);
+        setIsSaved(true);
+        setSnackbarMessage('Advertisement saved successfully');
+        setSnackbarSeverity('success');
+      }
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error toggling save ad:", error);
+      setSnackbarMessage(error.message || 'Failed to update advertisement');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleReportAd = async () => {
+    if (!vehicleData._id) return;
+    try {
+      const reported = await buyVehicleAPI.checkIfReported(vehicleData._id);
+      if (reported) {
+        setAlreadyReported(true);
+        setSnackbarMessage("You've already reported this advertisement.");
+        setSnackbarSeverity('info');
+        setSnackbarOpen(true);
+      } else {
+        setReportDialogOpen(true);
+      }
+    } catch (error) {
+      setSnackbarMessage(error.message || "Failed to check report status");
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleReportSubmit = async (reportData) => {
+    try {
+      await buyVehicleAPI.reportAd({
+        adId: vehicleData._id,
+        issue: reportData.issue,
+        details: reportData.details
+      });
+      setReportDialogOpen(false);
+      setSnackbarMessage('Report submitted successfully. We will review it shortly.');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      if (error.message === "You have already reported this ad.") {
+        setReportDialogOpen(false);
+        setSnackbarMessage(error.message);
+        setSnackbarSeverity('info');
+        setSnackbarOpen(true);
+        setAlreadyReported(true);
+      } else {
+        setSnackbarMessage(error.message || 'Failed to submit report');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    }
   };
 
   const handleReportClose = () => {
@@ -118,6 +189,7 @@ const VehicleDetails = ({ vehicle }) => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+    setAlreadyReported(false);
   };
 
   const [animatedViews, setAnimatedViews] = useState(0);
@@ -161,7 +233,7 @@ const VehicleDetails = ({ vehicle }) => {
     { label: 'Manufacturer', value: vehicleData.make || 'N/A' },
     { label: 'Model', value: vehicleData.model || 'N/A' },
     { label: 'Model Year', value: vehicleData.year || 'N/A' },
-    { label: 'Registered Year', value: vehicleData.registeredYear || 'N/A' },
+    //{ label: 'Registered Year', value: vehicleData.registeredYear || 'N/A' },
     { label: 'Condition', value: vehicleData.condition || 'N/A' },
     { label: 'Transmission', value: vehicleData.transmission || 'N/A' },
     { label: 'Fuel Type', value: vehicleData.fuelType || 'N/A' },
@@ -369,8 +441,12 @@ const VehicleDetails = ({ vehicle }) => {
       <ReportAd
         open={reportDialogOpen}
         onClose={handleReportClose}
-        onSubmit={handleReportSubmit}
-        vehicleData={vehicleData}
+        vehicleData={{
+          _id: vehicleData._id,
+          make: vehicleData.make,
+          model: vehicleData.model,
+          year: vehicleData.year
+        }}
       />
 
       {/* Snackbar for notifications */}

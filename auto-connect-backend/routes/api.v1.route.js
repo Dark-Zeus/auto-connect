@@ -7,12 +7,27 @@ const router = express.Router({ mergeParams: true });
 import healthRoute from "./health.route.js";
 import authRoute from "./auth.route.js";
 import adminRoute from "./admin.route.js";
-import vehicleRoute from "./vehicle.route.js";
-import addedVehicleRoute from "./addedVehicle.route.js";
+
+import vehicleRoute from "./api.v1/vehicle/vehicle.route.js";
+import addedVehicleRoute from "./api.v1/addedVehicle/addedVehicle.route.js";
+import serviceCenterRoutes from "./api.v1/serviceCenter/serviceCenter.route.js";
+import bookingRoutes from "./api.v1/booking/booking.route.js";
+import operatingHoursRoutes from "./api.v1/operatingHours/operatingHours.route.js";
+import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
+import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
+import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.js";
+import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
+
 import listVehicleRoute from "./listVehicle.route.js";
+
 import subscriptionRoute from "./subscription.route.js";
 import notificationRoute from "./notificationRoute.route.js";
 import contactRoute from "./contactRequest.routes.js";
+
+import buyVehicleRoute from "./buyVehicle.route.js";
+import paymentRoute from "./payment.route.js";
+import adRoute from "./ad.route.js";
+import promotionPaymentRoute from "./promotionPayment.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -40,16 +55,36 @@ router.use("/vehicles", generalLimiter, vehicleRoute);
 // Added Vehicle routes - NEW
 router.use("/added-vehicles", generalLimiter, addedVehicleRoute);
 
+// Service Center routes - NEW
+router.use("/service-centers", serviceCenterRoutes);
+router.use("/bookings", bookingRoutes);
+router.use("/services", operatingHoursRoutes);
+router.use("/time-slots", timeSlotRoutes);
+router.use("/weekly-schedule", weeklyScheduleRoutes);
+router.use("/vehicle-history", vehicleHistoryRoutes);
+router.use("/vehicle-passport", vehiclePassportRoutes);
+
 router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
 // Subscription routes
 router.use("/subscriptions", generalLimiter, subscriptionRoute);
 
+// Contact Request routes
+router.use("/usercontacts", generalLimiter, contactRoute);
+
 // Notification routes
 router.use("/notifications", generalLimiter, notificationRoute);
 
-// Contact Request routes
-router.use("/usercontacts", generalLimiter, contactRoute);
+router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
+
+router.use("/payments", generalLimiter, paymentRoute);
+
+// Promotions
+router.use("/ads", generalLimiter, adRoute);
+
+// Promotion payments (separate from listing payments)
+router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
+
 
 // API Documentation route
 router.get("/docs", (req, res) => {
@@ -95,6 +130,57 @@ router.get("/docs", (req, res) => {
           "PATCH /added-vehicles/:id - Update added vehicle",
           "DELETE /added-vehicles/:id - Remove added vehicle",
           "PATCH /added-vehicles/:id/complete - Mark as completed",
+        ],
+      },
+      "service-centers": {
+        description: "Service center listings and details (for vehicle owners)",
+        routes: [
+          "GET /service-centers - List available service centers",
+          "GET /service-centers/categories - Get service categories",
+          "GET /service-centers/stats - Service center statistics",
+          "GET /service-centers/:id - Get service center details",
+        ],
+      },
+      services: {
+        description: "Service provider operations (working hours, slots)",
+        routes: [
+          "GET /services/working-hours - Get working hours",
+          "POST /services/working-hours - Update working hours",
+          "GET /services/slot-settings - Get slot settings",
+          "POST /services/slot-settings - Update slot settings",
+          "GET /services/slot-stats - Get slot statistics",
+          "POST /services/generate-weekly-slots - Generate weekly slots",
+          "GET /services/test - Test endpoint",
+        ],
+      },
+      bookings: {
+        description: "Service booking management",
+        routes: [
+          "POST /bookings - Create new booking (vehicle owners)",
+          "GET /bookings - Get user's bookings",
+          "GET /bookings/stats - Booking statistics",
+          "GET /bookings/:id - Get booking details",
+          "PATCH /bookings/:id/status - Update booking status (service centers)",
+          "PATCH /bookings/:id/cancel - Cancel booking (vehicle owners)",
+          "POST /bookings/:id/feedback - Submit feedback (vehicle owners)",
+        ],
+      },
+      "vehicle-history": {
+        description: "Vehicle service history dashboard (service centers only)",
+        routes: [
+          "GET /vehicle-history/dashboard-stats - Get dashboard statistics",
+          "GET /vehicle-history/recent-services - Get recent services with pagination",
+          "GET /vehicle-history/top-vehicles - Get top vehicles by service history",
+          "GET /vehicle-history/analytics - Get performance analytics",
+          "GET /vehicle-history/owner/vehicles - Get vehicle owner's vehicles list",
+          "GET /vehicle-history/owner/vehicles/:vehicleId - Get complete history for a specific vehicle",
+        ],
+      },
+      "vehicle-passport": {
+        description: "Vehicle passport system - comprehensive vehicle documentation (vehicle owners only)",
+        routes: [
+          "GET /vehicle-passport/vehicles - Get all vehicles for passport selection",
+          "GET /vehicle-passport/vehicles/:vehicleId - Get complete vehicle passport data",
         ],
       },
 

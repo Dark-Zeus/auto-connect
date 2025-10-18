@@ -67,6 +67,26 @@
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
   --transition-bounce: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --soft-mint: #dff2eb;
+  --aqua-mist: #b9e5e8;
+  --sky-blue: #7ab2d3;
+  --navy-blue: #4a628a;
+  --charcoal: #1a1a1a;
+
+  /* Extended Palette */
+  --mint-light: #f7fcf9;
+  --aqua-light: #e8f4f8;
+  --sky-light: #e1f0f8;
+  --navy-light: #8fa4c7;
+  --charcoal-light: #4a4a4a;
+
+  /* Semantic Colors */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+
 }
 
 /* Reset and Base Styles */

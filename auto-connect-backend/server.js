@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import path from "path";
 import { fileURLToPath } from "url";
+import { startBumpScheduler } from "./services/bumpScheduler.service.js";
 
 import LOG from "./configs/log.config.js";
 
@@ -147,6 +148,9 @@ process.on("uncaughtException", (err) => {
   console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
   process.exit(1);
 });
+
+// Start the bump scheduler
+startBumpScheduler();
 
 // Start server
 const server = app.listen(process.env.AUTO_CONNECT_PORT || 3000, () => {

@@ -213,6 +213,8 @@ const userSchema = new mongoose.Schema(
           open: String,
           close: String,
           isOpen: Boolean,
+          breakStart: String,
+          breakEnd: String,
         },
         default: function () {
           if (["service_center", "repair_center"].includes(this.role)) {
@@ -225,6 +227,45 @@ const userSchema = new mongoose.Schema(
               ["saturday", { open: "08:00", close: "16:00", isOpen: true }],
               ["sunday", { open: "09:00", close: "14:00", isOpen: false }],
             ]);
+          }
+          return undefined;
+        },
+      },
+      slotSettings: {
+        type: {
+          defaultDuration: {
+            type: Number,
+            default: 60, // minutes
+            min: 15,
+            max: 480,
+          },
+          bufferTime: {
+            type: Number,
+            default: 15, // minutes
+            min: 0,
+            max: 120,
+          },
+          maxAdvanceBooking: {
+            type: Number,
+            default: 30, // days
+            min: 1,
+            max: 365,
+          },
+          minAdvanceBooking: {
+            type: Number,
+            default: 1, // hours
+            min: 1,
+            max: 168,
+          },
+        },
+        default: function () {
+          if (["service_center", "repair_center"].includes(this.role)) {
+            return {
+              defaultDuration: 60,
+              bufferTime: 15,
+              maxAdvanceBooking: 30,
+              minAdvanceBooking: 1,
+            };
           }
           return undefined;
         },
