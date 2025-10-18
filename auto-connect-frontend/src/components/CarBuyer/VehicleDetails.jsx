@@ -282,7 +282,7 @@ const VehicleDetails = ({ vehicle }) => {
               >
                 <Email />
                 <Typography variant="body1" className="tw:font-medium">
-                  Inquire Now
+                  Enquire Now
                 </Typography>
               </Button>
             </div>
