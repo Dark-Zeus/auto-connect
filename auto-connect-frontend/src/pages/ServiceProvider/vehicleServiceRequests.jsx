@@ -193,13 +193,6 @@ const VehicleServiceRequests = () => {
         return;
       }
 
-      // If status is being updated to COMPLETED, open completion form instead
-      if (statusUpdate.status === "COMPLETED") {
-        setStatusUpdateDialogOpen(false);
-        setCompletionFormOpen(true);
-        return;
-      }
-
       const updateData = {
         status: statusUpdate.status,
         message: statusUpdate.message,
@@ -216,7 +209,7 @@ const VehicleServiceRequests = () => {
       });
 
       const response = await bookingAPI.updateBookingStatus(selectedBooking._id, updateData);
-      
+
       if (response.success) {
         setStatusUpdateDialogOpen(false);
         setStatusUpdate({
@@ -231,6 +224,7 @@ const VehicleServiceRequests = () => {
       }
     } catch (err) {
       console.error("Error updating booking status:", err);
+      toast.error(err.response?.data?.message || "Failed to update booking status");
     }
   };
 
@@ -462,7 +456,7 @@ const VehicleServiceRequests = () => {
                       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                         <Typography variant="h6" component="div" noWrap>
                           {booking.bookingId}
-                        </Typography>
+                        </Typography>&nbsp;
                         <Chip
                           icon={status.icon}
                           label={status.label}
@@ -536,16 +530,7 @@ const VehicleServiceRequests = () => {
                     <Divider />
 
                     <CardActions className="action-buttons">
-                      <Button
-                        size="small"
-                        startIcon={<ViewIcon />}
-                        onClick={() => handleViewDetails(booking)}
-                        className="action-button"
-                      >
-                        View Details
-                      </Button>
-                      
-                      {booking.status === "IN_PROGRESS" && (
+                      {booking.status === "IN_PROGRESS" ? (
                         <Button
                           size="small"
                           startIcon={<CheckCircleIcon />}
@@ -555,9 +540,7 @@ const VehicleServiceRequests = () => {
                         >
                           Complete Service
                         </Button>
-                      )}
-                      
-                      {booking.status !== "COMPLETED" && booking.status !== "CANCELLED" && (
+                      ) : booking.status !== "COMPLETED" && booking.status !== "CANCELLED" ? (
                         <Button
                           size="small"
                           startIcon={<EditIcon />}
@@ -566,7 +549,16 @@ const VehicleServiceRequests = () => {
                         >
                           Update Status
                         </Button>
-                      )}
+                      ) : null}
+
+                      <Button
+                        size="small"
+                        startIcon={<ViewIcon />}
+                        onClick={() => handleViewDetails(booking)}
+                        className="action-button"
+                      >
+                        View Details
+                      </Button>
                     </CardActions>
                   </Card>
                 </Grid>
@@ -758,13 +750,11 @@ const VehicleServiceRequests = () => {
                 </Alert>
               </Grid>
             )}
-            {statusUpdate.status === "COMPLETED" && (
-              <Grid item xs={12}>
-                <Alert severity="info" sx={{ mb: 2 }}>
-                  Selecting "Complete Service" will open the detailed service completion form.
-                </Alert>
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <Alert severity="info" sx={{ mb: 2 }}>
+                To complete a service, click the "Complete Service" button on the booking card. This will open the detailed service completion form.
+              </Alert>
+            </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
@@ -774,7 +764,7 @@ const VehicleServiceRequests = () => {
                   label="Status"
                 >
                   <MenuItem value="CONFIRMED">Confirm & Start Work</MenuItem>
-                  <MenuItem value="COMPLETED">Complete Service</MenuItem>
+                  <MenuItem value="IN_PROGRESS">Set to In Progress</MenuItem>
                   <MenuItem value="REJECTED">Reject</MenuItem>
                 </Select>
               </FormControl>

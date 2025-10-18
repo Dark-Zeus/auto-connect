@@ -8,12 +8,12 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [
       "chunk-23QYURXK",
-      "chunk-6P42ARR4", 
+      "chunk-6P42ARR4",
       "chunk-QC7EJAK4",
       "chunk-UZSTUZOU",
       "chunk-GDND277X",
       "chunk-UI2AT322",
-      "chunk-YQVPGENK", 
+      "chunk-YQVPGENK",
       "chunk-TDHS752F",
       "chunk-D2PLAWGQ",
       "chunk-FN45G42L",
@@ -24,8 +24,8 @@ export default defineConfig({
       "chunk-KLSYPXTY",
       "chunk-XN3HZA2D",
       "chunk-YPSGIBTD",
-      "chunk-VNPMCTXB"
-    ]
+      "chunk-VNPMCTXB",
+    ],
   },
   server: {
     proxy: {

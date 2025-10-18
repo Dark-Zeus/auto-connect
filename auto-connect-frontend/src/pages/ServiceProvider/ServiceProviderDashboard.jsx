@@ -1,502 +1,571 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Rating,
-  Chip,
-  Container,
-} from "@mui/material";
-import {
-  CalendarToday,
-  CheckCircleOutline,
-  PendingActions,
-  CancelOutlined,
-} from "@mui/icons-material";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
-
-const kpiData = [
-  { 
-    icon: <CheckCircleOutline/>, 
-    title: "Total Bookings", 
-    value: 120, color: "#4caf50", 
-    subtitle: "Last 30 days", 
-    trend: 15 
-  },
-  { 
-    icon: <PendingActions/>, 
-    title: "Ongoing", 
-    value: 18, 
-    color: "#ffc107", 
-    subtitle: "Current", 
-    trend: -5 
-  },
-  { 
-    icon: <CheckCircleOutline/>, 
-    title: "Completed", 
-    value: 70, 
-    color: "#2196f3", 
-    subtitle: "Last 30 days", 
-    trend: 10 
-  },
-  { 
-    icon: <CancelOutlined/>, 
-    title: "Cancelled", 
-    value: 6, 
-    color: "#f44336", 
-    subtitle: "Last 30 days", 
-    trend: -2 
-  },
-  { 
-    icon: <CalendarToday/>, 
-    title: "Upcoming", 
-    value: 15, 
-    color: "#2196f3", 
-    subtitle: "Next 7 days", 
-    trend: 20 
-  },
-];
-
-const pieData = [
-  { 
-    name: "Completed", 
-    value: 70, 
-    color: "#4caf50" 
-  },
-  { 
-    name: "Ongoing", 
-    value: 18, 
-    color: "#ffc107" 
-  },
-  { 
-    name: "Cancelled", 
-    value: 6, 
-    color: "#f44336" 
-  },
-  { 
-    name: "Pending", 
-    value: 26, 
-    color: "#2196f3" 
-  },
-];
-
-const monthlyBookingData = [
-  { month: "Jan", bookings: 25 },
-  { month: "Feb", bookings: 35 },
-  { month: "Mar", bookings: 40 },
-  { month: "Apr", bookings: 45 },
-  { month: "May", bookings: 38 },
-  { month: "Jun", bookings: 50 },
-  { month: "Jul", bookings: 60 },
-];
-
-const upcomingAppointments = [
-  {
-    date: "2025-07-22",
-    time: "09:30 AM",
-    id: "ABC001",
-    customer: "Ruwan Perera",
-    service: "Engine Repair",
-    status: "Ongoing",
-  },
-  {
-    date: "2025-07-22",
-    time: "11:00 AM",
-    id: "WWE002",
-    customer: "Nisansala Silva",
-    service: "Battery Replacement",
-    status: "Pending",
-  },
-  {
-    date: "2025-07-23",
-    time: "10:00 AM",
-    id: "QSA003",
-    customer: "Chandika Gayan",
-    service: "Oil Change, Tire Alignment",
-    status: "Ongoing",
-  },
-];
-
-const topServices = [
-  { 
-    rank: 1, 
-    service: "Oil Change", 
-    times: 35 
-  },
-  { rank: 2, 
-    service: "Engine Repair", 
-    times: 30 
-  },
-  { rank: 3, 
-    service: "Battery Replacement", 
-    times: 18 
-  },
-  { rank: 4, 
-    service: "AC Service", 
-    times: 14 
-  },
-  { rank: 5, 
-    service: "Suspension Repair", 
-    times: 12 
-  },
-];
-
-const reviews = [
-  {
-    customer: "Ashen Rodrigo",
-    rating: 5,
-    comment: "Excellent work and always on time.",
-  },
-  {
-    customer: "Dilani Madushani",
-    rating: 4,
-    comment: "Good service, a bit slow when busy but very responsive.",
-  },
-  {
-    customer: "Priyan Jayasinghe",
-    rating: 5,
-    comment: "Friendly and informative staff. Really trust this place!",
-  },
-  {
-    customer: "Jaith Lomitha",
-    rating: 3,
-    comment: "Friendly and informative staff. Really trust this place!",
-  },
-  {
-    customer: "Rumain Cooray",
-    rating: 5,
-    comment: "Friendly and informative staff. Really trust this place!",
-  },
-];
+import bookingAPI from "../../services/bookingApiService";
+import "./ServiceProviderDashboard.css";
 
 const ServiceProviderDashboard = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dashboardData, setDashboardData] = useState({
+    stats: {
+      total: 0,
+      pending: 0,
+      confirmed: 0,
+      inProgress: 0,
+      completed: 0,
+      cancelled: 0,
+      rejected: 0,
+    },
+    bookings: [],
+    serviceReports: [],
+    weeklySchedule: [],
+  });
+
+  // Fetch dashboard data
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Fetch bookings from API
+      const bookingsResponse = await bookingAPI.getBookings();
+
+      console.log("=== BOOKINGS API RESPONSE ===");
+      console.log("Full Response:", bookingsResponse);
+
+      // Extract bookings array
+      const bookings = bookingsResponse?.data?.bookings || [];
+      console.log("Total Bookings Fetched:", bookings.length);
+
+      if (bookings.length > 0) {
+        console.log("First Booking Sample:", bookings[0]);
+        console.log("All Booking Statuses:", bookings.map(b => b.status));
+      }
+
+      // Calculate stats directly from bookings status column
+      const stats = {
+        total: bookings.length,
+        pending: bookings.filter(b => b.status === "PENDING").length,
+        confirmed: bookings.filter(b => b.status === "CONFIRMED").length,
+        inProgress: bookings.filter(b => b.status === "IN_PROGRESS").length,
+        completed: bookings.filter(b => b.status === "COMPLETED").length,
+        cancelled: bookings.filter(b => b.status === "CANCELLED").length,
+        rejected: bookings.filter(b => b.status === "REJECTED").length,
+      };
+
+      console.log("=== CALCULATED STATS FROM BOOKINGS ===");
+      console.log("Total:", stats.total);
+      console.log("Pending:", stats.pending);
+      console.log("Confirmed:", stats.confirmed);
+      console.log("In Progress:", stats.inProgress);
+      console.log("Completed:", stats.completed);
+      console.log("Cancelled:", stats.cancelled);
+      console.log("Rejected:", stats.rejected);
+
+      // Extract service reports from bookings
+      const serviceReports = bookings
+        .filter((booking) => booking.serviceReport)
+        .map((booking) => ({
+          bookingId: booking.bookingId,
+          vehicle: booking.vehicle,
+          completedAt: booking.timestamps?.completedAt,
+          finalCost: booking.finalCost,
+          rating: booking.feedback?.rating,
+        }));
+
+      console.log("Service Reports Count:", serviceReports.length);
+
+      // Generate weekly schedule from bookings
+      const weeklySchedule = generateWeeklySchedule(bookings);
+      console.log("Weekly Schedule Count:", weeklySchedule.length);
+
+      setDashboardData({
+        stats,
+        bookings,
+        serviceReports,
+        weeklySchedule,
+      });
+
+      console.log("=== DASHBOARD DATA SET SUCCESSFULLY ===");
+    } catch (err) {
+      console.error("=== ERROR FETCHING DASHBOARD DATA ===");
+      console.error("Error:", err);
+      console.error("Error Message:", err.message);
+      setError("Failed to load dashboard data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Generate weekly schedule from bookings
+  const generateWeeklySchedule = (bookings) => {
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay());
+    weekStart.setHours(0, 0, 0, 0);
+
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 7);
+
+    const weeklyBookings = bookings.filter((booking) => {
+      const bookingDate = new Date(booking.preferredDate);
+      return (
+        bookingDate >= weekStart &&
+        bookingDate < weekEnd &&
+        ["PENDING", "CONFIRMED", "IN_PROGRESS"].includes(booking.status)
+      );
+    });
+
+    return weeklyBookings;
+  };
+
+  // Prepare chart data
+  const getBookingTrendsData = () => {
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (6 - i));
+      return date.toISOString().split("T")[0];
+    });
+
+    const trendData = last7Days.map((date) => {
+      const dayBookings = dashboardData.bookings.filter((b) => {
+        if (!b.createdAt) return false;
+        const bookingDate = new Date(b.createdAt).toISOString().split("T")[0];
+        return bookingDate === date;
+      });
+
+      return {
+        date: new Date(date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+        bookings: dayBookings.length,
+        completed: dayBookings.filter((b) => b.status === "COMPLETED").length,
+      };
+    });
+
+    console.log("Booking Trends Data:", trendData);
+    return trendData;
+  };
+
+  const getRevenueData = () => {
+    const last6Months = Array.from({ length: 6 }, (_, i) => {
+      const date = new Date();
+      date.setMonth(date.getMonth() - (5 - i));
+      return {
+        month: date.toLocaleDateString("en-US", { month: "short" }),
+        year: date.getFullYear(),
+        monthIndex: date.getMonth(),
+      };
+    });
+
+    const revenueData = last6Months.map((monthInfo) => {
+      // Filter bookings by creation date
+      const monthBookings = dashboardData.bookings.filter((b) => {
+        if (!b.createdAt) return false;
+        const bookingDate = new Date(b.createdAt);
+        return (
+          bookingDate.getMonth() === monthInfo.monthIndex &&
+          bookingDate.getFullYear() === monthInfo.year &&
+          b.status === "COMPLETED"
+        );
+      });
+
+      // Calculate revenue from completed bookings
+      const revenue = monthBookings.reduce(
+        (sum, b) => sum + (b.finalCost || b.estimatedCost || 0),
+        0
+      );
+
+      return {
+        month: monthInfo.month,
+        revenue: revenue,
+        bookings: monthBookings.length,
+      };
+    });
+
+    console.log("Revenue Data:", revenueData);
+    console.log("Total bookings:", dashboardData.bookings.length);
+    console.log("Completed bookings:", dashboardData.bookings.filter(b => b.status === "COMPLETED").length);
+
+    return revenueData;
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="dashboard-container">
+        <div className="loading-container">
+          <div className="loading-text">Loading dashboard...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="dashboard-container">
+        <div className="error-container">
+          <div className="error-title">Error</div>
+          <div className="error-message">{error}</div>
+          <button className="retry-button" onClick={fetchDashboardData}>
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const trendData = getBookingTrendsData();
+  const revenueData = getRevenueData();
+
+  console.log("=== CHART DATA ===");
+  console.log("Trend Data:", trendData);
+  console.log("Revenue Data:", revenueData);
+  console.log("Stats for Display:", dashboardData.stats);
+
   return (
-    <Box
-      sx={{
-        maxWidth: "1440px",
-        margin: "0 auto",
-        background: "linear-gradient(135deg, #DFF2EB 0%, #f8f9fa 100%)",
-        minHeight: "100vh",
-        fontFamily: "Arial, sans-serif",
-        padding: 4,
-        boxSizing: "border-box",
-      }}
-    >
+    <div className="dashboard-container">
+      {/* Dashboard Header */}
+      <div className="dashboard-header">
+        <h1>Service Center Dashboard</h1>
+        <p>Comprehensive overview of your service operations</p>
+      </div>
 
       {/* KPI Cards */}
-      <Grid container spacing={1} mb={5} justifyContent="center">
-        {kpiData.map(({ icon, title, value, subtitle, trend, color }, i) => (
-          <Grid item xs={12} sm={6} md={3} key={i}>
-            <Paper
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                p: 4,
-                pl: 3,
-                borderRadius: "12px",
-                position: "relative",
-                backgroundColor: "#fff",
-                boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.03)",
-                overflow: "hidden",
-                width: 230,
-                height: 180,
+      <div className="kpi-grid">
+        <div className="kpi-card total">
+          <div className="kpi-icon">&#128202;</div>
+          <div className="kpi-title">Total Bookings</div>
+          <div className="kpi-value">{dashboardData.stats.total || 0}</div>
+          <div className="kpi-subtitle">All time</div>
+        </div>
+
+        <div className="kpi-card pending">
+          <div className="kpi-icon">&#8987;</div>
+          <div className="kpi-title">Pending</div>
+          <div className="kpi-value">{dashboardData.stats.pending || 0}</div>
+          <div className="kpi-subtitle">Awaiting confirmation</div>
+        </div>
+
+        <div className="kpi-card ongoing">
+          <div className="kpi-icon">&#128295;</div>
+          <div className="kpi-title">In Progress</div>
+          <div className="kpi-value">{dashboardData.stats.inProgress || 0}</div>
+          <div className="kpi-subtitle">Active services</div>
+        </div>
+
+        <div className="kpi-card completed">
+          <div className="kpi-icon">&#9989;</div>
+          <div className="kpi-title">Completed</div>
+          <div className="kpi-value">{dashboardData.stats.completed || 0}</div>
+          <div className="kpi-subtitle">Successfully finished</div>
+        </div>
+      </div>
+
+      {/* Booking Trends Chart - Full Width */}
+      <div className="chart-container chart-full-width">
+        <h3 className="chart-title">&#128200; Booking Trends (Last 7 Days)</h3>
+        <div className="chart-wrapper">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={trendData} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis
+                dataKey="date"
+                stroke="#64748b"
+                style={{ fontSize: '0.875rem' }}
+              />
+              <YAxis
+                stroke="#64748b"
+                style={{ fontSize: '0.875rem' }}
+                allowDecimals={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #7AB2D3",
+                  borderRadius: "8px",
+                  padding: "12px",
                 }}
-            >
-                {/* Left vertical colored stripe */}
-                <Box
-                sx={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    height: "100%",
-                    width: "20px",
-                    backgroundColor: color,
-                    borderTopLeftRadius: "12px",
-                    borderBottomLeftRadius: "12px",
+              />
+              <Legend
+                wrapperStyle={{ paddingTop: '20px' }}
+                iconType="line"
+              />
+              <Line
+                type="monotone"
+                dataKey="bookings"
+                stroke="#7AB2D3"
+                strokeWidth={3}
+                name="Total Bookings"
+                dot={{ fill: "#7AB2D3", r: 5 }}
+                activeDot={{ r: 7 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="completed"
+                stroke="#27ae60"
+                strokeWidth={3}
+                name="Completed"
+                dot={{ fill: "#27ae60", r: 5 }}
+                activeDot={{ r: 7 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Revenue Chart - Full Width */}
+      <div className="chart-container chart-full-width">
+        <h3 className="chart-title">&#128176; Revenue Trends (Last 6 Months)</h3>
+        <div className="chart-wrapper">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={revenueData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis
+                dataKey="month"
+                stroke="#64748b"
+                style={{ fontSize: '0.875rem' }}
+              />
+              <YAxis
+                stroke="#64748b"
+                style={{ fontSize: '0.875rem' }}
+                allowDecimals={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #7AB2D3",
+                  borderRadius: "8px",
+                  padding: "12px",
                 }}
+                formatter={(value) => `Rs. ${value.toLocaleString()}`}
+              />
+              <Legend
+                wrapperStyle={{ paddingTop: '20px' }}
+              />
+              <Bar
+                dataKey="revenue"
+                fill="#7AB2D3"
+                name="Revenue (Rs.)"
+                radius={[8, 8, 0, 0]}
+                maxBarSize={80}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Tables Section */}
+      <div className="tables-section">
+        {/* Weekly Schedule Chart */}
+        <div className="chart-container">
+          <h3 className="chart-title">&#128197; This Week's Schedule</h3>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={[
+                  { day: "Mon", hours: 9.5, startTime: "8:30 AM", endTime: "6:00 PM" },
+                  { day: "Tue", hours: 9.5, startTime: "8:30 AM", endTime: "6:00 PM" },
+                  { day: "Wed", hours: 9.5, startTime: "8:30 AM", endTime: "6:00 PM" },
+                  { day: "Thu", hours: 9.5, startTime: "8:30 AM", endTime: "6:00 PM" },
+                  { day: "Fri", hours: 9.5, startTime: "8:30 AM", endTime: "6:00 PM" },
+                  { day: "Sat", hours: 9.5, startTime: "8:30 AM", endTime: "6:00 PM" },
+                  { day: "Sun", hours: 0, startTime: "Closed", endTime: "Closed" },
+                ]}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis
+                  dataKey="day"
+                  stroke="#64748b"
+                  style={{ fontSize: '0.875rem', fontWeight: '600' }}
                 />
-
-                {/* Icon and title */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <Box
-                    sx={{
-                    backgroundColor: color,
-                    borderRadius: "0.5rem",
-                    width: 40,
-                    minHeight: 30,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#fff",
-                    fontSize: 18,
-                    }}
-                >
-                    {icon}
-                </Box>
-                <Typography sx={{ fontWeight: 700, fontSize: 16, color: "#1e293b" }}>
-                    {title}
-                </Typography>
-                </Box>
-
-                {/* Value */}
-                <Typography
-                sx={{
-                    mt: 1.5,
-                    fontSize: 24,
-                    fontWeight: 800,
-                    color: "#0f172a",
-                }}
-                >
-                {value}
-                </Typography>
-
-                {/* Subtitle */}
-                <Typography sx={{ fontSize: 13, color: "#64748b" }}>
-                {subtitle}
-                </Typography>
-
-                {/* Trend */}
-                <Typography
-                sx={{
-                    mt: 1,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: trend >= 0 ? "#22c55e" : "#ef4444",
-                }}
-                >
-                {trend >= 0 ? `▲ ${trend}%` : `▼ ${Math.abs(trend)}%`}
-                </Typography>
-            </Paper>
-            </Grid>
-        ))}
-        </Grid>
-
-
-      {/* Charts Row */}
-      <Grid container spacing={10} mb={4} justifyContent="center">
-        <Grid item xs={12} md={10}>
-          <Typography variant="h5" fontWeight={700} mb={1} color="#1a2637">
-            Booking Status Breakdown
-          </Typography>
-          <Paper
-            sx={{
-              height: 350,
-              width: 500,
-              p: 3,
-              borderRadius: "1rem",
-              backgroundColor: "white",
-              border: "1px solid #DFF2EB",
-              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={100}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend verticalAlign="bottom" />
-              </PieChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Typography variant="h5" fontWeight={700} mb={1} color="#1a2637">
-            Monthly Bookings Trend
-          </Typography>
-          <Paper
-            sx={{
-              height: 350,
-              width: 500,
-              p: 3,
-              borderRadius: "1rem",
-              backgroundColor: "white",
-              border: "1px solid #DFF2EB",
-              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyBookingData} margin={{ top: 20 }}>
-                <XAxis dataKey="month" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
+                <YAxis
+                  stroke="#64748b"
+                  style={{ fontSize: '0.875rem' }}
+                  domain={[0, 10]}
+                  ticks={[0, 2, 4, 6, 8, 10]}
+                  label={{ value: 'Working Hours', angle: -90, position: 'insideLeft', style: { fontSize: '0.875rem' } }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    border: "1px solid #7AB2D3",
+                    borderRadius: "8px",
+                    padding: "12px",
+                  }}
+                  formatter={(value, name, props) => {
+                    if (value === 0) return ["Closed", "Status"];
+                    return [
+                      `${props.payload.startTime} - ${props.payload.endTime}`,
+                      "Working Hours"
+                    ];
+                  }}
+                />
                 <Bar
-                  dataKey="bookings"
-                  fill="#1976d2"
-                  radius={[4, 4, 0, 0]}
-                  barSize={30}
+                  dataKey="hours"
+                  fill="#7AB2D3"
+                  radius={[8, 8, 0, 0]}
+                  maxBarSize={60}
                 />
               </BarChart>
             </ResponsiveContainer>
-          </Paper>
-        </Grid>
-      </Grid>
+          </div>
+        </div>
 
-      {/* Tables Row */}
-      <Grid container spacing={5} mb={4} justifyContent="center">
-        {/* Appointments */}
-        <Grid item xs={12} md={4}>
-          <Typography variant="h5" fontWeight={700} mb={2} color="#1a2637">
-            Upcoming Appointments
-          </Typography>
-          <Paper
-            sx={{
-              p: 2,
-              borderRadius: "1rem",
-              minHeight:100,
-
-              backgroundColor: "white",
-              border: "1px solid #DFF2EB",
-              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
-              overflowX: "auto",
-              minWidth: 1000,
-            }}
-          >
-            <Table size="medium" stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Time</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Appointment ID</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Customer</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Service</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {upcomingAppointments.map((a, i) => (
-                  <TableRow key={i} hover>
-                    <TableCell sx={{ fontSize:12 }}>{new Date(a.date).toLocaleDateString()}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{a.time}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{a.id}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{a.customer}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{a.service}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>
-                      <Chip
-                        label={a.status}
-                        color={
-                          a.status === "Completed"
-                            ? "success"
-                            : a.status === "Ongoing"
-                            ? "primary"
-                            : a.status === "Pending"
-                            ? "warning"
-                            : "default"
-                        }
-                        size="small"
-                      />
-                    </TableCell>
-                  </TableRow>
+        {/* Recent Service Reports */}
+        <div className="table-container">
+          <h3 className="table-title">&#128221; Recent Service Reports</h3>
+          {dashboardData.serviceReports.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon">&#128221;</div>
+              <div className="empty-state-text">
+                No service reports available
+              </div>
+            </div>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Vehicle</th>
+                  <th>Completed</th>
+                  <th>Cost</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dashboardData.serviceReports.slice(0, 10).map((report) => (
+                  <tr key={report.bookingId}>
+                    <td>
+                      <strong>{report.bookingId}</strong>
+                    </td>
+                    <td>
+                      {report.vehicle.registrationNumber}
+                      <br />
+                      <small style={{ color: "#64748b" }}>
+                        {report.vehicle.make} {report.vehicle.model}
+                      </small>
+                    </td>
+                    <td>
+                      {report.completedAt
+                        ? new Date(report.completedAt).toLocaleDateString()
+                        : "N/A"}
+                    </td>
+                    <td>
+                      <strong>Rs. {report.finalCost?.toLocaleString()}</strong>
+                    </td>
+                    <td>
+                      {report.rating ? (
+                        <div className="rating-display">
+                          <span className="rating-stars">
+                            {"\u2B50".repeat(report.rating)}
+                          </span>
+                          <span>({report.rating}/5)</span>
+                        </div>
+                      ) : (
+                        <span style={{ color: "#94a3b8" }}>No rating</span>
+                      )}
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Grid>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
 
-        {/* Top Services */}
-        <Grid item xs={12} md={4}>
-          <Typography variant="h5" fontWeight={700} mb={2} color="#1a2637">
-            Top Services
-          </Typography>
-          <Paper
-            sx={{
-              p: 2,
-              borderRadius: "1rem",
-              minHeight: 100,
-              minWidth: 500,
-              backgroundColor: "white",
-              border: "1px solid #DFF2EB",
-              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
-              overflowX: "auto",
-            }}
-          >
-            <Table size="small" stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Rank</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Service</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Times Booked</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {topServices.map((s) => (
-                  <TableRow key={s.rank} hover>
-                    <TableCell sx={{ fontSize:12 }}>{s.rank}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{s.service}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{s.times}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Grid>
-
-        {/* Reviews */}
-        <Grid item xs={12} md={4}>
-          <Typography variant="h5" fontWeight={700} mb={2} color="#1a2637">
-            Customer Reviews
-          </Typography>
-          <Paper
-            sx={{
-              p: 2,
-              borderRadius: "1rem",
-              minHeight: 100,
-              minWidth: 500,
-              backgroundColor: "white",
-              border: "1px solid #DFF2EB",
-              boxShadow: "0 4px 24px rgba(74, 98, 138, 0.08)",
-              overflowX: "auto",
-            }}
-          >
-            <Table size="small" stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Customer</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Rating</TableCell>
-                  <TableCell sx={{ fontWeight: 600, fontSize:16 }}>Review</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {reviews.map((r, i) => (
-                  <TableRow key={i} hover>
-                    <TableCell sx={{ fontSize:12 }}>{r.customer}</TableCell>
-                    <TableCell sx={{ fontSize:12 }}>
-                      <Rating value={r.rating} readOnly size="small" />
-                    </TableCell>
-                    <TableCell sx={{ fontSize:12 }}>{r.comment}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Box>
+      {/* Recent Bookings - Full Width */}
+      <div className="table-container table-full-width">
+        <h3 className="table-title">&#128278; Recent Bookings</h3>
+        {dashboardData.bookings.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">&#128278;</div>
+            <div className="empty-state-text">No bookings available</div>
+          </div>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Vehicle</th>
+                <th>Date</th>
+                <th>Services</th>
+                <th>Status</th>
+                <th>Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dashboardData.bookings.slice(0, 10).map((booking) => (
+                <tr key={booking._id}>
+                  <td>
+                    <strong>{booking.bookingId}</strong>
+                  </td>
+                  <td>
+                    {booking.vehicle.registrationNumber}
+                    <br />
+                    <small style={{ color: "#64748b" }}>
+                      {booking.vehicle.make} {booking.vehicle.model} (
+                      {booking.vehicle.year})
+                    </small>
+                  </td>
+                  <td>
+                    {new Date(booking.preferredDate).toLocaleDateString()}
+                    <br />
+                    <small style={{ color: "#64748b" }}>
+                      {booking.preferredTimeSlot}
+                    </small>
+                  </td>
+                  <td>
+                    <small>{booking.services.slice(0, 2).join(", ")}</small>
+                    {booking.services.length > 2 && (
+                      <small style={{ color: "#7AB2D3" }}>
+                        {" "}
+                        +{booking.services.length - 2} more
+                      </small>
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={`status-badge ${booking.status.toLowerCase().replace("_", "-")}`}
+                    >
+                      {booking.status.replace("_", " ")}
+                    </span>
+                  </td>
+                  <td>
+                    <strong>
+                      Rs.{" "}
+                      {(
+                        booking.finalCost ||
+                        booking.estimatedCost ||
+                        0
+                      ).toLocaleString()}
+                    </strong>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
   );
 };
 
