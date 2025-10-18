@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Zap, Shield, Users, TrendingUp } from 'lucide-react';
 import elephantImage from '../../assets/images/AutoConnectMascot.png';
+import { toast } from 'react-toastify';
+import subscriptionPaymentAPI from '../../services/subscriptionPaymentApiService';
 
 const SubscriptionPlans = () => {
+
+  const [processingCycle, setProcessingCycle] = useState(null);
+
   const planData = {
     plus: {
       monthly: {
@@ -36,6 +41,39 @@ const SubscriptionPlans = () => {
       currency: 'LKR',
       minimumFractionDigits: 0
     }).format(amount).replace('LKR', 'LKR ');
+  };
+
+  const handleSelectPlan = async (cycle, data) => {
+    try {
+      setProcessingCycle(cycle);
+      const planLabel = `Plus - ${cycle}`;
+
+      // Try to read userId from a persisted user object if available
+      let userId;
+      try {
+        const raw = localStorage.getItem("user");
+        if (raw) userId = JSON.parse(raw)?._id;
+      } catch (e) {
+        // ignore parse errors
+      }
+
+      const { url } = await subscriptionPaymentAPI.createSession({
+        amount: data.totalCost,
+        planLabel,
+        userId, // backend also supports req.user if you add an auth guard
+      });
+
+      if (url) {
+        window.location.href = url;
+      } else {
+        toast.error("Failed to start checkout.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Failed to create checkout session");
+    } finally {
+      setProcessingCycle(null);
+    }
   };
 
   const PlanCard = ({ data, billingCycle, isPopular = false }) => (
@@ -107,9 +145,13 @@ const SubscriptionPlans = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="tw:w-full tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:py-3 tw:px-6 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer tw:transition-all tw:duration-300"
+        disabled={processingCycle === billingCycle}
+        onClick={() => handleSelectPlan(billingCycle, data)}
+        className={`tw:w-full tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))]  tw:text-white tw:py-3 tw:px-6 tw:rounded-xl tw:font-semibold tw:shadow-lg tw:hover:shadow-xl tw:hover:cursor-pointer tw:transition-all tw:duration-300 ${
+          processingCycle === billingCycle ? 'tw:opacity-70 tw:cursor-not-allowed' : ''
+        }`}
       >
-        Select Plan
+        {processingCycle === billingCycle ? 'Processing...' : 'Select Plan'}
       </motion.button>
     </motion.div>
   );
