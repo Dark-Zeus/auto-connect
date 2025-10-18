@@ -28,6 +28,8 @@ import paymentRoute from "./payment.route.js";
 import adRoute from "./ad.route.js";
 import promotionPaymentRoute from "./promotionPayment.route.js";
 import subscriptionPaymentRoutes from "./subscriptionPayment.route.js";
+import subscriptionManagementRoutes from "./subscriptionManagement.route.js";
+
 
 // Import rate limiters for specific routes
 import {
@@ -84,6 +86,9 @@ router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
 
 // Subscription Payments
 router.use("/subscription-payments", subscriptionPaymentRoutes);
+
+// Subscription Management
+router.use("/my-plan", subscriptionManagementRoutes);
 
 
 // API Documentation route
