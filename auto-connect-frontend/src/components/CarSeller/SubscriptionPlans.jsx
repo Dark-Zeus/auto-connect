@@ -16,21 +16,21 @@ const SubscriptionPlans = () => {
         totalCost: 12000,
         validity: '1 Month',
         adsPerMonth: 'Unlimited',
-        promotionVoucher: '3 Days Bump Up'
+        // promotionVoucher: '3 Days Bump Up'
       },
       quarterly: {
         costPerAd: 'Free',
         totalCost: 24000,
         validity: '3 Months',
         adsPerMonth: 'Unlimited',
-        promotionVoucher: '3 Days Bump Up'
+        // promotionVoucher: '3 Days Bump Up'
       },
       yearly: {
         costPerAd: 'Free',
         totalCost: 48000,
         validity: '12 Months',
         adsPerMonth: 'Unlimited',
-        promotionVoucher: '3 Days Bump Up'
+        // promotionVoucher: '3 Days Bump Up'
       }
     }
   };
