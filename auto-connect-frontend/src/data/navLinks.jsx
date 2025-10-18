@@ -19,6 +19,8 @@ import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
+import CustomerProviderSelection from "@pages/VehicleOwner/CustomerProviderSelection";
+
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
@@ -48,6 +50,7 @@ import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReview
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
+import ServiceProviderEstimatePage from "@pages/ServiceProvider/ServiceProviderEstimatePage";
 
 //Insurance Company
 //import { Add } from "@mui/icons-material";
@@ -60,6 +63,7 @@ import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
 import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
 import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
+
 
 export default
 
@@ -340,6 +344,12 @@ function getNavLinks(userContext) {
               icon: "policy",
               page: <UserClaimDetailsPage />,
               hidden: true,
+            },
+             {
+              path: [`/customer-provider-selection`],
+              title: "Select Service Provider",
+              icon: "search",
+              page: <CustomerProviderSelection />,
             }
           ]
         });
@@ -427,6 +437,8 @@ function getNavLinks(userContext) {
     //     }
     //   ]
     // });
+
+  
   }
 
   // SERVICE PROVIDER Navigation
@@ -541,6 +553,13 @@ function getNavLinks(userContext) {
       title: "Reviews & Feedback",
       icon: "feedback",
       page: <ServiceProviderReviews />,
+    });
+
+    nav.push({
+      path: [`/service-estimate`],
+      title: "Insurance Estimates",
+      icon: "request_quote",
+      page: <ServiceProviderEstimatePage />,
     });
 
     // nav.push({
