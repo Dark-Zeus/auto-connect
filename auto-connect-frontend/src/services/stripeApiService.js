@@ -26,7 +26,7 @@ export async function processPayment(vehicleData) {
     const stripe = await stripePromise;
     if (!stripe) throw new Error("Stripe initialization failed");
 
-    const fixedAmount = 3000;
+    const fixedAmount = 1000;
 
     const token =
       localStorage.getItem("token") ||
