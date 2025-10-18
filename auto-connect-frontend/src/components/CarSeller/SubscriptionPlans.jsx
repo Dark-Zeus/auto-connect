@@ -1,56 +1,31 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Star, Zap, Shield, Users, TrendingUp } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Star, Zap, Shield, Users, TrendingUp } from 'lucide-react';
 import elephantImage from '../../assets/images/AutoConnectMascot.png';
 
 const SubscriptionPlans = () => {
-  const [selectedPlan, setSelectedPlan] = useState('premium');
-
   const planData = {
     plus: {
       monthly: {
-        costPerAd: 700,
-        totalCost: 14000,
+        costPerAd: 'Free',
+        totalCost: 12000,
         validity: '1 Month',
-        adsPerMonth: 20,
+        adsPerMonth: 'Unlimited',
         promotionVoucher: '3 Days Bump Up'
       },
       quarterly: {
-        costPerAd: 550,
-        totalCost: 33000,
+        costPerAd: 'Free',
+        totalCost: 24000,
         validity: '3 Months',
-        adsPerMonth: 20,
-        promotionVoucher: '5 Days Bump Up'
+        adsPerMonth: 'Unlimited',
+        promotionVoucher: '3 Days Bump Up'
       },
       yearly: {
-        costPerAd: 400,
-        totalCost: 96000,
+        costPerAd: 'Free',
+        totalCost: 48000,
         validity: '12 Months',
-        adsPerMonth: 20,
-        promotionVoucher: '7 Days Bump Up'
-      }
-    },
-    premium: {
-      monthly: {
-        costPerAd: 150,
-        totalCost: 30000,
-        validity: '1 Month',
-        adsPerMonth: 200,
-        promotionVoucher: '5 Days Bump Up'
-      },
-      quarterly: {
-        costPerAd: 115,
-        totalCost: 69000,
-        validity: '3 Months',
-        adsPerMonth: 200,
-        promotionVoucher: '7 Days Bump Up'
-      },
-      yearly: {
-        costPerAd: 80,
-        totalCost: 192000,
-        validity: '12 Months',
-        adsPerMonth: 200,
-        promotionVoucher: '9 Days Bump Up'
+        adsPerMonth: 'Unlimited',
+        promotionVoucher: '3 Days Bump Up'
       }
     }
   };
@@ -63,7 +38,7 @@ const SubscriptionPlans = () => {
     }).format(amount).replace('LKR', 'LKR ');
   };
 
-  const PlanCard = ({ planType, data, billingCycle, isPopular = false }) => (
+  const PlanCard = ({ data, billingCycle, isPopular = false }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -85,7 +60,7 @@ const SubscriptionPlans = () => {
       <div className="tw:text-center tw:mb-6">
         <h3 className="tw:text-2xl tw:font-bold tw:text-gray-800 tw:mb-2 tw:capitalize">{billingCycle}</h3>
         <motion.div
-          key={`${planType}-${billingCycle}`}
+          key={billingCycle}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
@@ -143,13 +118,14 @@ const SubscriptionPlans = () => {
     <div className="tw:min-h-screen tw:w-7xl tw:bg-gray-50 tw:py-16 tw:rounded-xl">
       <div className="tw:max-w-7xl tw:mx-auto tw:p-6">
         {/* Header */}
+        {/* ...existing code... */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="tw:flex  tw:items-center tw:mb-4"
         >
-          <div className="tw:tw:space-y-8">
+          <div className="tw:space-y-8">
             <div className="tw:w-80 tw:h-80 tw:bg-gradient-to-br tw:from-blue-100 tw:to-blue-200 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:shadow-2xl">
               <img
                 src={elephantImage}
@@ -167,56 +143,27 @@ const SubscriptionPlans = () => {
             </div>
           </div>
         </motion.div>
+        {/* ...existing code... */}
 
-        {/* Plan Type Selector */}
+        {/* Plan Cards (Plus only) */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="tw:flex tw:justify-center tw:mb-8"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+          className="tw:grid tw:grid-cols-3 tw:gap-8 tw:max-w-6xl tw:mx-auto"
         >
-          <div className="tw:bg-white tw:p-2 tw:rounded-full tw:shadow-lg tw:border-blue-600">
-            {['plus', 'premium'].map((plan) => (
-              <motion.button
-                key={plan}
-                onClick={() => setSelectedPlan(plan)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`tw:px-8 tw:py-3 tw:rounded-full tw:font-semibold tw:transition-all tw:duration-300 tw:capitalize tw:hover:cursor-pointer ${
-                  selectedPlan === plan
-                    ? 'tw:bg-gradient-to-r tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:text-white tw:shadow-lg'
-                    : 'tw:bg-gray-100 tw:text-gray-600 tw:hover:text-gray-800'
-                }`}
-              >
-                {plan}
-              </motion.button>
-            ))}
-          </div>
+          {Object.entries(planData.plus).map(([cycle, data]) => (
+            <PlanCard
+              key={cycle}
+              data={data}
+              billingCycle={cycle}
+              isPopular={cycle === 'quarterly'}
+            />
+          ))}
         </motion.div>
 
-        {/* Plan Cards */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedPlan}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.4 }}
-            className="tw:grid tw:grid-cols-3 tw:gap-8 tw:max-w-6xl tw:mx-auto"
-          >
-            {Object.entries(planData[selectedPlan]).map(([cycle, data]) => (
-              <PlanCard
-                key={cycle}
-                planType={selectedPlan}
-                data={data}
-                billingCycle={cycle}
-                isPopular={cycle === 'quarterly'}
-              />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-
         {/* Features Section */}
+        {/* ...existing code... */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -248,6 +195,7 @@ const SubscriptionPlans = () => {
             ))}
           </div>
         </motion.div>
+        {/* ...existing code... */}
       </div>
     </div>
   );
