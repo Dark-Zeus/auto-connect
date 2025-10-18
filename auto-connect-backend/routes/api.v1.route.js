@@ -23,6 +23,7 @@ import listVehicleRoute from "./listVehicle.route.js";
 import subscriptionRoute from "./subscription.route.js";
 import notificationRoute from "./notificationRoute.route.js";
 import contactRoute from "./contactRequest.routes.js";
+import DashboardRoute from "./dashboard.route.js";
 
 import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
@@ -74,6 +75,9 @@ router.use("/usercontacts", generalLimiter, contactRoute);
 
 // Notification routes
 router.use("/notifications", generalLimiter, notificationRoute);
+
+// Dashboard routes
+router.use("/dashboard", generalLimiter, DashboardRoute);
 
 router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
 
@@ -211,6 +215,13 @@ router.get("/docs", (req, res) => {
           "PUT /usercontacts/:id - Update contact request (status or reply)",
           "DELETE /usercontacts/:id - Delete contact request",
           "PUT /usercontacts/:id/reply - Reply to contact request and mark as resolved"
+        ],
+      },
+
+      dashboard: {
+        description: "Dashboard statistics and analytics",
+        routes: [
+          "GET /dashboard - Get total number of users",
         ],
       },
 

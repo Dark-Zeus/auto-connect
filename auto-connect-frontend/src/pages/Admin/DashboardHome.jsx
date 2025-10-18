@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -21,6 +21,7 @@ import {
   Garage,
 } from "@mui/icons-material";
 import { ShieldCheck, Car, MapPin, Calendar, Clock } from "lucide-react";
+import DashboardAPI from "../../services/DashboardApiService.js";
 
 const dataTrafficLocation = [
   { name: "AutoFix", value: 400 },
@@ -31,11 +32,11 @@ const dataTrafficLocation = [
 ];
 
 const dataTrafficDevice = [
-  { device: "March", users: 200 },
-  { device: "April", users: 300 },
-  { device: "May", users: 500 },
-  { device: "June", users: 300 },
-  { device: "July", users: 100 },
+  { device: "June", users: 0 },
+  { device: "July", users: 0 },
+  { device: "August", users: 0 },
+  { device: "September", users: 1 },
+  { device: "Octomber", users: 2 },
 ];
 
 const COLORS = ["#4F46E5", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"];
@@ -98,20 +99,38 @@ const renderActiveShape = (props) => {
 function DashboardHome() {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalServiceHubs, setTotalServiceHubs] = useState(0);
+  const [totalInsuranceCompanies, setTotalInsuranceCompanies] = useState(0);
+
+useEffect(() => {
+  async function fetchDashboard() {
+    try {
+      const res = await DashboardAPI.getDashboardStats();
+      const data = res?.data || {};
+      setTotalUsers(data.totalUsers ?? 0);
+      setTotalServiceHubs(data.totalServiceHubs ?? 0);
+      setTotalInsuranceCompanies(data.totalInsuranceCompanies ?? 0);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  fetchDashboard();
+}, []);
 
   const cardData = [
     {
       title: "Users",
-      value: 123915,
-      progress: 12.35,
+      value: totalUsers,
+      progress: 30.00,
       icon: <People style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-blue-50 tw:to-blue-100",
       iconBg: "tw:bg-blue-600",
     },
     {
       title: "Verified Automotive Service Hubs",
-      value: 61,
-      progress: -8.12,
+      value: totalServiceHubs,
+      progress: 0.00,
       icon: <Garage style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-indigo-50 tw:to-blue-100",
       iconBg: "tw:bg-indigo-600",
@@ -119,15 +138,15 @@ function DashboardHome() {
     {
       title: "Income",
       value: "LKR 710,003",
-      progress: 2.68,
+      progress: 0.00,
       icon: <TrendingUp style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-green-50 tw:to-blue-100",
       iconBg: "tw:bg-green-600",
     },
     {
       title: "Verified Insurance Companies",
-      value: 18,
-      progress: 1.23,
+      value: totalInsuranceCompanies,
+      progress: 0.00,
       icon: <Domain style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-yellow-50 tw:to-blue-100",
       iconBg: "tw:bg-yellow-500",
@@ -159,7 +178,7 @@ function DashboardHome() {
             </div>
             <div className="tw:mt-auto tw:pl-4">
               <h4 className="tw:text-lg tw:font-semibold tw:text-gray-700">{card.title}</h4>
-              <p className="tw:!mt-1 tw:!text-3xl tw:text-blue-700 tw:font-bold">{card.value.toLocaleString()}</p>
+              <p className="tw:!mt-1 tw:!text-3xl tw:text-blue-700 tw:font-bold">{card.value.toLocaleString ? card.value.toLocaleString() : card.value}</p>
             </div>
             {/* Decorative gradient circle */}
             <div className="tw:absolute tw:bottom-0 tw:right-0 tw:w-24 tw:h-24 tw:bg-gradient-to-tr tw:from-blue-200 tw:to-blue-50 tw:rounded-full tw:opacity-30 tw:-z-10"></div>
@@ -241,13 +260,13 @@ function DashboardHome() {
         <ResponsiveContainer width="100%" height={340}>
           <LineChart
             data={[
-              { name: "Mon", users: 400 },
-              { name: "Tue", users: 300 },
-              { name: "Wed", users: 200 },
-              { name: "Thu", users: 278 },
-              { name: "Fri", users: 189 },
-              { name: "Sat", users: 239 },
-              { name: "Sun", users: 349 },
+              { name: "Mon", users: 0 },
+              { name: "Tue", users: 0 },
+              { name: "Wed", users: 2 },
+              { name: "Thu", users: 2 },
+              { name: "Fri", users: 1 },
+              { name: "Sat", users: 0 },
+              { name: "Sun", users: 3 },
             ]}
           >
             <defs>
