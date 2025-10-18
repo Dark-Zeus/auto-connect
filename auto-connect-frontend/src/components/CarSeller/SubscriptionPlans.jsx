@@ -133,13 +133,13 @@ const SubscriptionPlans = () => {
           </div>
         </div>
 
-        <div className="tw:flex tw:items-center tw:text-gray-600">
+        {/* <div className="tw:flex tw:items-center tw:text-gray-600">
           <Star className="tw:w-5 tw:h-5 tw:mr-3 tw:text-yellow-500" />
           <div>
             <span className="tw:text-sm tw:text-gray-500">Free Promotion</span>
             <div className="tw:font-semibold">{data.promotionVoucher.toLocaleString()}</div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <motion.button
