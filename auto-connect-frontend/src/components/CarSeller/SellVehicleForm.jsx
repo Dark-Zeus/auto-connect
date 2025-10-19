@@ -53,7 +53,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, fixedPhone, userId, onSubmi
         }));
       } catch (error) {
         console.error("Error fetching user data:", error);
-        toast.error("Failed to load user information");
+        // toast.error("Failed to load user information");
       } finally {
         setIsLoading(false);
       }
