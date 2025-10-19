@@ -48,7 +48,7 @@ const handleResponse = async (response) => {
 // Error handling helper
 const handleBuyVehicleError = (error, operation = "operation") => {
   console.error(`Buy Vehicle API Error during ${operation}:`, error);
-  toast.error(error.message || `Failed to ${operation}. Please try again.`);
+  // toast.error(error.message || `Failed to ${operation}. Please try again.`);
   throw error;
 };
 
@@ -56,7 +56,7 @@ const handleBuyVehicleError = (error, operation = "operation") => {
 const handleBuyVehicleSuccess = (data, operation = "operation") => {
   // Only show toast for non-fetch operations
   if (operation !== "fetched" && operation !== "fetched single vehicle") {
-    toast.success(data.message || `Vehicle fetching ${operation} successful!`);
+    // toast.success(data.message || `Vehicle fetching ${operation} successful!`);
   }
   return data;
 };
