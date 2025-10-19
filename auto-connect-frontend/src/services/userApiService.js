@@ -44,9 +44,39 @@ const userApiService = {
       }
       return {
         success: true,
-        user,
+        user: {
+          ...user,
+          name: `${user.firstName} ${user.lastName}`,
+        },
       };
     } catch (error) {
+      throw error;
+    }
+  },
+
+  getUserById: async (userId) => {
+    try {
+      // Use the /auth/me endpoint since we're getting the current logged-in user
+      const response = await userAxios.get("/auth/me");
+      const user = response.data?.data?.user;
+      
+      if (!user || !user._id) {
+        throw new Error("Invalid user data structure");
+      }
+
+      // Return user data with formatted name and phone
+      return {
+        _id: user._id,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        phone: user.phone,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        ...user,
+      };
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
       throw error;
     }
   },
