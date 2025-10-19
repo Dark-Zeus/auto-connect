@@ -1,180 +1,92 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import ServiceCenterCard from "../../components/AdminComponents/ServiceCenterCard";
 import ServiceCenterFilterBox from "../../components/AdminComponents/ServiceCenterFilterBox";
 import ServiceCenterDetailCard from "../../components/AdminComponents/ServiceCenterDetailCard";
 import ServiceCenterRequestPopup from "@components/AdminComponents/ServiceCenterRequestsBox";
-
-import center1 from "../../assets/images/service_center1.jpg";
-import center2 from "../../assets/images/service_center2.jpg";
-import center3 from "../../assets/images/service_center3.jpg";
-
-const allCenters = [
-  {
-    name: "CityFix Motors",
-    description: "Premium car service center in Colombo",
-    icon: center1,
-    district: "Colombo",
-    rating: 4.7,
-    category: "Service Center",
-    details: {
-      firstName: "Rashmika",
-      lastName: "Dilmin",
-      icon: center1,
-      email: "rashmika@cityfix.lk",
-      phone: "0711111111",
-      address: {
-        street: "123 Main Rd",
-        city: "Colombo",
-        district: "Colombo",
-        province: "Western",
-        postalCode: "10100",
-      },
-      businessInfo: {
-        businessName: "CityFix Motors",
-        licenseNumber: "LIC-0001",
-        businessRegistrationNumber: "BR-123456",
-        taxIdentificationNumber: "TIN-998877",
-        servicesOffered: ["Engine Tuning", "Wheel Alignment"],
-        certifications: [
-          {
-            name: "ISO 9001",
-            issuedBy: "ISO Authority",
-            certificateNumber: "CERT12345",
-            issueDate: "2023-01-15",
-            expiryDate: "2026-01-14",
-          },
-          {
-            name: "Environmental Compliance",
-            issuedBy: "GreenCert Org",
-            certificateNumber: "GC-987654",
-            issueDate: "2022-05-01",
-            expiryDate: "2025-05-01",
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: "TechAuto Solutions",
-    description: "Experts in electric and hybrid vehicles",
-    icon: center2,
-    district: "Gampaha",
-    rating: 4.5,
-    category: "Repair Center",
-    details: {
-      firstName: "Nimal",
-      lastName: "Perera",
-      icon: center2,
-      email: "nimal@techauto.lk",
-      phone: "0722222222",
-      address: {
-        street: "56 Battery St",
-        city: "Negombo",
-        district: "Gampaha",
-        province: "Western",
-        postalCode: "11500",
-      },
-      businessInfo: {
-        businessName: "TechAuto Solutions",
-        licenseNumber: "LIC-0021",
-        businessRegistrationNumber: "BR-654321",
-        taxIdentificationNumber: "TIN-112233",
-        servicesOffered: ["Hybrid Repairs", "EV Diagnostics"],
-        certifications: [
-          {
-            name: "ISO 9001",
-            issuedBy: "ISO Authority",
-            certificateNumber: "CERT12345",
-            issueDate: "2023-01-15",
-            expiryDate: "2026-01-14",
-          },
-          {
-            name: "Environmental Compliance",
-            issuedBy: "GreenCert Org",
-            certificateNumber: "GC-987654",
-            issueDate: "2022-05-01",
-            expiryDate: "2025-05-01",
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: "QuickFix Hub",
-    description: "Affordable and fast vehicle repairs",
-    icon: center3,
-    district: "Kandy",
-    rating: 4.2,
-    category: "Emission Testing Center",
-    details: {
-      firstName: "Kasun",
-      lastName: "Jayasuriya",
-      icon: center3,
-      email: "kasun@quickfix.lk",
-      phone: "0755555555",
-      address: {
-        street: "88 Hill Side",
-        city: "Kandy",
-        district: "Kandy",
-        province: "Central",
-        postalCode: "20000",
-      },
-      businessInfo: {
-        businessName: "QuickFix Hub",
-        licenseNumber: "LIC-0033",
-        businessRegistrationNumber: "BR-777888",
-        taxIdentificationNumber: "TIN-445566",
-        servicesOffered: ["Body Repairs", "Oil Change"],
-      },
-    },
-  },
-];
+import ServiceCenterAPI from "../../services/getServiceCentersApiService.js";
 
 function ServiceCenters() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [centers, setCenters] = useState([]);
+  const [search, setSearch] = useState("");
+  const [district, setDistrict] = useState("");
+  const [category, setCategory] = useState("");
+  const [sort, setSort] = useState("");
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
 
-  const handleReset = () => {
-    setSearchQuery("");
-    setSelectedDistrict("");
-    setSelectedCategory("");
-    setSortBy("");
-  };
+  // Fetch service centers
+  useEffect(() => {
+    async function fetchCenters() {
+      try {
+        const response = await ServiceCenterAPI.getAllServiceCenters();
+        if (response.success) {
+          setCenters(response.data);
+        } else {
+          console.error("Failed to load service centers:", response.message);
+        }
+      } catch (err) {
+        console.error("Error fetching service centers:", err);
+      }
+    }
+    fetchCenters();
+  }, []);
 
+  // Click outside popup to close
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (popupRef.current && !popupRef.current.contains(e.target)) {
         setShowPopup(false);
       }
     };
-    if (showPopup) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (showPopup) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showPopup]);
 
-  const filteredCenters = allCenters
-    .filter((center) => {
-      return (
-        (!searchQuery || center.name.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (!selectedDistrict || center.district === selectedDistrict) &&
-        (!selectedCategory || center.category === selectedCategory)
+  // Filtering and sorting
+  const filteredCenters = useMemo(() => {
+    let list = [...centers];
+
+    if (search.trim()) {
+      const query = search.toLowerCase();
+      list = list.filter((c) =>
+        c.businessInfo?.businessName?.toLowerCase().includes(query)
       );
-    })
-    .sort((a, b) => {
-      if (sortBy === "rating_desc") return b.rating - a.rating;
-      if (sortBy === "rating_asc") return a.rating - b.rating;
-      if (sortBy === "name_asc") return a.name.localeCompare(b.name);
-      if (sortBy === "name_desc") return b.name.localeCompare(a.name);
-      return 0;
-    });
+    }
+
+    if (district) list = list.filter((c) => c.address?.district === district);
+    if (category) list = list.filter((c) => c.category === category);
+
+    if (sort === "rating_desc") list.sort((a, b) => b.rating.average - a.rating.average);
+    else if (sort === "rating_asc") list.sort((a, b) => a.rating.average - b.rating.average);
+    else if (sort === "name_asc")
+      list.sort((a, b) => a.businessInfo?.businessName?.localeCompare(b.businessInfo?.businessName));
+    else if (sort === "name_desc")
+      list.sort((a, b) => b.businessInfo?.businessName?.localeCompare(a.businessInfo?.businessName));
+
+    return list;
+  }, [centers, search, district, category, sort]);
+
+  const handleReset = () => {
+    setSearch("");
+    setDistrict("");
+    setCategory("");
+    setSort("");
+  };
+
+  // Helper to format operating hours
+  const formatOperatingHours = (hoursObj) => {
+    if (!hoursObj) return "";
+    const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+    return days
+      .map(day => {
+        const dayInfo = hoursObj[day];
+        if (!dayInfo || !dayInfo.isOpen) return null;
+        return `${day.charAt(0).toUpperCase() + day.slice(1)}: ${dayInfo.open} - ${dayInfo.close}`;
+      })
+      .filter(Boolean)
+      .join(", ");
+  };
 
   return (
     <div className="tw:p-8 tw:bg-gradient-to-br tw:from-blue-50 tw:to-indigo-100 tw:min-h-screen">
@@ -184,6 +96,7 @@ function ServiceCenters() {
         </h1>
         <button
           onClick={() => setShowPopup(true)}
+          disabled={true}
           className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition"
         >
           {showPopup ? "Hide Requests" : "View Requests"}
@@ -199,28 +112,32 @@ function ServiceCenters() {
       )}
 
       <ServiceCenterFilterBox
-        searchQuery={searchQuery}
-        selectedDistrict={selectedDistrict}
-        selectedCategory={selectedCategory}
-        sortBy={sortBy}
-        onSearchChange={setSearchQuery}
-        onDistrictChange={setSelectedDistrict}
-        onCategoryChange={setSelectedCategory}
-        onSortChange={setSortBy}
+        searchQuery={search}
+        selectedDistrict={district}
+        selectedCategory={category}
+        sortBy={sort}
+        onSearchChange={setSearch}
+        onDistrictChange={setDistrict}
+        onCategoryChange={setCategory}
+        onSortChange={setSort}
         onReset={handleReset}
       />
 
       <div className="tw:flex tw:flex-wrap tw:gap-6 tw:justify-center">
-        {filteredCenters.map((center, index) => (
+        {filteredCenters.map((center) => (
           <ServiceCenterCard
-            key={index}
-            name={center.name}
-            description={center.description}
-            icon={center.icon}
-            district={center.district}
-            rating={center.rating}
-            category={center.category}
-            onView={() => setSelectedCenter(center.details)}
+            key={center._id.$oid}
+            name={center.businessInfo?.businessName}
+            description={center.businessInfo?.description || ""}
+            icon={center.profileImage}
+            district={center.address?.district}
+            rating={center.rating || { average: 0, totalReviews: 0 }}
+            category={center.category || "Service Center"}
+            isVerified={center.isVerified}
+            servicesOffered={center.businessInfo?.servicesOffered || []}
+            phone={center.phone}
+            hours={formatOperatingHours(center.businessInfo?.operatingHours)}
+            onView={() => setSelectedCenter(center)}
           />
         ))}
       </div>

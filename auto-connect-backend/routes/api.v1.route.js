@@ -22,6 +22,10 @@ import listVehicleRoute from "./listVehicle.route.js";
 
 import subscriptionRoute from "./subscription.route.js";
 import notificationRoute from "./notificationRoute.route.js";
+import contactRoute from "./contactRequest.routes.js";
+import DashboardRoute from "./dashboard.route.js";
+import getVehicleOwnersRoute from "./getVehicleOwners.route.js";
+import getServiceCentersRoute from "./getServiceCenters.route.js";
 
 import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
@@ -71,8 +75,20 @@ router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 // Subscription routes
 router.use("/subscriptions", generalLimiter, subscriptionRoute);
 
+// Contact Request routes
+router.use("/usercontacts", generalLimiter, contactRoute);
+
 // Notification routes
 router.use("/notifications", generalLimiter, notificationRoute);
+
+// Dashboard routes
+router.use("/dashboard", generalLimiter, DashboardRoute);
+
+// Vehicle Owners route
+router.use("/users/vehicleowners", generalLimiter, getVehicleOwnersRoute);
+
+// Service Centers route
+router.use("/users/services", generalLimiter, getServiceCentersRoute);
 
 router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
 
@@ -205,6 +221,32 @@ router.get("/docs", (req, res) => {
         routes: [
           "GET /notifications - List all sent notifications (for Sent Notifications table)",
           "POST /notifications/ - Create a new notification"
+        ],
+      },
+
+      usercontacts: {
+        description: "Contact request management",
+        routes: [
+          "POST /usercontacts/ - Create new contact request",
+          "GET /usercontacts/ - Get all contact requests",
+          "PUT /usercontacts/:id - Update contact request (status or reply)",
+          "DELETE /usercontacts/:id - Delete contact request",
+          "PUT /usercontacts/:id/reply - Reply to contact request and mark as resolved"
+        ],
+      },
+
+      dashboard: {
+        description: "Dashboard statistics and analytics",
+        routes: [
+          "GET /dashboard - Get total number of users",
+        ],
+      },
+
+      users: {
+        description: "Fetch all users with role = vehicle_owner",
+        routes: [
+          "GET /users/vehicleowners - Retrieve all vehicle owners",
+          "GET /users/services - Retrieve all service centers",
         ],
       },
 

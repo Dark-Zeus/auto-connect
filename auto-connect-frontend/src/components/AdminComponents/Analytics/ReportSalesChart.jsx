@@ -13,13 +13,13 @@ import {
 export default function MonthlySalesBarChart() {
   // Sales data defined inside the component
   const salesData = [
-    { month: "Jan", sales: 1200 },
-    { month: "Feb", sales: 2100 },
-    { month: "Mar", sales: 800 },
-    { month: "Apr", sales: 1600 },
-    { month: "May", sales: 1800 },
-    { month: "Jun", sales: 900 },
-    { month: "Jul", sales: 1300 },
+    { month: "April", sales: 0 },
+    { month: "May", sales: 0 },
+    { month: "June", sales: 0 },
+    { month: "July", sales: 0 },
+    { month: "August", sales: 0 },
+    { month: "September", sales: 5 },
+    { month: "Octomber", sales: 10 },
   ];
 
   return (

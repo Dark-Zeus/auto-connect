@@ -20,49 +20,47 @@ export default function Subscriptions() {
     try {
       const res = await subscriptionAPI.getSubscriptions();
       if (res.success) {
-        setSubscriptions(res.data); // expects array with _id
+        setSubscriptions(res.data);
       }
     } catch (err) {
       handleSubscriptionError(err, "fetch subscriptions");
     }
   };
 
-  // Add new subscription
+  // Add new subscription plan
   const handleAddPlan = async (newPlan) => {
     try {
       const res = await subscriptionAPI.createSubscription(newPlan);
       if (res.success) {
         handleSubscriptionSuccess(res, "create subscription");
-        setSubscriptions((prev) => [...prev, res.data]);
         setShowAddModal(false);
+        fetchSubscriptions(); // reload subscriptions to show the new plan
       }
     } catch (err) {
       handleSubscriptionError(err, "create subscription");
     }
   };
 
-  // Edit subscription
+  // Edit subscription plan
   const handleEditPlan = async (updatedPlan) => {
     try {
       const res = await subscriptionAPI.updateSubscription(updatedPlan._id, updatedPlan);
       if (res.success) {
         handleSubscriptionSuccess(res, "update subscription");
-        setSubscriptions((prev) =>
-          prev.map((sub) => (sub._id === updatedPlan._id ? res.data : sub))
-        );
+        fetchSubscriptions();
       }
     } catch (err) {
       handleSubscriptionError(err, "update subscription");
     }
   };
 
-  // Delete subscription
+  // Delete subscription plan
   const handleDeletePlan = async (id) => {
     try {
       const res = await subscriptionAPI.deleteSubscription(id);
       if (res.success) {
         handleSubscriptionSuccess(res, "delete subscription");
-        setSubscriptions((prev) => prev.filter((sub) => sub._id !== id));
+        fetchSubscriptions();
       }
     } catch (err) {
       handleSubscriptionError(err, "delete subscription");
@@ -84,16 +82,17 @@ export default function Subscriptions() {
         </button>
       </div>
 
-      {/* Pass subscriptions and handlers to SubscriptionBox */}
+      {/* Subscription list */}
       <SubscriptionBox
         subscriptions={subscriptions}
         onEdit={handleEditPlan}
         onDelete={handleDeletePlan}
       />
 
+      {/* Add plan modal */}
       {showAddModal && (
         <AddPlanModal
-          onSave={handleAddPlan}
+          onSuccess={handleAddPlan} // use onSuccess for new modal
           onClose={() => setShowAddModal(false)}
         />
       )}

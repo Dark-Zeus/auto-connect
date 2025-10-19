@@ -1,109 +1,55 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import VehicleOwnerCard from "@components/AdminComponents/VehicleOwners/VehicleOwnerDetailsBox";
 import SearchFilterSortBox from "@components/AdminComponents/VehicleOwners/VehicleOwnerFilterBox";
-import user1 from "@assets/images/users/user1.jpg";
-import user2 from "@assets/images/users/user2.jpg";
-import user3 from "@assets/images/users/user3.jpg";
-import user4 from "@assets/images/users/user4.jpg";
-const ownerDataList = [
-  {
-    name: "Kavindu Perera",
-    email: "kavindu@email.com",
-    mobile: "0711234567",
-    image: user2,
-    nic: "993456789V",
-    gender: "Male",
-    dob: "1999-06-21",
-    address: "No. 42, Rose Garden",
-    city: "Kandy",
-    district: "Kandy",
-    province: "Central",
-    postalCode: "20000",
-  },
-  {
-    name: "Rashmika Dilmin",
-    email: "rashmika@email.com",
-    mobile: "0751534532",
-    image: user1,
-    nic: "200118201761",
-    gender: "Male",
-    dob: "1998-05-15",
-    address: "No. 10, Main Street",
-    city: "Colombo",
-    district: "Colombo",
-    province: "Western",
-    postalCode: "22343",
-  },
-    {
-    name: "Kavindu Silva",
-    email: "kavindu@email.com",
-    mobile: "0745234964",
-    image: user3,
-    nic: "993456789V",
-    gender: "Male",
-    dob: "1999-05-21",
-    address: "Galle Road, No 12",
-    city: "Bambalapitiya",
-    district: "Colombo",
-    province: "Western",
-    postalCode: "27644",
-  },
-  {
-    name: "Nimal Perera",
-    email: "nimalperera@email.com",
-    mobile: "0781534432",
-    image: user4,
-    nic: "200345328",
-    gender: "Male",
-    dob: "2003-05-15",
-    address: "No 12, Galle Road",
-    city: "Colombo",
-    district: "Colombo",
-    province: "Western",
-    postalCode: "22343",
-  },
-  // Add more data if needed
-];
+import VehicleOwnerAPI from "../../services/getVehicleOwnersApiService.js";
 
 function OwnerView() {
-  const [expandedIndex, setExpandedIndex] = useState(null);
+  const [owners, setOwners] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 18;
+  const itemsPerPage = 12;
+
+  useEffect(() => {
+    async function fetchOwners() {
+      try {
+        const data = await VehicleOwnerAPI.getAllOwners();
+        setOwners(data.data); // backend returns { success, data: [...] }
+      } catch (err) {
+        console.error("Error fetching vehicle owners:", err);
+      }
+    }
+    fetchOwners();
+  }, []);
 
   const filteredOwners = useMemo(() => {
-    let filtered = [...ownerDataList];
+    let list = [...owners];
 
-    // Search
+    // Search by name or NIC
     if (search.trim()) {
       const query = search.toLowerCase();
-      filtered = filtered.filter(
+      list = list.filter(
         (o) =>
-          o.name.toLowerCase().includes(query) ||
-          o.nic.toLowerCase().includes(query)
+          `${o.firstName} ${o.lastName}`.toLowerCase().includes(query) ||
+          o.nicNumber.toLowerCase().includes(query)
       );
     }
 
-    // Filter by transmission
+    // Filter by district
     if (filter) {
-      filtered = filtered.filter((o) => o.district === filter);
+      list = list.filter((o) => o.address?.district === filter);
     }
 
-    // Sort
+    // Sort by name ascending/descending
     if (sort === "name-asc") {
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
+      list.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
     } else if (sort === "name-desc") {
-      filtered.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sort === "year-asc") {
-      filtered.sort((a, b) => a.modelYear - b.modelYear);
-    } else if (sort === "year-desc") {
-      filtered.sort((a, b) => b.modelYear - a.modelYear);
+      list.sort((a, b) => `${b.firstName} ${b.lastName}`.localeCompare(`${a.firstName} ${a.lastName}`));
     }
 
-    return filtered;
-  }, [search, filter, sort]);
+    return list;
+  }, [owners, search, filter, sort]);
 
   const totalPages = Math.ceil(filteredOwners.length / itemsPerPage);
   const paginatedOwners = filteredOwners.slice(
@@ -112,8 +58,8 @@ function OwnerView() {
   );
 
   const handleReset = () => {
-    setFilter("");
     setSearch("");
+    setFilter("");
     setSort("");
   };
 
@@ -131,11 +77,11 @@ function OwnerView() {
         onReset={handleReset}
       />
 
-    <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 tw:gap-6 lg:tw:grid-cols-3 tw:mx-auto tw:max-w-7xl">
-    {paginatedOwners.map((owner, index) => (
-      <VehicleOwnerCard key={owner.nic} owner={owner} />
-    ))}
-    </div>
+      <div className="tw:grid tw:justify-center tw:grid-cols-3 md:tw:grid-cols-2 tw:gap-6 lg:tw:grid-cols-3 tw:mx-auto tw:max-w-7xl">
+        {paginatedOwners.map((owner) => (
+          <VehicleOwnerCard key={owner._id} owner={owner} />
+        ))}
+      </div>
 
       {/* Pagination Controls */}
       <div className="tw:mt-6 tw:flex tw:justify-center tw:space-x-2">
