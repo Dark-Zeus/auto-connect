@@ -25,6 +25,7 @@ import notificationRoute from "./notificationRoute.route.js";
 import contactRoute from "./contactRequest.routes.js";
 import DashboardRoute from "./dashboard.route.js";
 import getVehicleOwnersRoute from "./getVehicleOwners.route.js";
+import getServiceCentersRoute from "./getServiceCenters.route.js";
 
 import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
@@ -82,6 +83,9 @@ router.use("/dashboard", generalLimiter, DashboardRoute);
 
 // Vehicle Owners route
 router.use("/users/vehicleowners", generalLimiter, getVehicleOwnersRoute);
+
+// Service Centers route
+router.use("/users/services", generalLimiter, getServiceCentersRoute);
 
 router.use("/buy-vehicles", generalLimiter, buyVehicleRoute);
 
@@ -233,6 +237,7 @@ router.get("/docs", (req, res) => {
         description: "Fetch all users with role = vehicle_owner",
         routes: [
           "GET /users/vehicleowners - Retrieve all vehicle owners",
+          "GET /users/services - Retrieve all service centers",
         ],
       },
 
