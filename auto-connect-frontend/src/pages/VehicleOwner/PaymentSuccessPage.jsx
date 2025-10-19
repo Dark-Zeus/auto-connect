@@ -56,13 +56,13 @@ const PaymentSuccessPage = () => {
       localStorage.setItem(CREATED_FLAG_KEY, "true");
       localStorage.removeItem("pendingVehicleData");
       localStorage.removeItem("pendingVehicleData_created");
-      toast.success("Vehicle listed successfully!");
+      // toast.success("Vehicle listed successfully!");
       setCreated(true);
     } catch (e) {
       console.error("Listing creation failed:", e);
       const msg = e?.message || "Failed to create listing.";
       setError(msg);
-      toast.error(msg);
+      // toast.error(msg);
     } finally {
       setCreating(false);
     }
