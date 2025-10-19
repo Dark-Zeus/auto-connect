@@ -168,7 +168,7 @@ const LatestUpdatesTable = ({ latestUpdates }) => {
               Vehicle No.
             </th>
             <th className="tw:text-left tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">
-              Status
+              View
             </th>
           </tr>
         </thead>
@@ -202,7 +202,7 @@ const LatestUpdatesTable = ({ latestUpdates }) => {
               </td>
               <td className="tw:py-3 tw:px-6 tw:border-b tw:border-blue-100">
                 <span className="tw:inline-flex tw:items-center tw:gap-1 tw:text-red-600 tw:font-medium">
-                  🔒 Paid Report
+                  🔒 Restricted
                 </span>
               </td>
             </tr>

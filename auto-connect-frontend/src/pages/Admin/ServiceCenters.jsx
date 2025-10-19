@@ -96,6 +96,7 @@ function ServiceCenters() {
         </h1>
         <button
           onClick={() => setShowPopup(true)}
+          disabled={true}
           className="tw:bg-blue-600 tw:text-white tw:px-6 tw:py-3 tw:rounded-lg tw:shadow hover:tw:bg-blue-700 tw:transition"
         >
           {showPopup ? "Hide Requests" : "View Requests"}

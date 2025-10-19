@@ -24,11 +24,11 @@ import { ShieldCheck, Car, MapPin, Calendar, Clock } from "lucide-react";
 import DashboardAPI from "../../services/DashboardApiService.js";
 
 const dataTrafficLocation = [
-  { name: "AutoFix", value: 400 },
-  { name: "QuickServe", value: 300 },
-  { name: "SpeedyAuto", value: 360 },
-  { name: "CarFix", value: 200 },
-  { name: "GreenGrage", value: 100 },
+  { name: "AutoFix", value: 8 },
+  { name: "QuickServe", value: 7 },
+  { name: "SpeedyAuto", value: 4 },
+  { name: "CarFix", value: 3 },
+  { name: "GreenGrage", value: 1 },
 ];
 
 const dataTrafficDevice = [
@@ -367,7 +367,7 @@ useEffect(() => {
               <th className="tw:py-3 tw:px-4 tw:text-left">Time</th>
               <th className="tw:py-3 tw:px-4 tw:text-left">District</th>
               <th className="tw:py-3 tw:px-4 tw:text-left">Vehicle No.</th>
-              <th className="tw:py-3 tw:px-4 tw:text-left tw:rounded-r-lg">Status</th>
+              <th className="tw:py-3 tw:px-4 tw:text-left tw:rounded-r-lg">View</th>
             </tr>
           </thead>
           <tbody>
@@ -386,7 +386,7 @@ useEffect(() => {
                 <td className="tw:py-3 tw:px-4">{row.vehicleNumber}</td>
                 <td className="tw:py-3 tw:px-4 tw:rounded-r-lg">
                   <span className="tw:inline-flex tw:items-center tw:gap-1 tw:bg-red-100 tw:text-red-600 tw:px-2 tw:py-1 tw:rounded-full tw:text-xs tw:font-semibold">
-                    🔒 Paid Report
+                    🔒 Restricted
                   </span>
                 </td>
               </tr>
