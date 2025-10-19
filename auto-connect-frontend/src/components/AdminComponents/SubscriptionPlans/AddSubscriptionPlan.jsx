@@ -1,10 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Star, Shield, Check, Users } from "lucide-react";
-import {
-  subscriptionAPI,
-  handleSubscriptionSuccess,
-  handleSubscriptionError,
-} from "@/services/subscriptionApiService";
 
 export default function AddPlanModal({ onSuccess, onClose }) {
   const [formData, setFormData] = useState({
@@ -14,31 +9,40 @@ export default function AddPlanModal({ onSuccess, onClose }) {
     costPerAd: "",
     validityPeriod: "",
     adsPerMonth: "",
-    promotionVoucher: "", // ✅ matches backend field
+    promotionVoucher: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  // Update validityPeriod when title changes
+  useEffect(() => {
+    let validity = "";
+    switch (formData.title) {
+      case "Monthly": validity = 30; break;
+      case "Quarterly": validity = 90; break;
+      case "Yearly": validity = 365; break;
+      default: validity = "";
+    }
+    setFormData(prev => ({ ...prev, validityPeriod: validity }));
+  }, [formData.title]);
+
+  // Update adsPerMonth when price or costPerAd changes
+  useEffect(() => {
+    const price = parseFloat(formData.price);
+    const cost = parseFloat(formData.costPerAd);
+    setFormData(prev => ({
+      ...prev,
+      adsPerMonth: !isNaN(price) && !isNaN(cost) && cost > 0 ? Math.floor(price / cost) : ""
+    }));
+  }, [formData.price, formData.costPerAd]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await subscriptionAPI.createSubscription(formData);
-      if (res.success) {
-        handleSubscriptionSuccess(res, "create subscription");
-        if (onSuccess) onSuccess(res.data); // update parent list if needed
-        onClose();
-      }
-    } catch (err) {
-      handleSubscriptionError(err, "create subscription");
-    } finally {
-      setLoading(false);
-    }
+    if (onSuccess) onSuccess(formData); // pass data to parent
+    onClose(); // close modal
   };
 
   const fieldIcons = {
@@ -51,32 +55,12 @@ export default function AddPlanModal({ onSuccess, onClose }) {
   };
 
   const fields = [
-    {
-      label: "Plan Title",
-      name: "title",
-      placeholder: "e.g. Monthly, Quarterly, Yearly",
-    },
+    { label: "Plan Title", name: "title", type: "select", options: ["Monthly","Quarterly","Yearly"] },
     { label: "Price (LKR)", name: "price", placeholder: "Enter price" },
-    {
-      label: "Cost Per Ad",
-      name: "costPerAd",
-      placeholder: "Enter cost per ad",
-    },
-    {
-      label: "Validity Period (Days)",
-      name: "validityPeriod",
-      placeholder: "e.g. 30, 90, 365",
-    },
-    {
-      label: "Ads Per Month",
-      name: "adsPerMonth",
-      placeholder: "Enter ads per month",
-    },
-    {
-      label: "Free Promotion (Days)",
-      name: "promotionVoucher",
-      placeholder: "Enter promotion days",
-    },
+    { label: "Cost Per Ad", name: "costPerAd", placeholder: "Enter cost per ad" },
+    { label: "Validity Period (Days)", name: "validityPeriod", placeholder: "Auto-filled", readOnly: true },
+    { label: "Ads Per Month", name: "adsPerMonth", placeholder: "Auto-calculated", readOnly: true },
+    { label: "Free Promotion (Days)", name: "promotionVoucher", placeholder: "Enter promotion days" }
   ];
 
   return (
@@ -84,58 +68,33 @@ export default function AddPlanModal({ onSuccess, onClose }) {
       <div className="tw:bg-gradient-to-br tw:from-white tw:to-blue-50 tw:rounded-2xl tw:p-8 tw:w-full tw:max-w-2xl tw:shadow-2xl tw:relative tw:border-2 tw:border-blue-200/50">
         {/* Header */}
         <div className="tw:flex tw:justify-between tw:items-center tw:mb-6">
-          <h2 className="tw:text-2xl tw:font-extrabold tw:text-blue-700">
-            Add Subscription Plan
-          </h2>
-          <button
-            onClick={onClose}
-            className="tw:text-gray-400 hover:tw:text-red-500 tw:text-2xl tw:rounded-full tw:p-2 tw:transition-all tw:duration-200"
-            title="Close"
-          >
+          <h2 className="tw:text-2xl tw:font-extrabold tw:text-blue-700">Add Subscription Plan</h2>
+          <button onClick={onClose} className="tw:text-gray-400 hover:tw:text-red-500 tw:text-2xl tw:rounded-full tw:p-2 tw:transition-all tw:duration-200">
             <X className="tw:w-6 tw:h-6" />
           </button>
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6"
-        >
-          {fields.map(({ label, name, placeholder }) => (
+        <form onSubmit={handleSubmit} className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-6">
+          {fields.map(({ label, name, placeholder, type, options, readOnly }) => (
             <div key={name}>
               <label className="tw:text-sm tw:font-semibold tw:text-blue-700 tw:mb-1 tw:flex tw:items-center tw:gap-2">
-                {fieldIcons[name]}
-                {label}
+                {fieldIcons[name]} {label}
               </label>
-              <input
-                type="text"
-                name={name}
-                value={formData[name]}
-                onChange={handleChange}
-                className="tw:w-full tw:border tw:border-blue-200 tw:rounded-xl tw:px-4 tw:py-2.5 tw:text-sm tw:bg-blue-50 focus:tw:ring-2 focus:tw:ring-blue-300 tw:outline-none tw:transition tw:duration-200 tw:font-medium"
-                placeholder={placeholder}
-                required
-              />
+              {type === "select" ? (
+                <select name={name} value={formData[name]} onChange={handleChange} required className="tw:w-full tw:border tw:border-blue-200 tw:rounded-xl tw:px-4 tw:py-2.5 tw:text-sm tw:bg-blue-50 focus:tw:ring-2 focus:tw:ring-blue-300 tw:outline-none">
+                  <option value="" disabled>Select {label}</option>
+                  {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              ) : (
+                <input type="text" name={name} value={formData[name]} onChange={handleChange} placeholder={placeholder} readOnly={readOnly} className={`tw:w-full tw:border tw:border-blue-200 tw:rounded-xl tw:px-4 tw:py-2.5 tw:text-sm tw:bg-blue-50 focus:tw:ring-2 focus:tw:ring-blue-300 ${readOnly ? "tw:bg-gray-100" : ""}`} required={!readOnly}/>
+              )}
             </div>
           ))}
 
-          {/* Buttons */}
           <div className="tw:col-span-1 md:tw:col-span-2 tw:flex tw:justify-end tw:gap-4 tw:pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="tw:bg-gray-100 tw:text-gray-700 tw:px-5 tw:py-2.5 tw:rounded-lg hover:tw:bg-gray-200 tw:transition tw:duration-200 tw:font-semibold"
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="tw:bg-gradient-to-r tw:from-blue-600 tw:to-blue-700 tw:text-white tw:px-6 tw:py-2.5 tw:rounded-lg hover:tw:from-blue-700 hover:tw:to-blue-800 tw:transition tw:duration-200 tw:font-semibold tw:shadow-lg"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save Plan"}
-            </button>
+            <button type="button" onClick={onClose} className="tw:bg-gray-100 tw:text-gray-700 tw:px-5 tw:py-2.5 tw:rounded-lg hover:tw:bg-gray-200 tw:transition tw:duration-200 tw:font-semibold">Cancel</button>
+            <button type="submit" className="tw:bg-gradient-to-r tw:from-blue-600 tw:to-blue-700 tw:text-white tw:px-6 tw:py-2.5 tw:rounded-lg hover:tw:from-blue-700 hover:tw:to-blue-800 tw:transition tw:duration-200 tw:font-semibold tw:shadow-lg">Save Plan</button>
           </div>
         </form>
       </div>
