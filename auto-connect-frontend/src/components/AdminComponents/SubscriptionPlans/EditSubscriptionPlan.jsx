@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { X, Zap, TrendingUp, Star, Check, Shield, Users } from "lucide-react";
+import { X, Star, Shield, Check, Users } from "lucide-react";
 
 export default function EditPlanModal({ plan, onSave, onClose }) {
   const [formData, setFormData] = useState({ ...plan });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setFormData({ ...plan });
+    setErrors({});
   }, [plan]);
 
   // Update validityPeriod when title changes
@@ -39,15 +41,40 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
     }
   }, [formData.price, formData.costPerAd]);
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.title) newErrors.title = "Please select a plan title.";
+    if (!formData.price || isNaN(formData.price) || formData.price <= 0)
+      newErrors.price = "Enter a valid positive price.";
+    if (!formData.costPerAd || isNaN(formData.costPerAd) || formData.costPerAd <= 0)
+      newErrors.costPerAd = "Enter a valid cost per ad.";
+    if (formData.adsPerMonth <= 0)
+      newErrors.adsPerMonth = "Price must be greater than cost per ad.";
+    if (formData.promotionVoucher && (isNaN(formData.promotionVoucher) || formData.promotionVoucher < 0))
+      newErrors.promotionVoucher = "Promotion days must be a positive number.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Restrict number fields to numeric input only
+    if (["price", "costPerAd", "promotionVoucher"].includes(name)) {
+      if (value !== "" && !/^\d*\.?\d*$/.test(value)) return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
-    onClose();
+    if (validate()) {
+      onSave(formData);
+      onClose();
+    }
   };
 
   // Field icons
@@ -71,7 +98,7 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
     { label: "Cost Per Ad (LKR)", name: "costPerAd", placeholder: "Enter cost per ad" },
     { label: "Validity Period (Days)", name: "validityPeriod", placeholder: "Auto-filled", readOnly: true },
     { label: "Ads Per Month", name: "adsPerMonth", placeholder: "Auto-calculated", readOnly: true },
-    { label: "Free Promotion", name: "promotionVoucher", placeholder: "Enter promotion days" },
+    { label: "Free Promotion (Days)", name: "promotionVoucher", placeholder: "Enter promotion days" },
   ];
 
   return (
@@ -96,8 +123,7 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
           {fields.map(({ name, label, placeholder, type, options, readOnly }) => (
             <div key={name}>
               <label className="tw:text-sm tw:font-semibold tw:text-blue-700 tw:mb-1 tw:flex tw:items-center tw:gap-2">
-                {fieldIcons[name]}
-                {label}
+                {fieldIcons[name]} {label}
               </label>
 
               {type === "select" ? (
@@ -124,6 +150,10 @@ export default function EditPlanModal({ plan, onSave, onClose }) {
                   className={`tw:w-full tw:border tw:border-blue-200 tw:rounded-xl tw:px-4 tw:py-2.5 tw:text-sm tw:bg-blue-50 focus:tw:ring-2 focus:tw:ring-blue-300 tw:outline-none tw:transition tw:duration-200 tw:font-medium ${readOnly ? "tw:bg-gray-100" : ""}`}
                   required={!readOnly}
                 />
+              )}
+
+              {errors[name] && (
+                <p className="tw:text-red-500 tw:text-xs tw:mt-1">{errors[name]}</p>
               )}
             </div>
           ))}
