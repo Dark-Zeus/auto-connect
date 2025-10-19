@@ -4,14 +4,14 @@ import {
 } from "recharts";
 import { TrendingUp } from "lucide-react";
 
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+const monthNames = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
 
 const fetchMonthlyRevenue = async (year) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       const revenueData = monthNames.map((month) => ({
         month,
-        revenue: parseFloat((Math.random() * 10000 + 2000).toFixed(2)),
+        revenue: parseFloat((Math.random() * 100000 + 2000).toFixed(2)),
       }));
       resolve(revenueData);
     }, 800);

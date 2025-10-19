@@ -42,16 +42,14 @@ const dataTrafficDevice = [
 const COLORS = ["#4F46E5", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"];
 
 const latestUpdates = [
-  { serviceCenter: "AutoFix", date: "2025-06-20", time: "10:30 AM", district: "Colombo", vehicleNumber: "WP AB 1234", type: "Repair" },
-  { serviceCenter: "QuickServe", date: "2025-06-19", time: "02:15 PM", district: "Kandy", vehicleNumber: "WP XY 9876", type: "Maintenance" },
-  { serviceCenter: "SpeedyAuto", date: "2025-06-18", time: "09:00 AM", district: "Galle", vehicleNumber: "WP CD 5678", type: "Inspection" },
-  { serviceCenter: "AutoHub", date: "2025-06-17", time: "11:45 AM", district: "Matara", vehicleNumber: "WP EF 4321", type: "Repair" },
-  { serviceCenter: "CarZone", date: "2025-06-16", time: "03:20 PM", district: "Moratuwa", vehicleNumber: "WP GH 8765", type: "Maintenance" },
-  { serviceCenter: "GreenGrage", date: "2025-06-15", time: "08:30 AM", district: "Panadura", vehicleNumber: "WP IJ 3456", type: "Inspection" },
-  { serviceCenter: "AutoExpress", date: "2025-06-14", time: "10:10 AM", district: "Galle", vehicleNumber: "WP KL 7890", type: "Repair" },
-  { serviceCenter: "QuickFix", date: "2025-06-13", time: "01:00 PM", district: "Anuradapura", vehicleNumber: "WP MN 2345", type: "Maintenance" },
-  { serviceCenter: "EliteAuto", date: "2025-06-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OP 6789", type: "Inspection" },
-  { serviceCenter: "GrageHub", date: "2025-06-11", time: "11:25 AM", district: "Badulla", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoFix", date: "2025-10-20", time: "10:30 AM", district: "Colombo", vehicleNumber: "WP LC 1142", type: "Repair" },
+  { serviceCenter: "QuickServe", date: "2025-10-19", time: "02:15 PM", district: "Kandy", vehicleNumber: "WP KL 9438", type: "Maintenance" },
+  { serviceCenter: "SpeedyAuto", date: "2025-10-18", time: "09:00 AM", district: "Galle", vehicleNumber: "WP BN 6710", type: "Inspection" },
+  { serviceCenter: "AutoHub", date: "2025-10-17", time: "11:45 AM", district: "Matara", vehicleNumber: "WP OP 6529", type: "Repair" },
+  { serviceCenter: "CarZone", date: "2025-10-16", time: "03:20 PM", district: "Moratuwa", vehicleNumber: "WP IU 9721", type: "Maintenance" },
+  { serviceCenter: "GreenGrage", date: "2025-10-15", time: "08:30 AM", district: "Panadura", vehicleNumber: "WP FM 3256", type: "Inspection" },
+  { serviceCenter: "AutoExpress", date: "2025-10-14", time: "10:10 AM", district: "Galle", vehicleNumber: "WP LA 8430", type: "Repair" },
+  { serviceCenter: "EliteAuto", date: "2025-10-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OQ 6439", type: "Inspection" },
 ];
 
 const renderActiveShape = (props) => {
@@ -137,7 +135,7 @@ useEffect(() => {
     },
     {
       title: "Income",
-      value: "LKR 710,003",
+      value: "LKR 60000",
       progress: 0.00,
       icon: <TrendingUp style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-green-50 tw:to-blue-100",

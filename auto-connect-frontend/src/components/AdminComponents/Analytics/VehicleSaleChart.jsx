@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { Car } from "lucide-react";
 
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+const monthNames = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
 
 // Simulated data fetch
 const fetchMonthlyVehicleSales = async (year) => {
@@ -18,7 +18,7 @@ const fetchMonthlyVehicleSales = async (year) => {
     setTimeout(() => {
       const sales = monthNames.map((month) => ({
         month,
-        sales: Math.floor(Math.random() * 100) + 20,
+        sales: Math.floor(Math.random() * 10) + 10,
       }));
       resolve(sales);
     }, 600);

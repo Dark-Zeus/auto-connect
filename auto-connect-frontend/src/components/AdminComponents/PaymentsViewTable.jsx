@@ -1,44 +1,70 @@
 import React, { useState } from "react";
-import PaymentFilterBox from "@components/AdminComponents/PaymentFilterBox"; // adjust path as needed
-
-const fromNames = ["Rashmika Dilmin", "Kasun Jayasuriya", "Nimasha Fernando", "Tharindu Perera", "Dilshan Silva", "Saman Kumara", "Chathura Bandara", "Nadeesha Perera", "Kavindu Perera", "Sahan Jayasinghe"];
-const toNames = ["Super Wheels Service Center", "City Auto Service", "AutoTech Garage", "QuickFix Motors", "Speedy Repairs", "Elite Auto Care", "Precision Mechanics", "Pro Auto Solutions", "Rapid Repairs", "Expert Auto Service"];
-const dates = [
-  "2025-07-01",
-  "2025-07-02",
-  "2025-07-03",
-  "2025-07-04",
-  "2025-07-05",
-  "2025-07-06",
-  "2025-07-07",
-  "2025-07-08",
-];
-const times = [
-  "09:00 AM",
-  "10:30 AM",
-  "12:00 PM",
-  "01:30 PM",
-  "03:00 PM",
-  "04:30 PM",
-  "06:00 PM",
-];
-
-const paymentData = Array.from({ length: 47 }, (_, i) => ({
-  id: i + 1,
-  date: dates[i % dates.length],
-  time: times[i % times.length],
-  amount: `LKR ${(3000 + i * 200).toLocaleString()}.00`,
-  from: fromNames[i % fromNames.length],
-  to: toNames[i % toNames.length],
-  method: i % 2 === 0 ? "Credit Card" : "Bank Transfer",
-  status: i % 4 === 0 ? "Pending" : "Completed",
-}));
-
-
-const ITEMS_PER_PAGE = 20;
+import PaymentFilterBox from "@components/AdminComponents/PaymentFilterBox"; // adjust import path as needed
 
 function PaymentsTable() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const paymentData = [
+    {
+      id: 1,
+      date: "2025-07-01",
+      time: "09:00 AM",
+      from: "Rashmika Dilmin",
+      to: "Super Wheels Service Center",
+      amount: "LKR 3,000.00",
+      method: "Credit Card",
+      status: "Completed",
+    },
+    {
+      id: 2,
+      date: "2025-07-02",
+      time: "10:30 AM",
+      from: "Kasun Jayasuriya",
+      to: "City Auto Service",
+      amount: "LKR 3,000.00",
+      method: "Bank Transfer",
+      status: "Completed",
+    },
+    {
+      id: 3,
+      date: "2025-07-03",
+      time: "12:00 PM",
+      from: "Nimasha Fernando",
+      to: "AutoTech Garage",
+      amount: "LKR 3,000.00",
+      method: "Credit Card",
+      status: "Completed",
+    },
+    {
+      id: 4,
+      date: "2025-07-04",
+      time: "01:30 PM",
+      from: "Tharindu Perera",
+      to: "QuickFix Motors",
+      amount: "LKR 3,000.00",
+      method: "Bank Transfer",
+      status: "Completed",
+    },
+    {
+      id: 5,
+      date: "2025-07-05",
+      time: "03:00 PM",
+      from: "Dilshan Silva",
+      to: "Speedy Repairs",
+      amount: "LKR 3,000.00",
+      method: "Credit Card",
+      status: "Completed",
+    },
+    {
+      id: 6,
+      date: "2025-07-06",
+      time: "04:30 PM",
+      from: "Saman Kumara",
+      to: "Elite Auto Care",
+      amount: "LKR 3,000.00",
+      method: "Bank Transfer",
+      status: "Completed",
+    },
+  ];
+
   const [filters, setFilters] = useState({
     search: "",
     date: "All",
@@ -46,11 +72,10 @@ function PaymentsTable() {
     status: "All",
   });
 
-  const totalPages = Math.ceil(paymentData.length / ITEMS_PER_PAGE);
-
   const thClass = "tw:px-6 tw:py-4 tw:font-semibold tw:text-white";
   const tdClass = "tw:px-6 tw:py-4 tw:text-gray-700";
 
+  // Filtering logic
   const applyFilters = () => {
     return paymentData.filter((txn) => {
       const matchesSearch =
@@ -63,33 +88,27 @@ function PaymentsTable() {
       const matchesStatus =
         filters.status === "All" || txn.status === filters.status;
 
-      // Date filtering skipped for now (can be implemented if needed)
-
       return matchesSearch && matchesMethod && matchesStatus;
     });
   };
 
   const filteredData = applyFilters();
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentPayments = filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-  const goToPage = (pageNum) => {
-    if (pageNum >= 1 && pageNum <= Math.ceil(filteredData.length / ITEMS_PER_PAGE)) {
-      setCurrentPage(pageNum);
-    }
-  };
 
   return (
     <div className="tw:min-h-screen tw:px-10 tw:pt-10 tw:pb-20 tw:bg-gradient-to-br tw:from-white tw:to-blue-50">
       <div className="tw:flex tw:items-center tw:justify-between tw:mb-8">
-        <h2 className="tw:text-3xl tw:font-bold tw:text-blue-800">Payment Records</h2>
+        <h2 className="tw:text-3xl tw:font-bold tw:text-blue-800">
+          Payment Records
+        </h2>
         <span className="tw:text-blue-600 tw:font-medium tw:text-lg">
           Total Transactions: {filteredData.length}
         </span>
       </div>
 
+      {/* Filter Box */}
       <PaymentFilterBox filters={filters} setFilters={setFilters} />
 
+      {/* Table */}
       <div className="tw:overflow-x-auto tw:rounded-lg tw:shadow-lg">
         <table className="tw:w-full tw:text-sm tw:text-left tw:border-collapse">
           <thead>
@@ -104,7 +123,7 @@ function PaymentsTable() {
             </tr>
           </thead>
           <tbody>
-            {currentPayments.map((txn, index) => (
+            {filteredData.map((txn, index) => (
               <tr
                 key={txn.id}
                 className={`tw:transition tw:duration-200 ${
@@ -113,9 +132,15 @@ function PaymentsTable() {
               >
                 <td className={tdClass}>{txn.date}</td>
                 <td className={tdClass}>{txn.time}</td>
-                <td className={`${tdClass} tw:text-blue-800 tw:font-medium`}>{txn.from}</td>
-                <td className={`${tdClass} tw:text-blue-800 tw:font-medium`}>{txn.to}</td>
-                <td className={`${tdClass} tw:text-green-700 tw:font-semibold`}>{txn.amount}</td>
+                <td className={`${tdClass} tw:text-blue-800 tw:font-medium`}>
+                  {txn.from}
+                </td>
+                <td className={`${tdClass} tw:text-blue-800 tw:font-medium`}>
+                  {txn.to}
+                </td>
+                <td className={`${tdClass} tw:text-green-700 tw:font-semibold`}>
+                  {txn.amount}
+                </td>
                 <td className={tdClass}>{txn.method}</td>
                 <td className={tdClass}>
                   <span
@@ -132,37 +157,6 @@ function PaymentsTable() {
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="tw:flex tw:justify-center tw:items-center tw:gap-3 tw:mt-10">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="tw:px-4 tw:py-2 tw:bg-blue-200 tw:rounded-xl tw:font-semibold tw:text-blue-800 hover:tw:bg-blue-300 disabled:tw:opacity-50"
-        >
-          Prev
-        </button>
-        {Array.from({ length: Math.ceil(filteredData.length / ITEMS_PER_PAGE) }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => goToPage(i + 1)}
-            className={`tw:px-4 tw:py-2 tw:rounded-xl tw:font-bold ${
-              currentPage === i + 1
-                ? "tw:bg-blue-600 tw:text-white"
-                : "tw:bg-gray-200 tw:text-gray-700 hover:tw:bg-blue-100"
-            }`}
-          >
-            {i + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage === Math.ceil(filteredData.length / ITEMS_PER_PAGE)}
-          className="tw:px-4 tw:py-2 tw:bg-blue-200 tw:rounded-xl tw:font-semibold tw:text-blue-800 hover:tw:bg-blue-300 disabled:tw:opacity-50"
-        >
-          Next
-        </button>
       </div>
     </div>
   );

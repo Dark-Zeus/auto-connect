@@ -9,11 +9,11 @@ import {
 import { Building2 } from "lucide-react";
 
 const yourData = [
-  { name: "Center A", updates: 8 },
-  { name: "Center B", updates: 5 },
-  { name: "Center C", updates: 12 },
-  { name: "Center D", updates: 3 },
-  { name: "Center E", updates: 7 },
+  { name: "Elite AutoZone", updates: 3 },
+  { name: "CityFix Motors", updates: 2 },
+  { name: "AutoCare Lanka", updates: 2 },
+  { name: "MotorMate", updates: 1 },
+  { name: "AutoXpress", updates: 3 },
 ];
 
 const COLORS = ["#4F46E5", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"];
