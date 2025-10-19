@@ -51,13 +51,13 @@ const handleResponse = async (response) => {
 // Error handling helper
 const handleListVehicleError = (error, operation = "operation") => {
   console.error(`List Vehicle API Error during ${operation}:`, error);
-  toast.error(error.message || `Failed to ${operation}. Please try again.`);
+  // toast.error(error.message || `Failed to ${operation}. Please try again.`);
   throw error;
 };
 
 // Success handling helper
 const handleListVehicleSuccess = (data, operation = "operation") => {
-  toast.success(data.message || `Vehicle listing ${operation} successful!`);
+  // toast.success(data.message || `Vehicle listing ${operation} successful!`);
   return data;
 };
 
