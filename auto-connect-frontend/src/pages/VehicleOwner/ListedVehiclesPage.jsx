@@ -98,7 +98,7 @@ const ListedVehiclesPage = () => {
 
         <div className="tw:w-2/3 tw:flex tw:flex-col">
           {vehiclesToDisplay.length === 0 ? (
-            <div className="tw-text-gray-500 tw-text-lg tw-mt-10">
+            <div className="tw:text-gray-500 tw:text-lg tw:mt-10">
               No vehicles found.
             </div>
           ) : (
