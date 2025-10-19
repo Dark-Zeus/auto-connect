@@ -24,6 +24,9 @@ import CustomerProviderSelection from "@pages/VehicleOwner/CustomerProviderSelec
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
+
+import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
+import PromotionPaymentSuccessPage from "@pages/VehicleOwner/PromotionPaymentSuccessPage";
 import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
 import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
 import ClaimHistoryPage from "@pages/VehicleOwner/ClaimHistoryPage";
@@ -51,6 +54,8 @@ import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
 import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
 import ServiceProviderEstimatePage from "@pages/ServiceProvider/ServiceProviderEstimatePage";
+import VehicleServiceRequests from "@pages/ServiceProvider/vehicleServiceRequests";
+
 
 //Insurance Company
 //import { Add } from "@mui/icons-material";
@@ -98,7 +103,7 @@ function getNavLinks(userContext) {
           path: [`/vehicles/add`],
           title: "Add New Vehicle",
           icon: "add_circle",
-          page: <AddVehicles  />,
+          page: <AddVehicles />,
         },
         {
           path: [`/vehicles/:vehicleId`],
@@ -239,7 +244,7 @@ function getNavLinks(userContext) {
           hidden: true, // TODO: Hide from navigation, only for direct access
         },
         {
-          path: [`/vehicle-ad-promotion`],
+          path: [`/vehicle-ad-promotion/:id`],
           title: "Ad Promotion",
           icon: "trending_up",
           page: <VehicleAdPromotionPage />,
@@ -251,6 +256,20 @@ function getNavLinks(userContext) {
           icon: "edit",
           page: <UpdateVehicleAd />,
           hidden: true, // TODO: Hide from navigation, only for direct access
+        },
+        {
+          path: [`/payment-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <PaymentSuccessPage />,
+          hidden: true,
+        },
+        {
+          path: [`/promotion-payment-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <PromotionPaymentSuccessPage />,
+          hidden: true,
         },
       ],
     });
@@ -453,23 +472,30 @@ function getNavLinks(userContext) {
       page: <ServiceProviderDashboard />,
     });
 
-    // nav.push({
-    //   title: "Appointments",
-    //   icon: "schedule",
-    //   page: "Appointments",
-    //   defLinkSettings: {
-    //     title: "Appointment Management",
-    //     icon: "schedule",
-    //   },
-    //   sub: [
-    //     {
-    //       path: [`/appointments/calendar`],
-    //       title: "Service Calendar",
-    //       icon: "calendar_today",
-    //       page: "Service Calendar",
-    //     }
-    //   ]
-    // });
+    //nav.push({
+      //title: "Appointments",
+      //icon: "schedule",
+      //page: "Appointments",
+      //defLinkSettings: {
+        //title: "Appointment Management",
+        //icon: "schedule",
+      //},
+      //sub: [
+      //  {
+          //path: [`/appointments/calendar`],
+          //title: "Service Calendar",
+         // icon: "calendar_today",
+         // page: "Service Calendar",
+       // },
+      //],
+    //});
+
+    nav.push({
+      path: [`/service-requests`],
+      title: "Service Requests",
+      icon: "assignment",
+      page: <VehicleServiceRequests />,
+    });
 
     // nav.push({
     //   title: "Customer Management",
@@ -728,6 +754,48 @@ function getNavLinks(userContext) {
 
   // INSURANCE COMPANY Navigation
   if (userContext.role === "insurance_agent") {
+    nav.push({
+      path: [`/vehicles`],
+      title: "Vehicle List",
+      icon: "directions_car",
+      page: <VehicleList />,
+    });
+
+    nav.push({
+      title: "Claims Management",
+      icon: "assignment",
+      page: "Claims Management",
+      defLinkSettings: {
+        title: "Claims Dashboard",
+        icon: "assignment",
+      },
+      sub: [
+        // {
+        //   path: [`/claims`],
+        //   title: "Claims Dashboard",
+        //   icon: "assignment",
+        //   page: "Claims Dashboard",
+        // },
+        {
+          path: [`/claims/active`],
+          title: "Active Claims",
+          icon: "pending_actions",
+          page: <InsuranceClaims />,
+        },
+        // {
+        //   path: [`/claims/processing`],
+        //   title: "Claim Processing",
+        //   icon: "process",
+        //   page: "Claim Processing",
+        // },
+        // {
+        //   path: [`/claims/assessment`],
+        //   title: "Damage Assessment",
+        //   icon: "assessment",
+        //   page: "Damage Assessment",
+        // }
+      ],
+    });
      nav.push({
        path: [`/dashboard`],
        title: "Dashboard",
@@ -786,7 +854,7 @@ function getNavLinks(userContext) {
         //   icon: "analytics",
         //   page: "Policy Analytics",
         // }
-      ]
+      ],
     });
 
       nav.push({
@@ -822,6 +890,48 @@ function getNavLinks(userContext) {
 
 
 
+    nav.push({
+      title: "Profile",
+      icon: "person",
+      page: "Profile",
+      defLinkSettings: {
+        title: "Profile Overview",
+        icon: "person",
+      },
+      sub: [
+        {
+          path: [`/profile`],
+          title: "Profile Overview",
+          icon: "person",
+          page: "Profile Overview",
+        },
+        {
+          path: [`/profile/personal`],
+          title: "Personal Information",
+          icon: "person_outline",
+          page: "Personal Information",
+        },
+        {
+          path: [`/profile/contact`],
+          title: "Contact Details",
+          icon: "contact_phone",
+          page: "Contact Details",
+        },
+        // {
+        //   path: [`/profile/preferences`],
+        //   title: "Preferences",
+        //   icon: "settings",
+        //   page: "Preferences",
+        // },
+        // {
+        //   path: [`/profile/security`],
+        //   title: "Security Settings",
+        //   icon: "lock",
+        //   page: "Security Settings",
+        // }
+      ],
+    });
+  }
 
   // SYSTEM ADMINISTRATOR Navigation
   if (userContext.role === "system_admin") {

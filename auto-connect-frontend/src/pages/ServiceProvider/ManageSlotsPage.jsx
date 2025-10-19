@@ -1,696 +1,664 @@
-// src/pages/ServiceProvider/ManageSlotsPage.jsx - Redesigned for Visual Consistency
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Save,
-  AlertCircle,
-  CheckCircle,
-  Info,
-  Settings,
-  Zap,
-} from "lucide-react";
-import { UserContext } from "@contexts/UserContext";
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  Switch,
+  TextField,
+  Chip,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Divider,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Tabs,
+  Tab,
+  Stack,
+} from "@mui/material";
+import {
+  AccessTime,
+  Schedule as ScheduleIcon,
+  Settings as SettingsIcon,
+  Block as BlockIcon,
+  Analytics as AnalyticsIcon,
+  Refresh as RefreshIcon,
+  Save as SaveIcon,
+  ExpandMore as ExpandMoreIcon,
+  CheckCircle as CheckCircleIcon,
+  Cancel as CancelIcon,
+  Event as EventIcon,
+  CalendarToday as CalendarTodayIcon,
+} from "@mui/icons-material";
+import { UserContext } from "../../contexts/UserContext";
+import { weeklyScheduleApi } from "../../services/weeklyScheduleApi";
 import { toast } from "react-toastify";
-import SlotManager from "@components/ServiceProvider/SlotManager";
-import "./ManageSlotsPage.css";
+
+const DAYS_OF_WEEK = [
+  { key: "monday", label: "Monday", color: "#3498db" },
+  { key: "tuesday", label: "Tuesday", color: "#9b59b6" },
+  { key: "wednesday", label: "Wednesday", color: "#e67e22" },
+  { key: "thursday", label: "Thursday", color: "#27ae60" },
+  { key: "friday", label: "Friday", color: "#f39c12" },
+  { key: "saturday", label: "Saturday", color: "#e74c3c" },
+  { key: "sunday", label: "Sunday", color: "#95a5a6" },
+];
+
+const SLOT_DURATIONS = [
+  { value: 15, label: "15 minutes" },
+  { value: 30, label: "30 minutes" },
+  { value: 45, label: "45 minutes" },
+  { value: 60, label: "1 hour" },
+  { value: 90, label: "1.5 hours" },
+  { value: 120, label: "2 hours" },
+];
 
 const ManageSlotsPage = () => {
-  const navigate = useNavigate();
   const { userContext } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [workingHours, setWorkingHours] = useState({
-    monday: {
-      isOpen: true,
-      startTime: "08:00",
-      endTime: "17:00",
-      breakStart: "12:00",
-      breakEnd: "13:00",
-    },
-    tuesday: {
-      isOpen: true,
-      startTime: "08:00",
-      endTime: "17:00",
-      breakStart: "12:00",
-      breakEnd: "13:00",
-    },
-    wednesday: {
-      isOpen: true,
-      startTime: "08:00",
-      endTime: "17:00",
-      breakStart: "12:00",
-      breakEnd: "13:00",
-    },
-    thursday: {
-      isOpen: true,
-      startTime: "08:00",
-      endTime: "17:00",
-      breakStart: "12:00",
-      breakEnd: "13:00",
-    },
-    friday: {
-      isOpen: true,
-      startTime: "08:00",
-      endTime: "17:00",
-      breakStart: "12:00",
-      breakEnd: "13:00",
-    },
-    saturday: {
-      isOpen: true,
-      startTime: "08:00",
-      endTime: "15:00",
-      breakStart: "",
-      breakEnd: "",
-    },
-    sunday: {
-      isOpen: false,
-      startTime: "",
-      endTime: "",
-      breakStart: "",
-      breakEnd: "",
-    },
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [tabValue, setTabValue] = useState(0);
+  const [stats, setStats] = useState(null);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewSlots, setPreviewSlots] = useState([]);
+
+  // Schedule state
+  const [schedule, setSchedule] = useState({
+    monday: { isOpen: false, startTime: "", endTime: "" },
+    tuesday: { isOpen: false, startTime: "", endTime: "" },
+    wednesday: { isOpen: false, startTime: "", endTime: "" },
+    thursday: { isOpen: false, startTime: "", endTime: "" },
+    friday: { isOpen: false, startTime: "", endTime: "" },
+    saturday: { isOpen: false, startTime: "", endTime: "" },
+    sunday: { isOpen: false, startTime: "", endTime: "" },
   });
+
   const [slotSettings, setSlotSettings] = useState({
-    defaultDuration: 60,
+    duration: 60,
     bufferTime: 15,
-    maxAdvanceBooking: 30,
-    minAdvanceBooking: 1,
+    advanceBookingDays: 30,
   });
-  const [stats, setStats] = useState({
-    totalSlots: 0,
-    bookedSlots: 0,
-    availableSlots: 0,
-    blockedSlots: 0,
+
+  const [blockedDates, setBlockedDates] = useState([]);
+  const [blockData, setBlockData] = useState({
+    date: "",
+    reason: "",
   });
 
   useEffect(() => {
-    fetchWorkingHours();
-    fetchSlotSettings();
-    fetchSlotStats();
-  }, []);
+    if (userContext?.role === "service_center") {
+      fetchSchedule();
+      fetchStats();
+    }
+  }, [userContext]);
 
-  useEffect(() => {
-    fetchSlotStats();
-  }, [selectedDate]);
-
-  const fetchWorkingHours = async () => {
+  const fetchSchedule = async () => {
     try {
-      const response = await fetch("/api/v1/services/working-hours", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.workingHours) {
-          setWorkingHours(data.workingHours);
-        }
+      setLoading(true);
+      const response = await weeklyScheduleApi.getMySchedule();
+      if (response.success) {
+        const scheduleData = response.data.schedule;
+        setSchedule(scheduleData.schedule);
+        setSlotSettings(scheduleData.slotSettings);
+        setBlockedDates(scheduleData.blockedDates || []);
+        console.log("📅 Schedule loaded:", scheduleData);
       }
     } catch (error) {
-      console.error("Error fetching working hours:", error);
+      console.error("Error fetching schedule:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchSlotSettings = async () => {
+  const fetchStats = async () => {
     try {
-      const response = await fetch("/api/v1/services/slot-settings", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.settings) {
-          setSlotSettings(data.settings);
-        }
+      const response = await weeklyScheduleApi.getStats();
+      if (response.success) {
+        setStats(response.data.stats);
       }
     } catch (error) {
-      console.error("Error fetching slot settings:", error);
+      console.error("Error fetching stats:", error);
     }
   };
 
-  const fetchSlotStats = async () => {
-    try {
-      const response = await fetch(
-        `/api/v1/services/slot-stats?date=${selectedDate}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data.stats || stats);
-      }
-    } catch (error) {
-      console.error("Error fetching slot stats:", error);
-    }
-  };
-
-  const handleWorkingHoursChange = (day, field, value) => {
-    setWorkingHours((prev) => ({
+  const handleScheduleChange = (day, field, value) => {
+    setSchedule(prev => ({
       ...prev,
       [day]: {
         ...prev[day],
         [field]: value,
-      },
+        // If closing the day, clear times
+        ...(field === 'isOpen' && !value && { startTime: "", endTime: "" }),
+        // If opening the day, set default times
+        ...(field === 'isOpen' && value && prev[day].startTime === "" && { 
+          startTime: "09:00", 
+          endTime: "17:00" 
+        })
+      }
     }));
   };
 
   const handleSlotSettingsChange = (field, value) => {
-    setSlotSettings((prev) => ({
+    setSlotSettings(prev => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const saveWorkingHours = async () => {
-    setLoading(true);
+  const handleSaveSchedule = async () => {
     try {
-      const response = await fetch("/api/v1/services/working-hours", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ workingHours }),
-      });
-
-      if (response.ok) {
-        toast.success("Working hours saved successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to save working hours");
+      setSaving(true);
+      
+      // Validate schedule
+      const hasOpenDay = Object.values(schedule).some(day => day.isOpen);
+      if (!hasOpenDay) {
+        toast.error("At least one day must be open");
+        return;
       }
+
+      await weeklyScheduleApi.updateSchedule({
+        schedule,
+        slotSettings
+      });
+      
+      fetchStats(); // Refresh stats after saving
     } catch (error) {
-      console.error("Error saving working hours:", error);
-      toast.error("Network error. Please try again.");
+      console.error("Error saving schedule:", error);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  const saveSlotSettings = async () => {
-    setLoading(true);
+  const handleBlockDate = async () => {
     try {
-      const response = await fetch("/api/v1/services/slot-settings", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ settings: slotSettings }),
-      });
-
-      if (response.ok) {
-        toast.success("Slot settings saved successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to save slot settings");
-      }
+      await weeklyScheduleApi.blockDate(blockData.date, blockData.reason);
+      setBlockDialogOpen(false);
+      setBlockData({ date: "", reason: "" });
+      fetchSchedule(); // Refresh to get updated blocked dates
     } catch (error) {
-      console.error("Error saving slot settings:", error);
-      toast.error("Network error. Please try again.");
-    } finally {
-      setLoading(false);
+      console.error("Error blocking date:", error);
     }
   };
 
-  const generateSlotsForWeek = async () => {
-    const confirmGenerate = window.confirm(
-      "This will generate time slots for the entire week based on your working hours. Existing slots will be updated. Continue?"
-    );
-
-    if (!confirmGenerate) return;
-
-    setLoading(true);
-    try {
-      const response = await fetch("/api/v1/services/generate-weekly-slots", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          startDate: selectedDate,
-          workingHours,
-          slotSettings,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success("Weekly slots generated successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        fetchSlotStats();
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to generate slots");
+  const handleUnblockDate = async (date) => {
+    if (window.confirm(`Are you sure you want to unblock ${date}?`)) {
+      try {
+        await weeklyScheduleApi.unblockDate(date);
+        fetchSchedule(); // Refresh to get updated blocked dates
+      } catch (error) {
+        console.error("Error unblocking date:", error);
       }
-    } catch (error) {
-      console.error("Error generating slots:", error);
-      toast.error("Network error. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
-  const daysOfWeek = [
-    { key: "monday", label: "Monday" },
-    { key: "tuesday", label: "Tuesday" },
-    { key: "wednesday", label: "Wednesday" },
-    { key: "thursday", label: "Thursday" },
-    { key: "friday", label: "Friday" },
-    { key: "saturday", label: "Saturday" },
-    { key: "sunday", label: "Sunday" },
-  ];
+  const handlePreviewSlots = async () => {
+    try {
+      const today = new Date();
+      const nextWeek = new Date();
+      nextWeek.setDate(today.getDate() + 7);
+      
+      const response = await weeklyScheduleApi.getAvailableSlots(
+        userContext._id,
+        today.toISOString().split('T')[0],
+        nextWeek.toISOString().split('T')[0]
+      );
+      
+      if (response.success) {
+        setPreviewSlots(response.data.slots || []);
+        setPreviewDialogOpen(true);
+      }
+    } catch (error) {
+      console.error("Error previewing slots:", error);
+    }
+  };
 
-  // Check user permissions
-  if (
-    !userContext ||
-    !["service_center", "repair_center"].includes(userContext.role)
-  ) {
+  const getOpenDaysCount = () => {
+    return Object.values(schedule).filter(day => day.isOpen).length;
+  };
+
+  const getTotalWeeklySlots = () => {
+    // Rough calculation based on duration
+    let totalSlots = 0;
+    Object.values(schedule).forEach(day => {
+      if (day.isOpen && day.startTime && day.endTime) {
+        const start = new Date(`1970-01-01T${day.startTime}`);
+        const end = new Date(`1970-01-01T${day.endTime}`);
+        const duration = (end - start) / (1000 * 60); // minutes
+        const slotsPerDay = Math.floor(duration / (slotSettings.duration + slotSettings.bufferTime));
+        totalSlots += Math.max(0, slotsPerDay);
+      }
+    });
+    return totalSlots;
+  };
+
+  if (userContext?.role !== "service_center") {
     return (
-      <div className="manage-slots-page">
-        <div className="manage-slots-access-denied">
-          <div className="manage-slots-access-denied-card">
-            <div className="manage-slots-access-denied-icon">🚫</div>
-            <h1>Access Denied</h1>
-            <p>
-              You don't have permission to manage time slots. This feature is
-              only available for service centers and repair centers.
-            </p>
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="manage-slots-access-denied-button"
-            >
-              Go to Dashboard
-            </button>
-          </div>
-        </div>
-      </div>
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error">
+          Access denied. Only service centers can manage schedules.
+        </Alert>
+      </Box>
     );
   }
 
   return (
-    <div className="manage-slots-page manage-slots-fade-in">
-      <div className="manage-slots-container">
-        {/* Header */}
-        <div className="manage-slots-header">
-          <div className="manage-slots-header-left">
-            <button
-              onClick={() => navigate("/dashboard/service-provider/services")}
-              className="manage-slots-back-button"
-            >
-              <ArrowLeft />
-              <span>Back to Services</span>
-            </button>
-          </div>
+    <Box sx={{ p: 3, maxWidth: 1400, margin: "0 auto" }}>
+      {/* Header */}
+      <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: "#2c3e50" }}>
+            <ScheduleIcon sx={{ mr: 2, verticalAlign: "middle" }} />
+            Weekly Schedule
+          </Typography>
+          <Typography variant="body1" sx={{ color: "#7f8c8d", mt: 1 }}>
+            Set up your recurring weekly working hours and slot preferences
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
+            onClick={() => { fetchSchedule(); fetchStats(); }}
+          >
+            Refresh
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<EventIcon />}
+            onClick={handlePreviewSlots}
+          >
+            Preview Slots
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<BlockIcon />}
+            onClick={() => setBlockDialogOpen(true)}
+            sx={{ backgroundColor: "#e74c3c", "&:hover": { backgroundColor: "#c0392b" } }}
+          >
+            Block Date
+          </Button>
+        </Box>
+      </Box>
 
-          <div className="manage-slots-header-actions">
-            <button
-              onClick={generateSlotsForWeek}
-              disabled={loading}
-              className="manage-slots-generate-button"
-            >
-              <Zap />
-              <span>{loading ? "Generating..." : "Generate Weekly Slots"}</span>
-            </button>
-          </div>
-        </div>
+      {/* Statistics Cards */}
+      {stats && (
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ background: "linear-gradient(45deg, #3498db, #2980b9)" }}>
+              <CardContent sx={{ color: "white", textAlign: "center" }}>
+                <CheckCircleIcon sx={{ fontSize: 40, mb: 1 }} />
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {stats.openDays}/7
+                </Typography>
+                <Typography variant="body2">Open Days</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ background: "linear-gradient(45deg, #27ae60, #229954)" }}>
+              <CardContent sx={{ color: "white", textAlign: "center" }}>
+                <AccessTime sx={{ fontSize: 40, mb: 1 }} />
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {stats.totalWeeklySlots}
+                </Typography>
+                <Typography variant="body2">Weekly Slots</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ background: "linear-gradient(45deg, #f39c12, #e67e22)" }}>
+              <CardContent sx={{ color: "white", textAlign: "center" }}>
+                <CalendarTodayIcon sx={{ fontSize: 40, mb: 1 }} />
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {stats.upcomingBookings}
+                </Typography>
+                <Typography variant="body2">Upcoming Bookings</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ background: "linear-gradient(45deg, #e74c3c, #c0392b)" }}>
+              <CardContent sx={{ color: "white", textAlign: "center" }}>
+                <BlockIcon sx={{ fontSize: 40, mb: 1 }} />
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {stats.blockedDatesCount}
+                </Typography>
+                <Typography variant="body2">Blocked Dates</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      )}
 
-        {/* Main Content Card */}
-        <div className="manage-slots-main-card">
-          {/* Title Header */}
-          <div className="manage-slots-title-header">
-            <div className="manage-slots-title-content">
-              <div className="manage-slots-title-icon">
-                <Calendar />
-              </div>
-              <div className="manage-slots-title-text">
-                <h1>Time Slot Management</h1>
-                <p>
-                  Configure your working hours and manage appointment
-                  availability
-                </p>
-              </div>
-            </div>
-          </div>
+      {/* Main Content */}
+      <Paper sx={{ p: 3 }}>
+        <Tabs 
+          value={tabValue} 
+          onChange={(e, newValue) => setTabValue(newValue)}
+          sx={{ mb: 3 }}
+        >
+          <Tab 
+            label="Working Hours" 
+            icon={<AccessTime />} 
+            iconPosition="start"
+          />
+          <Tab 
+            label="Slot Settings" 
+            icon={<SettingsIcon />} 
+            iconPosition="start"
+          />
+          <Tab 
+            label="Blocked Dates" 
+            icon={<BlockIcon />} 
+            iconPosition="start"
+          />
+        </Tabs>
 
-          {/* Stats Section */}
-          <div className="manage-slots-stats-section">
-            <div className="manage-slots-stats-grid">
-              <div className="manage-slots-stat-card blue">
-                <div className="manage-slots-stat-number">
-                  {stats.totalSlots}
-                </div>
-                <div className="manage-slots-stat-label">Total Slots</div>
-              </div>
-              <div className="manage-slots-stat-card green">
-                <div className="manage-slots-stat-number">
-                  {stats.availableSlots}
-                </div>
-                <div className="manage-slots-stat-label">Available</div>
-              </div>
-              <div className="manage-slots-stat-card orange">
-                <div className="manage-slots-stat-number">
-                  {stats.bookedSlots}
-                </div>
-                <div className="manage-slots-stat-label">Booked</div>
-              </div>
-              <div className="manage-slots-stat-card red">
-                <div className="manage-slots-stat-number">
-                  {stats.blockedSlots}
-                </div>
-                <div className="manage-slots-stat-label">Blocked</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Grid */}
-          <div className="manage-slots-main-grid">
-            {/* Sidebar - Working Hours & Settings */}
-            <div className="manage-slots-sidebar">
-              {/* Working Hours Configuration */}
-              <div className="manage-slots-section-card">
-                <div className="manage-slots-section-header blue">
-                  <h2>
-                    <Clock />
-                    <span>Working Hours</span>
-                  </h2>
-                </div>
-
-                <div className="manage-slots-section-content">
-                  <div className="manage-slots-day-config">
-                    {daysOfWeek.map(({ key, label }) => (
-                      <div key={key} className="manage-slots-day-item">
-                        <div className="manage-slots-day-header">
-                          <h3 className="manage-slots-day-title">{label}</h3>
-                          <div className="manage-slots-day-toggle">
-                            <input
-                              type="checkbox"
-                              id={`${key}-toggle`}
-                              checked={workingHours[key].isOpen}
-                              onChange={(e) =>
-                                handleWorkingHoursChange(
-                                  key,
-                                  "isOpen",
-                                  e.target.checked
-                                )
-                              }
+        {/* Working Hours Tab */}
+        {tabValue === 0 && (
+          <Box>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Grid container spacing={2}>
+                {DAYS_OF_WEEK.map((day) => {
+                  const daySchedule = schedule[day.key];
+                  return (
+                    <Grid item xs={12} md={6} lg={4} key={day.key}>
+                      <Card 
+                        sx={{ 
+                          border: daySchedule?.isOpen ? `2px solid ${day.color}` : "2px solid #e0e0e0",
+                          backgroundColor: daySchedule?.isOpen ? "#f8f9fa" : "#fafafa"
+                        }}
+                      >
+                        <CardContent>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                              {day.label}
+                            </Typography>
+                            <Switch
+                              checked={daySchedule?.isOpen || false}
+                              onChange={(e) => handleScheduleChange(day.key, "isOpen", e.target.checked)}
+                              color="primary"
                             />
-                            <label htmlFor={`${key}-toggle`}>Open</label>
-                          </div>
-                        </div>
+                          </Box>
 
-                        {workingHours[key].isOpen && (
-                          <div className="manage-slots-time-grid">
-                            <div className="manage-slots-time-field">
-                              <label className="manage-slots-time-label">
-                                Start Time
-                              </label>
-                              <input
+                          {daySchedule?.isOpen && (
+                            <Stack spacing={2}>
+                              <TextField
+                                fullWidth
+                                label="Start Time"
                                 type="time"
-                                value={workingHours[key].startTime}
-                                onChange={(e) =>
-                                  handleWorkingHoursChange(
-                                    key,
-                                    "startTime",
-                                    e.target.value
-                                  )
-                                }
-                                className="manage-slots-time-input"
+                                size="small"
+                                value={daySchedule.startTime || ""}
+                                onChange={(e) => handleScheduleChange(day.key, "startTime", e.target.value)}
+                                InputLabelProps={{ shrink: true }}
                               />
-                            </div>
-                            <div className="manage-slots-time-field">
-                              <label className="manage-slots-time-label">
-                                End Time
-                              </label>
-                              <input
+                              <TextField
+                                fullWidth
+                                label="End Time"
                                 type="time"
-                                value={workingHours[key].endTime}
-                                onChange={(e) =>
-                                  handleWorkingHoursChange(
-                                    key,
-                                    "endTime",
-                                    e.target.value
-                                  )
-                                }
-                                className="manage-slots-time-input"
+                                size="small"
+                                value={daySchedule.endTime || ""}
+                                onChange={(e) => handleScheduleChange(day.key, "endTime", e.target.value)}
+                                InputLabelProps={{ shrink: true }}
                               />
-                            </div>
+                              {daySchedule.startTime && daySchedule.endTime && (
+                                <Chip 
+                                  label={`${daySchedule.startTime} - ${daySchedule.endTime}`}
+                                  size="small"
+                                  color="primary"
+                                  variant="outlined"
+                                />
+                              )}
+                            </Stack>
+                          )}
 
-                            {key !== "sunday" && (
-                              <>
-                                <div className="manage-slots-time-field">
-                                  <label className="manage-slots-time-label">
-                                    Break Start
-                                  </label>
-                                  <input
-                                    type="time"
-                                    value={workingHours[key].breakStart}
-                                    onChange={(e) =>
-                                      handleWorkingHoursChange(
-                                        key,
-                                        "breakStart",
-                                        e.target.value
-                                      )
-                                    }
-                                    className="manage-slots-time-input"
-                                  />
-                                </div>
-                                <div className="manage-slots-time-field">
-                                  <label className="manage-slots-time-label">
-                                    Break End
-                                  </label>
-                                  <input
-                                    type="time"
-                                    value={workingHours[key].breakEnd}
-                                    onChange={(e) =>
-                                      handleWorkingHoursChange(
-                                        key,
-                                        "breakEnd",
-                                        e.target.value
-                                      )
-                                    }
-                                    className="manage-slots-time-input"
-                                  />
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                          {!daySchedule?.isOpen && (
+                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 2 }}>
+                              Closed
+                            </Typography>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            )}
+
+            <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<SaveIcon />}
+                onClick={handleSaveSchedule}
+                disabled={saving}
+                sx={{ px: 4 }}
+              >
+                {saving ? "Saving..." : "Save Schedule"}
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {/* Slot Settings Tab */}
+        {tabValue === 1 && (
+          <Box>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Slot Duration</InputLabel>
+                  <Select
+                    value={slotSettings.duration}
+                    label="Slot Duration"
+                    onChange={(e) => handleSlotSettingsChange("duration", e.target.value)}
+                  >
+                    {SLOT_DURATIONS.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
                     ))}
-                  </div>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Buffer Time (minutes)"
+                  type="number"
+                  value={slotSettings.bufferTime}
+                  onChange={(e) => handleSlotSettingsChange("bufferTime", parseInt(e.target.value))}
+                  InputProps={{ inputProps: { min: 0, max: 60 } }}
+                />
+              </Grid>
 
-                  <button
-                    onClick={saveWorkingHours}
-                    disabled={loading}
-                    className="manage-slots-save-button"
-                  >
-                    <Save />
-                    <span>{loading ? "Saving..." : "Save Working Hours"}</span>
-                  </button>
-                </div>
-              </div>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Advance Booking Days"
+                  type="number"
+                  value={slotSettings.advanceBookingDays}
+                  onChange={(e) => handleSlotSettingsChange("advanceBookingDays", parseInt(e.target.value))}
+                  InputProps={{ inputProps: { min: 1, max: 90 } }}
+                />
+              </Grid>
 
-              {/* Slot Settings */}
-              <div className="manage-slots-section-card">
-                <div className="manage-slots-section-header green">
-                  <h2>
-                    <Settings />
-                    <span>Slot Settings</span>
-                  </h2>
-                </div>
+              <Grid item xs={12} md={6}>
+                <Card sx={{ p: 2, backgroundColor: "#f8f9fa" }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                    Quick Preview
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    • Open Days: {getOpenDaysCount()}/7
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    • Estimated Weekly Slots: ~{getTotalWeeklySlots()}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    • Slot Duration: {slotSettings.duration} min + {slotSettings.bufferTime} min buffer
+                  </Typography>
+                </Card>
+              </Grid>
+            </Grid>
 
-                <div className="manage-slots-section-content">
-                  <div className="manage-slots-settings-form">
-                    <div className="manage-slots-setting-field">
-                      <label className="manage-slots-setting-label">
-                        Default Slot Duration (minutes)
-                      </label>
-                      <select
-                        value={slotSettings.defaultDuration}
-                        onChange={(e) =>
-                          handleSlotSettingsChange(
-                            "defaultDuration",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="manage-slots-setting-select"
+            <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<SaveIcon />}
+                onClick={handleSaveSchedule}
+                disabled={saving}
+                sx={{ px: 4 }}
+              >
+                {saving ? "Saving..." : "Save Settings"}
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {/* Blocked Dates Tab */}
+        {tabValue === 2 && (
+          <Box>
+            {blockedDates.length > 0 ? (
+              <List>
+                {blockedDates.map((blocked, index) => (
+                  <ListItem key={index} divider>
+                    <ListItemText
+                      primary={blocked.date}
+                      secondary={blocked.reason || "No reason provided"}
+                    />
+                    <ListItemSecondaryAction>
+                      <Button
+                        size="small"
+                        color="primary"
+                        onClick={() => handleUnblockDate(blocked.date)}
                       >
-                        <option value={15}>15 minutes</option>
-                        <option value={30}>30 minutes</option>
-                        <option value={45}>45 minutes</option>
-                        <option value={60}>1 hour</option>
-                        <option value={90}>1.5 hours</option>
-                        <option value={120}>2 hours</option>
-                      </select>
-                    </div>
+                        Unblock
+                      </Button>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Alert severity="info">
+                No blocked dates. Use the "Block Date" button to add blocked dates.
+              </Alert>
+            )}
+          </Box>
+        )}
+      </Paper>
 
-                    <div className="manage-slots-setting-field">
-                      <label className="manage-slots-setting-label">
-                        Buffer Time Between Slots (minutes)
-                      </label>
-                      <select
-                        value={slotSettings.bufferTime}
-                        onChange={(e) =>
-                          handleSlotSettingsChange(
-                            "bufferTime",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="manage-slots-setting-select"
-                      >
-                        <option value={0}>No buffer</option>
-                        <option value={10}>10 minutes</option>
-                        <option value={15}>15 minutes</option>
-                        <option value={30}>30 minutes</option>
-                      </select>
-                    </div>
+      {/* Block Date Dialog */}
+      <Dialog 
+        open={blockDialogOpen} 
+        onClose={() => setBlockDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Block Date</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <TextField
+              fullWidth
+              label="Date"
+              type="date"
+              value={blockData.date}
+              onChange={(e) => setBlockData(prev => ({ ...prev, date: e.target.value }))}
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              fullWidth
+              label="Reason (Optional)"
+              multiline
+              rows={3}
+              value={blockData.reason}
+              onChange={(e) => setBlockData(prev => ({ ...prev, reason: e.target.value }))}
+              placeholder="Enter reason for blocking this date..."
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBlockDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={handleBlockDate}
+            variant="contained"
+            color="error"
+            startIcon={<BlockIcon />}
+            disabled={!blockData.date}
+          >
+            Block Date
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-                    <div className="manage-slots-setting-field">
-                      <label className="manage-slots-setting-label">
-                        Maximum Advance Booking (days)
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="90"
-                        value={slotSettings.maxAdvanceBooking}
-                        onChange={(e) =>
-                          handleSlotSettingsChange(
-                            "maxAdvanceBooking",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="manage-slots-setting-input"
-                      />
-                    </div>
-
-                    <div className="manage-slots-setting-field">
-                      <label className="manage-slots-setting-label">
-                        Minimum Advance Booking (hours)
-                      </label>
-                      <select
-                        value={slotSettings.minAdvanceBooking}
-                        onChange={(e) =>
-                          handleSlotSettingsChange(
-                            "minAdvanceBooking",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="manage-slots-setting-select"
-                      >
-                        <option value={1}>1 hour</option>
-                        <option value={2}>2 hours</option>
-                        <option value={4}>4 hours</option>
-                        <option value={24}>24 hours</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={saveSlotSettings}
-                    disabled={loading}
-                    className="manage-slots-save-button"
-                  >
-                    <Save />
-                    <span>{loading ? "Saving..." : "Save Settings"}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Main Content - Daily Time Slots Management */}
-            <div className="manage-slots-main-content">
-              <div className="manage-slots-section-card">
-                <div className="manage-slots-section-header purple">
-                  <h2>
-                    <Calendar />
-                    <span>Daily Time Slots</span>
-                  </h2>
-                </div>
-
-                <div className="manage-slots-section-content">
-                  <SlotManager
-                    selectedDate={selectedDate}
-                    onDateChange={setSelectedDate}
-                    workingHours={workingHours}
-                    slotSettings={slotSettings}
-                    onStatsUpdate={setStats}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Information Panel */}
-        <div className="manage-slots-info-panel">
-          <div className="manage-slots-info-header">
-            <Info className="manage-slots-info-icon" />
-            <div className="manage-slots-info-content">
-              <h3>⏰ Time Slot Management Guidelines</h3>
-              <div className="manage-slots-info-grid">
-                <div className="manage-slots-info-section">
-                  <h4>Working Hours Best Practices:</h4>
-                  <ul className="manage-slots-info-list">
-                    <li>Set realistic working hours for each day</li>
-                    <li>Include break times to avoid overbooking</li>
-                    <li>Consider travel time between appointments</li>
-                    <li>Update hours for holidays and special occasions</li>
-                    <li>Maintain consistency for customer expectations</li>
-                  </ul>
-                </div>
-                <div className="manage-slots-info-section">
-                  <h4>Slot Management Tips:</h4>
-                  <ul className="manage-slots-info-list">
-                    <li>Block slots for maintenance or personal time</li>
-                    <li>Generate weekly slots to maintain consistency</li>
-                    <li>Monitor booking patterns to optimize availability</li>
-                    <li>Set appropriate buffer times between services</li>
-                    <li>Review and adjust settings based on demand</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Preview Slots Dialog */}
+      <Dialog 
+        open={previewDialogOpen} 
+        onClose={() => setPreviewDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Slot Preview - Next 7 Days</DialogTitle>
+        <DialogContent>
+          {previewSlots.length > 0 ? (
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Showing {previewSlots.length} available slots
+              </Typography>
+              <Grid container spacing={2}>
+                {previewSlots.slice(0, 20).map((slot, index) => (
+                  <Grid item xs={6} sm={4} md={3} key={index}>
+                    <Chip 
+                      label={`${slot.date} ${slot.startTime}`}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </Grid>
+                ))}
+                {previewSlots.length > 20 && (
+                  <Grid item xs={12}>
+                    <Typography variant="caption" color="text.secondary">
+                      ... and {previewSlots.length - 20} more slots
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+            </Box>
+          ) : (
+            <Alert severity="info">
+              No slots available. Please configure your working hours first.
+            </Alert>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPreviewDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

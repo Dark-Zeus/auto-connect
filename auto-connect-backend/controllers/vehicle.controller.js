@@ -403,3 +403,101 @@ export const rejectVehicle = catchAsync(async (req, res, next) => {
     data: { vehicle },
   });
 });
+
+// Get user's vehicles for booking (simplified data)
+export const getUserVehiclesForBooking = catchAsync(async (req, res, next) => {
+  console.log("=== getUserVehiclesForBooking called ===");
+  console.log("User object:", req.user);
+
+  const userNIC = req.user?.nicNumber;
+
+  if (!userNIC) {
+    console.log("❌ User NIC not found in req.user");
+    console.log("Available user fields:", Object.keys(req.user || {}));
+    return next(new AppError("User NIC not found", 400));
+  }
+
+  console.log("✅ Fetching vehicles for user NIC:", userNIC);
+
+  try {
+    // Get vehicles owned by the current user
+    const vehicles = await Vehicle.find({
+      ownerNIC: userNIC.toUpperCase(),
+      isActive: true,
+      verificationStatus: "VERIFIED",
+    })
+      .select({
+        _id: 1,
+        registrationNumber: 1,
+        make: 1,
+        model: 1,
+        yearOfManufacture: 1,
+        color: 1,
+        fuelType: 1,
+        classOfVehicle: 1,
+        cylinderCapacity: 1,
+        images: 1,
+      })
+      .sort({ createdAt: -1 });
+
+    console.log(`📊 Query result: Found ${vehicles.length} vehicles for user`);
+    console.log(
+      "Vehicle details:",
+      vehicles.map((v) => ({
+        id: v._id,
+        reg: v.registrationNumber,
+        make: v.make,
+        model: v.model,
+      }))
+    );
+
+    // Also check if there are ANY vehicles for this NIC (regardless of verification status)
+    const allUserVehicles = await Vehicle.find({
+      ownerNIC: userNIC.toUpperCase(),
+      isActive: true,
+    }).select("registrationNumber verificationStatus");
+
+    console.log(
+      `📈 Total vehicles for user (all statuses):`,
+      allUserVehicles.length
+    );
+    console.log("All user vehicles:", allUserVehicles);
+
+    // Transform data for booking form
+    const vehicleOptions = vehicles.map((vehicle) => ({
+      id: vehicle._id,
+      value: vehicle.registrationNumber,
+      label: `${vehicle.registrationNumber} - ${vehicle.make} ${vehicle.model} (${vehicle.yearOfManufacture})`,
+      details: {
+        registrationNumber: vehicle.registrationNumber,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.yearOfManufacture,
+        color: vehicle.color,
+        fuelType: vehicle.fuelType,
+        classOfVehicle: vehicle.classOfVehicle,
+        cylinderCapacity: vehicle.cylinderCapacity,
+        image: vehicle.images?.[0]?.url || null,
+      },
+    }));
+
+    console.log("🚗 Final vehicle options:", vehicleOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "User vehicles retrieved successfully",
+      data: {
+        vehicles: vehicleOptions,
+        totalCount: vehicles.length,
+        debug: {
+          userNIC,
+          totalVehiclesAllStatuses: allUserVehicles.length,
+          verifiedVehicles: vehicles.length,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error in getUserVehiclesForBooking:", error);
+    return next(new AppError("Failed to fetch user vehicles", 500));
+  }
+});

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Car,
   Search,
@@ -36,26 +36,42 @@ import {
 
 const COLORS = ["#4A628A", "#7AB2D3", "#B9E5E8", "#DFF2EB", "#FF6F61"];
 import "./VehicleHistoryDashboard.css";
+import axios from "../../utils/axios.js";
+import { toast } from "react-toastify";
 
 const VehicleHistoryDashboard = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState("30days");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [activeTab, setActiveTab] = useState("overview");
-
-  // Mock data - replace with API calls in production
-  const dashboardStats = {
-    totalVehiclesServiced: 1247,
-    totalServices: 3891,
-    totalRevenue: 2875000,
-    averageServiceValue: 18500,
-    monthlyGrowth: 12.5,
-    customerSatisfaction: 4.7,
-    repeatCustomers: 68,
-    pendingServices: 23,
-  };
-
-  const recentServices = [
+  const [loading, setLoading] = useState(false); // Changed to false to show demo data initially
+  const [dashboardData, setDashboardData] = useState({
+    dashboardStats: {
+      totalVehiclesServiced: 1247,
+      totalServices: 3891,
+      totalRevenue: 2875000,
+      averageServiceValue: 18500,
+      monthlyGrowth: 12.5,
+      customerSatisfaction: 4.7,
+      repeatCustomers: 68,
+      pendingServices: 23,
+    },
+    serviceCategories: [
+      { name: "Regular Service", count: 145, revenue: 2262500, percentage: 37.2 },
+      { name: "Brake Service", count: 89, revenue: 1068000, percentage: 22.9 },
+      { name: "Engine Repair", count: 67, revenue: 1675000, percentage: 17.2 }
+    ],
+    monthlyData: [
+      { month: "Jan", services: 287, revenue: 4350000 },
+      { month: "Feb", services: 312, revenue: 4680000 },
+      { month: "Mar", services: 298, revenue: 4470000 },
+      { month: "Apr", services: 334, revenue: 5010000 },
+      { month: "May", services: 356, revenue: 5340000 },
+      { month: "Jun", services: 389, revenue: 5835000 }
+    ]
+  });
+  
+  const [recentServicesData, setRecentServicesData] = useState([
     {
       id: "SRV001",
       vehicleReg: "CAB-1234",
@@ -91,10 +107,10 @@ const VehicleHistoryDashboard = () => {
       customer: "David Silva",
       technician: "Kasun Rajapaksa",
       nextService: "2024-10-10",
-    },
-  ];
-
-  const topVehicles = [
+    }
+  ]);
+  
+  const [topVehiclesData, setTopVehiclesData] = useState([
     {
       registration: "CAB-1234",
       make: "Toyota",
@@ -127,26 +143,208 @@ const VehicleHistoryDashboard = () => {
       lastService: "2024-07-10",
       customerName: "David Silva",
       status: "new",
+    }
+  ]);
+  
+  const [analyticsData, setAnalyticsData] = useState({
+    performanceMetrics: {
+      averageServiceTime: 2.5,
+      serviceCompletionRate: 96.8,
+      firstTimeFixRate: 89.2,
+      customerReturnRate: 68.4
     },
-  ];
+    topTechnicians: [
+      {
+        technicianName: "Samantha Silva",
+        totalServices: 156,
+        averageRating: 4.9
+      },
+      {
+        technicianName: "Nuwan Perera",
+        totalServices: 142,
+        averageRating: 4.7
+      },
+      {
+        technicianName: "Kasun Rajapaksa",
+        totalServices: 128,
+        averageRating: 4.6
+      }
+    ],
+    revenueAnalysis: {
+      averageServiceValue: 18500,
+      highestValueService: 85000,
+      mostProfitableCategory: "Engine Repair",
+      revenuePerVehicle: 23500
+    },
+    serviceTrends: [
+      {
+        serviceName: "Brake Services",
+        totalServices: 23
+      },
+      {
+        serviceName: "Engine Repairs",
+        totalServices: 18
+      },
+      {
+        serviceName: "Oil Changes",
+        totalServices: 15
+      }
+    ]
+  });
+  
+  const [apiError, setApiError] = useState(false);
 
-  const serviceCategories = [
-    { name: "Regular Service", count: 145, revenue: 2262500, percentage: 37.2 },
-    { name: "Brake Service", count: 89, revenue: 1068000, percentage: 22.9 },
-    { name: "Engine Repair", count: 67, revenue: 1675000, percentage: 17.2 },
-    { name: "Transmission", count: 45, revenue: 1125000, percentage: 11.6 },
-    { name: "Electrical", count: 38, revenue: 570000, percentage: 9.8 },
-    { name: "Other", count: 27, revenue: 405000, percentage: 6.9 },
-  ];
+  // Fetch dashboard data from API
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      console.log('Fetching dashboard data...');
+      
+      const [statsResponse, servicesResponse, vehiclesResponse, analyticsResponse] = await Promise.all([
+        axios.get(`/vehicle-history/dashboard-stats?timeRange=${selectedTimeRange}`),
+        axios.get(`/vehicle-history/recent-services?page=1&limit=10&status=${filterStatus}`),
+        axios.get('/vehicle-history/top-vehicles?limit=10'),
+        axios.get(`/vehicle-history/analytics?timeRange=${selectedTimeRange}`)
+      ]);
+      
+      console.log('Dashboard stats response:', statsResponse.data);
+      console.log('Services response:', servicesResponse.data);
+      console.log('Vehicles response:', vehiclesResponse.data);
+      console.log('Analytics response:', analyticsResponse.data);
+      
+      setDashboardData(statsResponse.data.data);
+      setRecentServicesData(servicesResponse.data.data.services);
+      setTopVehiclesData(vehiclesResponse.data.data.vehicles);
+      setAnalyticsData(analyticsResponse.data.data);
+      
+      console.log('Data set successfully');
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      setApiError(true);
+      toast.error('Using demo data - API not available: ' + (error.response?.data?.message || error.message));
+      
+      // Set mock data for testing if API fails
+      setDashboardData({
+        dashboardStats: {
+          totalVehiclesServiced: 1247,
+          totalServices: 3891,
+          totalRevenue: 2875000,
+          averageServiceValue: 18500,
+          monthlyGrowth: 12.5,
+          customerSatisfaction: 4.7,
+          repeatCustomers: 68,
+          pendingServices: 23,
+        },
+        serviceCategories: [
+          { name: "Regular Service", count: 145, revenue: 2262500, percentage: 37.2 },
+          { name: "Brake Service", count: 89, revenue: 1068000, percentage: 22.9 },
+          { name: "Engine Repair", count: 67, revenue: 1675000, percentage: 17.2 }
+        ],
+        monthlyData: [
+          { month: "Jan", services: 287, revenue: 4350000 },
+          { month: "Feb", services: 312, revenue: 4680000 },
+          { month: "Mar", services: 298, revenue: 4470000 }
+        ]
+      });
+      
+      setRecentServicesData([
+        {
+          id: "SRV001",
+          vehicleReg: "CAB-1234",
+          vehicleInfo: "2020 Toyota Prius",
+          serviceType: "Regular Service",
+          date: "2024-07-12",
+          status: "completed",
+          cost: 15500,
+          customer: "John Perera",
+          technician: "Samantha Silva",
+          nextService: "2024-10-12",
+        }
+      ]);
+      
+      setTopVehiclesData([
+        {
+          registration: "CAB-1234",
+          make: "Toyota",
+          model: "Prius",
+          year: 2020,
+          totalServices: 8,
+          totalSpent: 124000,
+          lastService: "2024-07-12",
+          customerName: "John Perera",
+          status: "regular",
+        }
+      ]);
+      
+      setAnalyticsData({
+        performanceMetrics: {
+          averageServiceTime: 2.5,
+          serviceCompletionRate: 96.8,
+          firstTimeFixRate: 89.2,
+          customerReturnRate: 68.4
+        },
+        topTechnicians: [
+          {
+            technicianName: "Samantha Silva",
+            totalServices: 156,
+            averageRating: 4.9
+          }
+        ],
+        revenueAnalysis: {
+          averageServiceValue: 18500,
+          highestValueService: 85000,
+          mostProfitableCategory: "Engine Repair",
+          revenuePerVehicle: 23500
+        },
+        serviceTrends: [
+          {
+            serviceName: "Brake Services",
+            totalServices: 23
+          }
+        ]
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const monthlyData = [
-    { month: "Jan", services: 287, revenue: 4350000 },
-    { month: "Feb", services: 312, revenue: 4680000 },
-    { month: "Mar", services: 298, revenue: 4470000 },
-    { month: "Apr", services: 334, revenue: 5010000 },
-    { month: "May", services: 356, revenue: 5340000 },
-    { month: "Jun", services: 389, revenue: 5835000 },
-  ];
+  useEffect(() => {
+    // Try to fetch real data, but fallback to demo data if it fails
+    // For now, comment out to show demo data
+    // fetchDashboardData();
+    
+    // Uncomment the line below to enable real API calls
+    fetchDashboardData();
+  }, [selectedTimeRange, filterStatus]);
+
+  // Get dashboard stats from API data
+  const dashboardStats = dashboardData?.dashboardStats || {
+    totalVehiclesServiced: 0,
+    totalServices: 0,
+    totalRevenue: 0,
+    averageServiceValue: 0,
+    monthlyGrowth: 0,
+    customerSatisfaction: 0,
+    repeatCustomers: 0,
+    pendingServices: 0,
+  };
+
+  // Use data from API
+  const recentServices = recentServicesData;
+
+  // Use data from API
+  const topVehicles = topVehiclesData;
+
+  // Use data from API
+  const serviceCategories = dashboardData?.serviceCategories || [];
+
+  // Use data from API
+  const monthlyData = dashboardData?.monthlyData || [];
 
   const timeRanges = [
     { value: "7days", label: "Last 7 Days" },
@@ -193,8 +391,43 @@ const VehicleHistoryDashboard = () => {
   };
 
   const formatCurrency = (amount) => {
-    return `₹${amount.toLocaleString()}`;
+    return `Rs. ${Number(amount).toLocaleString()}`;
   };
+
+  const handleTimeRangeChange = (newTimeRange) => {
+    setSelectedTimeRange(newTimeRange);
+  };
+
+  const handleStatusFilterChange = (newStatus) => {
+    setFilterStatus(newStatus);
+  };
+
+  // Handle action functions
+  const onView = (serviceId) => {
+    console.log('View service:', serviceId);
+    // Implement view functionality
+  };
+
+  const onEdit = (serviceId) => {
+    console.log('Edit service:', serviceId);
+    // Implement edit functionality
+  };
+
+  const onDownload = (serviceId) => {
+    console.log('Download service:', serviceId);
+    // Implement download functionality
+  };
+
+  if (loading) {
+    return (
+      <div className="vehicle-history-dashboard">
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
 
   // --- TABS CONTENT ---
   const renderOverviewTab = () => (
@@ -330,7 +563,6 @@ const VehicleHistoryDashboard = () => {
             <div className="table-cell">Date</div>
             <div className="table-cell">Status</div>
             <div className="table-cell">Amount</div>
-            <div className="table-cell">Actions</div>
           </div>
           {recentServices.map((service) => (
             <div key={service.id} className="table-row">
@@ -363,33 +595,6 @@ const VehicleHistoryDashboard = () => {
                   {formatCurrency(service.cost)}
                 </span>
               </div>
-              <td className="service-table-cell">
-                <div className="actions-container">
-                  <button
-                    onClick={() => onView(service.id)}
-                    className="action-button view"
-                    title="View Service"
-                  >
-                    <Eye className="action-icon" />
-                  </button>
-
-                  <button
-                    onClick={() => onEdit(service.id)}
-                    className="action-button edit"
-                    title="Edit Service"
-                  >
-                    <Edit3 className="action-icon" />
-                  </button>
-
-                  <button
-                    onClick={() => onDownload(service.id)}
-                    className="action-button download"
-                    title="Download Service"
-                  >
-                    <Download className="action-icon" />
-                  </button>
-                </div>
-              </td>
             </div>
           ))}
         </div>
@@ -481,7 +686,7 @@ const VehicleHistoryDashboard = () => {
         <div className="analytics-controls">
           <select
             value={selectedTimeRange}
-            onChange={(e) => setSelectedTimeRange(e.target.value)}
+            onChange={(e) => handleTimeRangeChange(e.target.value)}
             className="form-select"
           >
             {timeRanges.map((range) => (
@@ -505,22 +710,22 @@ const VehicleHistoryDashboard = () => {
           <div className="metrics-list">
             <div className="metric-item">
               <span className="metric-label">Average Service Time</span>
-              <span className="metric-value">2.5 hours</span>
+              <span className="metric-value">{analyticsData?.performanceMetrics?.averageServiceTime || 0} hours</span>
               <span className="metric-trend positive">-15min</span>
             </div>
             <div className="metric-item">
               <span className="metric-label">Service Completion Rate</span>
-              <span className="metric-value">96.8%</span>
+              <span className="metric-value">{analyticsData?.performanceMetrics?.serviceCompletionRate || 0}%</span>
               <span className="metric-trend positive">+2.1%</span>
             </div>
             <div className="metric-item">
               <span className="metric-label">First-time Fix Rate</span>
-              <span className="metric-value">89.2%</span>
+              <span className="metric-value">{analyticsData?.performanceMetrics?.firstTimeFixRate || 0}%</span>
               <span className="metric-trend positive">+1.5%</span>
             </div>
             <div className="metric-item">
               <span className="metric-label">Customer Return Rate</span>
-              <span className="metric-value">68.4%</span>
+              <span className="metric-value">{analyticsData?.performanceMetrics?.customerReturnRate || 0}%</span>
               <span className="metric-trend positive">+5.2%</span>
             </div>
           </div>
@@ -531,42 +736,22 @@ const VehicleHistoryDashboard = () => {
             <Users />
           </div>
           <div className="technician-list">
-            <div className="technician-item">
-              <div className="technician-info">
-                <span className="technician-name">Samantha Silva</span>
-                <span className="technician-services">156 services</span>
-              </div>
-              <div className="technician-rating">
-                <span className="rating">4.9</span>
-                <div className="rating-bar">
-                  <div className="rating-fill" style={{ width: "98%" }}></div>
+            {analyticsData?.topTechnicians?.map((technician, index) => (
+              <div key={index} className="technician-item">
+                <div className="technician-info">
+                  <span className="technician-name">{technician.technicianName}</span>
+                  <span className="technician-services">{technician.totalServices} services</span>
+                </div>
+                <div className="technician-rating">
+                  <span className="rating">{technician.averageRating}</span>
+                  <div className="rating-bar">
+                    <div className="rating-fill" style={{ width: `${(technician.averageRating / 5) * 100}%` }}></div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="technician-item">
-              <div className="technician-info">
-                <span className="technician-name">Nuwan Perera</span>
-                <span className="technician-services">142 services</span>
-              </div>
-              <div className="technician-rating">
-                <span className="rating">4.7</span>
-                <div className="rating-bar">
-                  <div className="rating-fill" style={{ width: "94%" }}></div>
-                </div>
-              </div>
-            </div>
-            <div className="technician-item">
-              <div className="technician-info">
-                <span className="technician-name">Kasun Rajapaksa</span>
-                <span className="technician-services">128 services</span>
-              </div>
-              <div className="technician-rating">
-                <span className="rating">4.6</span>
-                <div className="rating-bar">
-                  <div className="rating-fill" style={{ width: "92%" }}></div>
-                </div>
-              </div>
-            </div>
+            )) || (
+              <div className="no-data">No technician data available</div>
+            )}
           </div>
         </div>
         <div className="analytics-card revenue-analysis">
@@ -578,20 +763,20 @@ const VehicleHistoryDashboard = () => {
             <div className="revenue-item">
               <span className="revenue-label">Average Service Value</span>
               <span className="revenue-value">
-                {formatCurrency(dashboardStats.averageServiceValue)}
+                {formatCurrency(analyticsData?.revenueAnalysis?.averageServiceValue || dashboardStats.averageServiceValue)}
               </span>
             </div>
             <div className="revenue-item">
               <span className="revenue-label">Highest Value Service</span>
-              <span className="revenue-value">{formatCurrency(85000)}</span>
+              <span className="revenue-value">{formatCurrency(analyticsData?.revenueAnalysis?.highestValueService || 0)}</span>
             </div>
             <div className="revenue-item">
               <span className="revenue-label">Most Profitable Category</span>
-              <span className="revenue-value">Engine Repair</span>
+              <span className="revenue-value">{analyticsData?.revenueAnalysis?.mostProfitableCategory || "N/A"}</span>
             </div>
             <div className="revenue-item">
               <span className="revenue-label">Revenue per Vehicle</span>
-              <span className="revenue-value">{formatCurrency(23500)}</span>
+              <span className="revenue-value">{formatCurrency(analyticsData?.revenueAnalysis?.revenuePerVehicle || 0)}</span>
             </div>
           </div>
         </div>
@@ -601,36 +786,20 @@ const VehicleHistoryDashboard = () => {
             <Activity />
           </div>
           <div className="trends-list">
-            <div className="trend-item">
-              <div className="trend-info">
-                <span className="trend-title">Brake Services</span>
-                <span className="trend-period">Last 30 days</span>
+            {analyticsData?.serviceTrends?.slice(0, 3).map((trend, index) => (
+              <div key={index} className="trend-item">
+                <div className="trend-info">
+                  <span className="trend-title">{trend.serviceName}</span>
+                  <span className="trend-period">Last {selectedTimeRange.replace('days', ' days').replace('1year', ' year')}</span>
+                </div>
+                <div className="trend-change positive">
+                  <span>{trend.totalServices} services</span>
+                  <TrendingUp />
+                </div>
               </div>
-              <div className="trend-change positive">
-                <span>+23%</span>
-                <TrendingUp />
-              </div>
-            </div>
-            <div className="trend-item">
-              <div className="trend-info">
-                <span className="trend-title">Engine Repairs</span>
-                <span className="trend-period">Last 30 days</span>
-              </div>
-              <div className="trend-change positive">
-                <span>+18%</span>
-                <TrendingUp />
-              </div>
-            </div>
-            <div className="trend-item">
-              <div className="trend-info">
-                <span className="trend-title">Oil Changes</span>
-                <span className="trend-period">Last 30 days</span>
-              </div>
-              <div className="trend-change negative">
-                <span>-5%</span>
-                <TrendingUp className="rotate-180" />
-              </div>
-            </div>
+            )) || (
+              <div className="no-data">No service trend data available</div>
+            )}
           </div>
         </div>
       </div>
@@ -653,6 +822,21 @@ const VehicleHistoryDashboard = () => {
 
   return (
     <div className="vehicle-history-dashboard">
+      {/* API Status Banner */}
+      {apiError && (
+        <div style={{
+          background: '#fff3cd',
+          border: '1px solid #ffeaa7',
+          color: '#856404',
+          padding: '10px 20px',
+          margin: '10px 20px',
+          borderRadius: '8px',
+          textAlign: 'center'
+        }}>
+          ⚠️ Currently showing demo data - API connection unavailable
+        </div>
+      )}
+      
       {/* HEADER */}
       <div className="dashboard-header">
         <div className="header-content">
@@ -669,7 +853,7 @@ const VehicleHistoryDashboard = () => {
               <select
                 id="timeRange"
                 value={selectedTimeRange}
-                onChange={(e) => setSelectedTimeRange(e.target.value)}
+                onChange={(e) => handleTimeRangeChange(e.target.value)}
                 className="form-select"
               >
                 {timeRanges.map((range) => (
@@ -684,7 +868,7 @@ const VehicleHistoryDashboard = () => {
               <select
                 id="statusFilter"
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                onChange={(e) => handleStatusFilterChange(e.target.value)}
                 className="form-select"
               >
                 {statusOptions.map((option) => (

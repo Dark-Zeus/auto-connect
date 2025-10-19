@@ -38,7 +38,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
       lc150_5,
       lc150_6
     ],
-    registrationNumber: 'CAA1234'
+    // registrationNumber: 'CAA1234'
   };
 
   // Use provided vehicle data or fall back to default
@@ -61,7 +61,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
     engineCapacity: vehicleData.engineCapacity,
     mileage: vehicleData.mileage,
     description: vehicleData.description,
-    registrationNumber: vehicleData.registrationNumber
+    // registrationNumber: vehicleData.registrationNumber
   });
 
   // Initialize photos with the existing images
@@ -106,7 +106,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
         engineCapacity: vehicle.engineCapacity,
         mileage: vehicle.mileage,
         description: vehicle.description,
-        registrationNumber: vehicle.registrationNumber
+        // registrationNumber: vehicle.registrationNumber
       });
     }
     // eslint-disable-next-line
@@ -555,7 +555,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
           </div>
 
           {/* Vehicle Report */}
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+          {/* <div className="tw:p-8 tw:border-b tw:border-slate-200">
             <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
               <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
                 <ClipboardCheckIcon className="tw:w-5 tw:h-5 tw:text-white" />
@@ -578,7 +578,7 @@ const UpdateVehicleForm = ({ vehicle, fixedName, fixedEmail }) => {
                 />
                 {errors.registrationNumber && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.registrationNumber}</p>}
               </div>
-          </div>
+          </div> */}
 
           {/* Photos */}
           <div className="tw:p-8 tw:border-b tw:border-slate-200">
