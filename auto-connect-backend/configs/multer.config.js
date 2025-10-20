@@ -89,8 +89,8 @@ export const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-    files: 5, // Maximum 5 files at once
+    fileSize: 100 * 1024 * 1024, // 10MB limit
+    files: 20, // Maximum 5 files at once
   },
 });
 
@@ -99,8 +99,8 @@ export const uploadMultiple = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB per file
-    files: 10, // Maximum 10 files at once
+    fileSize: 100 * 1024 * 1024, // 10MB per file
+    files: 20, // Maximum 10 files at once
   },
 });
 

@@ -32,6 +32,15 @@ export const createInsurancePolicy = async (policyData) => {
   }
 };
 
+export const getInsurancePolicyByCustomer = async (customerId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/customer/${customerId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching insurance policies for customer ID ${customerId}:`, error);
+    throw error;
+  }
+};
 
 
 export const createInsurancePolicyType = async (policyTypeData) => {

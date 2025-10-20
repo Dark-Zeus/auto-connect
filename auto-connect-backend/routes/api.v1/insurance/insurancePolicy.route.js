@@ -9,6 +9,8 @@ router.post("/types", InsurancePolicyController.createInsurancePolicyType);
 router.put("/types/:id", InsurancePolicyController.updateInsurancePolicyType);
 router.delete("/types/:id", InsurancePolicyController.deleteInsurancePolicyType);
 
+router.get("/customer/:id", InsurancePolicyController.getAllInsurancePoliciesByCustomer);
+
 router.get("/", InsurancePolicyController.getAllInsurancePoliciesByCompany);
 router.post("/", InsurancePolicyController.createInsurancePolicy);
 

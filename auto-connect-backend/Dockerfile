@@ -11,7 +11,7 @@ WORKDIR /app
 RUN corepack enable
 RUN corepack prepare yarn@4.9.0 --activate
 
-COPY package.json yarn.lock ./ 
+COPY package.json yarn.lock ./
 
 RUN yarn install
 
@@ -19,4 +19,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["yarn", "node", "server.js"]

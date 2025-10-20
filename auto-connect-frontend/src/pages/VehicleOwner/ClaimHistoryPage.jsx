@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ClaimHistoryPage.css';
-import ClaimDetailsTestData from '../InsuranceCompany/testData/ClaimDetailsTestData';
+
+import * as insuranceClaimApiService from '@services/insuranceClaimApiService';
+
+// Context to get current user info can be added here
+import { useContext } from 'react';
+import UserContext from '@contexts/UserContext';
 
 const ClaimHistoryPage = () => {
   const navigate = useNavigate();
-  
-  // Simulate logged in user - John Silva
-  const currentUser = {
-    name: "John Silva",
-    email: "john.silva@email.com",
-    vehicleNumber: 'CAB-1234'
-  };
 
-  // Filter claims for current user
-  const userClaims = ClaimDetailsTestData.filter(claim => claim.vehicleNumber === currentUser.vehicleNumber);
-  
-  const [claims, setClaims] = useState(userClaims);
-  const [filteredClaims, setFilteredClaims] = useState(userClaims);
+  const [claims, setClaims] = useState([]);
+  const [filteredClaims, setFilteredClaims] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -29,16 +24,34 @@ const ClaimHistoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [claimsPerPage, setClaimsPerPage] = useState(10);
 
+  const { userContext } = useContext(UserContext);
+
+  useEffect(() => {
+    // Fetch claims for the current user
+    const fetchClaims = async () => {
+      try {
+        // use user id
+        const data = await insuranceClaimApiService.getInsuranceClaimsByCustomer(userContext.id);
+        setClaims(data.data);
+      } catch (error) {
+        console.error('Error fetching claims:', error);
+      }
+    };
+
+    fetchClaims();
+  }, [userContext.id]);
+
   useEffect(() => {
     let filtered = [...claims];
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(claim => 
-        claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        claim.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        claim.vehicle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        claim.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(claim =>
+        claim._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim.incidentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim.vehicleRef?.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim.vehicleRef?.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim.vehicleRef?.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -155,7 +168,7 @@ const ClaimHistoryPage = () => {
 
       {/* Search and Filter Section */}
       <div className="filter-section">
-        <input 
+        <input
           type="text"
           placeholder="Search by Claim ID, Type, or Vehicle"
           value={searchTerm}
@@ -206,8 +219,6 @@ const ClaimHistoryPage = () => {
               <th>Vehicle</th>
               <th>Vehicle Number</th>
               <th>Type</th>
-              <th>Amount (LKR)</th>
-              <th>Priority</th>
               <th>Status</th>
               <th>Date</th>
             </tr>
@@ -215,30 +226,32 @@ const ClaimHistoryPage = () => {
           <tbody>
             {currentClaims.length > 0 ? (
               currentClaims.map(claim => (
-                <tr 
-                  key={claim.id} 
-                  onClick={() => handleClaimClick(claim.id)}
+                <tr
+                  key={claim._id}
+                  onClick={() => handleClaimClick(claim._id)}
                   style={tableRowStyle}
                   onMouseEnter={(e) => e.target.closest('tr').style.backgroundColor = '#f8f9fa'}
                   onMouseLeave={(e) => e.target.closest('tr').style.backgroundColor = 'transparent'}
                   title="Click to view claim details"
                 >
-                  <td>{claim.id}</td>
-                  <td>{claim.vehicle}</td>
-                  <td>{claim.vehicleNumber}</td>
-                  <td>{claim.type}</td>
-                  <td>{claim.amount.toLocaleString()}</td>
-                  <td>
-                    <span className={`priority-badge priority-${claim.priority.toLowerCase()}`}>
-                      {claim.priority.toUpperCase()}
-                    </span>
-                  </td>
+                  <td>{claim._id}</td>
+                  <td>{claim.vehicleRef?.model + ' ' + claim.vehicleRef?.make}</td>
+                  <td>{claim.vehicleRef?.registrationNumber}</td>
+                  <td>{claim.incidentType}</td>
                   <td>
                     <span className={`status-badge ${getStatusColor(claim.status)}`}>
                       {getStatusDisplayName(claim.status)}
                     </span>
                   </td>
-                  <td>{claim.date}</td>
+                  <td>{
+                    new Date(claim.incidentAt).toLocaleString([], {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  }</td>
                 </tr>
               ))
             ) : (
@@ -277,8 +290,8 @@ const ClaimHistoryPage = () => {
               </button>
 
               {[...Array(totalPages)].map((_, i) => (
-                <button 
-                  key={i} 
+                <button
+                  key={i}
                   onClick={() => setCurrentPage(i + 1)}
                   className={currentPage === i + 1 ? 'active' : ''}
                 >
@@ -286,7 +299,7 @@ const ClaimHistoryPage = () => {
                 </button>
               ))}
 
-              <button 
+              <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >

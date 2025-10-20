@@ -1,6 +1,23 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import './ClaimRequestForm.css';
-import PolicyDetailsTestData from "../InsuranceCompany/testData/PolicyDetailsTestData";
+import * as InsurancePolicyApiService from '../../services/insurancePolicyApiService';
+import * as ClaimApiService from '../../services/insuranceClaimApiService';
+
+// get user context
+import { useContext } from 'react';
+import UserContext from '../../contexts/UserContext';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+
+const dataURLtoFile = (dataUrl, filename) => {
+  const [meta, b64] = dataUrl.split(',');
+  const mime = meta.match(/data:(.*);base64/)[1] || 'image/png';
+  const binary = atob(b64);
+  let n = binary.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = binary.charCodeAt(n);
+  return new File([u8arr], filename, { type: mime });
+};
 
 const ClaimRequestForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -26,6 +43,7 @@ const ClaimRequestForm = () => {
   });
 
   const [policyDetails, setPolicyDetails] = useState(null);
+  const [selectedPolicy, setSelectedPolicy] = useState(null);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [cameraMode, setCameraMode] = useState(null);
@@ -35,7 +53,11 @@ const ClaimRequestForm = () => {
   const streamRef = useRef(null);
   const signatureCanvasRef = useRef(null); // Separate ref for signature canvas
 
-  // Company mock data
+  const navigate = useNavigate();
+
+  const { userContext } = useContext(UserContext);
+
+
   const companyInfo = {
     name: "ABC Insurance Company Ltd.",
     email: "claims@abcinsurance.lk",
@@ -69,35 +91,32 @@ const ClaimRequestForm = () => {
     { key: 'right', label: 'Right Side', required: true }
   ];
 
+  useEffect(() => {
+    const fetchPolicyDetails = async () => {
+      const data = await InsurancePolicyApiService.getInsurancePolicyByCustomer(userContext.id)
+      setPolicyDetails(data.data);
+    };
+    fetchPolicyDetails();
+  }, [userContext.id]);
+
   // Handle vehicle number input and auto-fill details
   const handleVehicleNumberChange = (e) => {
     const vehicleNum = e.target.value.toUpperCase();
     setFormData(prev => ({ ...prev, vehicleNumber: vehicleNum }));
-
-    if (vehicleNum.length >= 6) { // Assuming vehicle numbers are at least 6 characters
-      const policy = PolicyDetailsTestData.find(p => p.vehicleNumber === vehicleNum);
-      if (policy) {
-        setPolicyDetails(policy);
-        setErrors(prev => ({ ...prev, vehicleNumber: '' }));
-      } else {
-        setPolicyDetails(null);
-        setErrors(prev => ({ ...prev, vehicleNumber: 'Vehicle not found. Please check the vehicle number.' }));
-      }
-    } else {
-      setPolicyDetails(null);
-    }
+    const matchedPolicy = policyDetails.find(policy => policy.vehicleRef.registrationNumber === vehicleNum);
+    setSelectedPolicy(matchedPolicy || null);
   };
 
   // Camera functions
   const startCamera = async (photoType) => {
     try {
       setCameraMode(photoType);
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
           facingMode: 'environment',
           width: { ideal: 1920 },
           height: { ideal: 1080 }
-        } 
+        }
       });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -113,16 +132,16 @@ const ClaimRequestForm = () => {
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
       const video = videoRef.current;
-      
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      
+
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0);
-      
+
       canvas.toBlob((blob) => {
         const photoURL = URL.createObjectURL(blob);
-        
+
         if (cameraMode === 'special') {
           setFormData(prev => ({
             ...prev,
@@ -140,7 +159,7 @@ const ClaimRequestForm = () => {
             }
           }));
         }
-        
+
         stopCamera();
       });
     }
@@ -157,9 +176,9 @@ const ClaimRequestForm = () => {
   // Video recording
   const startVideoRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true, 
-        audio: true 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
       });
       // Implementation would use MediaRecorder API
       alert('Video recording feature would be implemented with MediaRecorder API');
@@ -175,7 +194,7 @@ const ClaimRequestForm = () => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const ctx = canvas.getContext('2d');
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -183,12 +202,12 @@ const ClaimRequestForm = () => {
 
   const draw = (e) => {
     if (!isDrawing) return;
-    
+
     const canvas = signatureCanvasRef.current; // Use signature canvas ref
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
@@ -275,11 +294,76 @@ const ClaimRequestForm = () => {
 
   // Submit form
   const handleSubmit = () => {
-    if (validateStep(3)) {
-      // Here you would submit to backend
-      alert('Claim submitted successfully! You will receive a confirmation email shortly.');
-      console.log('Form submitted:', formData);
-    }
+    if (!validateStep(3)) return;
+
+    const createClaimRequest = async () => {
+      try {
+        // combine date + time -> incidentAt (UTC or your TZ)
+        const incidentAt = new Date(`${formData.incidentDate}T${formData.incidentTime}:00`);
+
+        const fd = new FormData();
+        // Scalar fields
+        fd.append('vehicleNumber', formData.vehicleNumber);
+        fd.append('incidentType', formData.incidentType);
+        fd.append('incidentAt', incidentAt.toISOString());
+        fd.append('incidentLocation', formData.incidentLocation);
+        fd.append('description', formData.description);
+        fd.append('additionalComments', formData.additionalComments || '');
+        fd.append('confirmation', String(formData.confirmation));
+        fd.append('vehicleRef', selectedPolicy.vehicleRef._id);
+        fd.append('customerRef', selectedPolicy.customerRef._id);
+        fd.append('insurancePolicyRef', selectedPolicy._id);
+
+        // Signature (dataURL -> File)
+        if (formData.digitalSignature) {
+          const sigFile = dataURLtoFile(formData.digitalSignature, `signature_${Date.now()}.png`);
+          fd.append('digitalSignature', sigFile);
+        }
+
+        // Required photos
+        const photoKeys = ['front', 'back', 'left', 'right'];
+        photoKeys.forEach(k => {
+          const p = formData.photos[k];
+          if (p?.blob) {
+            const fileName = `photo_${k}_${Date.now()}.jpg`;
+            // Ensure Blob has a type; default to image/jpeg
+            const file = new File([p.blob], fileName, { type: p.blob.type || 'image/jpeg' });
+            fd.append(`photos[${k}]`, file);
+          }
+        });
+
+        // Special photos (array)
+        formData.photos.special.forEach((p, idx) => {
+          if (p?.blob) {
+            const fileName = `photo_special_${idx + 1}_${Date.now()}.jpg`;
+            const file = new File([p.blob], fileName, { type: p.blob.type || 'image/jpeg' });
+            fd.append('photos[special][]', file);
+          }
+        });
+
+        // Optional video
+        if (formData.video instanceof File) {
+          fd.append('video', formData.video);
+        }
+
+        // Optional police report
+        if (formData.policeReport instanceof File) {
+          fd.append('policeReport', formData.policeReport);
+        }
+
+        // Send
+        const response = await ClaimApiService.createInsuranceClaim(fd); // make sure service sets content-type
+        toast.success('Claim submitted successfully!');
+        console.log('Claim created successfully:', response);
+      } catch (error) {
+        toast.error(error.message || 'Failed to submit claim.');
+        console.error('Error creating claim:', error);
+      }
+
+      navigate('/claimhistorypage');
+    };
+
+    createClaimRequest();
   };
 
   // Remove photo
@@ -316,45 +400,51 @@ const ClaimRequestForm = () => {
             {/* Vehicle Number Input */}
             <div className="input-group">
               <label htmlFor="vehicleNumber">Vehicle Number *</label>
-              <input
+              <select
                 id="vehicleNumber"
                 type="text"
                 value={formData.vehicleNumber}
                 onChange={handleVehicleNumberChange}
                 placeholder="Enter your vehicle number (e.g., ABC-1234)"
                 className={errors.vehicleNumber ? 'error' : ''}
-              />
+              >
+                <option value="">Select vehicle number</option>
+                {policyDetails && policyDetails.map((policy) => (
+                  <option key={policy.vehicleRef.registrationNumber} value={policy.vehicleRef.registrationNumber}>{policy.vehicleRef.registrationNumber}</option>
+                ))}
+
+              </select>
               {errors.vehicleNumber && <span className="error-message">{errors.vehicleNumber}</span>}
             </div>
 
             {/* Policy Details Display */}
-            {policyDetails && (
+            {selectedPolicy && (
               <div className="policy-details-display">
                 <h4>✅ Vehicle Found</h4>
                 <div className="details-grid">
                   <div className="detail-item">
                     <label>Customer Name:</label>
-                    <span>{policyDetails.customerName}</span>
+                    <span>{selectedPolicy.customerRef.firstName + ' ' + selectedPolicy.customerRef.lastName}</span>
                   </div>
                   <div className="detail-item">
                     <label>Vehicle:</label>
-                    <span>{policyDetails.vehicleModel}</span>
+                    <span>{selectedPolicy.vehicleRef.model}</span>
                   </div>
                   <div className="detail-item">
                     <label>Policy Number:</label>
-                    <span>{policyDetails.policyNumber}</span>
+                    <span>{selectedPolicy.policyNumber}</span>
                   </div>
                   <div className="detail-item">
                     <label>Policy Type:</label>
-                    <span>{policyDetails.policyType}</span>
+                    <span>{selectedPolicy.policyType}</span>
                   </div>
                   <div className="detail-item">
                     <label>Contact:</label>
-                    <span>{policyDetails.contactNo}</span>
+                    <span>{selectedPolicy.customerRef.phone}</span>
                   </div>
                   <div className="detail-item">
                     <label>Email:</label>
-                    <span className="email-text break-long-text">{policyDetails.email}</span>
+                    <span className="email-text break-long-text">{selectedPolicy.customerRef.email}</span>
                   </div>
                 </div>
               </div>
@@ -363,7 +453,7 @@ const ClaimRequestForm = () => {
             {/* Incident Details */}
             <div className="incident-details">
               <h4>Incident Information</h4>
-              
+
               <div className="form-row">
                 <div className="input-group">
                   <label htmlFor="incidentType">Type of Incident *</label>
@@ -467,11 +557,11 @@ const ClaimRequestForm = () => {
                     <div className="photo-header">
                       <h5>{photoType.label} {photoType.required && '*'}</h5>
                     </div>
-                    
+
                     {formData.photos[photoType.key] ? (
                       <div className="photo-preview">
                         <img src={formData.photos[photoType.key].url} alt={photoType.label} />
-                        <button 
+                        <button
                           type="button"
                           className="remove-photo"
                           onClick={() => removePhoto(photoType.key)}
@@ -483,7 +573,7 @@ const ClaimRequestForm = () => {
                       <div className="photo-placeholder">
                         <div className="camera-icon">📷</div>
                         <p>No photo taken</p>
-                        <button 
+                        <button
                           type="button"
                           className="camera-btn"
                           onClick={() => startCamera(photoType.key)}
@@ -492,7 +582,7 @@ const ClaimRequestForm = () => {
                         </button>
                       </div>
                     )}
-                    
+
                     {errors[`photo_${photoType.key}`] && (
                       <span className="error-message">{errors[`photo_${photoType.key}`]}</span>
                     )}
@@ -505,12 +595,12 @@ const ClaimRequestForm = () => {
             <div className="photo-section">
               <h4>Additional Photos (Optional)</h4>
               <p>Add any additional photos showing specific damage details</p>
-              
+
               <div className="special-photos">
                 {formData.photos.special.map((photo, index) => (
                   <div key={index} className="special-photo">
                     <img src={photo.url} alt={`Special ${index + 1}`} />
-                    <button 
+                    <button
                       type="button"
                       className="remove-photo"
                       onClick={() => removePhoto('special', index)}
@@ -519,9 +609,9 @@ const ClaimRequestForm = () => {
                     </button>
                   </div>
                 ))}
-                
+
                 {formData.photos.special.length < 5 && (
-                  <button 
+                  <button
                     type="button"
                     className="add-special-photo"
                     onClick={() => startCamera('special')}
@@ -537,7 +627,7 @@ const ClaimRequestForm = () => {
             <div className="video-section">
               <h4>Video Evidence (Optional)</h4>
               <p>You may provide a short video showing the damage or incident scene</p>
-              <button 
+              <button
                 type="button"
                 className="video-btn"
                 onClick={startVideoRecording}
@@ -704,12 +794,12 @@ const ClaimRequestForm = () => {
                 <h3>Take Photo - {cameraMode === 'special' ? 'Additional Photo' : photoTypes.find(p => p.key === cameraMode)?.label}</h3>
                 <button className="close-camera" onClick={stopCamera}>✕</button>
               </div>
-              
+
               <div className="camera-preview">
                 <video ref={videoRef} autoPlay playsInline />
                 <canvas ref={canvasRef} style={{ display: 'none' }} />
               </div>
-              
+
               <div className="camera-controls">
                 <button className="capture-btn" onClick={capturePhoto}>
                   📷 Capture
@@ -724,28 +814,28 @@ const ClaimRequestForm = () => {
 
         {/* Navigation Buttons */}
         <div className="form-navigation">
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="nav-btn prev-btn"
             onClick={handlePrevious}
             disabled={currentStep === 1}
           >
             ← Previous
           </button>
-          
+
           <div className="nav-spacer"></div>
-          
+
           {currentStep < steps.length ? (
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="nav-btn next-btn"
               onClick={handleNext}
             >
               Next →
             </button>
           ) : (
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="nav-btn submit-btn"
               onClick={handleSubmit}
             >

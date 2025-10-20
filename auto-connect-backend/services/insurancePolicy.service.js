@@ -11,11 +11,16 @@ function getAllInsurancePolicies() {
 }
 
 function getAllInsurancePoliciesByCompany(companyId) {
-    return InsurancePolicy.find({ insuranceCompanyId: companyId });
+    return InsurancePolicy.find({ insuranceCompanyId: companyId }).populate('customerRef').populate('vehicleRef');
+}
+
+function getAllInsurancePoliciesByCustomer(id) {
+    return InsurancePolicy.find({ customerRef: id }).populate('vehicleRef').populate('customerRef');
 }
 
 export default {
     createPolicy,
     getAllInsurancePolicies,
     getAllInsurancePoliciesByCompany,
+    getAllInsurancePoliciesByCustomer,
 };

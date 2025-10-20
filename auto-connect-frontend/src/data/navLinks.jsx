@@ -55,7 +55,7 @@ import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashbo
 import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
-import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
+import ServiceProviderDashboardNew from "@pages/ServiceProvider/ServiceProviderDashboard";
 import ServiceProviderEstimatePage from "@pages/ServiceProvider/ServiceProviderEstimatePage";
 import VehicleServiceRequests from "@pages/ServiceProvider/vehicleServiceRequests";
 
