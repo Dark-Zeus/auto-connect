@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import InsurancePolicyService from '../services/insurancePolicy.service.js';
 import InsurancePolicyTypeService from '../services/insurancePolicyType.service.js';
 
@@ -7,30 +9,14 @@ const createInsurancePolicy = async (req, res) => {
         const policy = {
             policyNumber: policyData.policyNumber,
             insuranceCompanyId: policyData.insuranceCompanyId || "IC123456", // Placeholder company ID
-            customer: {
-                fullName: policyData.vehicleOwnerName,
-                nic: policyData.nic,
-                email: policyData.email,
-                phone: policyData.contactNo,
-                address: policyData.address,
-            },
-            vehicle: {
-                vehicleType: policyData.vehicleType,
-                vehicleNumber: policyData.vehicleNumber,
-                vrn: policyData.vehicleRegistrationNumber,
-                chassisNumber: policyData.chassisNumber,
-                make: policyData.vehicleMake,
-                model: policyData.vehicleModel,
-                engineCapacity: policyData.engineCapacity,
-                yearOfManufacture: policyData.manufactureYear,
-                fuelType: policyData.fuelType,
-                estimatedValue: policyData.estimatedValue,
-            },
+            customerRef: policyData.customerRef,
+            vehicleRef: policyData.vehicleRef,
             policyType: policyData.policyType,
             startDate: policyData.policyStartDate,
             endDate: policyData.policyEndDate,
             premium: policyData.premiumAmount,
-            digitalSignature: policyData.digitalSignature, 
+            digitalSignature: policyData.digitalSignature,
+            estimatedValue: policyData.estimatedValue,
         }
         const newPolicy = await InsurancePolicyService.createPolicy(policy);
         res.status(201).json({
@@ -60,6 +46,24 @@ const getAllInsurancePoliciesByCompany = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Error retrieving insurance policies",
+            error: error.message,
+        });
+    }
+};
+
+const getAllInsurancePoliciesByCustomer = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const policies = await InsurancePolicyService.getAllInsurancePoliciesByCustomer(id);
+        res.status(200).json({
+            success: true,
+            message: "Insurance policies for customer retrieved successfully",
+            data: policies,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error retrieving insurance policies for customer",
             error: error.message,
         });
     }
@@ -157,6 +161,7 @@ const deleteInsurancePolicyType = async (req, res) => {
 export default {
     createInsurancePolicy,
     getAllInsurancePoliciesByCompany,
+    getAllInsurancePoliciesByCustomer,
 
     createInsurancePolicyType,
     getAllInsurancePolicyTypesByCompany,
