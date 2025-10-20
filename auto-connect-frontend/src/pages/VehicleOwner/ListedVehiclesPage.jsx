@@ -16,8 +16,7 @@ const getEffectiveTimestamp = (vehicle) =>
 const sortVehicles = (vehicles) =>
   [...(vehicles ?? [])].sort(
     (a, b) =>
-      new Date(getEffectiveTimestamp(b)) -
-      new Date(getEffectiveTimestamp(a))
+      new Date(getEffectiveTimestamp(b)) - new Date(getEffectiveTimestamp(a))
   );
 
 const ListedVehiclesPage = () => {

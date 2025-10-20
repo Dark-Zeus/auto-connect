@@ -1698,7 +1698,7 @@ const VehicleHistoryPage = () => {
               </CardContent>
             </Card>
           </Grid>
-        </Grid>
+        </Grid><br/>
 
         {/* Filter and Statistics Section */}
         <Box

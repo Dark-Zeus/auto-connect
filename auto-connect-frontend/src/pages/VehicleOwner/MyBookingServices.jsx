@@ -30,6 +30,7 @@ import {
   Star as StarIcon,
   StarBorder as StarBorderIcon,
   ThumbUp as ThumbUpIcon,
+  Payment as PaymentIcon,
 } from "@mui/icons-material";
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -42,6 +43,7 @@ import BookingDetailsPage from "./BookingDetailsPage";
 import ServiceBookingForm from "@components/ServiceBookingForm";
 import { UserContext } from "@contexts/UserContext";
 import { bookingApi } from "@services/bookingApi";
+import { servicePaymentApi } from "@services/servicePaymentApi";
 
 const serviceCenters = [
   // Your serviceCenters data unchanged
@@ -240,7 +242,7 @@ const MyBookings = () => {
     hasPrevPage: false,
   });
 
-  // Check for success message from booking creation
+  // Check for success message from booking creation or payment
   useEffect(() => {
     if (location.state?.successMessage) {
       setShowSuccessMessage(true);
@@ -261,6 +263,41 @@ const MyBookings = () => {
         setShowSuccessMessage(false);
       }, 10000);
     }
+
+    // Check for payment success
+    if (location.state?.paymentSuccess) {
+      const { paymentId, amount, bookingId } = location.state;
+
+      toast.success(
+        `💳 Payment completed successfully! LKR ${amount?.toLocaleString()} paid for booking ${bookingId}`,
+        {
+          position: "top-center",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          style: {
+            background: "linear-gradient(135deg, #4caf50, #2e7d32)",
+            color: "white",
+            borderRadius: "12px",
+            boxShadow: "0 8px 32px rgba(76, 175, 80, 0.3)",
+            fontSize: "14px",
+            fontWeight: "600",
+          },
+        }
+      );
+
+      // Navigate to Completed Services tab to see the paid service
+      setActiveTab(1); // Index 1 is "Completed Services"
+
+      // Refresh bookings to show latest payment status
+      const activeStatus = tabStatusOrder[1].key; // COMPLETED
+      fetchBookings(activeStatus);
+
+      // Clear the state to prevent showing message on refresh
+      window.history.replaceState({}, document.title);
+    }
   }, [location.state]);
 
   // Fetch user bookings
@@ -279,8 +316,18 @@ const MyBookings = () => {
 
       if (response.success) {
         console.log("✅ Bookings fetched successfully:", response.data);
-        setBookings(response.data.bookings || []);
+        const fetchedBookings = response.data.bookings || [];
+        setBookings(fetchedBookings);
         setPagination(response.data.pagination || {});
+
+        // Fetch payment status for completed bookings
+        if (status === "COMPLETED") {
+          fetchedBookings.forEach((booking) => {
+            if (booking.status === "COMPLETED") {
+              fetchPaymentStatus(booking._id);
+            }
+          });
+        }
       } else {
         console.error("❌ Failed to fetch bookings:", response);
         toast.error("Failed to load bookings");
@@ -292,6 +339,71 @@ const MyBookings = () => {
       setBookings([]);
     } finally {
       setIsLoadingBookings(false);
+    }
+  };
+
+  // Fetch payment status for a booking
+  const fetchPaymentStatus = async (bookingId) => {
+    try {
+      const response = await servicePaymentApi.getPaymentByBooking(bookingId);
+      if (response.success && response.data.payment) {
+        setBookingPayments((prev) => ({
+          ...prev,
+          [bookingId]: response.data.payment,
+        }));
+      }
+    } catch (error) {
+      // Silent fail - payment might not exist yet
+      console.log("No payment found for booking:", bookingId);
+    }
+  };
+
+  // Handle payment button click
+  const handlePayment = async (booking) => {
+    const bookingId = booking._id;
+
+    // Check if service report exists
+    if (!booking.serviceReport) {
+      toast.warning(
+        "Service report has not been created yet by the service center. Please contact them to complete the service report before making payment.",
+        {
+          autoClose: 7000,
+        }
+      );
+      return;
+    }
+
+    // Check if already paid
+    const payment = bookingPayments[bookingId];
+    if (payment && payment.paymentStatus === "COMPLETED") {
+      toast.info("This service has already been paid for!");
+      return;
+    }
+
+    try {
+      setLoadingPayments((prev) => ({ ...prev, [bookingId]: true }));
+
+      // Create payment session
+      const response = await servicePaymentApi.createPaymentSession(bookingId);
+
+      if (response.success && response.data.sessionUrl) {
+        // Redirect to Stripe checkout
+        window.location.href = response.data.sessionUrl;
+      } else {
+        toast.error("Failed to create payment session");
+      }
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+
+      // Extract more specific error message
+      const errorMessage =
+        error.error?.message || error.message || "Failed to initiate payment";
+
+      toast.error(errorMessage, {
+        autoClose: 7000,
+      });
+    } finally {
+      setLoadingPayments((prev) => ({ ...prev, [bookingId]: false }));
     }
   };
 
@@ -329,6 +441,10 @@ const MyBookings = () => {
   const [reviewText, setReviewText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  // Payment state
+  const [bookingPayments, setBookingPayments] = useState({});
+  const [loadingPayments, setLoadingPayments] = useState({});
 
 
   const handleTabChange = (event, newValue) => {
@@ -663,7 +779,7 @@ const MyBookings = () => {
                       elevation={3}
                       sx={{
                         p: 3,
-                        height: 400,
+                        minHeight: 450,
                         width: '100%',
                         display: "flex",
                         flexDirection: "column",
@@ -806,161 +922,267 @@ const MyBookings = () => {
                           flexDirection: "column",
                           gap: 1.5,
                           borderTop: "1px solid #f0f0f0",
-                          minHeight: 60
+                          minHeight: 80
                         }}
                       >
-                        {/* Primary Action Row */}
-                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        {/* View Details Button - Always First */}
+                        <Box sx={{ display: "flex", width: "100%" }}>
                           <Button
                             variant="outlined"
-                            size="small"
+                            size="medium"
+                            fullWidth
                             onClick={() => handleViewDetails(booking)}
-                            sx={{ fontSize: 12, fontWeight: 500, minWidth: 100 }}
+                            sx={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              py: 1.2,
+                              borderWidth: 2,
+                              "&:hover": {
+                                borderWidth: 2
+                              }
+                            }}
                           >
                             View Details
                           </Button>
-                          
-                          {/* Status-specific actions */}
-                          <Box sx={{ display: "flex", gap: 1 }}>
+                        </Box>
 
-                            {booking.status === "PENDING" && (
-                              <>
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  color="primary"
-                                  startIcon={<EditIcon />}
-                                  onClick={() => handleEdit(booking)}
-                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 80 }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  size="small"
-                                  color="error"
-                                  startIcon={<CancelIcon />}
-                                  onClick={() => handleCancel(booking._id)}
-                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 90 }}
-                                >
-                                  Cancel
-                                </Button>
-                              </>
-                            )}
+                        {/* Status-specific actions - Second Row */}
+                        <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
 
-                            {booking.status === "CONFIRMED" && canModify && (
-                              <>
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  color="primary"
-                                  startIcon={<EditIcon />}
-                                  onClick={() => handleEdit(booking)}
-                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 80 }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  size="small"
-                                  color="error"
-                                  startIcon={<CancelIcon />}
-                                  onClick={() => handleCancel(booking._id)}
-                                  sx={{ fontSize: 12, fontWeight: 500, minWidth: 90 }}
-                                >
-                                  Cancel
-                                </Button>
-                              </>
-                            )}
-
-                            {booking.status === "CONFIRMED" && !canModify && (
+                          {booking.status === "PENDING" && (
+                            <>
                               <Button
                                 variant="outlined"
-                                size="small"
-                                disabled
-                                sx={{ fontSize: 11, fontWeight: 500, minWidth: 160 }}
+                                size="medium"
+                                color="primary"
+                                startIcon={<EditIcon />}
+                                onClick={() => handleEdit(booking)}
+                                sx={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  flex: 1,
+                                  py: 1,
+                                  minWidth: 110
+                                }}
                               >
-                                Too late to modify (&lt; 6h)
+                                Edit
                               </Button>
-                            )}
-
-                            {booking.status === "COMPLETED" && (
-                              <>
-                                  {booking.feedback?.rating ||
-                                  bookingRatings[booking._id] ? (
-                                    <Box
-                                      sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 1,
-                                        p: 1,
-                                        borderRadius: 2,
-                                        background: "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
-                                        border: "1px solid #7AB2D3",
-                                        minWidth: 120
-                                      }}
-                                    >
-                                      <StarIcon sx={{ color: "#7AB2D3", fontSize: 16 }} />
-                                      <Rating
-                                        value={
-                                          booking.feedback?.rating ||
-                                          bookingRatings[booking._id]
-                                        }
-                                        readOnly
-                                        size="small"
-                                        sx={{
-                                          "& .MuiRating-iconFilled": {
-                                            color: "#7AB2D3",
-                                            fontSize: "1rem"
-                                          },
-                                        }}
-                                      />
-                                      <Typography
-                                        variant="caption"
-                                        sx={{
-                                          color: "#4A628A",
-                                          fontWeight: 600,
-                                          fontSize: "0.75rem"
-                                        }}
-                                      >
-                                        Rated
-                                      </Typography>
-                                    </Box>
-                                  ) : (
-                                    <Button
-                                      variant="contained"
-                                      size="small"
-                                      startIcon={<StarIcon />}
-                                      sx={{
-                                        fontSize: 12,
-                                        fontWeight: 600,
-                                        borderRadius: 2,
-                                        minWidth: 120,
-                                        background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
-                                        "&:hover": {
-                                          background: "linear-gradient(45deg, #4A628A, #7AB2D3)",
-                                        }
-                                      }}
-                                      onClick={() => openRatingForBooking(booking)}
-                                    >
-                                      Rate Service
-                                    </Button>
-                                  )}
-                              </>
-                            )}
-
-                            {booking.status === "CANCELLED" && (
                               <Button
                                 variant="contained"
-                                size="small"
-                                color="primary"
-                                onClick={() => handleReschedule(booking)}
-                                sx={{ fontSize: 12, fontWeight: 500, minWidth: 100 }}
+                                size="medium"
+                                color="error"
+                                startIcon={<CancelIcon />}
+                                onClick={() => handleCancel(booking._id)}
+                                sx={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  flex: 1,
+                                  py: 1,
+                                  minWidth: 110
+                                }}
                               >
-                                Reschedule
+                                Cancel
                               </Button>
-                            )}
-                          </Box>
+                            </>
+                          )}
+
+                          {booking.status === "CONFIRMED" && canModify && (
+                            <>
+                              <Button
+                                variant="outlined"
+                                size="medium"
+                                color="primary"
+                                startIcon={<EditIcon />}
+                                onClick={() => handleEdit(booking)}
+                                sx={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  flex: 1,
+                                  py: 1,
+                                  minWidth: 110
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="contained"
+                                size="medium"
+                                color="error"
+                                startIcon={<CancelIcon />}
+                                onClick={() => handleCancel(booking._id)}
+                                sx={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  flex: 1,
+                                  py: 1,
+                                  minWidth: 110
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            </>
+                          )}
+
+                          {booking.status === "CONFIRMED" && !canModify && (
+                            <Button
+                              variant="outlined"
+                              size="medium"
+                              fullWidth
+                              disabled
+                              sx={{ fontSize: 12, fontWeight: 600, py: 1 }}
+                            >
+                              Too late to modify (&lt; 6h)
+                            </Button>
+                          )}
+
+                          {booking.status === "COMPLETED" && (
+                            <>
+                              {/* Payment Button or Status */}
+                              {(() => {
+                                const payment = bookingPayments[booking._id];
+                                const isLoading = loadingPayments[booking._id];
+                                const isPaid = payment?.paymentStatus === "COMPLETED";
+
+                                if (isPaid) {
+                                  return (
+                                    <Chip
+                                      label="Paid ✓"
+                                      color="success"
+                                      size="medium"
+                                      sx={{
+                                        fontSize: 13,
+                                        fontWeight: 700,
+                                        height: 40,
+                                        flex: 1,
+                                        minWidth: 120,
+                                        "& .MuiChip-label": {
+                                          px: 2
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
+
+                                return (
+                                  <Button
+                                    variant="contained"
+                                    size="medium"
+                                    startIcon={
+                                      isLoading ? (
+                                        <CircularProgress size={18} sx={{ color: "white" }} />
+                                      ) : (
+                                        <PaymentIcon />
+                                      )
+                                    }
+                                    onClick={() => handlePayment(booking)}
+                                    disabled={isLoading}
+                                    sx={{
+                                      fontSize: 13,
+                                      fontWeight: 700,
+                                      borderRadius: 2,
+                                      flex: 1,
+                                      py: 1,
+                                      minWidth: 120,
+                                      background: "linear-gradient(45deg, #4caf50, #2e7d32)",
+                                      "&:hover": {
+                                        background: "linear-gradient(45deg, #2e7d32, #4caf50)",
+                                      },
+                                      "&:disabled": {
+                                        background: "#ccc",
+                                      },
+                                    }}
+                                  >
+                                    {isLoading ? "Processing..." : "Pay Now"}
+                                  </Button>
+                                );
+                              })()}
+
+                              {/* Rating Button or Display */}
+                              {booking.feedback?.rating ||
+                              bookingRatings[booking._id] ? (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: 1,
+                                    px: 2,
+                                    py: 1,
+                                    borderRadius: 2,
+                                    background: "linear-gradient(135deg, #DFF2EB 0%, #B9E5E8 100%)",
+                                    border: "2px solid #7AB2D3",
+                                    flex: 1,
+                                    minWidth: 140,
+                                    height: 40
+                                  }}
+                                >
+                                  <StarIcon sx={{ color: "#7AB2D3", fontSize: 18 }} />
+                                  <Rating
+                                    value={
+                                      booking.feedback?.rating ||
+                                      bookingRatings[booking._id]
+                                    }
+                                    readOnly
+                                    size="small"
+                                    sx={{
+                                      "& .MuiRating-iconFilled": {
+                                        color: "#7AB2D3",
+                                        fontSize: "1.1rem"
+                                      },
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      color: "#4A628A",
+                                      fontWeight: 700,
+                                      fontSize: "0.8rem"
+                                    }}
+                                  >
+                                    Rated
+                                  </Typography>
+                                </Box>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  size="medium"
+                                  startIcon={<StarIcon />}
+                                  sx={{
+                                    fontSize: 13,
+                                    fontWeight: 700,
+                                    borderRadius: 2,
+                                    flex: 1,
+                                    py: 1,
+                                    minWidth: 140,
+                                    background: "linear-gradient(45deg, #7AB2D3, #4A628A)",
+                                    "&:hover": {
+                                      background: "linear-gradient(45deg, #4A628A, #7AB2D3)",
+                                    }
+                                  }}
+                                  onClick={() => openRatingForBooking(booking)}
+                                >
+                                  Rate Service
+                                </Button>
+                              )}
+                            </>
+                          )}
+
+                          {booking.status === "CANCELLED" && (
+                            <Button
+                              variant="contained"
+                              size="medium"
+                              color="primary"
+                              fullWidth
+                              onClick={() => handleReschedule(booking)}
+                              sx={{
+                                fontSize: 13,
+                                fontWeight: 600,
+                                py: 1.2
+                              }}
+                            >
+                              Reschedule
+                            </Button>
+                          )}
                         </Box>
                       </Box>
                     </Paper>

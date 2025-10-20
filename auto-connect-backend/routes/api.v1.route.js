@@ -17,6 +17,7 @@ import timeSlotRoutes from "./api.v1/timeSlot/timeSlot.route.js";
 import weeklyScheduleRoutes from "./api.v1/weeklySchedule/weeklySchedule.route.js";
 import vehicleHistoryRoutes from "./api.v1/vehicleHistory/vehicleHistory.route.js";
 import vehiclePassportRoutes from "./api.v1/vehiclePassport/vehiclePassport.route.js";
+import reviewsRoutes from "./api.v1/reviews/reviews.route.js";
 
 import listVehicleRoute from "./listVehicle.route.js";
 
@@ -31,6 +32,7 @@ import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
 import adRoute from "./ad.route.js";
 import promotionPaymentRoute from "./promotionPayment.route.js";
+import servicePaymentRoute from "./servicePayment.route.js";
 import subscriptionPaymentRoutes from "./subscriptionPayment.route.js";
 import subscriptionManagementRoutes from "./subscriptionManagement.route.js";
 
@@ -71,6 +73,7 @@ router.use("/time-slots", timeSlotRoutes);
 router.use("/weekly-schedule", weeklyScheduleRoutes);
 router.use("/vehicle-history", vehicleHistoryRoutes);
 router.use("/vehicle-passport", vehiclePassportRoutes);
+router.use("/reviews", reviewsRoutes);
 
 router.use("/list-vehicles", generalLimiter, listVehicleRoute);
 
@@ -102,6 +105,8 @@ router.use("/ads", generalLimiter, adRoute);
 // Promotion payments (separate from listing payments)
 router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
 
+// Service payments for completed bookings
+router.use("/service-payments", generalLimiter, servicePaymentRoute);
 // Subscription Payments
 router.use("/subscription-payments", subscriptionPaymentRoutes);
 

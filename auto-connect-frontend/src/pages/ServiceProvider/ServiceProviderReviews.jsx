@@ -1,461 +1,350 @@
 // src/pages/ServiceProvider/ServiceProviderReviews.jsx
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  Star,
-  TrendingUp,
-  TrendingDown,
-  AlertCircle,
-  MessageSquare,
-  Filter,
-  Download,
-  Calendar,
-  Users,
-  Target,
-  Award,
-} from "lucide-react";
-import { UserContext } from "@contexts/UserContext";
-import { toast } from "react-toastify";
-import ReviewDisplayComponent from "@components/Reviews/ReviewDisplayComponent";
+import React, { useState, useEffect } from "react";
+import reviewsAPI from "../../services/reviewsApi.js";
 import "./ServiceProviderReviews.css";
 
 const ServiceProviderReviews = () => {
-  const navigate = useNavigate();
-  const { userContext } = useContext(UserContext);
   const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalReviews: 0,
     averageRating: 0,
-    recommendationRate: 0,
-    responseRate: 0,
-    monthlyTrend: 0,
+    distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+    percentages: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
   });
-  const [timeFilter, setTimeFilter] = useState("all");
-  const [responseModal, setResponseModal] = useState({
-    show: false,
-    review: null,
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalResults: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
+    limit: 20,
   });
-  const [responseText, setResponseText] = useState("");
+  const [filters, setFilters] = useState({
+    rating: "",
+    minRating: "",
+    dateFrom: "",
+    dateTo: "",
+  });
 
-  useEffect(() => {
-    fetchReviews();
-    fetchStats();
-  }, [timeFilter]);
-
-  const fetchReviews = async () => {
-    setLoading(true);
+  // Fetch reviews
+  const fetchReviews = async (page = 1) => {
     try {
-      const response = await fetch(
-        `/api/v1/service-providers/reviews?timeFilter=${timeFilter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      setLoading(true);
+      setError(null);
 
-      const result = await response.json();
-      if (response.ok) {
-        setReviews(result.reviews || []);
-      } else {
-        toast.error("Failed to fetch reviews");
+      const params = {
+        page,
+        limit: pagination.limit,
+        ...filters,
+      };
+
+      // Remove empty filters
+      Object.keys(params).forEach((key) => {
+        if (params[key] === "" || params[key] === null) {
+          delete params[key];
+        }
+      });
+
+      console.log("=== FETCHING REVIEWS ===");
+      console.log("Params:", params);
+
+      const response = await reviewsAPI.getMyReviews(params);
+
+      console.log("=== REVIEWS RESPONSE ===");
+      console.log("Response:", response);
+
+      if (response.success && response.data) {
+        setReviews(response.data.reviews || []);
+        setStats(response.data.stats || stats);
+        setPagination(response.data.pagination || pagination);
       }
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      toast.error("Network error. Please try again.");
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
+      setError("Failed to load reviews. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchStats = async () => {
-    try {
-      const response = await fetch(
-        `/api/v1/service-providers/review-stats?timeFilter=${timeFilter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
-      const result = await response.json();
-      if (response.ok) {
-        setStats(result.stats || {});
-      }
-    } catch (error) {
-      console.error("Error fetching stats:", error);
-    }
+  // Handle filter changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleRespondToReview = async () => {
-    if (!responseText.trim()) {
-      toast.error("Please enter a response");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `/api/v1/reviews/${responseModal.review.id}/respond`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            responseText: responseText.trim(),
-          }),
-        }
-      );
-
-      if (response.ok) {
-        toast.success("Response submitted successfully");
-        setResponseModal({ show: false, review: null });
-        setResponseText("");
-        fetchReviews(); // Refresh reviews
-      } else {
-        const result = await response.json();
-        toast.error(result.message || "Failed to submit response");
-      }
-    } catch (error) {
-      console.error("Error submitting response:", error);
-      toast.error("Network error. Please try again.");
-    }
+  // Apply filters
+  const applyFilters = () => {
+    fetchReviews(1);
   };
 
-  const exportReviews = async () => {
-    try {
-      const response = await fetch(
-        `/api/v1/service-providers/reviews/export?timeFilter=${timeFilter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `reviews-${timeFilter}-${
-          new Date().toISOString().split("T")[0]
-        }.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        toast.success("Reviews exported successfully");
-      } else {
-        toast.error("Failed to export reviews");
-      }
-    } catch (error) {
-      console.error("Error exporting reviews:", error);
-      toast.error("Export failed. Please try again.");
-    }
+  // Clear filters
+  const clearFilters = () => {
+    setFilters({
+      rating: "",
+      minRating: "",
+      dateFrom: "",
+      dateTo: "",
+    });
+    setTimeout(() => fetchReviews(1), 100);
   };
 
-  // Check if user has permission to view reviews
-  if (
-    !userContext ||
-    !["service_center", "repair_center"].includes(userContext.role)
-  ) {
+  // Render star rating
+  const renderStars = (rating) => {
     return (
-      <div className="reviews-page">
-        <div className="reviews-container">
-          <div className="access-denied">
-            <div className="access-denied-icon">
-              <AlertCircle size={48} />
-            </div>
-            <h1 className="access-denied-title">Access Denied</h1>
-            <p className="access-denied-text">
-              You don't have permission to view reviews. This feature is only
-              available for service centers and repair centers.
-            </p>
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="access-denied-button"
-            >
-              Go to Dashboard
-            </button>
-          </div>
+      <div className="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={star <= rating ? "star filled" : "star"}
+          >
+            &#9733;
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  // Render rating bar
+  const renderRatingBar = (stars, count, percentage) => {
+    return (
+      <div className="rating-bar-container" key={stars}>
+        <div className="rating-bar-label">
+          {stars} {renderStars(stars)}
+        </div>
+        <div className="rating-bar">
+          <div
+            className="rating-bar-fill"
+            style={{ width: `${percentage}%` }}
+          ></div>
+        </div>
+        <div className="rating-bar-count">
+          {count} ({percentage}%)
         </div>
       </div>
     );
-  }
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="reviews-page">
-      <div className="reviews-container">
-        {/* Header */}
-        <div className="reviews-header">
-          <div className="reviews-header-left">
-            <button
-              onClick={() => navigate("/dashboard/service-provider")}
-              className="back-button"
-            >
-              <ArrowLeft size={20} />
-              <span>Back to Dashboard</span>
-            </button>
-          </div>
+      <div className="reviews-header">
+        <h1>Customer Reviews</h1>
+        <p>View and analyze feedback from your customers</p>
+      </div>
 
-          <div className="reviews-header-center">
-            <h1 className="reviews-title">Customer Reviews</h1>
-            <p className="reviews-subtitle">
-              Monitor and respond to customer feedback
-            </p>
-          </div>
-
-          <div className="reviews-header-right">
-            <button
-              onClick={exportReviews}
-              className="export-button"
-              disabled={loading}
-            >
-              <Download size={16} />
-              <span>Export</span>
-            </button>
+      {/* Rating Overview Section */}
+      <div className="rating-overview">
+        <div className="rating-summary">
+          <div className="average-rating">
+            <h2>{stats.averageRating.toFixed(1)}</h2>
+            {renderStars(Math.round(stats.averageRating))}
+            <p>{stats.totalReviews} total reviews</p>
           </div>
         </div>
 
-        {/* Stats Dashboard */}
-        <div className="stats-dashboard">
-          <div className="stats-grid">
-            <div className="stat-card primary">
-              <div className="stat-icon">
-                <Star size={24} />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">
-                  {stats.averageRating?.toFixed(1) || "0.0"}
-                </div>
-                <div className="stat-label">Average Rating</div>
-                <div className="stat-trend">
-                  {stats.monthlyTrend > 0 ? (
-                    <TrendingUp size={12} />
-                  ) : (
-                    <TrendingDown size={12} />
-                  )}
-                  <span>
-                    {Math.abs(stats.monthlyTrend || 0).toFixed(1)}% this month
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="stat-card secondary">
-              <div className="stat-icon">
-                <Users size={24} />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">{stats.totalReviews || 0}</div>
-                <div className="stat-label">Total Reviews</div>
-                <div className="stat-description">All time feedback</div>
-              </div>
-            </div>
-
-            <div className="stat-card success">
-              <div className="stat-icon">
-                <Target size={24} />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">
-                  {stats.recommendationRate || 0}%
-                </div>
-                <div className="stat-label">Recommendation Rate</div>
-                <div className="stat-description">Customers who recommend</div>
-              </div>
-            </div>
-
-            <div className="stat-card warning">
-              <div className="stat-icon">
-                <MessageSquare size={24} />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">{stats.responseRate || 0}%</div>
-                <div className="stat-label">Response Rate</div>
-                <div className="stat-description">Reviews responded to</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="reviews-filters-section">
-          <div className="filter-group">
-            <Filter size={16} />
-            <span className="filter-label">Time Period:</span>
-            <select
-              value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value)}
-              className="time-filter-select"
-            >
-              <option value="all">All Time</option>
-              <option value="week">Last 7 Days</option>
-              <option value="month">Last 30 Days</option>
-              <option value="quarter">Last 3 Months</option>
-              <option value="year">Last Year</option>
-            </select>
-          </div>
-
-          <div className="provider-info">
-            <div className="provider-avatar">
-              {userContext?.firstName?.charAt(0)}
-              {userContext?.lastName?.charAt(0)}
-            </div>
-            <div className="provider-details">
-              <span className="provider-name">
-                {userContext?.businessInfo?.businessName ||
-                  `${userContext?.firstName} ${userContext?.lastName}`}
-              </span>
-              <span className="provider-role">
-                {userContext?.role?.replace("_", " ")}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Reviews Display */}
-        <div className="reviews-display-section">
-          {loading ? (
-            <div className="loading-state">
-              <div className="loading-spinner"></div>
-              <p>Loading reviews...</p>
-            </div>
-          ) : (
-            <ReviewDisplayComponent
-              reviews={reviews.map((review) => ({
-                ...review,
-                providerResponse: review.response
-                  ? {
-                      text: review.response.text,
-                      date: review.response.submittedAt,
-                    }
-                  : null,
-              }))}
-              averageRating={stats.averageRating || 0}
-              totalReviews={stats.totalReviews || 0}
-              showFilters={true}
-              showSummary={true}
-              isServiceProvider={true}
-            />
+        <div className="rating-distribution">
+          {[5, 4, 3, 2, 1].map((stars) =>
+            renderRatingBar(
+              stars,
+              stats.distribution[stars],
+              stats.percentages[stars]
+            )
           )}
         </div>
+      </div>
 
-        {/* Response Modal */}
-        {responseModal.show && (
-          <div className="response-modal-overlay">
-            <div className="response-modal">
-              <div className="response-modal-header">
-                <h3>Respond to Review</h3>
-                <button
-                  onClick={() =>
-                    setResponseModal({ show: false, review: null })
-                  }
-                  className="response-modal-close"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="response-modal-content">
-                <div className="original-review">
-                  <div className="review-summary">
-                    <div className="review-stars">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={16}
-                          fill={
-                            star <= responseModal.review?.overallRating
-                              ? "#fbbf24"
-                              : "none"
-                          }
-                          color={
-                            star <= responseModal.review?.overallRating
-                              ? "#fbbf24"
-                              : "#d1d5db"
-                          }
-                        />
-                      ))}
-                    </div>
-                    <span className="reviewer-name">
-                      {responseModal.review?.anonymous
-                        ? "Anonymous"
-                        : responseModal.review?.reviewerName}
-                    </span>
-                  </div>
-                  <p className="review-text">
-                    {responseModal.review?.reviewText}
-                  </p>
-                </div>
-
-                <div className="response-form">
-                  <label className="response-label">Your Response:</label>
-                  <textarea
-                    value={responseText}
-                    onChange={(e) => setResponseText(e.target.value)}
-                    placeholder="Thank you for your feedback. We appreciate..."
-                    className="response-textarea"
-                    rows={4}
-                    maxLength={500}
-                  />
-                  <div className="response-footer">
-                    <span className="char-count">
-                      {responseText.length}/500
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="response-modal-actions">
-                <button
-                  onClick={() =>
-                    setResponseModal({ show: false, review: null })
-                  }
-                  className="response-cancel-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleRespondToReview}
-                  className="response-submit-btn"
-                  disabled={!responseText.trim()}
-                >
-                  Submit Response
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        <div className="quick-actions">
-          <button
-            onClick={() => navigate("/dashboard/service-provider/services")}
-            className="quick-action"
+      {/* Filters Section */}
+      <div className="filters-section">
+        <div className="filter-group">
+          <label htmlFor="rating">Exact Rating:</label>
+          <select
+            id="rating"
+            name="rating"
+            value={filters.rating}
+            onChange={handleFilterChange}
           >
-            Manage Services
+            <option value="">All Ratings</option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="minRating">Minimum Rating:</label>
+          <select
+            id="minRating"
+            name="minRating"
+            value={filters.minRating}
+            onChange={handleFilterChange}
+          >
+            <option value="">No Minimum</option>
+            <option value="4">4+ Stars</option>
+            <option value="3">3+ Stars</option>
+            <option value="2">2+ Stars</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="dateFrom">From Date:</label>
+          <input
+            type="date"
+            id="dateFrom"
+            name="dateFrom"
+            value={filters.dateFrom}
+            onChange={handleFilterChange}
+          />
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="dateTo">To Date:</label>
+          <input
+            type="date"
+            id="dateTo"
+            name="dateTo"
+            value={filters.dateTo}
+            onChange={handleFilterChange}
+          />
+        </div>
+
+        <div className="filter-actions">
+          <button className="apply-btn" onClick={applyFilters}>
+            Apply Filters
           </button>
-          <span className="quick-separator">•</span>
-          <button
-            onClick={() => navigate("/dashboard/service-provider/analytics")}
-            className="quick-action"
-          >
-            View Analytics
-          </button>
-          <span className="quick-separator">•</span>
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="quick-action"
-          >
-            Dashboard
+          <button className="clear-btn" onClick={clearFilters}>
+            Clear
           </button>
         </div>
+      </div>
+
+      {/* Reviews List */}
+      <div className="reviews-container">
+        {loading ? (
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Loading reviews...</p>
+          </div>
+        ) : error ? (
+          <div className="error-state">
+            <p>{error}</p>
+            <button onClick={() => fetchReviews()}>Retry</button>
+          </div>
+        ) : reviews.length === 0 ? (
+          <div className="empty-state">
+            <h3>No reviews found</h3>
+            <p>You don't have any reviews yet. Complete some bookings to start receiving feedback!</p>
+          </div>
+        ) : (
+          <>
+            <div className="reviews-list">
+              {reviews.map((review) => (
+                <div className="review-card" key={review.id}>
+                  <div className="review-header">
+                    <div className="customer-info">
+                      <h3>{review.customerName}</h3>
+                      <p className="customer-email">{review.customerEmail}</p>
+                    </div>
+                    <div className="review-rating">
+                      {renderStars(review.rating)}
+                      <span className="rating-number">{review.rating}/5</span>
+                    </div>
+                  </div>
+
+                  <div className="review-content">
+                    <div className="vehicle-info">
+                      <span className="info-label">Vehicle:</span>
+                      <span className="info-value">
+                        {review.vehicle.registrationNumber} - {review.vehicle.make}{" "}
+                        {review.vehicle.model} ({review.vehicle.year})
+                      </span>
+                    </div>
+
+                    <div className="services-info">
+                      <span className="info-label">Services:</span>
+                      <div className="services-list">
+                        {review.services.map((service, index) => (
+                          <span key={index} className="service-tag">
+                            {service}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {review.comment && (
+                      <div className="review-comment">
+                        <span className="info-label">Comment:</span>
+                        <p>{review.comment}</p>
+                      </div>
+                    )}
+
+                    <div className="review-footer">
+                      <div className="review-meta">
+                        <span className="booking-id">
+                          Booking: {review.bookingId}
+                        </span>
+                        <span className="review-date">
+                          {formatDate(review.submittedAt)}
+                        </span>
+                      </div>
+                      <div className="review-cost">
+                        Cost: Rs. {review.finalCost.toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {pagination.totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  className="pagination-btn"
+                  onClick={() => fetchReviews(pagination.currentPage - 1)}
+                  disabled={!pagination.hasPrevPage}
+                >
+                  Previous
+                </button>
+
+                <div className="pagination-info">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                  <span className="results-count">
+                    ({pagination.totalResults} total reviews)
+                  </span>
+                </div>
+
+                <button
+                  className="pagination-btn"
+                  onClick={() => fetchReviews(pagination.currentPage + 1)}
+                  disabled={!pagination.hasNextPage}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

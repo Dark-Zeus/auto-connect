@@ -361,6 +361,16 @@ export const updateBookingStatus = catchAsync(async (req, res, next) => {
     );
   }
 
+  // Prevent direct status update to COMPLETED - must use completion report endpoint
+  if (status === "COMPLETED") {
+    return next(
+      new AppError(
+        "Cannot update status to COMPLETED directly. Please submit a service completion report instead.",
+        400
+      )
+    );
+  }
+
   try {
     const booking = await Booking.findOne({
       _id: id,
@@ -382,15 +392,12 @@ export const updateBookingStatus = catchAsync(async (req, res, next) => {
       booking.timestamps.startedAt = new Date();
     } else {
       booking.status = status;
-      
+
       // Set appropriate timestamps
       const now = new Date();
       switch (status) {
         case "IN_PROGRESS":
           booking.timestamps.startedAt = now;
-          break;
-        case "COMPLETED":
-          booking.timestamps.completedAt = now;
           break;
         case "CANCELLED":
         case "REJECTED":
@@ -398,7 +405,7 @@ export const updateBookingStatus = catchAsync(async (req, res, next) => {
           break;
       }
     }
-    
+
     booking.lastModifiedBy = req.user._id;
 
     // Update service center response
@@ -671,6 +678,182 @@ export const getBookingStats = catchAsync(async (req, res, next) => {
   } catch (error) {
     LOG.error("Error fetching booking statistics:", error);
     return next(new AppError("Failed to fetch booking statistics", 500));
+  }
+});
+
+// Get comprehensive dashboard statistics (Service centers only)
+export const getDashboardStats = catchAsync(async (req, res, next) => {
+  // Only service centers can access dashboard stats
+  if (req.user.role !== "service_center") {
+    return next(new AppError("Only service centers can access dashboard statistics", 403));
+  }
+
+  const matchFilter = {
+    serviceCenter: req.user._id,
+    isActive: true,
+  };
+
+  try {
+    // Calculate date ranges
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const last30Days = new Date(today);
+    last30Days.setDate(last30Days.getDate() - 30);
+    const next7Days = new Date(today);
+    next7Days.setDate(next7Days.getDate() + 7);
+
+    // Overall statistics
+    const overallStats = await Booking.aggregate([
+      { $match: matchFilter },
+      {
+        $group: {
+          _id: null,
+          totalBookings: { $sum: 1 },
+          pending: { $sum: { $cond: [{ $eq: ["$status", "PENDING"] }, 1, 0] } },
+          confirmed: { $sum: { $cond: [{ $eq: ["$status", "CONFIRMED"] }, 1, 0] } },
+          inProgress: { $sum: { $cond: [{ $eq: ["$status", "IN_PROGRESS"] }, 1, 0] } },
+          completed: { $sum: { $cond: [{ $eq: ["$status", "COMPLETED"] }, 1, 0] } },
+          cancelled: { $sum: { $cond: [{ $eq: ["$status", "CANCELLED"] }, 1, 0] } },
+          rejected: { $sum: { $cond: [{ $eq: ["$status", "REJECTED"] }, 1, 0] } },
+          totalRevenue: { $sum: "$finalCost" },
+          averageRating: { $avg: "$feedback.rating" },
+          totalReviews: { $sum: { $cond: [{ $exists: ["$feedback.rating", true] }, 1, 0] } },
+        },
+      },
+    ]);
+
+    // Last 30 days statistics
+    const last30DaysStats = await Booking.aggregate([
+      { $match: { ...matchFilter, createdAt: { $gte: last30Days } } },
+      {
+        $group: {
+          _id: null,
+          totalBookings: { $sum: 1 },
+          completed: { $sum: { $cond: [{ $eq: ["$status", "COMPLETED"] }, 1, 0] } },
+          cancelled: { $sum: { $cond: [{ $eq: ["$status", "CANCELLED"] }, 1, 0] } },
+          revenue: { $sum: "$finalCost" },
+        },
+      },
+    ]);
+
+    // Upcoming appointments (next 7 days)
+    const upcomingAppointments = await Booking.find({
+      ...matchFilter,
+      preferredDate: { $gte: today, $lte: next7Days },
+      status: { $in: ["PENDING", "CONFIRMED", "IN_PROGRESS"] },
+    })
+      .populate("vehicleOwner", "firstName lastName email phone")
+      .sort({ preferredDate: 1, preferredTimeSlot: 1 })
+      .limit(10)
+      .lean();
+
+    // Monthly trend (last 7 months)
+    const sevenMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+    const monthlyTrend = await Booking.aggregate([
+      { $match: { ...matchFilter, createdAt: { $gte: sevenMonthsAgo } } },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          bookings: { $sum: 1 },
+          completed: { $sum: { $cond: [{ $eq: ["$status", "COMPLETED"] }, 1, 0] } },
+          revenue: { $sum: "$finalCost" },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+    ]);
+
+    // Top services (most frequently booked)
+    const topServices = await Booking.aggregate([
+      { $match: matchFilter },
+      { $unwind: "$services" },
+      {
+        $group: {
+          _id: "$services",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          service: "$_id",
+          timesBooked: "$count",
+        },
+      },
+    ]);
+
+    // Recent completed bookings (for reviews section)
+    const recentCompletedBookings = await Booking.find({
+      ...matchFilter,
+      status: "COMPLETED",
+      "feedback.rating": { $exists: true },
+    })
+      .populate("vehicleOwner", "firstName lastName")
+      .sort({ "timestamps.completedAt": -1 })
+      .limit(5)
+      .select("bookingId vehicleOwner feedback")
+      .lean();
+
+    // Format the response
+    const result = {
+      overview: {
+        totalBookings: overallStats[0]?.totalBookings || 0,
+        pending: overallStats[0]?.pending || 0,
+        confirmed: overallStats[0]?.confirmed || 0,
+        inProgress: overallStats[0]?.inProgress || 0,
+        completed: overallStats[0]?.completed || 0,
+        cancelled: overallStats[0]?.cancelled || 0,
+        rejected: overallStats[0]?.rejected || 0,
+        totalRevenue: overallStats[0]?.totalRevenue || 0,
+        averageRating: overallStats[0]?.averageRating || 0,
+        totalReviews: overallStats[0]?.totalReviews || 0,
+      },
+      last30Days: {
+        totalBookings: last30DaysStats[0]?.totalBookings || 0,
+        completed: last30DaysStats[0]?.completed || 0,
+        cancelled: last30DaysStats[0]?.cancelled || 0,
+        revenue: last30DaysStats[0]?.revenue || 0,
+      },
+      upcomingAppointments: upcomingAppointments.map((booking) => ({
+        bookingId: booking.bookingId,
+        date: booking.preferredDate,
+        time: booking.preferredTimeSlot,
+        customer: `${booking.vehicleOwner?.firstName || ""} ${booking.vehicleOwner?.lastName || ""}`.trim(),
+        service: booking.services.join(", "),
+        vehicle: `${booking.vehicle.registrationNumber} - ${booking.vehicle.make} ${booking.vehicle.model}`,
+        status: booking.status,
+      })),
+      monthlyTrend: monthlyTrend.map((item) => ({
+        month: `${item._id.year}-${String(item._id.month).padStart(2, "0")}`,
+        bookings: item.bookings,
+        completed: item.completed,
+        revenue: item.revenue || 0,
+      })),
+      topServices: topServices.map((item, index) => ({
+        rank: index + 1,
+        service: item.service,
+        timesBooked: item.timesBooked,
+      })),
+      recentReviews: recentCompletedBookings.map((booking) => ({
+        bookingId: booking.bookingId,
+        customer: `${booking.vehicleOwner?.firstName || ""} ${booking.vehicleOwner?.lastName || ""}`.trim(),
+        rating: booking.feedback?.rating || 0,
+        comment: booking.feedback?.comment || "",
+      })),
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "Dashboard statistics retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    LOG.error("Error fetching dashboard statistics:", error);
+    return next(new AppError("Failed to fetch dashboard statistics", 500));
   }
 });
 
@@ -1256,6 +1439,7 @@ export default {
   cancelBooking,
   submitFeedback,
   getBookingStats,
+  getDashboardStats,
   getAvailableTimeSlots,
   submitServiceCompletionReport,
   getServiceCompletionReport,

@@ -29,6 +29,7 @@ import MyPlansPage from "@pages/VehicleOwner/MyPlansPage";
 
 import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
 import PromotionPaymentSuccessPage from "@pages/VehicleOwner/PromotionPaymentSuccessPage";
+import ServicePaymentSuccess from "@pages/VehicleOwner/ServicePaymentSuccess";
 import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
 import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
 import ClaimHistoryPage from "@pages/VehicleOwner/ClaimHistoryPage";
@@ -159,6 +160,13 @@ function getNavLinks(userContext) {
           icon: "event_available",
           page: <MyBookingServices />,
         },
+        {
+          path: [`/services/payment-success`],
+          title: "Service Payment Success",
+          icon: "check_circle",
+          page: <ServicePaymentSuccess />,
+          hidden: true,
+        },
         // {
         //   path: [`/services/history`],
         //   title: "Service History",
@@ -220,12 +228,7 @@ function getNavLinks(userContext) {
           icon: "bookmark",
           page: <SavedVehiclesPage />,
         },
-        {
-          path: [`/marketplace/checkreports`],
-          title: "Vehicle History Report",
-          icon: "description",
-          page: <VehicleHistorySearchPage />,
-        },
+
         {
           path: [`/marketplace/subscription`],
           title: "Subscription",
@@ -298,44 +301,44 @@ function getNavLinks(userContext) {
     //     title: "Insurance Dashboard",
     //     icon: "security",
     //   },
-      // sub: [
-      //   {
-      //     path: [`/insurance`],
-      //     title: "My Insurance",
-      //     icon: "security",
-      //     page: <InsuranceDetails />,
-      //   },
-      //   {
-      //     path: [`/insurance/claims/new`],
-      //     title: "File New Claim",
-      //     icon: "report_problem",
-      //     page: <InsuranceClaimPage />,
-      //   },
-        // {
-        //   path: [`/insurance`],
-        //   title: "Insurance Dashboard",
-        //   icon: "security",
-        //   page: <InsuranceClaims />,
-        // },
-        // {
-        //   path: [`/insurance/policies`],
-        //   title: "Policy Management",
-        //   icon: "policy",
-        //   page: "Policy Management",
-        // },
+    // sub: [
+    //   {
+    //     path: [`/insurance`],
+    //     title: "My Insurance",
+    //     icon: "security",
+    //     page: <InsuranceDetails />,
+    //   },
+    //   {
+    //     path: [`/insurance/claims/new`],
+    //     title: "File New Claim",
+    //     icon: "report_problem",
+    //     page: <InsuranceClaimPage />,
+    //   },
+    // {
+    //   path: [`/insurance`],
+    //   title: "Insurance Dashboard",
+    //   icon: "security",
+    //   page: <InsuranceClaims />,
+    // },
+    // {
+    //   path: [`/insurance/policies`],
+    //   title: "Policy Management",
+    //   icon: "policy",
+    //   page: "Policy Management",
+    // },
 
-        // {
-        //   path: [`/insurance/claims/history`],
-        //   title: "Claim History",
-        //   icon: "history",
-        //   page: "Claim History",
-        // },
-        // {
-        //   path: [`/insurance/accidents`],
-        //   title: "Accident Reports",
-        //   icon: "warning",
-        //   page: "Accident Reports",
-        // },
+    // {
+    //   path: [`/insurance/claims/history`],
+    //   title: "Claim History",
+    //   icon: "history",
+    //   page: "Claim History",
+    // },
+    // {
+    //   path: [`/insurance/accidents`],
+    //   title: "Accident Reports",
+    //   icon: "warning",
+    //   page: "Accident Reports",
+    // },
     //   ],
     // });
 
@@ -347,7 +350,45 @@ function getNavLinks(userContext) {
     });
 
     nav.push({
-          title: "Insurance Management",
+      path: [`/marketplace/checkreports`],
+      title: "Vehicle History Report",
+      icon: "history",
+      page: <VehicleHistorySearchPage />,
+    });
+
+
+      
+
+    nav.push({
+      title: "Insurance Management",
+      icon: "policy",
+      page: "Insurance Management",
+      defLinkSettings: {
+        title: "Insurance Management",
+        icon: "folder",
+      },
+      sub: [
+        {
+          path: [`/myinsurancedetailspage`],
+          title: "My Insurance Details",
+          icon: "person",
+          page: <MyInsuranceDetailsPage />,
+        },
+        {
+          path: [`/claimsrequestform`],
+          title: "Claims Request Form",
+          icon: "policy",
+          page: <ClaimRequestForm />,
+        },
+        {
+          path: [`/claimhistorypage`],
+          title: "Claim History",
+          icon: "history",
+          page: <ClaimHistoryPage />,
+        },
+        {
+          path: [`/userclaimdetails/:claimId`],
+          title: "User Claim Details",
           icon: "policy",
           page: "Insurance Management",
           defLinkSettings: {
@@ -485,25 +526,25 @@ function getNavLinks(userContext) {
       path: [`/dashboard`],
       title: "Dashboard",
       icon: "dashboard",
-      page: <ServiceProviderDashboard />,
+      page: <ServiceProviderDashboardNew />,
     });
 
     //nav.push({
-      //title: "Appointments",
-      //icon: "schedule",
-      //page: "Appointments",
-      //defLinkSettings: {
-        //title: "Appointment Management",
-        //icon: "schedule",
-      //},
-      //sub: [
-      //  {
-          //path: [`/appointments/calendar`],
-          //title: "Service Calendar",
-         // icon: "calendar_today",
-         // page: "Service Calendar",
-       // },
-      //],
+    //title: "Appointments",
+    //icon: "schedule",
+    //page: "Appointments",
+    //defLinkSettings: {
+    //title: "Appointment Management",
+    //icon: "schedule",
+    //},
+    //sub: [
+    //  {
+    //path: [`/appointments/calendar`],
+    //title: "Service Calendar",
+    // icon: "calendar_today",
+    // page: "Service Calendar",
+    // },
+    //],
     //});
 
     nav.push({
@@ -592,6 +633,7 @@ function getNavLinks(userContext) {
     });
 
     nav.push({
+      path: [`/reviews`],
       title: "Reviews & Feedback",
       icon: "feedback",
       page: <ServiceProviderReviews />,
@@ -790,7 +832,7 @@ function getNavLinks(userContext) {
           path: [`/policymanagement`],
           title: "Policy Management",
           icon: "policy",
-          page: <InsurancePolicyManagement/>,
+          page: <InsurancePolicyManagement />,
         },
 
         {
@@ -814,7 +856,6 @@ function getNavLinks(userContext) {
           icon: "category",
           page: <PolicyTypesManagementPage />,
         },
-
 
         // {
         //   path: [`/policies/premium`],
@@ -865,46 +906,69 @@ function getNavLinks(userContext) {
 
 
     nav.push({
-      title: "Profile",
-      icon: "person",
-      page: "Profile",
-      defLinkSettings: {
-        title: "Profile Overview",
-        icon: "person",
-      },
-      sub: [
-        {
-          path: [`/profile`],
-          title: "Profile Overview",
-          icon: "person",
-          page: "Profile Overview",
-        },
-        {
-          path: [`/profile/personal`],
-          title: "Personal Information",
-          icon: "person_outline",
-          page: "Personal Information",
-        },
-        {
-          path: [`/profile/contact`],
-          title: "Contact Details",
-          icon: "contact_phone",
-          page: "Contact Details",
-        },
-        // {
-        //   path: [`/profile/preferences`],
-        //   title: "Preferences",
-        //   icon: "settings",
-        //   page: "Preferences",
-        // },
-        // {
-        //   path: [`/profile/security`],
-        //   title: "Security Settings",
-        //   icon: "lock",
-        //   page: "Security Settings",
-        // }
-      ],
+      path: [`/insurance-claims/:id`],
+      title: "Claim Details",
+      icon: "assignment",
+      page: <InsuranceClaimDetailsPage />,
+      hidden: true,
     });
+
+    nav.push({
+      path: [`/analyticsreports`],
+      title: "Analytics & Reports",
+      icon: "analytics",
+      page: <AnalyticsReportsPage />,
+    });
+
+    nav.push({
+      path: [`/profile`],
+      title: "My Profile",
+      icon: "person",
+      page: <InsuranceCompanyProfile />,
+    });
+
+    // Commented out duplicate Profile section - already have My Profile above
+    // nav.push({
+    //   title: "Profile",
+    //   icon: "person",
+    //   page: "Profile",
+    //   defLinkSettings: {
+    //     title: "Profile Overview",
+    //     icon: "person",
+    //   },
+    //   sub: [
+    //     {
+    //       path: [`/profile`],
+    //       title: "Profile Overview",
+    //       icon: "person",
+    //       page: "Profile Overview",
+    //     },
+    //     {
+    //       path: [`/profile/personal`],
+    //       title: "Personal Information",
+    //       icon: "person_outline",
+    //       page: "Personal Information",
+    //     },
+    //     {
+    //       path: [`/profile/contact`],
+    //       title: "Contact Details",
+    //       icon: "contact_phone",
+    //       page: "Contact Details",
+    //     },
+    //     // {
+    //     //   path: [`/profile/preferences`],
+    //     //   title: "Preferences",
+    //     //   icon: "settings",
+    //     //   page: "Preferences",
+    //     // },
+    //     // {
+    //     //   path: [`/profile/security`],
+    //     //   title: "Security Settings",
+    //     //   icon: "lock",
+    //     //   page: "Security Settings",
+    //     // }
+    //   ],
+    // });
   }
 
   // SYSTEM ADMINISTRATOR Navigation

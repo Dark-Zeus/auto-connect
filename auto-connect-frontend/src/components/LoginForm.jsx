@@ -184,7 +184,7 @@ const LoginForm = () => {
                 className="form-input"
                 variant="outlined"
                 placeholder="Enter your email address"
-              />
+              /><br/>
 
               <TextField
                 fullWidth
