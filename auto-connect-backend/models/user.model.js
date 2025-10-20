@@ -147,6 +147,12 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
+    subscription: {
+      type: Number,
+      enum: [0, 1],
+      default: 0,
+    },
+
     // Role-specific Business Information
     businessInfo: {
       // For service_center, repair_center, insurance_agent

@@ -1,18 +1,13 @@
 import React, { useState } from "react";
-import {
-  Phone,
-  Badge,
-  Mail,
-  MapPin,
-  Calendar,
-  Users,
-  Home,
-} from "lucide-react";
+import { Phone, Badge, Mail, MapPin, Home } from "lucide-react";
 
 function VehicleOwnerCard({ owner }) {
   const [showPopup, setShowPopup] = useState(false);
 
-  if (!owner) return null; // Safeguard in case `owner` is undefined
+  if (!owner) return null;
+
+  const fullName = `${owner.firstName} ${owner.lastName}`;
+  const profileImage = owner.profileImage || `https://ui-avatars.com/api/?name=${owner.firstName}+${owner.lastName}&background=DBEAFE&color=fff`;
 
   return (
     <>
@@ -23,30 +18,30 @@ function VehicleOwnerCard({ owner }) {
       >
         <div className="tw:flex tw:gap-4">
           <img
-            src={owner.image}
-            alt={owner.name}
+            src={profileImage}
+            alt={fullName}
             className="tw:w-35 tw:h-35 tw:rounded-xl tw:object-cover tw:border tw:border-blue-100"
           />
           <div>
-            <h2 className="tw:font-bold tw:text-lg">{owner.name}</h2>
+            <h2 className="tw:font-bold tw:text-lg">{fullName}</h2>
             <p className="tw:text-sm tw:text-gray-600">
               <Mail size={12} className="tw:inline tw:mr-1" />
               {owner.email}
             </p>
             <p className="tw:text-sm tw:text-gray-600">
               <Phone size={12} className="tw:inline tw:mr-1" />
-              {owner.mobile}
+              {owner.phone}
             </p>
           </div>
         </div>
         <div className="tw:mt-3 tw:text-xs tw:text-gray-500">
           <span>
             <MapPin size={12} className="tw:inline tw:mr-1" />
-            {owner.city}
+            {owner.address?.city}
           </span>
           <span className="tw:ml-4">
             <Badge size={12} className="tw:inline tw:mr-1" />
-            {owner.nic}
+            {owner.nicNumber}
           </span>
         </div>
       </div>
@@ -63,26 +58,24 @@ function VehicleOwnerCard({ owner }) {
             </button>
             <div className="tw:flex tw:gap-4">
               <img
-                src={owner.image}
-                alt={owner.name}
+                src={profileImage}
+                alt={fullName}
                 className="tw:w-40 tw:h-40 tw:rounded-xl tw:object-cover"
               />
               <div>
-                <h2 className="tw:text-2xl tw:font-bold">{owner.name}</h2>
+                <h2 className="tw:text-2xl tw:font-bold">{fullName}</h2>
                 <p className="tw:text-sm tw:text-gray-600">{owner.email}</p>
-                <p className="tw:text-sm tw:text-gray-600">{owner.mobile}</p>
+                <p className="tw:text-sm tw:text-gray-600">{owner.phone}</p>
               </div>
             </div>
 
             <div className="tw:grid tw:grid-cols-2 tw:gap-4 tw:mt-4">
-              <Detail label="NIC" value={owner.nic} icon={<Badge size={16} />} />
-              <Detail label="Gender" value={owner.gender} icon={<Users size={16} />} />
-              <Detail label="DOB" value={owner.dob} icon={<Calendar size={16} />} />
-              <Detail label="Address" value={owner.address} icon={<MapPin size={16} />} />
-              <Detail label="City" value={owner.city} icon={<Home size={16} />} />
-              <Detail label="District" value={owner.district} icon={<MapPin size={16} />} />
-              <Detail label="Province" value={owner.province} icon={<MapPin size={16} />} />
-              <Detail label="Postal Code" value={owner.postalCode} icon={<Home size={16} />} />
+              <Detail label="NIC" value={owner.nicNumber} />
+              <Detail label="City" value={owner.address?.city} />
+              <Detail label="District" value={owner.address?.district} />
+              <Detail label="Province" value={owner.address?.province} />
+              <Detail label="Street" value={owner.address?.street} />
+              <Detail label="Postal Code" value={owner.address?.postalCode} />
             </div>
           </div>
         </div>
@@ -91,11 +84,10 @@ function VehicleOwnerCard({ owner }) {
   );
 }
 
-function Detail({ icon, label, value }) {
+function Detail({ label, value }) {
   return (
     <div className="tw:bg-gray-50 tw:p-3 tw:rounded-lg tw:shadow-sm">
       <div className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:text-gray-700">
-        {icon}
         <strong>{label}:</strong>
       </div>
       <p className="tw:mt-1 tw:text-sm tw:text-gray-900">{value}</p>

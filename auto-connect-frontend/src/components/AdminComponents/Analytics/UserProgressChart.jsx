@@ -4,7 +4,7 @@ import {
 } from "recharts";
 
 const monthNames = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"
+  "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
 ];
 
 // Simulate fetching monthly user registration data

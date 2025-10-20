@@ -23,24 +23,24 @@ async function fetchMonthlyData(monthIndex, year) {
   return new Promise((resolve) => {
     setTimeout(() => {
       const currentData = {
-        totalNewUsers: Math.floor(Math.random() * 100) + 50,
-        totalRevenue: (Math.random() * 1000000 + 5000).toFixed(2),
-        totalUpdations: Math.floor(Math.random() * 50) + 20,
+        totalNewUsers: Math.floor(Math.random() * 10) + 10,
+        totalRevenue: (Math.random() * 100000 + 5000).toFixed(2),
+        totalUpdations: Math.floor(Math.random() * 20) + 10,
         totalServiceCenters: Math.floor(Math.random() * 10) + 5,
         totalInsuranceCompanies: Math.floor(Math.random() * 8) + 3,
-        totalVehicleSellings: Math.floor(Math.random() * 120) + 60,
+        totalVehicleSellings: Math.floor(Math.random() * 100) + 10,
         totalAdvertisements: Math.floor(Math.random() * 20) + 10,
         totalReportsSales: Math.floor(Math.random() * 30) + 15,
       };
       
       // Simulate previous month data for growth calculation
       const previousData = {
-        totalNewUsers: Math.floor(Math.random() * 100) + 30,
-        totalRevenue: (Math.random() * 800000 + 3000).toFixed(2),
-        totalUpdations: Math.floor(Math.random() * 40) + 15,
+        totalNewUsers: Math.floor(Math.random() * 10) + 10,
+        totalRevenue: (Math.random() * 80000 + 3000).toFixed(2),
+        totalUpdations: Math.floor(Math.random() * 10) + 5,
         totalServiceCenters: Math.floor(Math.random() * 8) + 3,
         totalInsuranceCompanies: Math.floor(Math.random() * 6) + 2,
-        totalVehicleSellings: Math.floor(Math.random() * 100) + 40,
+        totalVehicleSellings: Math.floor(Math.random() * 100) + 10,
         totalAdvertisements: Math.floor(Math.random() * 15) + 8,
         totalReportsSales: Math.floor(Math.random() * 25) + 10,
       };
@@ -392,16 +392,23 @@ function MonthlyAnalysisDashboard() {
             
             <div className="tw:flex tw:flex-col sm:tw:flex-row tw:items-stretch sm:tw:items-center tw:gap-4">
               <div className="tw:flex tw:items-center tw:gap-4">
-                <select
-                  className="tw:border tw:border-gray-300 tw:rounded-lg tw:px-4 tw:py-3 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:bg-white tw:shadow-sm"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                  aria-label="Select month"
-                >
-                  {monthNames.map((month, i) => (
-                    <option key={month} value={i}>{month}</option>
-                  ))}
-                </select>
+              <select
+                className="tw:border tw:border-gray-300 tw:rounded-lg tw:px-4 tw:py-3 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-500 focus:tw:border-transparent tw:bg-white tw:shadow-sm"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                aria-label="Select month"
+              >
+                {monthNames.map((month, i) => {
+                  // Disable future months if current year is selected
+                  const isFutureMonth =
+                    selectedYear === today.getFullYear() && i > today.getMonth();
+                  return (
+                    <option key={month} value={i} disabled={isFutureMonth}>
+                      {month}
+                    </option>
+                  );
+                })}
+              </select>
 
                 <input
                   type="number"

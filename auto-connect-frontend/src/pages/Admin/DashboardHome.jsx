@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -21,36 +21,35 @@ import {
   Garage,
 } from "@mui/icons-material";
 import { ShieldCheck, Car, MapPin, Calendar, Clock } from "lucide-react";
+import DashboardAPI from "../../services/DashboardApiService.js";
 
 const dataTrafficLocation = [
-  { name: "AutoFix", value: 400 },
-  { name: "QuickServe", value: 300 },
-  { name: "SpeedyAuto", value: 360 },
-  { name: "CarFix", value: 200 },
-  { name: "GreenGrage", value: 100 },
+  { name: "AutoFix", value: 8 },
+  { name: "QuickServe", value: 7 },
+  { name: "SpeedyAuto", value: 4 },
+  { name: "CarFix", value: 3 },
+  { name: "GreenGrage", value: 1 },
 ];
 
 const dataTrafficDevice = [
-  { device: "March", users: 200 },
-  { device: "April", users: 300 },
-  { device: "May", users: 500 },
-  { device: "June", users: 300 },
-  { device: "July", users: 100 },
+  { device: "June", users: 0 },
+  { device: "July", users: 0 },
+  { device: "August", users: 0 },
+  { device: "September", users: 1 },
+  { device: "Octomber", users: 2 },
 ];
 
 const COLORS = ["#4F46E5", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"];
 
 const latestUpdates = [
-  { serviceCenter: "AutoFix", date: "2025-06-20", time: "10:30 AM", district: "Colombo", vehicleNumber: "WP AB 1234", type: "Repair" },
-  { serviceCenter: "QuickServe", date: "2025-06-19", time: "02:15 PM", district: "Kandy", vehicleNumber: "WP XY 9876", type: "Maintenance" },
-  { serviceCenter: "SpeedyAuto", date: "2025-06-18", time: "09:00 AM", district: "Galle", vehicleNumber: "WP CD 5678", type: "Inspection" },
-  { serviceCenter: "AutoHub", date: "2025-06-17", time: "11:45 AM", district: "Matara", vehicleNumber: "WP EF 4321", type: "Repair" },
-  { serviceCenter: "CarZone", date: "2025-06-16", time: "03:20 PM", district: "Moratuwa", vehicleNumber: "WP GH 8765", type: "Maintenance" },
-  { serviceCenter: "GreenGrage", date: "2025-06-15", time: "08:30 AM", district: "Panadura", vehicleNumber: "WP IJ 3456", type: "Inspection" },
-  { serviceCenter: "AutoExpress", date: "2025-06-14", time: "10:10 AM", district: "Galle", vehicleNumber: "WP KL 7890", type: "Repair" },
-  { serviceCenter: "QuickFix", date: "2025-06-13", time: "01:00 PM", district: "Anuradapura", vehicleNumber: "WP MN 2345", type: "Maintenance" },
-  { serviceCenter: "EliteAuto", date: "2025-06-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OP 6789", type: "Inspection" },
-  { serviceCenter: "GrageHub", date: "2025-06-11", time: "11:25 AM", district: "Badulla", vehicleNumber: "WP QR 1234", type: "Repair" },
+  { serviceCenter: "AutoFix", date: "2025-10-20", time: "10:30 AM", district: "Colombo", vehicleNumber: "WP LC 1142", type: "Repair" },
+  { serviceCenter: "QuickServe", date: "2025-10-19", time: "02:15 PM", district: "Kandy", vehicleNumber: "WP KL 9438", type: "Maintenance" },
+  { serviceCenter: "SpeedyAuto", date: "2025-10-18", time: "09:00 AM", district: "Galle", vehicleNumber: "WP BN 6710", type: "Inspection" },
+  { serviceCenter: "AutoHub", date: "2025-10-17", time: "11:45 AM", district: "Matara", vehicleNumber: "WP OP 6529", type: "Repair" },
+  { serviceCenter: "CarZone", date: "2025-10-16", time: "03:20 PM", district: "Moratuwa", vehicleNumber: "WP IU 9721", type: "Maintenance" },
+  { serviceCenter: "GreenGrage", date: "2025-10-15", time: "08:30 AM", district: "Panadura", vehicleNumber: "WP FM 3256", type: "Inspection" },
+  { serviceCenter: "AutoExpress", date: "2025-10-14", time: "10:10 AM", district: "Galle", vehicleNumber: "WP LA 8430", type: "Repair" },
+  { serviceCenter: "EliteAuto", date: "2025-10-12", time: "09:40 AM", district: "Colombo", vehicleNumber: "WP OQ 6439", type: "Inspection" },
 ];
 
 const renderActiveShape = (props) => {
@@ -98,36 +97,54 @@ const renderActiveShape = (props) => {
 function DashboardHome() {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalServiceHubs, setTotalServiceHubs] = useState(0);
+  const [totalInsuranceCompanies, setTotalInsuranceCompanies] = useState(0);
+
+useEffect(() => {
+  async function fetchDashboard() {
+    try {
+      const res = await DashboardAPI.getDashboardStats();
+      const data = res?.data || {};
+      setTotalUsers(data.totalUsers ?? 0);
+      setTotalServiceHubs(data.totalServiceHubs ?? 0);
+      setTotalInsuranceCompanies(data.totalInsuranceCompanies ?? 0);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  fetchDashboard();
+}, []);
 
   const cardData = [
     {
       title: "Users",
-      value: 123915,
-      progress: 12.35,
+      value: totalUsers,
+      progress: 30.00,
       icon: <People style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-blue-50 tw:to-blue-100",
       iconBg: "tw:bg-blue-600",
     },
     {
       title: "Verified Automotive Service Hubs",
-      value: 61,
-      progress: -8.12,
+      value: totalServiceHubs,
+      progress: 0.00,
       icon: <Garage style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-indigo-50 tw:to-blue-100",
       iconBg: "tw:bg-indigo-600",
     },
     {
       title: "Income",
-      value: "LKR 710,003",
-      progress: 2.68,
+      value: "LKR 60000",
+      progress: 0.00,
       icon: <TrendingUp style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-green-50 tw:to-blue-100",
       iconBg: "tw:bg-green-600",
     },
     {
       title: "Verified Insurance Companies",
-      value: 18,
-      progress: 1.23,
+      value: totalInsuranceCompanies,
+      progress: 0.00,
       icon: <Domain style={{ fontSize: 40 }} />,
       color: "tw:bg-gradient-to-br tw:from-yellow-50 tw:to-blue-100",
       iconBg: "tw:bg-yellow-500",
@@ -159,7 +176,7 @@ function DashboardHome() {
             </div>
             <div className="tw:mt-auto tw:pl-4">
               <h4 className="tw:text-lg tw:font-semibold tw:text-gray-700">{card.title}</h4>
-              <p className="tw:!mt-1 tw:!text-3xl tw:text-blue-700 tw:font-bold">{card.value.toLocaleString()}</p>
+              <p className="tw:!mt-1 tw:!text-3xl tw:text-blue-700 tw:font-bold">{card.value.toLocaleString ? card.value.toLocaleString() : card.value}</p>
             </div>
             {/* Decorative gradient circle */}
             <div className="tw:absolute tw:bottom-0 tw:right-0 tw:w-24 tw:h-24 tw:bg-gradient-to-tr tw:from-blue-200 tw:to-blue-50 tw:rounded-full tw:opacity-30 tw:-z-10"></div>
@@ -241,13 +258,13 @@ function DashboardHome() {
         <ResponsiveContainer width="100%" height={340}>
           <LineChart
             data={[
-              { name: "Mon", users: 400 },
-              { name: "Tue", users: 300 },
-              { name: "Wed", users: 200 },
-              { name: "Thu", users: 278 },
-              { name: "Fri", users: 189 },
-              { name: "Sat", users: 239 },
-              { name: "Sun", users: 349 },
+              { name: "Mon", users: 0 },
+              { name: "Tue", users: 0 },
+              { name: "Wed", users: 2 },
+              { name: "Thu", users: 2 },
+              { name: "Fri", users: 1 },
+              { name: "Sat", users: 0 },
+              { name: "Sun", users: 3 },
             ]}
           >
             <defs>
@@ -350,7 +367,7 @@ function DashboardHome() {
               <th className="tw:py-3 tw:px-4 tw:text-left">Time</th>
               <th className="tw:py-3 tw:px-4 tw:text-left">District</th>
               <th className="tw:py-3 tw:px-4 tw:text-left">Vehicle No.</th>
-              <th className="tw:py-3 tw:px-4 tw:text-left tw:rounded-r-lg">Status</th>
+              <th className="tw:py-3 tw:px-4 tw:text-left tw:rounded-r-lg">View</th>
             </tr>
           </thead>
           <tbody>
@@ -369,7 +386,7 @@ function DashboardHome() {
                 <td className="tw:py-3 tw:px-4">{row.vehicleNumber}</td>
                 <td className="tw:py-3 tw:px-4 tw:rounded-r-lg">
                   <span className="tw:inline-flex tw:items-center tw:gap-1 tw:bg-red-100 tw:text-red-600 tw:px-2 tw:py-1 tw:rounded-full tw:text-xs tw:font-semibold">
-                    🔒 Paid Report
+                    🔒 Restricted
                   </span>
                 </td>
               </tr>
