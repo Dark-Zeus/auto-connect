@@ -10,9 +10,9 @@ const MyInsuranceDetailsPage = () => {
   const navigate = useNavigate();
   const [selectedPolicy, setSelectedPolicy] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
-  const [userPolicies, setUserPolicies] = useState([]);
+  const [userPolicies, setUserPolicies] = useState(null); // Changed from [] to null
   const [insuranceCompany, setInsuranceCompany] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   // Mock current user - In real app, this would come from auth context
   const currentUser = {
@@ -21,21 +21,16 @@ const MyInsuranceDetailsPage = () => {
   };
 
   useEffect(() => {
-    // Simulate API call to get user's policies
-    setTimeout(() => {
-      // Filter policies for current user by NIC
-      const policies = PolicyDetailsTestData.filter(policy => 
-        policy.nic === currentUser.nic
-      );
-      setUserPolicies(policies);
-      
-      if (policies.length > 0) {
-        setSelectedPolicy(policies[0]); // Select first policy by default
-        setInsuranceCompany(insuranceCompanyTestData);
-      }
-      
-      setLoading(false);
-    }, 1000);
+    // Filter policies for current user by NIC
+    const policies = PolicyDetailsTestData.filter(policy => 
+      policy.nic === currentUser.nic
+    );
+    setUserPolicies(policies);
+    
+    if (policies.length > 0) {
+      setSelectedPolicy(policies[0]);
+      setInsuranceCompany(insuranceCompanyTestData);
+    }
   }, []);
 
   const getStatusBadge = (status) => {
@@ -482,15 +477,21 @@ const MyInsuranceDetailsPage = () => {
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="my-insurance-page">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading your insurance details...</p>
-        </div>
-      </div>
-    );
+  // if (loading) {
+  //   return (
+  //     <div className="my-insurance-page">
+  //       <div className="loading-container">
+  //         <div className="loading-spinner"></div>
+  //         <p>Loading your insurance details...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  // Update the condition for showing No Policies
+  if (userPolicies === null) {
+    // Initial loading state - don't show anything yet
+    return null;
   }
 
   if (userPolicies.length === 0) {

@@ -76,7 +76,7 @@ import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
 
 export default
 
-function getNavLinks(userContext) {
+  function getNavLinks(userContext) {
   let nav = [];
 
   // VEHICLE OWNER Navigation
@@ -357,7 +357,7 @@ function getNavLinks(userContext) {
     });
 
 
-      
+
 
     nav.push({
       title: "Insurance Management",
@@ -386,49 +386,52 @@ function getNavLinks(userContext) {
           icon: "history",
           page: <ClaimHistoryPage />,
         },
-        {
-          path: [`/userclaimdetails/:claimId`],
-          title: "User Claim Details",
-          icon: "policy",
-          page: "Insurance Management",
-          defLinkSettings: {
-            title: "Insurance Management",
-            icon: "folder",
-          },
-          sub: [
-            {
-              path: [`/myinsurancedetailspage`],
-              title: "My Insurance Details",
-              icon: "person",
-              page: <MyInsuranceDetailsPage />,
-            },
-            {
-              path: [`/claimsrequestform`],
-              title: "Claims Request Form",
-              icon: "policy",
-              page: <ClaimRequestForm />,
-            },
-            {
-              path: [`/claimhistorypage`],
-              title: "Claim History",
-              icon: "history",
-              page: <ClaimHistoryPage />,
-            },
-            {
-              path: [`/userclaimdetails/:claimId`],
-              title: "User Claim Details",
-              icon: "policy",
-              page: <UserClaimDetailsPage />,
-              hidden: true,
-            },
-             {
-              path: [`/customer-provider-selection`],
-              title: "Select Service Provider",
-              icon: "search",
-              page: <CustomerProviderSelection />,
-            }
-          ]
-        });
+        // {
+        //   path: [`/userclaimdetails/:claimId`],
+        //   title: "User Claim Details",
+        //   icon: "policy",
+        //   page: "Insurance Management",
+        //   defLinkSettings: {
+        //     title: "Insurance Management",
+        //     icon: "folder",
+        //   },
+        //   sub: [
+        //     {
+        //       path: [`/myinsurancedetailspage`],
+        //       title: "My Insurance Details",
+        //       icon: "person",
+        //       page: <MyInsuranceDetailsPage />,
+        //     },
+        //     {
+        //       path: [`/claimsrequestform`],
+        //       title: "Claims Request Form",
+        //       icon: "policy",
+        //       page: <ClaimRequestForm />,
+        //     },
+        //     {
+        //       path: [`/claimhistorypage`],
+        //       title: "Claim History",
+        //       icon: "history",
+        //       page: <ClaimHistoryPage />,
+        //     },
+        //     {
+        //       path: [`/userclaimdetails/:claimId`],
+        //       title: "User Claim Details",
+        //       icon: "policy",
+        //       page: <UserClaimDetailsPage />,
+        //       hidden: true,
+        //     },
+        //     {
+        //       path: [`/customer-provider-selection`],
+        //       title: "Select Service Provider",
+        //       icon: "search",
+        //       page: <CustomerProviderSelection />,
+        //     }
+        //   ]
+        // }
+      ]
+    }
+    );
 
     // nav.push({
     //   title: "Documents",
@@ -514,7 +517,7 @@ function getNavLinks(userContext) {
     //   ]
     // });
 
-  
+
   }
 
   // SERVICE PROVIDER Navigation
@@ -812,12 +815,12 @@ function getNavLinks(userContext) {
 
   // INSURANCE COMPANY Navigation
   if (userContext.role === "insurance_agent") {
-     nav.push({
-       path: [`/dashboard`],
-       title: "Dashboard",
-       icon: "dashboard",
-       page: <InsuranceCompanyDashboard/>,
-     });
+    nav.push({
+      path: [`/dashboard`],
+      title: "Dashboard",
+      icon: "dashboard",
+      page: <InsuranceCompanyDashboard />,
+    });
 
     nav.push({
       title: "Policy Management",
@@ -872,38 +875,12 @@ function getNavLinks(userContext) {
       ],
     });
 
-      nav.push({
-        path: [`/claimsmanagement`],
-        title: "Claims Management",
-        icon: "assignment",
-        page: <InsuranceClaimsManagementPage/>,
-     });
-
-      nav.push({
-        path: [`/insurance-claims/:id`],
-        title: "Claim Details",
-        icon: "assignment",
-        page: <InsuranceClaimDetailsPage />,
-        hidden: true, 
-      });
-
-        nav.push({
-        path: [`/analyticsreports`],
-        title: "Analytics & Reports",
-        icon: "analytics",
-        page: <AnalyticsReportsPage />,
-      });
-
-      nav.push({
-        path: [`/profile`],
-        title: "My Profile",
-        icon: "person",
-        page: <InsuranceCompanyProfile />,
-      });
-
-    
-
-
+    nav.push({
+      path: [`/claimsmanagement`],
+      title: "Claims Management",
+      icon: "assignment",
+      page: <InsuranceClaimsManagementPage />,
+    });
 
     nav.push({
       path: [`/insurance-claims/:id`],
@@ -926,6 +903,8 @@ function getNavLinks(userContext) {
       icon: "person",
       page: <InsuranceCompanyProfile />,
     });
+
+
 
     // Commented out duplicate Profile section - already have My Profile above
     // nav.push({
