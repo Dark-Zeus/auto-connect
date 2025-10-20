@@ -1,0 +1,948 @@
+/* ============================================
+   SERVICE PROVIDER ESTIMATE PAGE STYLES
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.sp-estimate-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Loading State */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner p {
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Error State */
+.error-state {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.error-state p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.error-state button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Page Header */
+.sp-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sp-page-header h1 {
+  font-size: 28px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.sp-page-header p {
+  color: #666;
+  font-size: 14px;
+}
+
+.header-meta {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.estimate-id,
+.estimate-date {
+  font-weight: 600;
+  color: #3b82f6;
+  padding: 8px 16px;
+  background: #eff6ff;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Content Grid */
+.sp-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .sp-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card Styles */
+.sp-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.sp-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.sp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.sp-card-header h2 {
+  font-size: 18px;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Buttons */
+.download-btn,
+.add-item-btn,
+.save-draft-btn,
+.submit-btn,
+.cancel-btn,
+.remove-item-btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.download-btn,
+.add-item-btn {
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+}
+
+.download-btn:hover,
+.add-item-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Details Grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+/* Accident Description */
+.accident-description,
+.damage-area,
+.insurance-estimate {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.accident-description h4,
+.damage-area h4,
+.insurance-estimate h4 {
+  font-size: 14px;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.accident-description p,
+.damage-area p {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.estimate-box {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.estimate-box strong {
+  color: #1e40af;
+  font-size: 18px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.estimate-box p {
+  color: #1e40af;
+  font-size: 12px;
+}
+
+/* Photos Gallery */
+.photos-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .photos-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.photo-item {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.photo-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-item p {
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  background: #f8fafc;
+  color: #666;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: #fffbf0;
+}
+
+.form-group input.error,
+.form-group textarea.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.form-group input.error:focus,
+.form-group textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.field-error {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* Error Message */
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Repair Items */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.repair-item-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.repair-item-card:hover {
+  border-color: #3b82f6;
+  background: #fffbf0;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.item-number {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3b82f6;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #3b82f6;
+}
+
+.item-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.item-form-grid .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.subtotal-display {
+  padding: 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 14px;
+  text-align: right;
+}
+
+.remove-item-btn {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.remove-item-btn:hover {
+  background: #fecaca;
+  transform: translateY(-2px);
+}
+
+/* Labor & Charges */
+.labor-rate-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  border-left: 4px solid #10b981;
+}
+
+.labor-info {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #d1fae5;
+}
+
+.labor-info p {
+  color: #047857;
+  font-size: 14px;
+}
+
+.labor-info strong {
+  color: #065f46;
+  font-size: 16px;
+}
+
+.additional-charges-section {
+  padding: 15px;
+  background: #fef3c7;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+/* Warranty & Validity */
+.warranty-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .warranty-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Notes Section */
+.notes-section textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Cost Summary */
+.cost-summary {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 2px solid #10b981;
+}
+
+.summary-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+}
+
+.summary-line .label {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.summary-line .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #047857;
+}
+
+.summary-line.total {
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  padding: 15px;
+}
+
+.summary-line.total .label {
+  color: white;
+  font-size: 16px;
+}
+
+.summary-line.total .value {
+  color: #fef3c7;
+  font-size: 24px;
+}
+
+.insurance-reference {
+  margin-top: 15px;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  border-left: 3px solid #3b82f6;
+}
+
+.insurance-reference p {
+  font-size: 13px;
+  color: #1a1a1a;
+  margin-bottom: 5px;
+}
+
+.insurance-reference p:last-child {
+  margin-bottom: 0;
+}
+
+.insurance-reference .variance {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.save-draft-btn,
+.submit-btn,
+.cancel-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.save-draft-btn {
+  background: #e5e7eb;
+  color: #1a1a1a;
+}
+
+.save-draft-btn:hover:not(:disabled) {
+  background: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.cancel-btn {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.save-draft-btn:disabled,
+.submit-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  animation: slideUp 0.3s ease;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header Colors */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-confirm .modal-header {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.modal-success .modal-header {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+}
+
+.modal-error .modal-header {
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+}
+
+.modal-info .modal-header {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+}
+
+.modal-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* Modal Content */
+.modal-content {
+  padding: 25px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.modal-message {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #1a1a1a;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.modal-cancel-btn,
+.modal-confirm-btn,
+.modal-close-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-cancel-btn {
+  background: #e5e7eb;
+  color: #1a1a1a;
+}
+
+.modal-cancel-btn:hover:not(:disabled) {
+  background: #d1d5db;
+  transform: translateY(-2px);
+}
+
+.modal-confirm-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.modal-confirm-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.modal-close-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.modal-close-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.modal-cancel-btn:disabled,
+.modal-confirm-btn:disabled,
+.modal-close-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Scrollbar Styling */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .sp-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-meta {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sp-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .item-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .save-draft-btn,
+  .submit-btn,
+  .cancel-btn {
+    flex: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .sp-estimate-page {
+    padding: 10px;
+  }
+
+  .sp-page-header {
+    padding: 20px;
+  }
+
+  .sp-page-header h1 {
+    font-size: 22px;
+  }
+
+  .sp-card {
+    padding: 15px;
+  }
+
+  .sp-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .sp-card-header h2 {
+    font-size: 16px;
+  }
+
+  .photos-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-item {
+    padding: 10px;
+  }
+
+  .modal-overlay {
+    padding: 15px;
+  }
+
+  .modal-box {
+    max-width: 100%;
+  }
+
+  .modal-header {
+    padding: 15px;
+  }
+
+  .modal-header h3 {
+    font-size: 16px;
+  }
+
+  .modal-content {
+    padding: 15px;
+    max-height: 50vh;
+  }
+
+  .modal-message {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .modal-cancel-btn,
+  .modal-confirm-btn,
+  .modal-close-btn {
+    padding: 12px 16px;
+  }
+}
