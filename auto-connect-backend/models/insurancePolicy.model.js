@@ -42,8 +42,9 @@ const insurancePolicySchema = new mongoose.Schema({
 // pre-save hook to ensure policy end date is one year from start date
 insurancePolicySchema.pre('save', function(next) {
     if (!this.endDate) {
-        const startDate = this.startDate || new Date();
-        this.endDate = new Date(startDate.setFullYear(startDate.getFullYear() + 1));
+        const base = this.startDate ? new Date(this.startDate) : new Date();
+        base.setFullYear(base.getFullYear() + 1);
+        this.endDate = base;
     }
     next();
 });
