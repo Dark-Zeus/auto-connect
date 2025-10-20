@@ -58,6 +58,14 @@ const ClaimRequestForm = () => {
   const { userContext } = useContext(UserContext);
 
 
+  const companyInfo = {
+    name: "ABC Insurance Company Ltd.",
+    email: "claims@abcinsurance.lk",
+    phone: "+94 11 234 5678",
+    hotline: "011-252467",
+    website: "www.abcinsurance.lk"
+  };
+
   const steps = [
     { id: 1, title: "Vehicle & Incident Details", icon: "📋" },
     { id: 2, title: "Evidence Collection", icon: "📸" },
