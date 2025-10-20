@@ -1,4 +1,4 @@
-// src/components/ServiceProvider/SlotManager.jsx - Redesigned for Visual Consistency
+// src/components/ServiceProvider/SlotManager.jsx - Simplified Version
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Calendar,
@@ -33,7 +33,6 @@ const SlotManager = ({
 
   useEffect(() => {
     generateTimeSlots();
-    fetchExistingSlots();
   }, [selectedDate, workingHours, slotSettings]);
 
   const generateTimeSlots = useCallback(() => {
@@ -42,6 +41,8 @@ const SlotManager = ({
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
     const daySchedule = workingHours[dayName];
+
+    console.log("🔄 Generating slots for:", dayName, daySchedule);
 
     if (!daySchedule?.isOpen) {
       setTimeSlots([]);
@@ -79,6 +80,7 @@ const SlotManager = ({
     let slotIndex = 0;
 
     while (currentMinutes + defaultDuration <= endMinutes) {
+      // Skip break time
       if (
         breakStartMinutes &&
         breakEndMinutes &&
@@ -92,14 +94,24 @@ const SlotManager = ({
       const slotStart = minutesToTime(currentMinutes);
       const slotEnd = minutesToTime(currentMinutes + defaultDuration);
 
+      // Determine slot status based on current time
+      const now = new Date();
+      const isToday = selectedDate === now.toISOString().split("T")[0];
+      const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+
+      let status = "available";
+      if (isToday && currentMinutes < currentTimeMinutes) {
+        status = "blocked"; // Past slots are blocked
+      }
+
       slots.push({
         id: `${selectedDate}-${slotStart}`,
         date: selectedDate,
         startTime: slotStart,
         endTime: slotEnd,
         duration: defaultDuration,
-        status: "available",
-        isAvailable: true,
+        status: status,
+        isAvailable: status === "available",
         customerInfo: null,
         serviceType: null,
         notes: "",
@@ -109,43 +121,10 @@ const SlotManager = ({
       currentMinutes += defaultDuration + bufferTime;
     }
 
+    console.log("✅ Generated slots:", slots.length);
     setTimeSlots(slots);
     updateStats(slots);
   }, [selectedDate, workingHours, slotSettings]);
-
-  const fetchExistingSlots = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `/api/v1/services/time-slots?date=${selectedDate}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.slots && data.slots.length > 0) {
-          setTimeSlots((prevSlots) => {
-            return prevSlots.map((slot) => {
-              const existingSlot = data.slots.find(
-                (s) => s.startTime === slot.startTime
-              );
-              return existingSlot ? { ...slot, ...existingSlot } : slot;
-            });
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching existing slots:", error);
-      toast.error("Failed to load existing slots");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const updateStats = (slots) => {
     const stats = {
@@ -155,55 +134,35 @@ const SlotManager = ({
       blockedSlots: slots.filter((s) => s.status === "blocked").length,
     };
 
+    console.log("📊 Updated stats:", stats);
     if (onStatsUpdate) {
       onStatsUpdate(stats);
     }
   };
 
-  const toggleSlotStatus = async (slotId) => {
+  const toggleSlotStatus = (slotId) => {
     const slot = timeSlots.find((s) => s.id === slotId);
     if (!slot || slot.status === "booked") return;
 
     const newStatus = slot.status === "available" ? "blocked" : "available";
 
-    try {
-      const response = await fetch(
-        `/api/v1/services/time-slots/${slotId}/toggle`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: newStatus }),
-        }
-      );
+    const updatedSlots = timeSlots.map((s) =>
+      s.id === slotId ? { ...s, status: newStatus } : s
+    );
 
-      if (response.ok) {
-        const updatedSlots = timeSlots.map((s) =>
-          s.id === slotId ? { ...s, status: newStatus } : s
-        );
-        setTimeSlots(updatedSlots);
-        updateStats(updatedSlots);
-        toast.success(
-          `Slot ${
-            newStatus === "blocked" ? "blocked" : "unblocked"
-          } successfully`,
-          {
-            position: "top-right",
-            autoClose: 2000,
-          }
-        );
-      } else {
-        toast.error("Failed to update slot status");
+    setTimeSlots(updatedSlots);
+    updateStats(updatedSlots);
+
+    toast.success(
+      `Slot ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`,
+      {
+        position: "top-right",
+        autoClose: 2000,
       }
-    } catch (error) {
-      console.error("Error toggling slot status:", error);
-      toast.error("Network error. Please try again.");
-    }
+    );
   };
 
-  const bulkToggleSlots = async (action) => {
+  const bulkToggleSlots = (action) => {
     if (selectedSlots.length === 0) {
       toast.warning("Please select slots first");
       return;
@@ -211,42 +170,20 @@ const SlotManager = ({
 
     const newStatus = action === "block" ? "blocked" : "available";
 
-    try {
-      setLoading(true);
-      const response = await fetch("/api/v1/services/time-slots/bulk-update", {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          slotIds: selectedSlots,
-          status: newStatus,
-        }),
-      });
+    const updatedSlots = timeSlots.map((slot) =>
+      selectedSlots.includes(slot.id) && slot.status !== "booked"
+        ? { ...slot, status: newStatus }
+        : slot
+    );
 
-      if (response.ok) {
-        const updatedSlots = timeSlots.map((slot) =>
-          selectedSlots.includes(slot.id) && slot.status !== "booked"
-            ? { ...slot, status: newStatus }
-            : slot
-        );
-        setTimeSlots(updatedSlots);
-        updateStats(updatedSlots);
-        setSelectedSlots([]);
-        toast.success(`${selectedSlots.length} slots ${action}ed successfully`, {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      } else {
-        toast.error(`Failed to ${action} slots`);
-      }
-    } catch (error) {
-      console.error(`Error ${action}ing slots:`, error);
-      toast.error("Network error. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    setTimeSlots(updatedSlots);
+    updateStats(updatedSlots);
+    setSelectedSlots([]);
+
+    toast.success(`${selectedSlots.length} slots ${action}ed successfully`, {
+      position: "top-right",
+      autoClose: 3000,
+    });
   };
 
   const handleSlotSelection = (slotId) => {
@@ -275,44 +212,26 @@ const SlotManager = ({
     setSelectedSlots([]);
   };
 
-  const regenerateSlots = async () => {
+  const regenerateSlots = () => {
     const confirm = window.confirm(
-      "This will regenerate all time slots for this date based on current working hours. Existing bookings will be preserved but custom slot modifications will be lost. Continue?"
+      "This will regenerate all time slots for this date based on current working hours. Continue?"
     );
 
     if (!confirm) return;
 
-    try {
-      setIsGenerating(true);
-      const response = await fetch("/api/v1/services/regenerate-slots", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          date: selectedDate,
-          workingHours,
-          slotSettings,
-        }),
-      });
+    setIsGenerating(true);
 
-      if (response.ok) {
-        toast.success("Time slots regenerated successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        await fetchExistingSlots();
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to regenerate slots");
-      }
-    } catch (error) {
-      console.error("Error regenerating slots:", error);
-      toast.error("Network error. Please try again.");
-    } finally {
+    // Simulate generation delay
+    setTimeout(() => {
+      generateTimeSlots();
+      setSelectedSlots([]);
       setIsGenerating(false);
-    }
+
+      toast.success("Time slots regenerated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }, 1000);
   };
 
   const getSlotStatusIcon = (status) => {
@@ -352,7 +271,7 @@ const SlotManager = ({
       description = "Time slots for past dates are read-only";
     } else if (isToday) {
       title = "Today";
-      description = "Current day - slots can be managed in real-time";
+      description = "Current day - past slots are automatically blocked";
     } else {
       title = "Future Date";
       description = "All slot management options available";
@@ -372,7 +291,6 @@ const SlotManager = ({
               type="date"
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
-              min={new Date().toISOString().split("T")[0]}
               className="slot-manager-date-input"
             />
           </div>
@@ -440,10 +358,7 @@ const SlotManager = ({
             </div>
           )}
 
-          <div
-            className="slot-manager-selection-actions"
-            style={{ display: "flex", gap: "1rem" }}
-          >
+          <div className="slot-manager-selection-actions">
             <button
               onClick={selectAllAvailableSlots}
               className="slot-manager-selection-button"
@@ -564,28 +479,7 @@ const SlotManager = ({
                   <div className="slot-manager-slot-end-time">
                     {slot.endTime}
                   </div>
-
                   <div className="slot-manager-slot-status">{slot.status}</div>
-
-                  <div className="slot-manager-slot-details">
-                    {slot.customerInfo && (
-                      <div className="slot-manager-slot-customer">
-                        👤 {slot.customerInfo.name}
-                      </div>
-                    )}
-
-                    {slot.serviceType && (
-                      <div className="slot-manager-slot-service">
-                        🔧 {slot.serviceType}
-                      </div>
-                    )}
-
-                    {slot.notes && (
-                      <div className="slot-manager-slot-notes">
-                        📝 {slot.notes}
-                      </div>
-                    )}
-                  </div>
 
                   {/* Action Button */}
                   {slot.status !== "booked" && !isPastDate && (
@@ -642,21 +536,6 @@ const SlotManager = ({
                       >
                         {slot.status}
                       </div>
-                      {slot.customerInfo && (
-                        <div className="slot-manager-slot-row-meta">
-                          Customer: {slot.customerInfo.name}
-                        </div>
-                      )}
-                      {slot.serviceType && (
-                        <div className="slot-manager-slot-row-meta">
-                          Service: {slot.serviceType}
-                        </div>
-                      )}
-                      {slot.notes && (
-                        <div className="slot-manager-slot-row-meta">
-                          Notes: {slot.notes}
-                        </div>
-                      )}
                     </div>
 
                     {slot.status !== "booked" && !isPastDate && (
@@ -733,20 +612,16 @@ const SlotManager = ({
               <h4>💡 Quick Tips for Slot Management</h4>
               <ul className="slot-manager-help-list">
                 <li>Click on slots to select them for bulk operations</li>
-                <li>Block slots during lunch breaks or when unavailable</li>
-                <li>Use "Regenerate" if you've changed working hours</li>
-                <li>Booked slots cannot be modified (shown in blue)</li>
-                <li>Use bulk actions to manage multiple slots efficiently</li>
+                <li>Block slots during breaks or when unavailable</li>
+                <li>Use "Regenerate" after changing working hours</li>
+                <li>Past time slots are automatically blocked</li>
+                <li>Changes are applied immediately (in-memory for now)</li>
                 {isToday && (
                   <li className="today">
-                    Past time slots for today are automatically blocked
+                    Past slots for today are automatically blocked
                   </li>
                 )}
-                <li>
-                  Grid view for quick overview, List view for detailed
-                  information
-                </li>
-                <li>Changes are saved automatically when you modify slots</li>
+                <li>Grid view for quick overview, List view for details</li>
               </ul>
             </div>
           </div>
@@ -757,4 +632,3 @@ const SlotManager = ({
 };
 
 export default SlotManager;
-                          

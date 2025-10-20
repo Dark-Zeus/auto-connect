@@ -1196,17 +1196,41 @@
   animation: pulse 1.5s ease-in-out infinite;
 }
 
+/* Loading Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Vehicle Selection Cards */
+.vehicle-selection-card {
+  transition: all 0.3s ease;
+}
+
+.vehicle-selection-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+
 /* Print Styles */
 @media print {
   .vehicle-passport-dashboard {
     background: white;
   }
-  
+
   .dashboard-header {
     box-shadow: none;
     border: 1px solid var(--gray-300);
   }
-  
+
   .navigation-tabs,
   .filters-bar,
   .header-actions,
@@ -1214,7 +1238,7 @@
   .quick-actions {
     display: none;
   }
-  
+
   .record-card {
     break-inside: avoid;
     box-shadow: none;

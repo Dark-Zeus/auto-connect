@@ -7,7 +7,7 @@ import userApiService from '../../services/userApiService';
 import { UserContext } from "../../contexts/UserContext";
 import { toast } from "react-toastify";
 
-const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
+const VehicleListingForm = ({ fixedName, fixedEmail, userId, onSubmit }) => {
   const [formData, setFormData] = useState({
     mobile: '',
     district: '',
@@ -24,7 +24,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
     engineCapacity: '',
     mileage: '',
     description: '',
-    registrationNumber: '',
+    // registrationNumber: '',
     name: fixedName || '',
     email: fixedEmail || ''
   });
@@ -37,6 +37,8 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { userContext: user } = useContext(UserContext);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -175,37 +177,38 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { isValid, firstErrorField } = validateForm();
 
-    if (isValid) {
+    // Run existing validateForm (must already be defined in this component)
+    if (typeof validateForm === "function") {
+      const { isValid, firstErrorField } = validateForm();
+      if (!isValid) {
+        if (firstErrorField && fieldRefs[firstErrorField]?.current) {
+          fieldRefs[firstErrorField].current.scrollIntoView({ behavior: "smooth", block: "center" });
+          fieldRefs[firstErrorField].current.focus();
+        }
+        return;
+      }
+    }
+
+    setPaymentProcessing(true);
+    try {
       const payload = {
         ...formData,
-        userId: userId,
-        views: 0,
+        userId,
         photos: photos.filter(Boolean),
-        status: 1,
-        promotion: 0
       };
+      // Save for PaymentSuccessPage
+      localStorage.setItem("pendingVehicleData", JSON.stringify(payload));
 
-      try {
-        const result = await listVehicleAPI.createListing(payload);
-        setSnackbarMessage("Vehicle listed successfully!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-      } catch (error) {
-        setSnackbarMessage(error.message || "Failed to submit. Please try again.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+      if (typeof onSubmit !== "function") {
+        console.error("onSubmit prop missing");
+        return;
       }
-    } else {
-      setSnackbarMessage("Please fix the errors in the form");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-
-      if (firstErrorField && fieldRefs[firstErrorField]?.current) {
-        fieldRefs[firstErrorField].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        fieldRefs[firstErrorField].current.focus();
-      }
+      await onSubmit(payload);
+    } catch (err) {
+      console.error("Submit listing error:", err);
+    } finally {
+      setPaymentProcessing(false);
     }
   };
 
@@ -226,7 +229,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
       engineCapacity: '',
       mileage: '',
       description: '',
-      registrationNumber: ''
+      // registrationNumber: ''
     });
     setPhotos(Array(6).fill(null));
     setErrors({});
@@ -264,7 +267,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
           </div>
         </div>
 
-        <div className="tw:bg-white tw:rounded-b-xl tw:shadow-lg">
+        <form className="tw:bg-white tw:rounded-b-xl tw:shadow-lg" onSubmit={handleSubmit}>
           
           {/* Vehicle Information */}
           <div className="tw:p-8 tw:border-b tw:border-slate-200">
@@ -499,7 +502,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
           </div>
 
           {/* Vehicle Report */}
-          <div className="tw:p-8 tw:border-b tw:border-slate-200">
+          {/* <div className="tw:p-8 tw:border-b tw:border-slate-200">
             <div className="tw:flex tw:items-center tw:gap-2 tw:mb-6">
               <div className="tw:bg-slate-600 tw:p-2 tw:rounded-lg">
                 <ClipboardCheckIcon className="tw:w-5 tw:h-5 tw:text-white" />
@@ -522,7 +525,7 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
                 />
                 {errors.registrationNumber && <p className="tw:text-red-500 tw:text-sm tw:mt-1">{errors.registrationNumber}</p>}
               </div>
-          </div>
+          </div> */}
 
           {/* Photos */}
           <div className="tw:p-8 tw:border-b tw:border-slate-200">
@@ -665,13 +668,13 @@ const VehicleListingForm = ({ fixedName, fixedEmail, userId }) => {
             </button>
             <button
               type="submit"
-              onClick={handleSubmit}
+              disabled={paymentProcessing}
               className="tw:px-8 tw:py-3 tw:bg-blue-600 tw:text-white tw:rounded-lg tw:hover:bg-blue-800 tw:transition-all tw:font-medium tw:shadow-lg tw:cursor-pointer"
             >
-              List Vehicle
+              {paymentProcessing ? "Processing..." : "Submit Listing"}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -14,9 +14,9 @@ import {
   bulkDeleteVehicles,
   getVehicleHistory,
   getAddedVehiclesByOwnerNIC,
-} from "../controllers/addedVehicles.controller.js";
+} from "../../../controllers/addedVehicles.controller.js";
 
-import { protect } from "../middleware/auth.middleware.js";
+import { protect } from "../../../middleware/auth.middleware.js";
 
 const router = express.Router();
 

@@ -29,8 +29,11 @@ import {
   Info,
   Star,
   AlertCircle,
+  RefreshCw,
+  Loader,
 } from "lucide-react";
 import "./VehiclePassportDashboard.css";
+import vehiclePassportAPI from "../../services/vehiclePassportApiService.js";
 
 const VehiclePassportDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -39,157 +42,97 @@ const VehiclePassportDashboard = () => {
   const [dateRange, setDateRange] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Sample vehicle data
-  const [vehicleData] = useState({
-    id: "V001",
-    plateNumber: "ABC-1234",
-    make: "Toyota",
-    model: "Camry",
-    year: "2019",
-    color: "Silver",
-    vin: "1HGBH41JXMN109186",
-    engineNumber: "4G63T123456",
-    currentMileage: 45000,
-    registrationDate: "2019-03-15",
-    owner: {
-      name: "John Doe",
-      phone: "+94 77 123 4567",
-      email: "john.doe@email.com",
-      address: "123 Main Street, Colombo 07",
-    },
-  });
+  // API state management
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [vehicles, setVehicles] = useState([]);
+  const [passportData, setPassportData] = useState(null);
+  const [loadingPassport, setLoadingPassport] = useState(false);
 
-  // Sample service records
-  const [serviceRecords] = useState([
-    {
-      id: "SR001",
-      type: "service",
-      date: "2024-07-15",
-      provider: "AutoCare Service Center",
-      service: "Oil Change & Filter Replacement",
-      mileage: 45000,
-      cost: 8500,
-      status: "completed",
-      nextService: "2024-10-15",
-      technician: "Mike Johnson",
-      workOrder: "WO-2024-001234",
-      parts: ["Oil Filter", "Engine Oil 5L"],
-      images: 3,
-      warranty: "6 months",
-    },
-    {
-      id: "SR002",
-      type: "service",
-      date: "2024-06-20",
-      provider: "Brake Masters",
-      service: "Brake Pad Replacement",
-      mileage: 44200,
-      cost: 15000,
-      status: "completed",
-      technician: "David Wilson",
-      workOrder: "WO-2024-001156",
-      parts: ["Front Brake Pads", "Brake Fluid"],
-      images: 5,
-      warranty: "12 months",
-    },
-    {
-      id: "SR003",
-      type: "service",
-      date: "2024-05-10",
-      provider: "Engine Specialists",
-      service: "Engine Tune-up",
-      mileage: 43800,
-      cost: 25000,
-      status: "completed",
-      technician: "Robert Smith",
-      workOrder: "WO-2024-000987",
-      parts: ["Spark Plugs", "Air Filter", "Fuel Filter"],
-      images: 7,
-      warranty: "12 months",
-    },
-  ]);
+  // Current vehicle data from API
+  const vehicleData = passportData?.vehicleInfo || null;
 
-  const [insuranceRecords] = useState([
-    {
-      id: "IN001",
-      type: "insurance",
-      date: "2024-01-15",
-      provider: "Ceylon Insurance",
-      policyNumber: "POL-2024-567890",
-      coverage: "Comprehensive Coverage",
-      premium: 35000,
-      validUntil: "2025-01-15",
-      status: "active",
-      agent: "Sarah Williams",
-      claims: 0,
-    },
-    {
-      id: "IN002",
-      type: "insurance",
-      date: "2023-01-15",
-      provider: "Ceylon Insurance",
-      policyNumber: "POL-2023-345678",
-      coverage: "Comprehensive Coverage",
-      premium: 32000,
-      validUntil: "2024-01-15",
-      status: "expired",
-      agent: "Sarah Williams",
-      claims: 1,
-    },
-  ]);
+  // Data from API
+  const serviceRecords = passportData?.serviceRecords || [];
+  const insuranceRecords = passportData?.insuranceRecords || [];
+  const emissionRecords = passportData?.emissionRecords || [];
+  const accidentRecords = passportData?.accidentRecords || [];
+  const recentActivity = passportData?.recentActivity || [];
+  const healthScore = passportData?.healthScore || { score: 0, category: 'Unknown' };
+  const vehicleValue = passportData?.vehicleValue || { estimatedValue: 0, currency: 'LKR' };
+  const recommendations = passportData?.recommendations || [];
 
-  const [emissionRecords] = useState([
-    {
-      id: "EM001",
-      type: "emission",
-      date: "2024-05-10",
-      provider: "Environmental Test Center",
-      testNumber: "ET-2024-789012",
-      result: "Pass",
-      validUntil: "2025-05-10",
-      status: "valid",
-      inspector: "Dr. Kumar Perera",
-      emissions: {
-        co: "0.12%",
-        hc: "85 ppm",
-        nox: "120 ppm",
-      },
-    },
-    {
-      id: "EM002",
-      type: "emission",
-      date: "2023-05-10",
-      provider: "Environmental Test Center",
-      testNumber: "ET-2023-567890",
-      result: "Pass",
-      validUntil: "2024-05-10",
-      status: "expired",
-      inspector: "Dr. Kumar Perera",
-      emissions: {
-        co: "0.14%",
-        hc: "92 ppm",
-        nox: "135 ppm",
-      },
-    },
-  ]);
+  // Load vehicles on component mount
+  useEffect(() => {
+    loadVehicles();
+  }, []);
 
-  const [accidentRecords] = useState([
-    {
-      id: "AC001",
-      type: "accident",
-      date: "2023-11-22",
-      location: "Galle Road, Colombo 03",
-      severity: "Minor",
-      damage: "Front bumper scratched",
-      repairCost: 25000,
-      status: "repaired",
-      policeReport: "PR-2023-445566",
-      insuranceClaim: "CL-2023-778899",
-      images: 8,
-    },
-  ]);
+  // Load vehicle passport data when a vehicle is selected
+  useEffect(() => {
+    if (selectedVehicle) {
+      loadVehiclePassport(selectedVehicle);
+    }
+  }, [selectedVehicle]);
 
-  // Tab configuration
+  // API Functions
+  const loadVehicles = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await vehiclePassportAPI.getPassportVehicles();
+      setVehicles(response.data.vehicles);
+    } catch (error) {
+      setError("Failed to load vehicles. Please try again.");
+      console.error("Error loading vehicles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadVehiclePassport = async (vehicleId) => {
+    try {
+      setLoadingPassport(true);
+      setError(null);
+      const response = await vehiclePassportAPI.getVehiclePassport(vehicleId);
+      setPassportData(response.data);
+    } catch (error) {
+      setError("Failed to load vehicle passport data. Please try again.");
+      console.error("Error loading passport data:", error);
+    } finally {
+      setLoadingPassport(false);
+    }
+  };
+
+  const handleVehicleSelect = (vehicleId) => {
+    setSelectedVehicle(vehicleId);
+    setActiveTab("overview"); // Reset to overview when selecting a vehicle
+  };
+
+  const handleBackToVehicles = () => {
+    setSelectedVehicle(null);
+    setPassportData(null);
+    setActiveTab("overview");
+  };
+
+  const handleRefresh = () => {
+    if (selectedVehicle) {
+      loadVehiclePassport(selectedVehicle);
+    } else {
+      loadVehicles();
+    }
+  };
+
+  const handleExportPassport = async () => {
+    if (selectedVehicle) {
+      try {
+        await vehiclePassportAPI.exportPassportPDF(selectedVehicle);
+      } catch (error) {
+        console.error("Error exporting passport:", error);
+      }
+    }
+  };
+
+  // Tab configuration with dynamic counts
   const tabs = [
     {
       id: "overview",
@@ -230,7 +173,7 @@ const VehiclePassportDashboard = () => {
       id: "documents",
       label: "Documents",
       icon: FileText,
-      count: 12,
+      count: passportData?.documentsInfo?.totalDocuments || 0,
       color: "#7c3aed",
     },
   ];
@@ -535,7 +478,9 @@ const VehiclePassportDashboard = () => {
             <TrendingUp size={24} />
             <h3>Vehicle Value</h3>
           </div>
-          <p className="card-value">LKR 2.8M</p>
+          <p className="card-value">
+            {vehiclePassportAPI.formatCurrency(vehicleValue.estimatedValue)}
+          </p>
           <p className="card-subtitle">Estimated current value</p>
         </div>
       </div>
@@ -548,16 +493,9 @@ const VehiclePassportDashboard = () => {
         </h3>
 
         <div className="activity-list">
-          {[
-            ...serviceRecords,
-            ...insuranceRecords,
-            ...emissionRecords,
-            ...accidentRecords,
-          ]
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .slice(0, 5)
-            .map((record) => (
-              <div key={record.id} className="activity-item">
+          {recentActivity.length > 0 ? (
+            recentActivity.slice(0, 5).map((record, index) => (
+              <div key={record.id || index} className="activity-item">
                 <div className={`activity-icon ${record.type}-activity`}>
                   {record.type === "service" && <Wrench size={16} />}
                   {record.type === "insurance" && <Shield size={16} />}
@@ -566,19 +504,29 @@ const VehiclePassportDashboard = () => {
                 </div>
                 <div className="activity-content">
                   <h4 className="activity-title">
-                    {record.service ||
-                      record.coverage ||
-                      record.result ||
-                      record.severity}
+                    {record.title || record.service || record.coverage || record.result || record.severity}
                   </h4>
                   <p className="activity-meta">
-                    {record.provider} •{" "}
-                    {new Date(record.date).toLocaleDateString()}
+                    {record.provider} • {vehiclePassportAPI.formatDate(record.date)}
                   </p>
                 </div>
                 <StatusBadge status={record.status} />
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="activity-item">
+              <div className="activity-icon default-activity">
+                <Info size={16} />
+              </div>
+              <div className="activity-content">
+                <h4 className="activity-title">No Recent Activity</h4>
+                <p className="activity-meta">
+                  No recent activities found for this vehicle
+                </p>
+              </div>
+              <StatusBadge status="no-data" />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -635,6 +583,237 @@ const VehiclePassportDashboard = () => {
     }
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="vehicle-passport-dashboard">
+        <div className="dashboard-container">
+          <div className="loading-container" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+            flexDirection: 'column',
+            gap: '1rem'
+          }}>
+            <Loader size={48} className="loading-spinner" style={{ animation: 'spin 1s linear infinite' }} />
+            <p>Loading your vehicles...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="vehicle-passport-dashboard">
+        <div className="dashboard-container">
+          <div className="error-container" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+            flexDirection: 'column',
+            gap: '1rem',
+            textAlign: 'center'
+          }}>
+            <AlertTriangle size={48} color="#dc2626" />
+            <h2>Error Loading Data</h2>
+            <p>{error}</p>
+            <button onClick={handleRefresh} className="primary-btn">
+              <RefreshCw size={16} />
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Vehicle selection screen
+  if (!selectedVehicle) {
+    return (
+      <div className="vehicle-passport-dashboard">
+        <div className="dashboard-container">
+          {/* Header */}
+          <div className="dashboard-header">
+            <div className="header-content">
+              <div className="header-title">
+                <h1 className="page-title">
+                  <Car size={40} />
+                  Vehicle Passport
+                </h1>
+                <p className="page-subtitle">
+                  Select a vehicle to view its complete digital passport
+                </p>
+              </div>
+
+              <div className="header-actions">
+                <button onClick={handleRefresh} className="secondary-btn">
+                  <RefreshCw size={16} />
+                  Refresh
+                </button>
+                <button className="primary-btn">
+                  <Phone size={16} />
+                  Contact Support
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle Selection Grid */}
+          <div className="vehicle-selection-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+            gap: '2rem',
+            marginTop: '2rem'
+          }}>
+            {vehicles.map((vehicle) => (
+              <div
+                key={vehicle.id}
+                className="vehicle-selection-card"
+                style={{
+                  background: 'white',
+                  borderRadius: '1rem',
+                  padding: '2rem',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  border: '1px solid #e5e7eb',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                onClick={() => handleVehicleSelect(vehicle.id)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.12)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{
+                    background: 'linear-gradient(135deg, #7AB2D3, #4A628A)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Car size={24} color="white" />
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '700', color: '#2c3e50' }}>
+                      {vehicle.plateNumber}
+                    </h3>
+                    <p style={{ margin: 0, color: '#6c757d', fontSize: '0.9rem' }}>
+                      {vehicle.year} {vehicle.make} {vehicle.model}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: '600', color: '#6c757d', textTransform: 'uppercase' }}>
+                      Services
+                    </span>
+                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>
+                      {vehicle.totalServices}
+                    </p>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: '600', color: '#6c757d', textTransform: 'uppercase' }}>
+                      Health Score
+                    </span>
+                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: vehiclePassportAPI.getHealthScoreColor(vehicle.healthScore) }}>
+                      {vehicle.healthScore}%
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid #f3f4f6'
+                }}>
+                  <span style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                    Last Service: {vehicle.lastServiceDate}
+                  </span>
+                  <button
+                    style={{
+                      background: '#4A628A',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 16px',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#7AB2D3';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#4A628A';
+                    }}
+                  >
+                    View Passport
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {vehicles.length === 0 && (
+            <div style={{
+              textAlign: 'center',
+              padding: '4rem 2rem',
+              background: 'white',
+              borderRadius: '1rem',
+              marginTop: '2rem',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+            }}>
+              <Car size={64} color="#7AB2D3" style={{ marginBottom: '1rem' }} />
+              <h3 style={{ color: '#2c3e50', marginBottom: '0.5rem' }}>No Vehicles Found</h3>
+              <p style={{ color: '#6c757d', marginBottom: '1.5rem' }}>
+                You don't have any vehicles registered yet. Register your first vehicle to get started.
+              </p>
+              <button className="primary-btn">
+                Register Vehicle
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Loading passport data
+  if (loadingPassport) {
+    return (
+      <div className="vehicle-passport-dashboard">
+        <div className="dashboard-container">
+          <div className="loading-container" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+            flexDirection: 'column',
+            gap: '1rem'
+          }}>
+            <Loader size={48} className="loading-spinner" style={{ animation: 'spin 1s linear infinite' }} />
+            <p>Loading vehicle passport data...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main passport view
   return (
     <div className="vehicle-passport-dashboard">
       <div className="dashboard-container">
@@ -643,20 +822,46 @@ const VehiclePassportDashboard = () => {
           <div className="header-content">
             <div className="header-title">
               <h1 className="page-title">
+                <button
+                  onClick={handleBackToVehicles}
+                  style={{
+                    background: '#DFF2EB',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    marginRight: '1rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#B9E5E8';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#DFF2EB';
+                  }}
+                >
+                  <ArrowLeft size={20} color="#4A628A" />
+                </button>
                 <Car size={40} />
                 Vehicle Passport
               </h1>
               <p className="page-subtitle">
-                Complete digital record for {vehicleData.plateNumber}
+                Complete digital record for {vehicleData?.plateNumber || 'Selected Vehicle'}
               </p>
             </div>
 
             <div className="header-actions">
-              <button className="secondary-btn">
+              <button onClick={handleRefresh} className="secondary-btn">
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+              <button onClick={handleExportPassport} className="secondary-btn">
                 <Download size={16} />
                 Export Report
               </button>
-
               <button className="primary-btn">
                 <Phone size={16} />
                 Contact Support
@@ -665,34 +870,36 @@ const VehiclePassportDashboard = () => {
           </div>
 
           {/* Vehicle Info Grid */}
-          <div className="vehicle-info-grid">
-            <div className="vehicle-info-item">
-              <span className="info-label">Vehicle</span>
-              <p className="info-value">
-                {vehicleData.year} {vehicleData.make} {vehicleData.model}
-              </p>
+          {vehicleData && (
+            <div className="vehicle-info-grid">
+              <div className="vehicle-info-item">
+                <span className="info-label">Vehicle</span>
+                <p className="info-value">
+                  {vehicleData.year} {vehicleData.make} {vehicleData.model}
+                </p>
+              </div>
+              <div className="vehicle-info-item">
+                <span className="info-label">License Plate</span>
+                <p className="info-value">{vehicleData.plateNumber}</p>
+              </div>
+              <div className="vehicle-info-item">
+                <span className="info-label">Current Mileage</span>
+                <p className="info-value">
+                  {vehicleData.currentMileage?.toLocaleString() || 'N/A'} km
+                </p>
+              </div>
+              <div className="vehicle-info-item">
+                <span className="info-label">Registered Since</span>
+                <p className="info-value">
+                  {vehiclePassportAPI.formatDate(vehicleData.registrationDate)}
+                </p>
+              </div>
+              <div className="vehicle-info-item">
+                <span className="info-label">VIN</span>
+                <p className="info-value">{vehicleData.vin || 'N/A'}</p>
+              </div>
             </div>
-            <div className="vehicle-info-item">
-              <span className="info-label">License Plate</span>
-              <p className="info-value">{vehicleData.plateNumber}</p>
-            </div>
-            <div className="vehicle-info-item">
-              <span className="info-label">Current Mileage</span>
-              <p className="info-value">
-                {vehicleData.currentMileage.toLocaleString()} km
-              </p>
-            </div>
-            <div className="vehicle-info-item">
-              <span className="info-label">Registered Since</span>
-              <p className="info-value">
-                {new Date(vehicleData.registrationDate).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="vehicle-info-item">
-              <span className="info-label">VIN</span>
-              <p className="info-value">{vehicleData.vin}</p>
-            </div>
-          </div>
+          )}
         </div>
         <br />
 

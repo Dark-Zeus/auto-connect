@@ -1,0 +1,995 @@
+/* VehicleServiceRequests.css */
+
+/* Import your design system variables */
+@import url("../../css/tailwind.css");
+
+/* Page Container */
+.vehicle-service-requests-page {
+  min-height: 100vh;
+  background-color: var(--gray-light);
+  font-family: "Poppins", "Roboto", "work sans", sans-serif;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Header Section */
+.vehicle-service-requests-page .MuiBox-root:first-child {
+  margin-bottom: 32px;
+}
+
+.vehicle-service-requests-page .MuiTypography-h4 {
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 8px;
+  font-family: "Poppins", sans-serif;
+}
+
+.vehicle-service-requests-page .MuiTypography-body1 {
+  color: #718096;
+  font-weight: 400;
+}
+
+/* Status Chips */
+.status-chip {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: capitalize !important;
+}
+
+.status-chip.warning {
+  background-color: #fff3cd !important;
+  color: #856404 !important;
+  border: 1px solid #ffeaa7 !important;
+}
+
+.status-chip.info {
+  background-color: #d1ecf1 !important;
+  color: #0c5460 !important;
+  border: 1px solid #bee5eb !important;
+}
+
+.status-chip.primary {
+  background-color: #d4e6f1 !important;
+  color: #1b4f72 !important;
+  border: 1px solid #aed6f1 !important;
+}
+
+.status-chip.success {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  border: 1px solid #c3e6cb !important;
+}
+
+.status-chip.error {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  border: 1px solid #f5c6cb !important;
+}
+
+/* Booking Cards */
+.booking-card {
+  transition: all 0.3s ease !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 12px !important;
+  margin-bottom: 24px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.booking-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+  border-color: var(--primary-blue) !important;
+}
+
+.booking-card .MuiCardContent-root {
+  padding: 24px !important;
+  flex-grow: 1 !important;
+}
+
+.booking-card .MuiCardActions-root {
+  padding: 16px 24px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background-color: #fafafa !important;
+}
+
+/* Filters Paper */
+.filters-paper {
+  border-radius: 12px !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 24px !important;
+  margin-bottom: 24px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.filters-paper .MuiGrid-container {
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.filters-paper .MuiTextField-root {
+  margin-bottom: 0 !important;
+}
+
+.filters-paper .MuiButton-root {
+  height: 56px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+}
+
+/* Tabs */
+.service-requests-tabs {
+  background: white !important;
+  border-radius: 12px !important;
+  border: 1px solid #e0e0e0 !important;
+  margin-bottom: 32px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.service-requests-tabs .MuiTab-root {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  font-family: "Poppins", sans-serif !important;
+  padding: 16px 24px !important;
+  min-height: 64px !important;
+  margin: 0 4px !important;
+  min-width: 140px !important;
+}
+
+.service-requests-tabs .MuiTab-root .badge-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.service-requests-tabs .MuiTabs-indicator {
+  background-color: var(--primary-blue) !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+}
+
+.tabs-container {
+  padding: 8px 16px !important;
+}
+
+/* Badge Customization */
+.badge-container {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.badge-container .MuiBadge-badge {
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  padding: 0 6px !important;
+  border-radius: 10px !important;
+  position: static !important;
+  transform: none !important;
+  margin-left: 8px !important;
+}
+
+/* Loading State */
+.loading-container {
+  min-height: 400px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  margin: 24px 0 !important;
+}
+
+/* Empty State */
+.empty-state-paper {
+  border-radius: 12px !important;
+  border: 2px dashed #e2e8f0 !important;
+  background: #fafafa !important;
+  padding: 48px !important;
+  text-align: center !important;
+  margin: 24px 0 !important;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 32px !important;
+  padding: 24px 0 !important;
+}
+
+.pagination-container .MuiPagination-root {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.pagination-container .MuiPaginationItem-root {
+  font-weight: 600 !important;
+  font-family: "Poppins", sans-serif !important;
+  margin: 0 4px !important;
+  border-radius: 8px !important;
+}
+
+/* Dialog Customization */
+.details-dialog .MuiDialog-paper {
+  border-radius: 12px !important;
+  max-width: 800px !important;
+  margin: 32px !important;
+}
+
+.dialog-title {
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    var(--primary-dark)
+  ) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-family: "Poppins", sans-serif !important;
+  padding: 20px 24px !important;
+}
+
+.details-dialog .MuiDialogContent-root {
+  padding: 32px 24px !important;
+}
+
+.details-dialog .MuiTable-root {
+  margin-bottom: 24px !important;
+}
+
+.details-dialog .MuiTableCell-root {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.details-dialog .MuiTableCell-root:first-child {
+  font-weight: 600 !important;
+  color: #2d3748 !important;
+  width: 140px !important;
+}
+
+.dialog-actions {
+  padding: 16px 24px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background-color: #fafafa !important;
+  gap: 12px !important;
+}
+
+.dialog-button {
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  padding: 8px 24px !important;
+}
+
+.contact-button {
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+}
+
+.contact-button:hover {
+  background-color: var(--primary-dark) !important;
+}
+
+/* Status Update Dialog - Professional Design */
+.status-update-dialog .MuiDialog-paper {
+  border-radius: 16px !important;
+  margin: 24px !important;
+  min-width: 520px !important;
+  max-width: 640px !important;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.12), 0 8px 25px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+}
+
+/* Header Section */
+.status-update-dialog .dialog-title {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark)) !important;
+  color: white !important;
+  padding: 28px 36px !important;
+  font-size: 1.375rem !important;
+  font-weight: 700 !important;
+  font-family: "Poppins", sans-serif !important;
+  letter-spacing: -0.025em !important;
+  border-bottom: none !important;
+  position: relative !important;
+}
+
+.status-update-dialog .dialog-title::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.2) 100%) !important;
+}
+
+/* Content Section */
+.status-update-dialog .MuiDialogContent-root {
+  padding: 36px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%) !important;
+  position: relative !important;
+}
+
+/* Form Container */
+.status-update-dialog .MuiGrid-container {
+  gap: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.status-update-dialog .MuiGrid-item {
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Form Controls Styling */
+.status-update-dialog .MuiFormControl-root,
+.status-update-dialog .MuiTextField-root {
+  margin-bottom: 0 !important;
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+.status-update-dialog .MuiFormControl-root:hover,
+.status-update-dialog .MuiTextField-root:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Input Labels */
+.status-update-dialog .MuiInputLabel-root {
+  font-weight: 600 !important;
+  color: #374151 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 0.95rem !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  transform: translate(16px, 18px) scale(1) !important;
+}
+
+.status-update-dialog .MuiInputLabel-root.MuiInputLabel-shrink {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%) !important;
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+  transform: translate(16px, -12px) scale(1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Input Fields */
+.status-update-dialog .MuiOutlinedInput-root {
+  border-radius: 12px !important;
+  font-family: "Poppins", sans-serif !important;
+  background-color: #ffffff !important;
+  transition: all 0.2s ease !important;
+}
+
+.status-update-dialog .MuiOutlinedInput-notchedOutline {
+  border-color: #e5e7eb !important;
+  border-width: 1.5px !important;
+  transition: all 0.2s ease !important;
+}
+
+.status-update-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary-blue) !important;
+  border-width: 2px !important;
+}
+
+.status-update-dialog .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary-blue) !important;
+  border-width: 2px !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.status-update-dialog .MuiOutlinedInput-input {
+  padding: 18px 16px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  line-height: 1.5 !important;
+}
+
+.status-update-dialog .MuiSelect-select {
+  padding: 18px 16px !important;
+  font-weight: 500 !important;
+  font-size: 0.95rem !important;
+  color: #374151 !important;
+}
+
+/* Textarea Specific */
+.status-update-dialog .MuiTextField-root .MuiInputBase-multiline {
+  padding: 0 !important;
+}
+
+.status-update-dialog .MuiTextField-root .MuiInputBase-multiline .MuiOutlinedInput-input {
+  padding: 18px 16px !important;
+  min-height: 44px !important;
+  resize: vertical !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+}
+
+/* Dropdown Menu Items */
+.status-update-dialog .MuiMenuItem-root {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 500 !important;
+  padding: 14px 20px !important;
+  font-size: 0.9rem !important;
+  color: #374151 !important;
+  transition: all 0.15s ease !important;
+}
+
+.status-update-dialog .MuiMenuItem-root:hover {
+  background-color: #f0f7ff !important;
+  color: var(--primary-blue) !important;
+  transform: translateX(4px) !important;
+}
+
+.status-update-dialog .MuiMenuItem-root.Mui-selected {
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.status-update-dialog .MuiMenuItem-root.Mui-selected:hover {
+  background-color: var(--primary-dark) !important;
+  transform: translateX(0) !important;
+}
+
+/* Dialog Actions */
+.status-update-dialog .MuiDialogActions-root {
+  padding: 28px 36px !important;
+  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%) !important;
+  border-top: 1px solid #e5e7eb !important;
+  gap: 16px !important;
+  justify-content: flex-end !important;
+}
+
+/* Cancel Button */
+.status-update-dialog .dialog-button {
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 10px !important;
+  padding: 14px 28px !important;
+  font-size: 0.9rem !important;
+  font-family: "Poppins", sans-serif !important;
+  border: 2px solid #e5e7eb !important;
+  color: #6b7280 !important;
+  background-color: #ffffff !important;
+  min-width: 120px !important;
+  transition: all 0.2s ease !important;
+}
+
+.status-update-dialog .dialog-button:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+  color: #374151 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Update Button */
+.update-button {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark)) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 10px !important;
+  padding: 14px 32px !important;
+  font-size: 0.9rem !important;
+  font-family: "Poppins", sans-serif !important;
+  border: none !important;
+  min-width: 140px !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.update-button:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker)) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.update-button:disabled {
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Conditional Fields Animation */
+.status-update-dialog .MuiGrid-container > .MuiGrid-item:nth-child(n+3) {
+  animation: slideInUp 0.4s ease-out forwards !important;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form Section Dividers */
+.status-update-dialog .MuiGrid-item:nth-child(2)::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -12px !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent 0%, #e5e7eb 20%, #e5e7eb 80%, transparent 100%) !important;
+}
+
+
+/* Card Header Section */
+.booking-card .MuiBox-root:first-child {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+.booking-card .MuiTypography-h6 {
+  font-weight: 700 !important;
+  color: #1a202c !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+/* Customer Info Section */
+.booking-card .MuiAvatar-root {
+  background-color: var(--primary-blue) !important;
+  margin-right: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.booking-card .MuiBox-root:nth-of-type(2) {
+  display: flex !important;
+  align-items: flex-start !important;
+  margin-bottom: 20px !important;
+  padding: 12px !important;
+  background-color: #f8fafc !important;
+  border-radius: 8px !important;
+}
+
+.booking-card .MuiBox-root:nth-of-type(2) > .MuiBox-root {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.booking-card .MuiTypography-subtitle2 {
+  font-weight: 600 !important;
+  color: #2d3748 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+}
+
+.booking-card .MuiTypography-caption {
+  color: #718096 !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  margin-top: 2px !important;
+}
+
+/* Vehicle Info */
+.vehicle-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #4a5568 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 16px !important;
+  padding: 8px 0 !important;
+}
+
+/* Date Time Info */
+.datetime-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  color: #4a5568 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 16px !important;
+  padding: 8px 0 !important;
+}
+
+/* Services Section */
+.booking-card .MuiBox-root:nth-of-type(5) {
+  margin-bottom: 20px !important;
+}
+
+.booking-card .MuiBox-root:nth-of-type(5) .MuiBox-root:first-child {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 12px !important;
+}
+
+.booking-card .MuiBox-root:nth-of-type(5) .MuiTypography-body2 {
+  color: #2d3748 !important;
+  font-weight: 600 !important;
+}
+
+.service-chips-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin-top: 8px !important;
+}
+
+/* Special Requests */
+.booking-card .MuiTypography-body2[color="text.secondary"] {
+  color: #718096 !important;
+  font-style: italic !important;
+  margin-top: 12px !important;
+  padding: 8px 12px !important;
+  background-color: #f7fafc !important;
+  border-radius: 6px !important;
+  border-left: 3px solid #e2e8f0 !important;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  padding: 16px 24px !important;
+}
+
+.action-button {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 12px 20px !important;
+  font-size: 0.875rem !important;
+  min-height: 40px !important;
+  min-width: 120px !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+  flex: 1 !important;
+  max-width: 150px !important;
+}
+
+.action-button .MuiButton-startIcon {
+  margin-right: 8px !important;
+  margin-left: 0 !important;
+}
+
+.action-button:first-child {
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+  border: 1px solid var(--primary-blue) !important;
+}
+
+.action-button:first-child:hover {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+}
+
+.action-button:last-child {
+  border: 1px solid var(--primary-blue) !important;
+  color: var(--primary-blue) !important;
+  background-color: transparent !important;
+}
+
+.action-button:last-child:hover {
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vehicle-service-requests-page {
+    padding: 16px !important;
+  }
+
+  .filters-paper {
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .filters-paper .MuiGrid-container {
+    gap: 12px !important;
+  }
+
+  .filters-paper .MuiButton-root {
+    height: 48px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .service-requests-tabs {
+    margin-bottom: 24px !important;
+  }
+
+  .service-requests-tabs .MuiTab-root {
+    min-width: 100px !important;
+    padding: 12px 16px !important;
+    font-size: 0.875rem !important;
+    margin: 0 2px !important;
+  }
+
+  .service-requests-tabs .MuiTab-root .badge-container {
+    gap: 6px !important;
+  }
+
+  .badge-container .MuiBadge-badge {
+    font-size: 0.7rem !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    margin-left: 6px !important;
+  }
+
+  .tabs-container {
+    padding: 4px 12px !important;
+  }
+
+  .booking-card {
+    margin-bottom: 16px !important;
+  }
+
+  .booking-card .MuiCardContent-root {
+    padding: 20px !important;
+  }
+
+  .booking-card .MuiCardActions-root {
+    padding: 12px 20px !important;
+  }
+
+  .booking-card .MuiBox-root:first-child {
+    margin-bottom: 16px !important;
+  }
+
+  .booking-card .MuiBox-root:nth-of-type(2) {
+    margin-bottom: 16px !important;
+    padding: 10px !important;
+  }
+
+  .vehicle-info {
+    margin-bottom: 12px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .datetime-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .booking-card .MuiBox-root:nth-of-type(5) {
+    margin-bottom: 16px !important;
+  }
+
+  .service-chips-container {
+    gap: 6px !important;
+  }
+
+  .action-buttons {
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 12px 20px !important;
+  }
+
+  .action-button {
+    padding: 10px 16px !important;
+    font-size: 0.8rem !important;
+    min-width: 100px !important;
+    min-height: 36px !important;
+    flex: 1 !important;
+    max-width: 140px !important;
+  }
+
+  .pagination-container {
+    margin-top: 24px !important;
+    padding: 16px 0 !important;
+  }
+
+  .details-dialog .MuiDialog-paper {
+    margin: 16px !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+
+  .details-dialog .MuiDialogContent-root {
+    padding: 20px 16px !important;
+  }
+
+  .dialog-actions {
+    padding: 12px 16px !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .dialog-button,
+  .contact-button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .status-update-dialog .MuiDialog-paper {
+    margin: 16px !important;
+    max-width: calc(100vw - 32px) !important;
+    min-width: auto !important;
+    border-radius: 12px !important;
+  }
+
+  .status-update-dialog .dialog-title {
+    padding: 24px 20px !important;
+    font-size: 1.15rem !important;
+  }
+
+  .status-update-dialog .MuiDialogContent-root {
+    padding: 24px 20px !important;
+  }
+
+  .status-update-dialog .MuiGrid-container {
+    gap: 20px !important;
+  }
+
+  .status-update-dialog .MuiOutlinedInput-input,
+  .status-update-dialog .MuiSelect-select {
+    padding: 16px 14px !important;
+  }
+
+  .status-update-dialog .MuiTextField-root .MuiInputBase-multiline .MuiOutlinedInput-input {
+    padding: 16px 14px !important;
+    min-height: 40px !important;
+  }
+
+  .status-update-dialog .MuiDialogActions-root {
+    padding: 20px !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .status-update-dialog .dialog-button,
+  .status-update-dialog .update-button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 14px 20px !important;
+    border-radius: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-service-requests-page {
+    padding: 12px !important;
+  }
+
+  .filters-paper {
+    padding: 12px !important;
+  }
+
+  .booking-card .MuiCardContent-root {
+    padding: 16px !important;
+  }
+
+  .booking-card .MuiCardActions-root {
+    padding: 10px 16px !important;
+  }
+
+  .booking-card .MuiBox-root:nth-of-type(2) {
+    padding: 8px !important;
+  }
+
+  .service-chips-container {
+    gap: 4px !important;
+  }
+
+  .service-chip {
+    font-size: 0.7rem !important;
+    padding: 2px 6px !important;
+  }
+
+  .action-button {
+    padding: 8px 12px !important;
+    font-size: 0.75rem !important;
+    min-width: 90px !important;
+    min-height: 32px !important;
+  }
+
+  .pagination-container .MuiPaginationItem-root {
+    margin: 0 2px !important;
+  }
+
+  .details-dialog .MuiDialog-paper {
+    margin: 8px !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+
+  .status-update-dialog .MuiDialog-paper {
+    margin: 8px !important;
+    max-width: calc(100vw - 16px) !important;
+    min-width: auto !important;
+    border-radius: 10px !important;
+  }
+
+  .status-update-dialog .dialog-title {
+    padding: 20px 16px !important;
+    font-size: 1rem !important;
+  }
+
+  .status-update-dialog .MuiDialogContent-root {
+    padding: 20px 16px !important;
+  }
+
+  .status-update-dialog .MuiGrid-container {
+    gap: 16px !important;
+  }
+
+  .status-update-dialog .MuiOutlinedInput-input,
+  .status-update-dialog .MuiSelect-select {
+    padding: 14px 12px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .status-update-dialog .MuiTextField-root .MuiInputBase-multiline .MuiOutlinedInput-input {
+    padding: 14px 12px !important;
+    min-height: 36px !important;
+  }
+
+  .status-update-dialog .MuiDialogActions-root {
+    padding: 16px !important;
+  }
+
+  .status-update-dialog .dialog-button,
+  .status-update-dialog .update-button {
+    padding: 12px 16px !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Grid System Optimization */
+.MuiGrid-container {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.MuiGrid-item {
+  padding: 0 !important;
+}
+
+.MuiGrid-container.MuiGrid-spacing-xs-3 > .MuiGrid-item {
+  padding: 12px !important;
+}
+
+/* Fix for Equal Height Cards */
+.MuiGrid-root.MuiGrid-item {
+  display: flex !important;
+}
+
+.MuiGrid-root.MuiGrid-item .booking-card {
+  width: 100% !important;
+}

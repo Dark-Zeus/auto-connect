@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@elastic/ecs-pino-format": "^1.5.0",
+    "@stripe/stripe-js": "^7.9.0",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",
@@ -28,8 +29,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.0",
     "multer": "^2.0.1",
+    "node-cron": "^4.2.1",
     "nodemailer": "^7.0.3",
     "pino": "^9.6.0",
+    "stripe": "^18.5.0",
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
