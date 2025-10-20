@@ -1,99 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Fuel, Gauge } from 'lucide-react';
-import vehicleImage from '../../assets/images/toyota-v8.jpg';
-import tlc150_1 from '../../assets/images/lc150Photos/tlc150_1.jpg';
-import tlc150_2 from '../../assets/images/lc150Photos/tlc150_2.jpg';
-import tlc150_3 from '../../assets/images/lc150Photos/tlc150_3.jpg';
-import tlc150_4 from '../../assets/images/lc150Photos/tlc150_4.jpg';
-import tlc150_5 from '../../assets/images/lc150Photos/tlc150_5.jpg';
-import tlc150_6 from '../../assets/images/lc150Photos/tlc150_6.jpg';
-import tlc150_7 from '../../assets/images/lc150Photos/tlc150_7.jpg';
+import buyVehicleAPI from '../../services/buyVehicleApiService';
+import { useNavigate } from 'react-router-dom'; 
+import NoSimilarAds from "./NoSimilarAds";
 
-const SimilarAds = () => {
+const SimilarAds = ({ vehicle, excludeId }) => {
+  const [ads, setAds] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const ads = [
-    {
-      id: 1,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 34,800,000",
-      image: vehicleImage,
-      year: "2014",
-      fuel: "Diesel",
-      mileage: "115,000 km",
-      location: "Colombo"
-    },
-    {
-      id: 2,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 31,500,000",
-      image: tlc150_1,
-      year: "2014",
-      fuel: "Diesel",
-      mileage: "118,500 km",
-      location: "Kandy"
-    },
-    {
-      id: 3,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 31,600,000",
-      image: tlc150_2,
-      year: "2014",
-      fuel: "Diesel",
-      mileage: "125,000 km",
-      location: "Galle"
-    },
-    {
-      id: 4,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 33,200,000",
-      image: tlc150_3,
-      year: "2015",
-      fuel: "Diesel",
-      mileage: "112,000 km",
-      location: "Kaluthara"
-    },
-    {
-      id: 5,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 36,500,000",
-      image: tlc150_6,
-      year: "2015",
-      fuel: "Diesel",
-      mileage: "138,000 km",
-      location: "Matara"
-    },
-    {
-      id: 6,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 31,000,000",
-      image: tlc150_5,
-      year: "2014",
-      fuel: "Diesel",
-      mileage: "135,000 km",
-      location: "Jaffna"
-    },
-    {
-      id: 7,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 30,500,000",
-      image: tlc150_4,
-      year: "2013",
-      fuel: "Diesel",
-      mileage: "120,000 km",
-      location: "Anuradhapura"
-    },
-    {
-      id: 8,
-      title: "Toyota Land Cruiser 150",
-      price: "LKR 29,850,000",
-      image: tlc150_7,
-      year: "2014",
-      fuel: "Diesel",
-      mileage: "165,000 km",
-      location: "Badulla"
-    }
-  ];
+  useEffect(() => {
+    if (!vehicle) return;
+    setLoading(true);
+    buyVehicleAPI.fetchSimilarVehicles({
+      make: vehicle.make,
+      model: vehicle.model,
+      fuelType: vehicle.fuelType,
+      year: vehicle.year,
+      excludeId: excludeId || vehicle._id
+    }).then((data) => {
+      console.log("Fetched similar ads:", data);
+      setAds(data);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, [vehicle, excludeId]);
 
   const itemsPerView = 4;
   const maxIndex = Math.max(0, ads.length - itemsPerView);
@@ -107,7 +38,33 @@ const SimilarAds = () => {
   };
 
   const formatPrice = (price) => {
-    return price.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (price === undefined || price === null) return "";
+    const priceStr = typeof price === "number" ? price.toString() : price;
+    return priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  if (loading) {
+    return (
+      <div className="tw-w-full tw-bg-gray-50 tw-py-8 tw-px-4 tw-rounded-xl tw-text-center">
+        Loading similar ads...
+      </div>
+    );
+  }
+
+  if (!ads.length) {
+    return (<NoSimilarAds />);
+  }
+
+  const handleViewDetails = async (adId) => {
+    try {
+      await buyVehicleAPI.incrementVehicleViews(adId);
+      const response = await buyVehicleAPI.fetchVehicleById(adId);
+      if (response && response.success && response.data) {
+        navigate('/vehicleview', { state: { vehicle: response.data } });
+      }
+    } catch (error) {
+      // Optionally show error toast
+    }
   };
 
   return (
@@ -144,15 +101,15 @@ const SimilarAds = () => {
           >
             {ads.map((ad) => (
               <div
-                key={ad.id}
+                key={ad._id}
                 className="tw:flex-shrink-0 tw:w-1/4 tw:px-2"
               >
                 <div className="tw:bg-white tw:rounded-lg tw:shadow-md tw:overflow-hidden tw:transition-all tw:duration-300 tw:hover:shadow-xl tw:transform tw:hover:scale-102">
                   {/* Image Container */}
                   <div className="tw:relative tw:h-48 tw:bg-gray-100 tw:overflow-hidden">
                     <img 
-                        src={ad.image} 
-                        alt={ad.title} 
+                        src={ad.photos?.[0] || ""}
+                        alt={ad.make + " " + ad.model}
                         className="tw:w-full tw:h-full tw:object-cover" 
                     />
                     
@@ -165,7 +122,7 @@ const SimilarAds = () => {
                   {/* Content */}
                   <div className="tw:p-4">
                     <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-2">
-                      {ad.title}
+                      {ad.make} {ad.model}
                     </h3>
                     
                     <div className="tw:text-2xl tw:font-bold tw:text-[#4a618a] tw:mb-3">
@@ -180,21 +137,22 @@ const SimilarAds = () => {
                       </div>
                       <div className="tw:flex tw:items-center tw:gap-2">
                         <Fuel className="tw:w-4 tw:h-4 tw:text-gray-400" />
-                        <span>{ad.fuel}</span>
+                        <span>{ad.fuelType}</span>
                       </div>
                       <div className="tw:flex tw:items-center tw:gap-2">
                         <Gauge className="tw:w-4 tw:h-4 tw:text-gray-400" />
-                        <span>{ad.mileage}</span>
+                        <span>{ad.mileage} km</span>
                       </div>
                       <div className="tw:flex tw:items-center tw:gap-2">
                         <MapPin className="tw:w-4 tw:h-4 tw:text-gray-400" />
-                        <span>{ad.location}</span>
+                        <span>{ad.district}, {ad.city ? `, ${ad.city}` : ""}</span>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="tw:flex tw:gap-2 tw:mt-4">
-                      <button className="tw:flex-1 tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:text-white tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-blue-700 tw:hover:cursor-pointer">
+                      <button className="tw:flex-1 tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:hover:bg-[linear-gradient(135deg,var(--navy-blue),var(--sky-blue))] tw:text-white tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-blue-700 tw:hover:cursor-pointer"
+                        onClick={() => handleViewDetails(ad._id)}>
                         View Details
                       </button> {/* 
                       <button className="tw:flex-1 tw:bg-gray-100 tw:hover:bg-gray-400 tw:text-gray-700 tw:py-2 tw:px-4 tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors hover:tw:bg-gray-200 tw:hover:cursor-pointer">

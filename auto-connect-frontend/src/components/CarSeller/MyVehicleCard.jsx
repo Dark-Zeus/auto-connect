@@ -44,6 +44,8 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         district: vehicle.district,
         city: vehicle.city,
         views: vehicle.views,
+        promotion: vehicle.promotion,
+        schedule: vehicle.bumpSchedule || null, // expose schedule if exists
       }
     : {
         // ...existing hardcoded fallback...
@@ -68,6 +70,19 @@ const ListedVehicleCard = ({ vehicle = null }) => {
       month: 'short',
       day: '2-digit'
     });
+  };
+
+  const formatDateTime = (dateString) => {
+    if (!dateString) return '-';
+    const d = new Date(dateString);
+    if (Number.isNaN(d.getTime())) return '-';
+    const pad = (n) => String(n).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const mm = pad(d.getMonth() + 1);
+    const dd = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mi = pad(d.getMinutes());
+    return `${yyyy}-${mm}-${dd}, ${hh}:${mi}`;
   };
 
   const handleHeaderClick = () => {
@@ -105,7 +120,17 @@ const ListedVehicleCard = ({ vehicle = null }) => {
       });
       setConfirmOpen(true);
     } else if (type === 'promote') {
-      navigate('/vehicle-ad-promotion');}
+      setConfirmProps({
+        title: 'Promote Vehicle',
+        message: 'Boost this vehicle ad with a promotion?',
+        onOK: () => {
+          setConfirmOpen(false);
+          navigate(`/vehicle-ad-promotion/${vehicleData.id}`);
+        },
+        onCancel: () => setConfirmOpen(false)
+      });
+      setConfirmOpen(true);
+    }
   };
 
   return (
@@ -114,15 +139,15 @@ const ListedVehicleCard = ({ vehicle = null }) => {
         className="tw:bg-white tw:shadow-lg tw:transition-all tw:duration-300 tw:mb-1.5"
         sx={{ 
           width: '50vw', 
-          height: '15vh',
+          height: vehicleData.promotion === 1 && vehicleData.schedule ? 'auto' : '15vh',
           minWidth: 500,
-          minHeight: 200,
+          minHeight: vehicleData.promotion === 1 && vehicleData.schedule ? 280 : 200,
           
           borderRadius: '12px',
           overflow: 'hidden',
           display: 'flex',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease, height 0.3s ease',
           '&:hover': {
             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
             transform: 'translateY(-3px)'
@@ -252,6 +277,39 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                     Posted: {vehicleData.postedDate}
                   </Typography>
                 </Box>
+
+                {/* Bump info (only when promoted) */}
+                {vehicleData.promotion === 1 && vehicleData.schedule && (
+                  <Box className="tw:mt-2 tw:pt-2 tw:border-t tw:border-gray-200">
+                    <Grid container spacing={1}>
+                      <Grid item xs={6}>
+                        <Typography variant="caption" className="tw:text-gray-600" fontSize={12}>
+                          First bump: {formatDateTime(
+                            vehicleData.schedule.createdAt ||
+                            vehicleData.schedule.lastBumpTime ||
+                            vehicleData.schedule.nextBumpTime
+                          )}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="caption" className="tw:text-gray-600" fontSize={12}>
+                          Last bump: {formatDateTime(vehicleData.schedule.lastBumpTime)}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="caption" className="tw:text-gray-600" fontSize={12}>
+                          Next bump: {formatDateTime(vehicleData.schedule.nextBumpTime)}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="caption" className="tw:text-gray-600" fontSize={12}>
+                          Remaining bumps: {vehicleData.schedule.remainingBumps ?? 0}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                )}
+
               </CardContent>
             </Box>
             
@@ -299,23 +357,31 @@ const ListedVehicleCard = ({ vehicle = null }) => {
                 </button>
                 
                 <button
-                  onClick={() => handleConfirm('promote')}
+                  onClick={vehicleData.promotion === 1 ? undefined : () => handleConfirm('promote')}
+                  disabled={vehicleData.promotion === 1}
                   className="tw:px-3 tw:py-2 tw:text-white tw:font-bold tw:border-none tw:rounded-md tw:transition-all tw:duration-200 tw:w-30"
                   style={{
-                    background: 'linear-gradient(135deg, #059669, #047857)',
-                    fontSize: '14px'
+                    background: vehicleData.promotion === 1 
+                      ? '#9ca3af' 
+                      : 'linear-gradient(135deg, #059669, #047857)',
+                    fontSize: '14px',
+                    cursor: vehicleData.promotion === 1 ? 'not-allowed' : 'pointer',
+                    opacity: vehicleData.promotion === 1 ? 0.6 : 1
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, #047857, #065f46)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.cursor = 'pointer';
+                    if (vehicleData.promotion !== 1) {
+                      e.target.style.background = 'linear-gradient(135deg, #047857, #065f46)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
-                    e.target.style.transform = 'translateY(0)';
+                    if (vehicleData.promotion !== 1) {
+                      e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                      e.target.style.transform = 'translateY(0)';
+                    }
                   }}
                 >
-                  Promote
+                  {vehicleData.promotion === 1 ? 'Promoted' : 'Promote'}
                 </button>
               </Box>
             </Box>
