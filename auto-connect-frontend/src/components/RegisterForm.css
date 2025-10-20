@@ -84,6 +84,9 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   /* FIXED: Ensure form can grow naturally */
   height: auto !important;
   max-height: none !important;
@@ -92,7 +95,8 @@
 
 /* Stepper Styling */
 .form-stepper {
-  margin: 2rem 0 !important;
+  margin: 1.5rem 0 !important;
+  padding: 0 !important;
 }
 
 .form-stepper .MuiStepLabel-root .MuiStepLabel-label {
@@ -126,7 +130,9 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
+  width: 100%;
+  padding: 0;
   /* FIXED: Remove height constraints */
   height: auto !important;
   max-height: none !important;
@@ -140,17 +146,22 @@
   text-align: center;
 }
 
-/* Address and Business Row Layouts */
+/* UPDATED: Make all inputs full-width for uniform appearance */
 .address-row,
 .business-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .address-input,
 .business-input {
   width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Services Section */
@@ -205,8 +216,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--primary-light);
 }
 
@@ -242,12 +253,26 @@
   box-shadow: 0 4px 16px var(--shadow-medium) !important;
 }
 
-/* Input Styling */
+/* Input Styling - All inputs same width and height */
+.form-input {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .form-input .MuiOutlinedInput-root {
   border-radius: 12px !important;
   background: var(--gray-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border: 2px solid transparent;
+  width: 100% !important;
+  min-height: 64px;
+  padding: 18px 16px !important;
+}
+
+.form-input .MuiOutlinedInput-input {
+  width: 100% !important;
+  padding: 0 !important;
 }
 
 .form-input .MuiOutlinedInput-root:hover {
@@ -270,6 +295,7 @@
 .form-input .MuiInputLabel-root {
   color: var(--gray-medium) !important;
   font-weight: 500 !important;
+  width: 100%;
 }
 
 .form-input .MuiInputLabel-root.Mui-focused {
@@ -280,17 +306,48 @@
   color: var(--error-color) !important;
 }
 
+/* Ensure TextField component takes full width */
+.form-input.MuiTextField-root {
+  width: 100% !important;
+  display: block;
+}
+
+/* Icon Styling - Proper spacing to prevent overlap */
 .input-icon {
   color: var(--gray-medium) !important;
   transition: color 0.3s ease !important;
+  font-size: 1.25rem !important;
+  margin-right: 0 !important;
+  flex-shrink: 0;
+}
+
+.form-input .MuiInputAdornment-root {
+  margin-right: 12px !important;
+  padding: 0 !important;
+}
+
+.form-input .MuiInputAdornment-positionStart {
+  margin-right: 12px !important;
+  margin-left: 0 !important;
 }
 
 .form-input .MuiOutlinedInput-root.Mui-focused .input-icon {
   color: var(--primary-blue) !important;
 }
 
+/* Ensure proper padding for inputs with icons */
+.form-input .MuiOutlinedInput-input {
+  padding-left: 0 !important;
+}
+
+/* Placeholder text spacing */
+.form-input .MuiOutlinedInput-input::placeholder {
+  opacity: 0.7 !important;
+}
+
 .visibility-icon {
   color: var(--gray-medium) !important;
+  font-size: 1.25rem !important;
 }
 
 .visibility-icon:hover {
@@ -298,11 +355,17 @@
   background: rgba(122, 178, 211, 0.1) !important;
 }
 
+.form-input .MuiInputAdornment-positionEnd {
+  margin-left: 8px !important;
+}
+
 /* Helper Text */
 .form-input .MuiFormHelperText-root {
   margin-left: 0 !important;
-  margin-top: 0.5rem !important;
+  margin-top: 6px !important;
+  margin-bottom: 0 !important;
   font-size: 0.875rem !important;
+  line-height: 1.4 !important;
 }
 
 .form-input .MuiFormHelperText-root.Mui-error {
@@ -419,15 +482,20 @@
   margin-left: 0 !important;
 }
 
-/* Name Fields */
+/* UPDATED: Make name fields full-width for uniformity */
 .name-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .name-input {
   width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .register-button {
@@ -463,7 +531,7 @@
 
 /* Divider */
 .divider {
-  margin: 1.5rem 0 !important;
+  margin: 1.25rem 0 !important;
   position: relative;
 }
 
@@ -612,33 +680,24 @@
 @media (max-width: 768px) {
   .register-form-container {
       padding: 1rem;
-      padding-bottom: 3rem; /* Maintain bottom padding on mobile */
-      align-items: flex-start; /* Keep flex-start on mobile too */
+      padding-bottom: 3rem;
+      align-items: flex-start;
   }
-  
+
   .register-form-paper {
       padding: 2rem 1.5rem !important;
       max-width: 100%;
-      margin: 1rem 0; /* Reduce margin on mobile */
+      margin: 1rem 0;
   }
-  
+
   .form-title {
       font-size: 1.875rem !important;
   }
-  
-  .name-fields {
-      grid-template-columns: 1fr;
-  }
-  
-  .address-row,
-  .business-row {
-      grid-template-columns: 1fr;
-  }
-  
+
   .password-requirements {
       grid-template-columns: 1fr;
   }
-  
+
   .form-bottom-links {
       flex-direction: column;
       text-align: center;
@@ -899,3 +958,4 @@
     padding: 1.75rem 1rem;
   }
 }
+

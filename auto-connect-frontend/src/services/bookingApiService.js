@@ -79,7 +79,10 @@ const bookingAPI = {
   // Submit feedback (Vehicle owners only)
   submitFeedback: async (id, feedbackData) => {
     try {
-      const response = await axios.post(`/bookings/${id}/feedback`, feedbackData);
+      const response = await axios.post(
+        `/bookings/${id}/feedback`,
+        feedbackData
+      );
       const data = response.data;
       return handleBookingSuccess(data, "feedback submitted");
     } catch (error) {
@@ -95,6 +98,18 @@ const bookingAPI = {
       return response.data;
     } catch (error) {
       handleBookingError(error, "fetch booking statistics");
+      throw error;
+    }
+  },
+
+  // Get dashboard statistics (Service centers only)
+  getDashboardStats: async () => {
+    try {
+      // Using the working stats endpoint instead of the broken dashboard-stats endpoint
+      const response = await axios.get("/bookings/stats");
+      return response.data;
+    } catch (error) {
+      handleBookingError(error, "fetch dashboard statistics");
       throw error;
     }
   },
@@ -119,18 +134,26 @@ const bookingAPI = {
       const formData = new FormData();
 
       // Add supporting documents (files) to FormData
-      if (reportData.supportingDocuments && reportData.supportingDocuments.length > 0) {
+      if (
+        reportData.supportingDocuments &&
+        reportData.supportingDocuments.length > 0
+      ) {
         reportData.supportingDocuments.forEach((doc) => {
           if (doc.file) {
-            formData.append('supportingDocuments', doc.file);
+            formData.append("supportingDocuments", doc.file);
           }
         });
 
         // Add descriptions as JSON
-        const documentDescriptions = reportData.supportingDocuments.map(doc => ({
-          description: doc.description || ''
-        }));
-        formData.append('supportingDocuments', JSON.stringify(documentDescriptions));
+        const documentDescriptions = reportData.supportingDocuments.map(
+          (doc) => ({
+            description: doc.description || "",
+          })
+        );
+        formData.append(
+          "supportingDocuments",
+          JSON.stringify(documentDescriptions)
+        );
       }
 
       // Add other data as JSON string
@@ -138,17 +161,26 @@ const bookingAPI = {
       delete otherData.supportingDocuments; // Remove files from the data object
 
       // Add each field individually to FormData
-      Object.keys(otherData).forEach(key => {
+      Object.keys(otherData).forEach((key) => {
         if (otherData[key] !== undefined && otherData[key] !== null) {
-          formData.append(key, typeof otherData[key] === 'object' ? JSON.stringify(otherData[key]) : otherData[key]);
+          formData.append(
+            key,
+            typeof otherData[key] === "object"
+              ? JSON.stringify(otherData[key])
+              : otherData[key]
+          );
         }
       });
 
-      const response = await axios.post(`/bookings/${id}/completion-report`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        `/bookings/${id}/completion-report`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
       const data = response.data;
       return handleBookingSuccess(data, "completion report submitted");
     } catch (error) {

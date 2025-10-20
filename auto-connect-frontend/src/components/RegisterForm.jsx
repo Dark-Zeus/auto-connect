@@ -716,7 +716,7 @@ const RegisterForm = () => {
                 className="form-input name-input"
                 variant="outlined"
                 placeholder="Enter your first name"
-              />
+              /><br/>
 
               <TextField
                 name="lastName"
@@ -725,11 +725,18 @@ const RegisterForm = () => {
                 onChange={handleInputChange}
                 error={!!errors.lastName}
                 helperText={errors.lastName}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon className="input-icon" />
+                    </InputAdornment>
+                  ),
+                }}
                 className="form-input name-input"
                 variant="outlined"
                 placeholder="Enter your last name"
               />
-            </Box>
+            </Box><br/>
 
             <TextField
               fullWidth
@@ -750,7 +757,7 @@ const RegisterForm = () => {
               className="form-input"
               variant="outlined"
               placeholder="Enter your email address"
-            />
+            /><br/>
 
             <TextField
               fullWidth
@@ -770,7 +777,7 @@ const RegisterForm = () => {
               className="form-input"
               variant="outlined"
               placeholder="Enter your phone number"
-            />
+            /><br/>
 
             <TextField
               fullWidth
@@ -794,7 +801,7 @@ const RegisterForm = () => {
                   </Box>
                 </MenuItem>
               ))}
-            </TextField>
+            </TextField><br/>
 
             {/* NIC Field - Only for Vehicle Owners */}
             {requiresNic && (

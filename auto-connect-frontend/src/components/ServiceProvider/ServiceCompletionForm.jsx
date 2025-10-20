@@ -351,6 +351,28 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
     return { errors, warnings };
   };
 
+  // Calculate time duration in human-readable format
+  const calculateTimeDuration = (startTime, endTime) => {
+    if (!startTime || !endTime) return '';
+
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diffMs = end - start;
+
+    if (diffMs < 0) return '';
+
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (diffHours > 0 && diffMinutes > 0) {
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''}`;
+    } else if (diffHours > 0) {
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''}`;
+    } else {
+      return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''}`;
+    }
+  };
+
   // Handle form submission with validation
   const handleSubmit = async () => {
     try {
@@ -392,11 +414,12 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
         })),
         additionalWork: formData.additionalWork || [],
         totalCostBreakdown: {
-          taxes: parseFloat(formData.totalCostBreakdown.taxAmount) || 0,
+          taxes: parseFloat(formData.totalCostBreakdown.tax) || 0,
           discount: parseFloat(formData.totalCostBreakdown.discount) || 0,
         },
         workStartTime: formData.workStartTime,
         workEndTime: formData.workEndTime,
+        totalTimeSpent: calculateTimeDuration(formData.workStartTime, formData.workEndTime),
         vehicleCondition: {
           before: Object.fromEntries(
             Object.entries({
@@ -444,6 +467,10 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
         })),
       };
 
+      console.log("📤 Submitting service completion report:", submissionData);
+      console.log("📋 Completed Services:", submissionData.completedServices);
+      console.log("👨‍🔧 Technician:", submissionData.technician);
+
       const response = await bookingAPI.submitServiceCompletionReport(booking._id, submissionData);
 
       if (response.success) {
@@ -460,7 +487,17 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
       }
     } catch (error) {
       console.error("Error submitting service completion:", error);
-      toast.error("An error occurred while submitting the report");
+      console.error("Error response data:", error.response?.data);
+
+      // Display detailed error message from backend
+      const errorMessage = error.response?.data?.message ||
+                          error.response?.data?.error ||
+                          error.message ||
+                          "An error occurred while submitting the report";
+
+      toast.error(`Validation Error: ${errorMessage}`, {
+        autoClose: 5000,
+      });
     } finally {
       setLoading(false);
     }
@@ -954,70 +991,249 @@ const ServiceCompletionForm = ({ open, onClose, booking, onSuccess, onComplete }
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Work Start Time"
-              type="datetime-local"
-              value={formData.workStartTime}
-              onChange={(e) => setFormData(prev => ({ ...prev, workStartTime: e.target.value }))}
-              InputLabelProps={{ shrink: true }}
+          {/* Work Time Section with Enhanced Visuals */}
+          <Grid item xs={12}>
+            <Paper
+              elevation={0}
               sx={{
-                '& .MuiInputLabel-root': {
-                  fontWeight: 500,
-                  color: colors.neutral.grayDark
-                },
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  backgroundColor: colors.neutral.white,
-                  fontSize: '0.925rem',
-                  '& fieldset': {
-                    borderColor: colors.primary.medium,
-                    borderWidth: '2px',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: colors.primary.blue,
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: colors.primary.dark,
-                    borderWidth: '2px',
-                  },
-                },
+                p: 4,
+                mb: 2,
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${colors.primary.light} 0%, ${colors.neutral.white} 100%)`,
+                border: `2px solid ${colors.primary.medium}`,
               }}
-            />
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <TimeIcon sx={{ fontSize: 28, color: colors.primary.dark, mr: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, color: colors.primary.dark, fontSize: '1.25rem' }}>
+                  Work Duration & Timing
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Work Start Time"
+                    type="datetime-local"
+                    value={formData.workStartTime}
+                    onChange={(e) => setFormData(prev => ({ ...prev, workStartTime: e.target.value }))}
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{
+                      max: new Date().toISOString().slice(0, 16),
+                    }}
+                    sx={{
+                      '& .MuiInputLabel-root': {
+                        fontWeight: 600,
+                        color: colors.neutral.grayDark,
+                        fontSize: '1rem'
+                      },
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 3,
+                        backgroundColor: colors.neutral.white,
+                        fontSize: '1rem',
+                        height: 56,
+                        '& fieldset': {
+                          borderColor: colors.primary.medium,
+                          borderWidth: '2px',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: colors.primary.blue,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: colors.primary.dark,
+                          borderWidth: '3px',
+                          boxShadow: `0 0 8px ${colors.primary.blue}40`,
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Work End Time"
+                    type="datetime-local"
+                    value={formData.workEndTime}
+                    onChange={(e) => setFormData(prev => ({ ...prev, workEndTime: e.target.value }))}
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{
+                      min: formData.workStartTime,
+                      max: new Date().toISOString().slice(0, 16),
+                    }}
+                    error={formData.workStartTime && formData.workEndTime && new Date(formData.workEndTime) <= new Date(formData.workStartTime)}
+                    helperText={
+                      formData.workStartTime && formData.workEndTime && new Date(formData.workEndTime) <= new Date(formData.workStartTime)
+                        ? "End time must be after start time"
+                        : ""
+                    }
+                    sx={{
+                      '& .MuiInputLabel-root': {
+                        fontWeight: 600,
+                        color: colors.neutral.grayDark,
+                        fontSize: '1rem'
+                      },
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 3,
+                        backgroundColor: colors.neutral.white,
+                        fontSize: '1rem',
+                        height: 56,
+                        '& fieldset': {
+                          borderColor: colors.primary.medium,
+                          borderWidth: '2px',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: colors.primary.blue,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: colors.primary.dark,
+                          borderWidth: '3px',
+                          boxShadow: `0 0 8px ${colors.primary.blue}40`,
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
+
+                {/* Time Duration Display */}
+                {formData.workStartTime && formData.workEndTime && new Date(formData.workEndTime) > new Date(formData.workStartTime) && (
+                  <Grid item xs={12}>
+                    <Alert
+                      icon={<TimeIcon />}
+                      severity="info"
+                      sx={{
+                        backgroundColor: colors.info + '15',
+                        borderLeft: `4px solid ${colors.info}`,
+                        '& .MuiAlert-icon': {
+                          color: colors.info
+                        }
+                      }}
+                    >
+                      <Typography variant="body1" sx={{ fontWeight: 600, color: colors.primary.dark }}>
+                        Total Work Duration: {calculateTimeDuration(formData.workStartTime, formData.workEndTime)}
+                      </Typography>
+                    </Alert>
+                  </Grid>
+                )}
+              </Grid>
+            </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Work End Time"
-              type="datetime-local"
-              value={formData.workEndTime}
-              onChange={(e) => setFormData(prev => ({ ...prev, workEndTime: e.target.value }))}
-              InputLabelProps={{ shrink: true }}
+          {/* Technician Information Section with Enhanced Visuals */}
+          <Grid item xs={12}>
+            <Paper
+              elevation={0}
               sx={{
-                '& .MuiInputLabel-root': {
-                  fontWeight: 500,
-                  color: colors.neutral.grayDark
-                },
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  backgroundColor: colors.neutral.white,
-                  fontSize: '0.925rem',
-                  '& fieldset': {
-                    borderColor: colors.primary.medium,
-                    borderWidth: '2px',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: colors.primary.blue,
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: colors.primary.dark,
-                    borderWidth: '2px',
-                  },
-                },
+                p: 4,
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${colors.primary.light} 0%, ${colors.neutral.white} 100%)`,
+                border: `2px solid ${colors.primary.medium}`,
               }}
-            />
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <PersonIcon sx={{ fontSize: 28, color: colors.primary.dark, mr: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, color: colors.primary.dark, fontSize: '1.25rem' }}>
+                  Technician Information
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Technician Name"
+                    value={formData.technician.name}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      technician: { ...prev.technician, name: e.target.value }
+                    }))}
+                    placeholder="Enter technician's full name"
+                    error={!formData.technician.name || formData.technician.name.trim() === "" || formData.technician.name === "Unknown Technician"}
+                    helperText={
+                      (!formData.technician.name || formData.technician.name.trim() === "" || formData.technician.name === "Unknown Technician")
+                        ? "Technician name is required"
+                        : "Full name of the technician who performed the service"
+                    }
+                    sx={{
+                      '& .MuiInputLabel-root': {
+                        fontWeight: 600,
+                        color: colors.neutral.grayDark,
+                        fontSize: '1rem'
+                      },
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 3,
+                        backgroundColor: colors.neutral.white,
+                        fontSize: '1rem',
+                        height: 56,
+                        '& fieldset': {
+                          borderColor: colors.primary.medium,
+                          borderWidth: '2px',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: colors.primary.blue,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: colors.primary.dark,
+                          borderWidth: '3px',
+                          boxShadow: `0 0 8px ${colors.primary.blue}40`,
+                        },
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: '0.875rem',
+                        mt: 1
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Employee/Technician ID (Optional)"
+                    value={formData.technician.employeeId}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      technician: { ...prev.technician, employeeId: e.target.value }
+                    }))}
+                    placeholder="Enter employee ID or badge number"
+                    helperText="Employee identification number or badge ID"
+                    sx={{
+                      '& .MuiInputLabel-root': {
+                        fontWeight: 600,
+                        color: colors.neutral.grayDark,
+                        fontSize: '1rem'
+                      },
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 3,
+                        backgroundColor: colors.neutral.white,
+                        fontSize: '1rem',
+                        height: 56,
+                        '& fieldset': {
+                          borderColor: colors.primary.medium,
+                          borderWidth: '2px',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: colors.primary.blue,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: colors.primary.dark,
+                          borderWidth: '3px',
+                          boxShadow: `0 0 8px ${colors.primary.blue}40`,
+                        },
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: '0.875rem',
+                        mt: 1
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
       </Paper>
