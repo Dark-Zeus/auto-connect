@@ -636,7 +636,7 @@ const ClaimRequestForm = () => {
                   type="checkbox"
                   checked={formData.confirmation}
                   onChange={(e) => setFormData(prev => ({ ...prev, confirmation: e.target.checked }))}
-                  class="hidden-checkbox"
+                  className="hidden-checkbox"
                 />
                 <span className="checkbox-custom"></span>
                 I confirm that all the information provided is true and accurate to the best of my knowledge. I understand that providing false information may result in claim rejection and policy cancellation. *
