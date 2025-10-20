@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AddNewPolicyPage.css';
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from 'react-toastify';
+
+import * as insurancePolicyApiService from "@services/insurancePolicyApiService"; // Ensure the service is imported
 
 // Move this OUTSIDE of AddNewPolicyPage
 const FormField = ({
@@ -69,6 +72,8 @@ const AddNewPolicyPage = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+
+  const [policyTypes, setPolicyTypes] = useState([]);
 
   // Check if this is a renewal
   const isRenewal = location.state?.isRenewal || false;
@@ -143,6 +148,18 @@ const AddNewPolicyPage = () => {
       const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
       return `POL-${currentYear}-${randomNum}`;
     };
+
+    const fetchPolicyTypes = async () => {
+      try {
+        const typesData = await insurancePolicyApiService.getAllInsurancePolicyTypes();
+        setPolicyTypes(typesData.data);
+      } catch (error) {
+        toast.error("Failed to fetch policy types.");
+        console.error("Error fetching policy types:", error);
+      }
+    };
+
+    fetchPolicyTypes();
     
     setFormData(prev => ({
       ...prev,
@@ -156,10 +173,11 @@ const AddNewPolicyPage = () => {
       let premium = 0;
       const estimatedValue = parseFloat(formData.estimatedValue);
       
-      if (formData.policyType === 'Third Party') {
-        premium = estimatedValue * 0.035; // 3.5% for third party
-      } else if (formData.policyType === 'Comprehensive') {
-        premium = estimatedValue * 0.065; // 6.5% for comprehensive
+      // calculate premium based on policy type, get rates from policyTypes state
+      const selectedPolicyType = policyTypes.find(type => type.policyTypeName === formData.policyType);
+      if (selectedPolicyType) {
+        const rate = selectedPolicyType.premiumPerLakh; // assuming 'rate' field exists
+        premium = (estimatedValue / 100) * rate;
       }
       
       setFormData(prev => ({
@@ -335,10 +353,23 @@ const AddNewPolicyPage = () => {
       // Here you would typically send the data to your backend
       console.log('Policy Data:', formData);
       const message = isRenewal ? 'Policy renewed successfully!' : 'Policy created successfully!';
-      alert(message);
+      if(isRenewal){
+
+      } else {
+        insurancePolicyApiService.createInsurancePolicy(formData)
+          .then((data) => {
+            console.log('Created Policy:', data);
+          })
+          .catch((error) => {
+            console.error('Error creating policy:', error);
+            toast.error('Failed to create policy. Please try again.');
+            return;
+          });
+      }
+      toast.success(message);
       navigate('/policymanagement');
     } else {
-      alert('Please complete all requirements before submitting.');
+      toast.error('Please agree to the terms and conditions before submitting.');
     }
   };
 
@@ -643,10 +674,9 @@ const AddNewPolicyPage = () => {
                 error={errors.policyType}
                 touched={touched.policyType}
                 required={true}
-                options={[
-                  { value: "Third Party", label: "Third Party Insurance" },
-                  { value: "Comprehensive", label: "Comprehensive (Full) Insurance" }
-                ]}
+                options={
+                  policyTypes.map(type => ({ value: type.policyTypeName, label: type.policyTypeName }) )
+                }
               />
               <FormField
                 name="premiumAmount"

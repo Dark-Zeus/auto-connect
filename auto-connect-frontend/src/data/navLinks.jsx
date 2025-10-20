@@ -66,6 +66,7 @@ import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
 import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
 import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
+//import VehicleList from "@pages/InsuranceCompany/VehicleList";
 
 export default
 
@@ -749,12 +750,12 @@ function getNavLinks(userContext) {
 
   // INSURANCE COMPANY Navigation
   if (userContext.role === "insurance_agent") {
-    nav.push({
-      path: [`/vehicles`],
-      title: "Vehicle List",
-      icon: "directions_car",
-      page: <VehicleList />,
-    });
+    // nav.push({
+    //   path: [`/vehicles`],
+    //   title: "Vehicle List",
+    //   icon: "directions_car",
+    //   page: <VehicleList />,
+    // });
 
     nav.push({
       title: "Claims Management",
@@ -771,12 +772,12 @@ function getNavLinks(userContext) {
         //   icon: "assignment",
         //   page: "Claims Dashboard",
         // },
-        {
-          path: [`/claims/active`],
-          title: "Active Claims",
-          icon: "pending_actions",
-          page: <InsuranceClaims />,
-        },
+        // {
+        //   path: [`/claims/active`],
+        //   title: "Active Claims",
+        //   icon: "pending_actions",
+        //   page: <InsuranceClaims />,
+        // },
         // {
         //   path: [`/claims/processing`],
         //   title: "Claim Processing",

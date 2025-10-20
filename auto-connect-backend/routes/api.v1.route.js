@@ -34,6 +34,8 @@ import promotionPaymentRoute from "./promotionPayment.route.js";
 import subscriptionPaymentRoutes from "./subscriptionPayment.route.js";
 import subscriptionManagementRoutes from "./subscriptionManagement.route.js";
 
+import insurancePolicyRoute from "./api.v1/insurance/insurancePolicy.route.js";
+
 
 // Import rate limiters for specific routes
 import {
@@ -105,6 +107,11 @@ router.use("/subscription-payments", subscriptionPaymentRoutes);
 
 // Subscription Management
 router.use("/my-plan", subscriptionManagementRoutes);
+
+
+
+// Insurance Policy routes
+router.use("/insurance/policies", insurancePolicyRoute);
 
 
 // API Documentation route
