@@ -4,7 +4,7 @@ const ENV_URL =
   import.meta.env.VITE_REACT_APP_BACKEND_API_URL ||
   import.meta.env.REACT_APP_BACKEND_URL;
 
-const API_BASE_URL = ENV_URL ? `${ENV_URL}/api/v1` : "http://localhost:3000/api/v1";
+const API_BASE_URL = ENV_URL ? `${ENV_URL}` : "http://localhost:3000";
 
 console.log("📡 Final API_BASE_URL:", API_BASE_URL);
 
