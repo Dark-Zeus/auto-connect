@@ -32,13 +32,10 @@ import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
 import adRoute from "./ad.route.js";
 import promotionPaymentRoute from "./promotionPayment.route.js";
-<<<<<<< HEAD
 import servicePaymentRoute from "./servicePayment.route.js";
-=======
 import subscriptionPaymentRoutes from "./subscriptionPayment.route.js";
 import subscriptionManagementRoutes from "./subscriptionManagement.route.js";
 
->>>>>>> 2e13329b18d87a25bd76989840801999135d0d40
 
 // Import rate limiters for specific routes
 import {
@@ -106,16 +103,13 @@ router.use("/ads", generalLimiter, adRoute);
 // Promotion payments (separate from listing payments)
 router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
 
-<<<<<<< HEAD
 // Service payments for completed bookings
 router.use("/service-payments", generalLimiter, servicePaymentRoute);
-=======
 // Subscription Payments
 router.use("/subscription-payments", subscriptionPaymentRoutes);
 
 // Subscription Management
 router.use("/my-plan", subscriptionManagementRoutes);
->>>>>>> 2e13329b18d87a25bd76989840801999135d0d40
 
 
 // API Documentation route
