@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './PolicyTypesManagementPage.css';
 import OverlayWindow from '../../components/OverlayWindow';
+
+import * as policyTypeApiService from '@services/insurancePolicyApiService';
+import { toast } from 'react-toastify';
+import Confirm from '@components/atoms/Confirm';
 
 const PolicyTypesManagementPage = () => {
   // Sample initial data
@@ -72,6 +76,19 @@ const PolicyTypesManagementPage = () => {
     documents: []
   });
 
+  useEffect(() => {
+    const fetchPolicyTypes = async () => {
+      try {
+        const data = await policyTypeApiService.getAllInsurancePolicyTypes();
+        setPolicyTypes(data.data);
+      } catch (error) {
+        console.error('Error fetching policy types:', error);
+      }
+    };
+
+    fetchPolicyTypes();
+  }, []);
+
   // File input for documents
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -96,7 +113,7 @@ const PolicyTypesManagementPage = () => {
   // Initialize form for edit
   const handleEdit = (policy) => {
     setIsEditMode(true);
-    setEditingPolicyId(policy.id);
+    setEditingPolicyId(policy._id);
     setFormData({
       policyTypeNumber: policy.policyTypeNumber,
       policyTypeName: policy.policyTypeName,
@@ -172,12 +189,20 @@ const PolicyTypesManagementPage = () => {
 
     if (isEditMode) {
       // Update existing policy
-      setPolicyTypes(prev => prev.map(policy => 
-        policy.id === editingPolicyId 
-          ? { ...policy, ...policyData }
-          : policy
-      ));
-      alert('Policy type updated successfully!');
+      policyTypeApiService.updateInsurancePolicyType(editingPolicyId, policyData)
+        .then((data) => {
+          toast.success('Policy type updated successfully!');
+          setPolicyTypes(prev => prev.map(policy =>
+            policy._id === editingPolicyId
+              ? { ...policy, ...policyData }
+              : policy
+          ));
+          console.log('Updated Policy Type:', data);
+        })
+        .catch((error) => {
+          toast.error('Failed to update policy type.');
+          console.error('Error updating policy type:', error);
+        });
     } else {
       // Add new policy
       const newPolicy = {
@@ -185,8 +210,17 @@ const PolicyTypesManagementPage = () => {
         id: Date.now(),
         createdDate: new Date().toISOString().split('T')[0]
       };
-      setPolicyTypes(prev => [...prev, newPolicy]);
-      alert('Policy type added successfully!');
+
+      policyTypeApiService.createInsurancePolicyType(newPolicy)
+        .then((data) => {
+          toast.success('Policy type added successfully!');
+          setPolicyTypes(prev => [...prev, newPolicy]);
+          console.log('Created Policy Type:', data);
+        })
+        .catch((error) => {
+          toast.error('Failed to create policy type.');
+          console.error('Error creating policy type:', error);
+        });
     }
 
     setShowAddEditOverlay(false);
@@ -195,8 +229,15 @@ const PolicyTypesManagementPage = () => {
   // Handle delete
   const handleDelete = (policyId) => {
     if (window.confirm('Are you sure you want to delete this policy type?')) {
-      setPolicyTypes(prev => prev.filter(policy => policy.id !== policyId));
-      alert('Policy type deleted successfully!');
+      policyTypeApiService.deleteInsurancePolicyType(policyId)
+        .then(() => {
+          setPolicyTypes(prev => prev.filter(policy => policy._id !== policyId));
+          toast.success('Policy type deleted successfully!');
+        })
+        .catch((error) => {
+          toast.error('Failed to delete policy type.');
+          console.error('Error deleting policy type:', error);
+        });
     }
   };
 
@@ -208,10 +249,10 @@ const PolicyTypesManagementPage = () => {
   // Filter and search policies
   const filteredPolicies = policyTypes.filter(policy => {
     const matchesSearch = policy.policyTypeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         policy.policyTypeNumber.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      policy.policyTypeNumber.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesFilter = statusFilter === '' || policy.status.toLowerCase() === statusFilter.toLowerCase();
-    
+
     return matchesSearch && matchesFilter;
   });
 
@@ -311,7 +352,7 @@ const PolicyTypesManagementPage = () => {
                       </button>
                       <button
                         className="delete-btn"
-                        onClick={() => handleDelete(policy.id)}
+                        onClick={() => handleDelete(policy._id)}
                       >
                         Delete
                       </button>
@@ -430,7 +471,7 @@ const PolicyTypesManagementPage = () => {
               {/* Documents Section */}
               <div className="form-section">
                 <h4>Policy Documents</h4>
-                
+
                 {/* Existing Documents (for edit mode) */}
                 {isEditMode && formData.documents.length > 0 && (
                   <div className="existing-documents">
