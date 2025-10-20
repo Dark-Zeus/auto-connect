@@ -1297,3 +1297,196 @@
 .selection-summary{
   margin-top: 10px !important;
 }
+
+/* Add this to your existing InsuranceClaimDetailsPage.css file */
+
+/* Message Popup Overlay */
+.message-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Message Popup */
+.message-popup {
+  background-color: white;
+  border-radius: 16px;
+  max-width: 450px;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+  from {
+    transform: translateY(-50px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Message Popup Icon */
+.message-popup-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 1.5rem;
+  font-weight: 700;
+  animation: iconPop 0.5s ease-out;
+}
+
+@keyframes iconPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.message-popup-icon.success {
+  background-color: #d1fae5;
+  color: #10b981;
+}
+
+.message-popup-icon.error {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.message-popup-icon.warning {
+  background-color: #fef3c7;
+  color: #f59e0b;
+}
+
+.message-popup-icon.info {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+/* Message Popup Title */
+.message-popup-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+/* Message Popup Message */
+.message-popup-message {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+}
+
+/* Message Popup Close Button */
+.message-popup-close-btn {
+  padding: 0.875rem 2.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 120px;
+}
+
+.message-popup-close-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Success variant button */
+.message-popup-icon.success ~ .message-popup-close-btn {
+  background-color: #10b981;
+}
+
+.message-popup-icon.success ~ .message-popup-close-btn:hover {
+  background-color: #059669;
+}
+
+/* Error variant button */
+.message-popup-icon.error ~ .message-popup-close-btn {
+  background-color: #ef4444;
+}
+
+.message-popup-icon.error ~ .message-popup-close-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Warning variant button */
+.message-popup-icon.warning ~ .message-popup-close-btn {
+  background-color: #f59e0b;
+}
+
+.message-popup-icon.warning ~ .message-popup-close-btn:hover {
+  background-color: #d97706;
+}
+
+/* Responsive Design for Message Popup */
+@media (max-width: 480px) {
+  .message-popup {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .message-popup-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+  }
+
+  .message-popup-title {
+    font-size: 20px;
+  }
+
+  .message-popup-message {
+    font-size: 14px;
+  }
+
+  .message-popup-close-btn {
+    width: 100%;
+    padding: 0.875rem 1rem;
+  }
+}
+
+/* Print Styles - Hide Message Popup */
+@media print {
+  .message-popup-overlay {
+    display: none;
+  }
+}
