@@ -28,6 +28,7 @@ import buyVehicleRoute from "./buyVehicle.route.js";
 import paymentRoute from "./payment.route.js";
 import adRoute from "./ad.route.js";
 import promotionPaymentRoute from "./promotionPayment.route.js";
+import servicePaymentRoute from "./servicePayment.route.js";
 
 // Import rate limiters for specific routes
 import {
@@ -82,6 +83,9 @@ router.use("/ads", generalLimiter, adRoute);
 
 // Promotion payments (separate from listing payments)
 router.use("/promotion-payments", generalLimiter, promotionPaymentRoute);
+
+// Service payments for completed bookings
+router.use("/service-payments", generalLimiter, servicePaymentRoute);
 
 
 // API Documentation route
