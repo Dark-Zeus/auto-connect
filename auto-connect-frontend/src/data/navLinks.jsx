@@ -25,6 +25,7 @@ import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
 
 import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
 import PromotionPaymentSuccessPage from "@pages/VehicleOwner/PromotionPaymentSuccessPage";
+import ServicePaymentSuccess from "@pages/VehicleOwner/ServicePaymentSuccess";
 import ClaimRequestForm from "@pages/VehicleOwner/ClaimRequestForm";
 import MyInsuranceDetailsPage from "@pages/VehicleOwner/MyInsuranceDetailsPage";
 import ClaimHistoryPage from "@pages/VehicleOwner/ClaimHistoryPage";
@@ -148,6 +149,13 @@ function getNavLinks(userContext) {
           title: "My Bookings",
           icon: "event_available",
           page: <MyBookingServices />,
+        },
+        {
+          path: [`/services/payment-success`],
+          title: "Service Payment Success",
+          icon: "check_circle",
+          page: <ServicePaymentSuccess />,
+          hidden: true,
         },
         // {
         //   path: [`/services/history`],
