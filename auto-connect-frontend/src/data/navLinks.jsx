@@ -386,49 +386,49 @@ export default
           icon: "history",
           page: <ClaimHistoryPage />,
         },
-        {
-          path: [`/userclaimdetails/:claimId`],
-          title: "User Claim Details",
-          icon: "policy",
-          page: "Insurance Management",
-          defLinkSettings: {
-            title: "Insurance Management",
-            icon: "folder",
-          },
-          sub: [
-            {
-              path: [`/myinsurancedetailspage`],
-              title: "My Insurance Details",
-              icon: "person",
-              page: <MyInsuranceDetailsPage />,
-            },
-            {
-              path: [`/claimsrequestform`],
-              title: "Claims Request Form",
-              icon: "policy",
-              page: <ClaimRequestForm />,
-            },
-            {
-              path: [`/claimhistorypage`],
-              title: "Claim History",
-              icon: "history",
-              page: <ClaimHistoryPage />,
-            },
-            {
-              path: [`/userclaimdetails/:claimId`],
-              title: "User Claim Details",
-              icon: "policy",
-              page: <UserClaimDetailsPage />,
-              hidden: true,
-            },
-            {
-              path: [`/customer-provider-selection`],
-              title: "Select Service Provider",
-              icon: "search",
-              page: <CustomerProviderSelection />,
-            }
-          ]
-        }
+        // {
+        //   path: [`/userclaimdetails/:claimId`],
+        //   title: "User Claim Details",
+        //   icon: "policy",
+        //   page: "Insurance Management",
+        //   defLinkSettings: {
+        //     title: "Insurance Management",
+        //     icon: "folder",
+        //   },
+        //   sub: [
+        //     {
+        //       path: [`/myinsurancedetailspage`],
+        //       title: "My Insurance Details",
+        //       icon: "person",
+        //       page: <MyInsuranceDetailsPage />,
+        //     },
+        //     {
+        //       path: [`/claimsrequestform`],
+        //       title: "Claims Request Form",
+        //       icon: "policy",
+        //       page: <ClaimRequestForm />,
+        //     },
+        //     {
+        //       path: [`/claimhistorypage`],
+        //       title: "Claim History",
+        //       icon: "history",
+        //       page: <ClaimHistoryPage />,
+        //     },
+        //     {
+        //       path: [`/userclaimdetails/:claimId`],
+        //       title: "User Claim Details",
+        //       icon: "policy",
+        //       page: <UserClaimDetailsPage />,
+        //       hidden: true,
+        //     },
+        //     {
+        //       path: [`/customer-provider-selection`],
+        //       title: "Select Service Provider",
+        //       icon: "search",
+        //       page: <CustomerProviderSelection />,
+        //     }
+        //   ]
+        // }
       ]
     }
     );
@@ -905,30 +905,6 @@ export default
     });
 
 
-
-
-
-    nav.push({
-      path: [`/insurance-claims/:id`],
-      title: "Claim Details",
-      icon: "assignment",
-      page: <InsuranceClaimDetailsPage />,
-      hidden: true,
-    });
-
-    nav.push({
-      path: [`/analyticsreports`],
-      title: "Analytics & Reports",
-      icon: "analytics",
-      page: <AnalyticsReportsPage />,
-    });
-
-    nav.push({
-      path: [`/profile`],
-      title: "My Profile",
-      icon: "person",
-      page: <InsuranceCompanyProfile />,
-    });
 
     // Commented out duplicate Profile section - already have My Profile above
     // nav.push({
