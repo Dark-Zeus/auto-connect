@@ -19,6 +19,8 @@ import VehicleRegistrationPage from "@pages/VehicleOwner/VehicleRegistrationPage
 import ServiceBookingForm from "@components/ServiceBookingForm"; //Needs to change
 import ServiceProviderProfile from "@pages/VehicleOwner/ServiceProviderProfile"; //Needs to change
 import VehiclePassportDashboard from "@/pages/VehicleOwner/VehiclePassportDashboard";
+import CustomerProviderSelection from "@pages/VehicleOwner/CustomerProviderSelection";
+
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
@@ -53,8 +55,10 @@ import VehicleHistoryDashboard from "@pages/ServiceProvider/VehicleHistoryDashbo
 import ServiceProviderReviews from "@pages/ServiceProvider/ServiceProviderReviews";
 import EditServicePage from "@pages/ServiceProvider/EditServicePage";
 import VehicleServiceUpdatePage from "@pages/ServiceProvider/VehicleServiceUpdatePage";
-import ServiceProviderDashboardNew from "@pages/ServiceProvider/ServiceProviderDashboard";
+import ServiceProviderDashboard from "@pages/ServiceProvider/ServiceProviderDashboard";
+import ServiceProviderEstimatePage from "@pages/ServiceProvider/ServiceProviderEstimatePage";
 import VehicleServiceRequests from "@pages/ServiceProvider/vehicleServiceRequests";
+
 
 //Insurance Company
 //import { Add } from "@mui/icons-material";
@@ -68,6 +72,9 @@ import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyPro
 import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
 import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
 //import VehicleList from "@pages/InsuranceCompany/VehicleList";
+
+
+export default
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -383,11 +390,45 @@ function getNavLinks(userContext) {
           path: [`/userclaimdetails/:claimId`],
           title: "User Claim Details",
           icon: "policy",
-          page: <UserClaimDetailsPage />,
-          hidden: true,
-        },
-      ],
-    });
+          page: "Insurance Management",
+          defLinkSettings: {
+            title: "Insurance Management",
+            icon: "folder",
+          },
+          sub: [
+            {
+              path: [`/myinsurancedetailspage`],
+              title: "My Insurance Details",
+              icon: "person",
+              page: <MyInsuranceDetailsPage />,
+            },
+            {
+              path: [`/claimsrequestform`],
+              title: "Claims Request Form",
+              icon: "policy",
+              page: <ClaimRequestForm />,
+            },
+            {
+              path: [`/claimhistorypage`],
+              title: "Claim History",
+              icon: "history",
+              page: <ClaimHistoryPage />,
+            },
+            {
+              path: [`/userclaimdetails/:claimId`],
+              title: "User Claim Details",
+              icon: "policy",
+              page: <UserClaimDetailsPage />,
+              hidden: true,
+            },
+             {
+              path: [`/customer-provider-selection`],
+              title: "Select Service Provider",
+              icon: "search",
+              page: <CustomerProviderSelection />,
+            }
+          ]
+        });
 
     // nav.push({
     //   title: "Documents",
@@ -472,6 +513,8 @@ function getNavLinks(userContext) {
     //     }
     //   ]
     // });
+
+  
   }
 
   // SERVICE PROVIDER Navigation
@@ -594,6 +637,13 @@ function getNavLinks(userContext) {
       title: "Reviews & Feedback",
       icon: "feedback",
       page: <ServiceProviderReviews />,
+    });
+
+    nav.push({
+      path: [`/service-estimate`],
+      title: "Insurance Estimates",
+      icon: "request_quote",
+      page: <ServiceProviderEstimatePage />,
     });
 
     // nav.push({
@@ -762,54 +812,12 @@ function getNavLinks(userContext) {
 
   // INSURANCE COMPANY Navigation
   if (userContext.role === "insurance_agent") {
-    // nav.push({
-    //   path: [`/vehicles`],
-    //   title: "Vehicle List",
-    //   icon: "directions_car",
-    //   page: <VehicleList />,
-    // });
-
-    nav.push({
-      title: "Claims Management",
-      icon: "assignment",
-      page: "Claims Management",
-      defLinkSettings: {
-        title: "Claims Dashboard",
-        icon: "assignment",
-      },
-      sub: [
-        // {
-        //   path: [`/claims`],
-        //   title: "Claims Dashboard",
-        //   icon: "assignment",
-        //   page: "Claims Dashboard",
-        // },
-        // {
-        //   path: [`/claims/active`],
-        //   title: "Active Claims",
-        //   icon: "pending_actions",
-        //   page: <InsuranceClaims />,
-        // },
-        // {
-        //   path: [`/claims/processing`],
-        //   title: "Claim Processing",
-        //   icon: "process",
-        //   page: "Claim Processing",
-        // },
-        // {
-        //   path: [`/claims/assessment`],
-        //   title: "Damage Assessment",
-        //   icon: "assessment",
-        //   page: "Damage Assessment",
-        // }
-      ],
-    });
-    nav.push({
-      path: [`/dashboard`],
-      title: "Dashboard",
-      icon: "dashboard",
-      page: <InsuranceCompanyDashboard />,
-    });
+     nav.push({
+       path: [`/dashboard`],
+       title: "Dashboard",
+       icon: "dashboard",
+       page: <InsuranceCompanyDashboard/>,
+     });
 
     nav.push({
       title: "Policy Management",
