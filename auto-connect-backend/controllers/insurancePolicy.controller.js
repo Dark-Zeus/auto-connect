@@ -8,7 +8,7 @@ const createInsurancePolicy = async (req, res) => {
         const policyData = req.body;
         const policy = {
             policyNumber: policyData.policyNumber,
-            insuranceCompanyId: policyData.insuranceCompanyId || "IC123456", // Placeholder company ID
+            insuranceCompanyId: policyData.insuranceCompanyId || req.user?.id || "IC123456", // Placeholder company ID
             customerRef: policyData.customerRef,
             vehicleRef: policyData.vehicleRef,
             policyType: policyData.policyType,
@@ -35,7 +35,7 @@ const createInsurancePolicy = async (req, res) => {
 
 const getAllInsurancePoliciesByCompany = async (req, res) => {
     try {
-        const companyId = req.body.userId || "IC123456"; // Will be retrieved from authenticated user in real scenario
+        const companyId = req.user?.id || "IC123456"; // Will be retrieved from authenticated user in real scenario
         const policies = await InsurancePolicyService.getAllInsurancePoliciesByCompany(companyId);
         res.status(200).json({
             success: true,
@@ -70,7 +70,7 @@ const getAllInsurancePoliciesByCustomer = async (req, res) => {
 };
 
 const createInsurancePolicyType = async (req, res) => {
-    const companyId = req.body.userId || "IC123456"; // Will be retrieved from authenticated user in real scenario
+    const companyId = req.user?.id || "IC123456"; // Will be retrieved from authenticated user in real scenario
     try {
         const policyTypeData = req.body;
         policyTypeData.insuranceCompanyId = companyId;
@@ -98,7 +98,7 @@ const createInsurancePolicyType = async (req, res) => {
 
 const getAllInsurancePolicyTypesByCompany = async (req, res) => {
     try {
-        const companyId = req.body.userId || "IC123456"; // Will be retrieved from authenticated user in real scenario
+        const companyId = req.user?.id || "IC123456"; // Will be retrieved from authenticated user in real scenario
         const policyTypes = await InsurancePolicyTypeService.getAllInsurancePolicyTypesByCompany(companyId);
         res.status(200).json({
             success: true,

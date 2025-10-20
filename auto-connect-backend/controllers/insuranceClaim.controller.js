@@ -151,7 +151,7 @@ const getInsuranceClaimsByCustomer = async (req, res) => {
 
 const getAllInsuranceClaimsByCompany = async (req, res) => {
     try {
-        const companyId = req.body.userId || "IC123456"; // Will be retrieved from authenticated user in real scenario
+        const companyId = req.user?.id || "IC123456"; // Will be retrieved from authenticated user in real scenario
         const claims = await insuranceClaimService.getAllInsuranceClaimsByCompany(companyId);
         res.status(200).json({
             success: true,
@@ -167,9 +167,50 @@ const getAllInsuranceClaimsByCompany = async (req, res) => {
     }
 };
 
+const updateInsuranceClaimStatus = async (req, res) => {
+    try {
+        const claimId = req.params.claimId;
+        const { status } = req.body;
+
+        const updatedClaim = await insuranceClaimService.updateInsuranceClaimStatus(claimId, status);
+        res.status(200).json({
+            success: true,
+            message: "Insurance claim status updated successfully",
+            data: updatedClaim,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error updating insurance claim status",
+            error: error.message,
+        });
+    }
+};
+
+const updateInsuranceClaimWithFinalReport = async (req, res) => {
+    try {
+        const claimId = req.params.claimId;
+        const finalReportData = req.body;
+        const updatedClaim = await insuranceClaimService.updateInsuranceClaimWithFinalReport(claimId, finalReportData);
+        res.status(200).json({
+            success: true,
+            message: "Insurance claim final report updated successfully",
+            data: updatedClaim,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error updating insurance claim final report",
+            error: error.message,
+        });
+    }
+};
+
 export default {
     createInsuranceClaim,
     getAllInsuranceClaims,
     getInsuranceClaimsByCustomer,
     getAllInsuranceClaimsByCompany,
+    updateInsuranceClaimStatus,
+    updateInsuranceClaimWithFinalReport,
 };
