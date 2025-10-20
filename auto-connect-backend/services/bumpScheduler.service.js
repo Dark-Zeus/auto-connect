@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import BumpSchedule from "../models/BumpSchedule.model.js";
+import BumpSchedule from "../models/bumpSchedule.model.js";
 import Vehicle from "../models/listVehicle.model.js";
 
 const EVERY_HOUR_CRON = "0 * * * *";

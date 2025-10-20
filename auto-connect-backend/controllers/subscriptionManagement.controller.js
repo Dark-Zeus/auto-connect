@@ -1,4 +1,4 @@
-import ActivePlan from "../models/ActivePlan.model.js";
+import ActivePlan from "../models/activePlan.model.js";
 import User from "../models/user.model.js";
 
 // Map plan price to cycle months

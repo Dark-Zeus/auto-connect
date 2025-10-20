@@ -1,5 +1,5 @@
 import Vehicle from "../models/listVehicle.model.js";
-import BumpSchedule from "../models/BumpSchedule.model.js";
+import BumpSchedule from "../models/bumpSchedule.model.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/appError.util.js";
 

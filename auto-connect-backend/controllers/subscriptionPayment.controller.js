@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import ActivePlan from "../models/ActivePlan.model.js";
+import ActivePlan from "../models/activePlan.model.js";
 import User from "../models/user.model.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

@@ -1,7 +1,7 @@
 // controllers/addedVehicles.controller.js - REAL IMPLEMENTATION
 // Create this file to actually save data to MongoDB
 
-import AddedVehicle from "../models/AddedVehicle.model.js";
+import AddedVehicle from "../models/addedVehicle.model.js";
 import Vehicle from "../models/vehicle.model.js";
 import User from "../models/user.model.js";
 

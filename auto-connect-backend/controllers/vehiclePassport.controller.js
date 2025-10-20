@@ -1,6 +1,6 @@
 // controllers/vehiclePassport.controller.js
-import Booking from "../models/Booking.model.js";
-import ServiceReport from "../models/ServiceReport.model.js";
+import Booking from "../models/booking.model.js";
+import ServiceReport from "../models/serviceReport.model.js";
 import User from "../models/user.model.js";
 import Vehicle from "../models/vehicle.model.js";
 import LOG from "../configs/log.config.js";

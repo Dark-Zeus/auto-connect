@@ -1,8 +1,8 @@
 // controllers/servicePayment.controller.js
 import Stripe from "stripe";
-import ServicePayment from "../models/ServicePayment.model.js";
-import ServiceReport from "../models/ServiceReport.model.js";
-import Booking from "../models/Booking.model.js";
+import ServicePayment from "../models/servicePayment.model.js";
+import ServiceReport from "../models/serviceReport.model.js";
+import Booking from "../models/booking.model.js";
 import User from "../models/user.model.js";
 import LOG from "../configs/log.config.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
