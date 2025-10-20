@@ -26,7 +26,7 @@ const InsuranceClaimSchema = new mongoose.Schema({
 
   digitalSignature: { type: String, required: true },
   confirmation: { type: Boolean, required: true },
-  status: { type: String, enum: ['submitted', 'in_review', 'approved', 'rejected'], default: 'submitted' },
+  status: { type: String, default: 'pending' },
 }, { timestamps: true });
 
 const InsuranceClaim = mongoose.model('InsuranceClaim', InsuranceClaimSchema);
