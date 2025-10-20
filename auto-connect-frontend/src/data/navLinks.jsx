@@ -70,6 +70,7 @@ import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
 import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
 import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
+//import VehicleList from "@pages/InsuranceCompany/VehicleList";
 
 
 export default
