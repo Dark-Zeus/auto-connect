@@ -13,12 +13,12 @@ import { TrendingUp } from "lucide-react";
 
 // Sample data: monthly updates from three service centers
 const data = [
-  { month: "Jan", centerA: 30, centerB: 20, centerC: 27 },
-  { month: "Feb", centerA: 25, centerB: 22, centerC: 30 },
-  { month: "Mar", centerA: 35, centerB: 18, centerC: 28 },
-  { month: "Apr", centerA: 40, centerB: 24, centerC: 32 },
-  { month: "May", centerA: 28, centerB: 20, centerC: 25 },
-  { month: "Jun", centerA: 32, centerB: 27, centerC: 30 },
+  { month: "May", centerA: 0, centerB: 0, centerC: 0 },
+  { month: "Jun", centerA: 0, centerB: 0, centerC: 0 },
+  { month: "Jul", centerA: 0, centerB: 0, centerC: 0 },
+  { month: "Aug", centerA: 0, centerB: 0, centerC: 0 },
+  { month: "Sep", centerA: 2, centerB: 2, centerC: 2 },
+  { month: "Oct", centerA: 3, centerB: 7, centerC: 3 },
 ];
 
 // Transform to calculate total updates per month

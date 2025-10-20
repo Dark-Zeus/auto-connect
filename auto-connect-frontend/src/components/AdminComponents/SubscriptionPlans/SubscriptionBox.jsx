@@ -1,15 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import EditPlanModal from "./EditSubscriptionPlan"; // Adjust path as needed
-import { Check, Star, Zap, Shield, Users, TrendingUp } from "lucide-react";
+import { Check, Star, Zap, Shield, Users, TrendingUp, X } from "lucide-react";
 
 export default function SubscriptionBox({ subscriptions, onEdit, onDelete }) {
   const [editingPlan, setEditingPlan] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null); // stores plan id to confirm
+  const [toastMessage, setToastMessage] = useState(""); // optional for feedback
 
   const handleEditClick = (plan) => {
     setEditingPlan(plan);
     setShowModal(true);
   };
+
+  const handleDeleteClick = (planId) => {
+    setConfirmDelete(planId);
+  };
+
+  const confirmDeletePlan = () => {
+    if (onDelete && confirmDelete) {
+      onDelete(confirmDelete);
+      setToastMessage("Plan deleted successfully!");
+    }
+    setConfirmDelete(null);
+  };
+
+  const cancelDelete = () => setConfirmDelete(null);
 
   const handleSave = (updatedPlan) => {
     if (onEdit) onEdit(updatedPlan); // call parent callback to update backend
@@ -17,7 +33,8 @@ export default function SubscriptionBox({ subscriptions, onEdit, onDelete }) {
   };
 
   return (
-    <div className="tw:grid tw:grid-cols-3 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-8 tw:max-w-7xl tw:mx-auto">
+    <div className="tw:grid tw:grid-cols-3 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-8 tw:max-w-7xl tw:mx-auto tw:relative">
+      {/* Subscription Cards */}
       {subscriptions && subscriptions.length > 0 ? (
         subscriptions.map((plan) => {
           const title = plan.title || "Plan";
@@ -77,7 +94,7 @@ export default function SubscriptionBox({ subscriptions, onEdit, onDelete }) {
                   Edit
                 </button>
                 <button
-                  onClick={() => onDelete && onDelete(plan._id)}
+                  onClick={() => handleDeleteClick(plan._id)}
                   className="tw:w-1/2 tw:bg-red-500 tw:text-white tw:py-2 tw:rounded-lg tw:font-semibold hover:tw:bg-red-600"
                 >
                   Delete
@@ -92,8 +109,47 @@ export default function SubscriptionBox({ subscriptions, onEdit, onDelete }) {
         </p>
       )}
 
+      {/* Edit Modal */}
       {showModal && editingPlan && (
         <EditPlanModal plan={editingPlan} onSave={handleSave} onClose={() => setShowModal(false)} />
+      )}
+
+      {/* Delete Confirmation Box */}
+      {confirmDelete && (
+        <div className="tw:fixed tw:text-lg tw:inset-0 tw:flex tw:items-center tw:justify-center tw:bg-black/30 tw:z-50">
+          <div className="tw:bg-white tw:border tw:border-red-500 tw:shadow-lg tw:rounded-xl tw:p-10 tw:w-200 tw:max-w-sm">
+            <p className="tw:text-lg tw:text-gray-700 tw:mb-4">
+              Are you sure you want to delete this plan?
+            </p>
+            <div className="tw:flex tw:justify-end tw:gap-3 tw:mt-6">
+              <button
+                onClick={cancelDelete}
+                className="tw:bg-gray-100 tw:text-gray-700 tw:px-4 tw:py-2 tw:rounded-lg hover:tw:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeletePlan}
+                className="tw:bg-red-500 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg hover:tw:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* Optional Toast */}
+      {toastMessage && (
+        <div className="tw:fixed tw:bottom-4 tw:right-4 tw:bg-green-500 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg tw:shadow-md">
+          {toastMessage}
+          <X
+            size={16}
+            className="tw:inline tw:ml-2 tw:cursor-pointer"
+            onClick={() => setToastMessage("")}
+          />
+        </div>
       )}
     </div>
   );

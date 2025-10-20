@@ -24,6 +24,8 @@ import CustomerProviderSelection from "@pages/VehicleOwner/CustomerProviderSelec
 //import InsuranceClaimPage from "@pages/InsuranceCompany/InsuranceClaimPage";
 import AddVehicles from "@pages/VehicleOwner/AddVehicle";
 import AddedVehicles from "@pages/VehicleOwner/AddedVehicles";
+import SubscriptionSuccessPage from "@pages/VehicleOwner/SubscriptionSuccessPage";
+import MyPlansPage from "@pages/VehicleOwner/MyPlansPage";
 
 import PaymentSuccessPage from "@pages/VehicleOwner/PaymentSuccessPage";
 import PromotionPaymentSuccessPage from "@pages/VehicleOwner/PromotionPaymentSuccessPage";
@@ -270,6 +272,19 @@ function getNavLinks(userContext) {
           icon: "check_circle",
           page: <PromotionPaymentSuccessPage />,
           hidden: true,
+        },
+        {
+          path: [`/marketplace/subscription-success`],
+          title: "Payment Success",
+          icon: "check_circle",
+          page: <SubscriptionSuccessPage />,
+          hidden: true,
+        },
+        {
+          path: [`/marketplace/my-plans`],
+          title: "My Plans",
+          icon: "check_circle",
+          page: <MyPlansPage />,
         },
       ],
     });
@@ -886,7 +901,7 @@ function getNavLinks(userContext) {
         page: <InsuranceCompanyProfile />,
       });
 
-    }
+    
 
 
 

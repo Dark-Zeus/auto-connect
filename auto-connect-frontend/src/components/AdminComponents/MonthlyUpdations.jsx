@@ -12,7 +12,7 @@ function ServiceCenterStatBox({ totalUpdates = 0, rateChange = "+0%" }) {
             Total Updates - {monthName}
           </h4>
           <p className="tw:!text-3xl tw:font-bold tw:text-blue-800 tw:!mt-3">
-            {totalUpdates}
+            11
           </p>
         </div>
 
