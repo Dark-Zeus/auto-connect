@@ -31,11 +31,11 @@ instance.interceptors.response.use(
 const showError = (err) => {
   console.log(err);
   if (err?.response?.data.message) {
-    toast.error(err.response?.data.message);
+    //toast.error(err.response?.data.message);
   } else if (err?.message) {
-    toast.error(err.message);
+    //toast.error(err.message);
   } else {
-    toast.error(err);
+    //toast.error(err);
   }
 };
 

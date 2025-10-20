@@ -90,7 +90,7 @@ const InsurancePolicyManagement = () => {
     const searchMatch =
       policy.policyNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       policy.vehicle.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      policy.customer.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (policy.customer.firstName + ' ' + policy.customer.lastName).toLowerCase().includes(searchTerm.toLowerCase()) ||
       policy.vehicle.model.toLowerCase().includes(searchTerm.toLowerCase());
 
     const statusMatch = statusFilter ? policy.status.toLowerCase() === statusFilter.toLowerCase() : true;
@@ -216,9 +216,9 @@ const InsurancePolicyManagement = () => {
                     className={isExpired ? 'expired-row' : ''}
                   >
                     <td>{policy.policyNumber}</td>
-                    <td>{policy.customer.fullName}</td>
-                    <td>{policy.vehicle.vehicleNumber}</td>
-                    <td>{policy.vehicle.model}</td>
+                    <td>{policy.customerRef.firstName + ' ' + policy.customerRef.lastName}</td>
+                    <td>{policy.vehicleRef.registrationNumber}</td>
+                    <td>{policy.vehicleRef.model}</td>
                     <td>{policy.policyType}</td>
                     <td>{policy.premium.toLocaleString()}</td>
                     <td>{policy.startDate}</td>

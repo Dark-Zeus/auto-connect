@@ -37,6 +37,7 @@ import subscriptionPaymentRoutes from "./subscriptionPayment.route.js";
 import subscriptionManagementRoutes from "./subscriptionManagement.route.js";
 
 import insurancePolicyRoute from "./api.v1/insurance/insurancePolicy.route.js";
+import insuranceClaimRoute from "./api.v1/insurance/insuranceClaim.route.js";
 
 
 // Import rate limiters for specific routes
@@ -113,10 +114,9 @@ router.use("/subscription-payments", subscriptionPaymentRoutes);
 // Subscription Management
 router.use("/my-plan", subscriptionManagementRoutes);
 
-
-
 // Insurance Policy routes
 router.use("/insurance/policies", insurancePolicyRoute);
+router.use("/insurance/claims", insuranceClaimRoute);
 
 
 // API Documentation route

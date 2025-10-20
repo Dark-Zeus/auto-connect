@@ -11,7 +11,8 @@ WORKDIR /app
 RUN corepack enable
 RUN corepack prepare yarn@4.9.0 --activate
 
-COPY package.json yarn.lock ./ 
+COPY package.json yarn.lock ./
+COPY .yarnrc.yml ./
 
 RUN yarn install
 
@@ -22,7 +23,7 @@ RUN yarn build
 
 FROM nginx:1.27.3-alpine AS production
 
-COPY --from=build /app/build /usr/share/nginx/html/
+COPY --from=build /app/dist /usr/share/nginx/html/
 
 EXPOSE 80
 
