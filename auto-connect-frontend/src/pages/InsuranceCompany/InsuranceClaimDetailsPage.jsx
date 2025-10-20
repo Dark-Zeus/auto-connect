@@ -97,7 +97,7 @@ const InsuranceClaimDetailsPage = () => {
         additionalNotes: claim?.finalReport?.additionalNotes || '',
         inspectionDate: claim?.finalReport?.inspectionDate ? new Date(claim.finalReport.inspectionDate).toISOString().split('T')[0] : '',
         inspectorName: claim?.finalReport?.inspectorName || '',
-        qualityRating: claim?.finalReport?.qualityRating || '0'
+        qualityRating: claim?.finalReport?.qualityRating || '1'
       });
     }
   }, [claim]);
@@ -504,19 +504,19 @@ const InsuranceClaimDetailsPage = () => {
                 <div className="summary-grid">
                   <div className="summary-item">
                     <span className="summary-label">Total Claim Amount:</span>
-                    <span className="summary-value">{finalReportData.totalCost} LKR</span>
+                    <span className="summary-value">{claim?.finalReport?.totalCost} LKR</span>
                   </div>
                   <div className="summary-item">
                     <span className="summary-label">Service Provider:</span>
-                    <span className="summary-value">{finalReportData.serviceProvider}</span>
+                    <span className="summary-value">{claim?.finalReport?.serviceProvider}</span>
                   </div>
                   <div className="summary-item">
                     <span className="summary-label">Completion Date:</span>
-                    <span className="summary-value">{new Date().toLocaleDateString()}</span>
+                    <span className="summary-value">{claim?.finalReport?.inspectionDate}</span>
                   </div>
                   <div className="summary-item">
                     <span className="summary-label">Quality Rating:</span>
-                    <span className="summary-value">{'⭐'.repeat(parseInt(finalReportData.qualityRating))} ({finalReportData.qualityRating}/5)</span>
+                    <span className="summary-value">{'⭐'.repeat(parseInt(claim?.finalReport?.qualityRating))} ({claim?.finalReport?.qualityRating}/5)</span>
                   </div>
                 </div>
               </div>
