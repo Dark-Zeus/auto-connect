@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from 'react-toastify';
 
 import * as insurancePolicyApiService from "@services/insurancePolicyApiService"; // Ensure the service is imported
+import * as VehicleOwnerApiService from '@services/vehicleOwnerApiService';
+import { vehicleAPI } from '@services/vehicleApiService';
 
 // Move this OUTSIDE of AddNewPolicyPage
 const FormField = ({
@@ -43,6 +45,7 @@ const FormField = ({
           placeholder={placeholder}
           rows={rows || 3}
           required={required}
+          readOnly={readOnly}
         />
       ) : (
         <input
@@ -73,6 +76,8 @@ const AddNewPolicyPage = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
+  const [vehicleOptions, setVehicleOptions] = useState([]);
+
   const [policyTypes, setPolicyTypes] = useState([]);
 
   // Check if this is a renewal
@@ -82,13 +87,15 @@ const AddNewPolicyPage = () => {
   // Form data state
   const [formData, setFormData] = useState({
     // Customer Personal Details
+    customerRef: '',
     vehicleOwnerName: '',
     nic: '',
     address: '',
     email: '',
     contactNo: '',
-    
+
     // Vehicle Information
+    vehicleRef: '',
     vehicleType: '',
     vehicleNumber: '',
     vehicleRegistrationNumber: '',
@@ -99,7 +106,7 @@ const AddNewPolicyPage = () => {
     manufactureYear: '',
     fuelType: '',
     estimatedValue: '',
-    
+
     // Policy Information
     policyNumber: '',
     policyType: '',
@@ -118,7 +125,7 @@ const AddNewPolicyPage = () => {
         address: existingPolicy.address || '',
         email: existingPolicy.email || '',
         contactNo: existingPolicy.contactNo || '',
-        
+
         // Vehicle Information (pre-filled from existing policy)
         vehicleType: existingPolicy.vehicleType || '',
         vehicleNumber: existingPolicy.vehicleNumber || '',
@@ -130,7 +137,7 @@ const AddNewPolicyPage = () => {
         manufactureYear: existingPolicy.manufactureYear || '',
         fuelType: existingPolicy.fuelType || '',
         estimatedValue: existingPolicy.estimatedValue?.toString() || '',
-        
+
         // Policy Information (will be updated with new values)
         policyNumber: '', // Will be auto-generated
         policyType: existingPolicy.policyType || '',
@@ -160,7 +167,7 @@ const AddNewPolicyPage = () => {
     };
 
     fetchPolicyTypes();
-    
+
     setFormData(prev => ({
       ...prev,
       policyNumber: generatePolicyNumber()
@@ -172,14 +179,14 @@ const AddNewPolicyPage = () => {
     if (formData.estimatedValue && formData.policyType) {
       let premium = 0;
       const estimatedValue = parseFloat(formData.estimatedValue);
-      
+
       // calculate premium based on policy type, get rates from policyTypes state
       const selectedPolicyType = policyTypes.find(type => type.policyTypeName === formData.policyType);
       if (selectedPolicyType) {
         const rate = selectedPolicyType.premiumPerLakh; // assuming 'rate' field exists
         premium = (estimatedValue / 100) * rate;
       }
-      
+
       setFormData(prev => ({
         ...prev,
         premiumAmount: Math.round(premium).toString()
@@ -193,7 +200,7 @@ const AddNewPolicyPage = () => {
       const startDate = new Date(formData.policyStartDate);
       const endDate = new Date(startDate);
       endDate.setFullYear(endDate.getFullYear() + 1);
-      
+
       setFormData(prev => ({
         ...prev,
         policyEndDate: endDate.toISOString().split('T')[0]
@@ -259,6 +266,44 @@ const AddNewPolicyPage = () => {
     }
   };
 
+  const handleNicChange = (e) => {
+    const nic = e.target.value;
+    // If NIC is valid, fetch customer details
+    const nicError = validateNIC(nic);
+    if (nicError != "") {
+      setFormData({});
+      return;
+    }
+
+    const fetchCustomerDetails = async (nic) => {
+      // Simulated data - replace with actual API call if available
+      const data = await VehicleOwnerApiService.getVehicleOwnerDetailsByNic(nic);
+      const customerData = data.data;
+      if (!customerData) {
+        toast.warn("No vehicle owner found with the provided NIC.");
+        return;
+      }
+
+      const vehicleData = await vehicleAPI.getVehiclesByNIC(nic);
+      if (vehicleData) {
+        setVehicleOptions(vehicleData.data.vehicles);
+      };
+
+      setFormData(prev => ({
+        ...prev,
+        customerRef: customerData._id,
+        vehicleOwnerName: customerData.firstName + ' ' + customerData.lastName,
+        address: customerData.address.street + ', ' + customerData.address.city + ', ' + customerData.address.district + ', ' + customerData.address.province + ', ' + customerData.address.postalCode,
+        email: customerData.email,
+        contactNo: customerData.phone,
+      }));
+
+
+    }
+
+    fetchCustomerDetails(nic);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -305,8 +350,8 @@ const AddNewPolicyPage = () => {
         break;
       case 2:
         stepFields = ['vehicleType', 'vehicleNumber', 'vehicleRegistrationNumber',
-                     'engineCapacity', 'chassisNumber', 'vehicleModel',
-                     'vehicleMake', 'manufactureYear', 'fuelType', 'estimatedValue'];
+          'engineCapacity', 'chassisNumber', 'vehicleModel',
+          'vehicleMake', 'manufactureYear', 'fuelType', 'estimatedValue'];
         break;
       case 3:
         stepFields = ['policyType', 'policyStartDate'];
@@ -353,20 +398,18 @@ const AddNewPolicyPage = () => {
       // Here you would typically send the data to your backend
       console.log('Policy Data:', formData);
       const message = isRenewal ? 'Policy renewed successfully!' : 'Policy created successfully!';
-      if(isRenewal){
+      if (isRenewal) {
 
       } else {
         insurancePolicyApiService.createInsurancePolicy(formData)
           .then((data) => {
-            console.log('Created Policy:', data);
-          })
-          .catch((error) => {
+            toast.success(message);
+          }).catch((error) => {
             console.error('Error creating policy:', error);
             toast.error('Failed to create policy. Please try again.');
             return;
           });
       }
-      toast.success(message);
       navigate('/policymanagement');
     } else {
       toast.error('Please agree to the terms and conditions before submitting.');
@@ -380,7 +423,7 @@ const AddNewPolicyPage = () => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const ctx = canvas.getContext('2d');
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -388,12 +431,12 @@ const AddNewPolicyPage = () => {
 
   const draw = (e) => {
     if (!isDrawing) return;
-    
+
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
@@ -431,6 +474,21 @@ const AddNewPolicyPage = () => {
             )}
             <div className="form-grid">
               <FormField
+                name="nic"
+                label="NIC Number"
+                placeholder="e.g., 912345678V or 199123456789"
+                value={formData.nic}
+                onChange={(e) => {
+                  handleInputChange(e);
+                  handleNicChange(e);
+                }}
+                onBlur={handleBlur}
+                error={errors.nic}
+                touched={touched.nic}
+                required={true}
+                readOnly={isRenewal}
+              />
+              <FormField
                 name="vehicleOwnerName"
                 label="Vehicle Owner's Name"
                 placeholder="Enter full name"
@@ -440,17 +498,8 @@ const AddNewPolicyPage = () => {
                 error={errors.vehicleOwnerName}
                 touched={touched.vehicleOwnerName}
                 required={true}
-              />
-              <FormField
-                name="nic"
-                label="NIC Number"
-                placeholder="e.g., 912345678V or 199123456789"
-                value={formData.nic}
-                onChange={handleInputChange}
-                onBlur={handleBlur}
-                error={errors.nic}
-                touched={touched.nic}
-                required={true}
+                readOnly={true}
+                hint="Auto filled from validated NIC"
               />
               <FormField
                 type="textarea"
@@ -464,6 +513,8 @@ const AddNewPolicyPage = () => {
                 touched={touched.address}
                 required={true}
                 fullWidth={true}
+                readOnly={true}
+                hint="Auto filled from validated NIC"
               />
               <FormField
                 type="email"
@@ -476,6 +527,8 @@ const AddNewPolicyPage = () => {
                 error={errors.email}
                 touched={touched.email}
                 required={true}
+                readOnly={true}
+                hint="Auto filled from validated NIC"
               />
               <FormField
                 type="tel"
@@ -488,6 +541,8 @@ const AddNewPolicyPage = () => {
                 error={errors.contactNo}
                 touched={touched.contactNo}
                 required={true}
+                readOnly={true}
+                hint="Auto filled from validated NIC"
               />
             </div>
           </div>
@@ -506,6 +561,41 @@ const AddNewPolicyPage = () => {
             <div className="form-grid">
               <FormField
                 type="select"
+                name="vehicle"
+                label="Select Vehicle"
+                placeholder="Select your vehicle"
+                value={formData.registrationNumber}
+                onChange={(e) => {
+                  const selectedVehicle = vehicleOptions.find(vehicle => vehicle.registrationNumber === e.target.value);
+                  if (selectedVehicle) {
+                    setFormData(prev => ({
+                      ...prev,
+                      vehicleType: selectedVehicle.classOfVehicle,
+                      registrationNumber: selectedVehicle.registrationNumber,
+                      vehicleNumber: selectedVehicle.registrationNumber,
+                      vehicleRegistrationNumber: selectedVehicle.registrationNumber,
+                      engineCapacity: selectedVehicle.wheelBase,
+                      chassisNumber: selectedVehicle.chassisNumber,
+                      vehicleModel: selectedVehicle.model,
+                      vehicleMake: selectedVehicle.make,
+                      manufactureYear: selectedVehicle.yearOfManufacture,
+                      fuelType: selectedVehicle.fuelType,
+                      estimatedValue: selectedVehicle.estimatedValue?.toString() || '',
+                      vehicleRef: selectedVehicle._id
+                    }));
+                  }
+                }}
+                onBlur={handleBlur}
+                error={errors.registrationNumber}
+                touched={touched.registrationNumber}
+                required={true}
+                options={
+                  vehicleOptions.map(vehicle => ({ value: vehicle.registrationNumber, label: `${vehicle.make} ${vehicle.model} (${vehicle.registrationNumber})` }))
+                }
+              />
+
+              <FormField
+                type="text"
                 name="vehicleType"
                 label="Vehicle Type"
                 placeholder="Select Vehicle Type"
@@ -515,16 +605,7 @@ const AddNewPolicyPage = () => {
                 error={errors.vehicleType}
                 touched={touched.vehicleType}
                 required={true}
-                options={[
-                  { value: "Car", label: "Car" },
-                  { value: "Van", label: "Van" },
-                  { value: "SUV", label: "SUV" },
-                  { value: "Pickup", label: "Pickup" },
-                  { value: "Bus", label: "Bus" },
-                  { value: "Truck", label: "Truck" },
-                  { value: "Motorcycle", label: "Motorcycle" },
-                  { value: "Three Wheeler", label: "Three Wheeler" }
-                ]}
+                readOnly={true}
               />
               <FormField
                 name="vehicleNumber"
@@ -536,6 +617,7 @@ const AddNewPolicyPage = () => {
                 error={errors.vehicleNumber}
                 touched={touched.vehicleNumber}
                 required={true}
+                readOnly={true}
               />
               <FormField
                 name="vehicleRegistrationNumber"
@@ -547,6 +629,7 @@ const AddNewPolicyPage = () => {
                 error={errors.vehicleRegistrationNumber}
                 touched={touched.vehicleRegistrationNumber}
                 required={true}
+                readOnly={true}
               />
               <FormField
                 type="number"
@@ -559,6 +642,7 @@ const AddNewPolicyPage = () => {
                 error={errors.engineCapacity}
                 touched={touched.engineCapacity}
                 required={true}
+                readOnly={true}
               />
               <FormField
                 name="chassisNumber"
@@ -570,6 +654,7 @@ const AddNewPolicyPage = () => {
                 error={errors.chassisNumber}
                 touched={touched.chassisNumber}
                 required={true}
+                readOnly={true}
               />
               <FormField
                 name="vehicleModel"
@@ -581,6 +666,7 @@ const AddNewPolicyPage = () => {
                 error={errors.vehicleModel}
                 touched={touched.vehicleModel}
                 required={true}
+                readOnly={true}
               />
               <FormField
                 name="vehicleMake"
@@ -592,9 +678,10 @@ const AddNewPolicyPage = () => {
                 error={errors.vehicleMake}
                 touched={touched.vehicleMake}
                 required={true}
+                readOnly={true}
               />
               <FormField
-                type="select"
+                type="text"
                 name="manufactureYear"
                 label="Manufacture Year"
                 placeholder="Select Year"
@@ -604,13 +691,10 @@ const AddNewPolicyPage = () => {
                 error={errors.manufactureYear}
                 touched={touched.manufactureYear}
                 required={true}
-                options={Array.from({ length: 30 }, (_, i) => {
-                  const year = new Date().getFullYear() - i;
-                  return { value: year.toString(), label: year.toString() };
-                })}
+                readOnly={true}
               />
               <FormField
-                type="select"
+                type="text"
                 name="fuelType"
                 label="Fuel Type"
                 placeholder="Select Fuel Type"
@@ -620,14 +704,7 @@ const AddNewPolicyPage = () => {
                 error={errors.fuelType}
                 touched={touched.fuelType}
                 required={true}
-                options={[
-                  { value: "Petrol", label: "Petrol" },
-                  { value: "Diesel", label: "Diesel" },
-                  { value: "Hybrid", label: "Hybrid" },
-                  { value: "Electric", label: "Electric" },
-                  { value: "CNG", label: "CNG" },
-                  { value: "LPG", label: "LPG" }
-                ]}
+                readOnly={true}
               />
               <FormField
                 type="number"
@@ -675,7 +752,7 @@ const AddNewPolicyPage = () => {
                 touched={touched.policyType}
                 required={true}
                 options={
-                  policyTypes.map(type => ({ value: type.policyTypeName, label: type.policyTypeName }) )
+                  policyTypes.map(type => ({ value: type.policyTypeName, label: type.policyTypeName }))
                 }
               />
               <FormField
@@ -712,7 +789,7 @@ const AddNewPolicyPage = () => {
         return (
           <div className="step-content">
             <h3 className="step-title">Confirmation</h3>
-            
+
             {/* Renewal Notice */}
             {isRenewal && (
               <div className="renewal-confirmation-notice">
@@ -726,7 +803,7 @@ const AddNewPolicyPage = () => {
                 )}
               </div>
             )}
-            
+
             {/* Summary Section */}
             <div className="confirmation-summary">
               <h4>Policy Summary</h4>
@@ -814,8 +891,8 @@ const AddNewPolicyPage = () => {
           {isRenewal ? 'Renew Policy' : 'Add New Insurance Policy'}
         </h1>
         <p className="page-subtitle">
-          {isRenewal 
-            ? 'Renew an existing insurance policy for customer' 
+          {isRenewal
+            ? 'Renew an existing insurance policy for customer'
             : 'Create a new insurance policy for customer'
           }
         </p>

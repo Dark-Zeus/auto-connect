@@ -4,7 +4,7 @@ import './MyInsuranceDetailsPage.css';
 
 // Import test data - In real app, these would come from API calls
 import PolicyDetailsTestData from '../InsuranceCompany/testData/PolicyDetailsTestData';
-import { insuranceCompanyTestData } from '../InsuranceCompany/testData/insuranceCompanyTestData';
+import { insuranceCompanyTestData } from '../InsuranceCompany/testData/InsuranceCompanyTestData';
 
 const MyInsuranceDetailsPage = () => {
   const navigate = useNavigate();
