@@ -67,6 +67,7 @@ import AddNewPolicyPage from "@pages/InsuranceCompany/AddNewPolicyPage";
 import InsuranceCompanyProfile from "@pages/InsuranceCompany/InsuranceCompanyProfile";
 import PolicyTypesManagementPage from "@pages/InsuranceCompany/PolicyTypesManagementPage";
 import AnalyticsReportsPage from "@pages/InsuranceCompany/AnalyticsReportsPage";
+//import VehicleList from "@pages/InsuranceCompany/VehicleList";
 
 function getNavLinks(userContext) {
   let nav = [];
@@ -762,6 +763,49 @@ function getNavLinks(userContext) {
   // INSURANCE COMPANY Navigation
   if (userContext.role === "insurance_agent") {
 
+   // nav.push({
+    // nav.push({
+    //   path: [`/vehicles`],
+    //   title: "Vehicle List",
+    //   icon: "directions_car",
+    //   page: <VehicleList />,
+    // });
+
+    nav.push({
+      title: "Claims Management",
+      icon: "assignment",
+      page: "Claims Management",
+      defLinkSettings: {
+        title: "Claims Dashboard",
+        icon: "assignment",
+      },
+      sub: [
+        // {
+        //   path: [`/claims`],
+        //   title: "Claims Dashboard",
+        //   icon: "assignment",
+        //   page: "Claims Dashboard",
+        // },
+        // {
+        //   path: [`/claims/active`],
+        //   title: "Active Claims",
+        //   icon: "pending_actions",
+        //   page: <InsuranceClaims />,
+        // },
+        // {
+        //   path: [`/claims/processing`],
+        //   title: "Claim Processing",
+        //   icon: "process",
+        //   page: "Claim Processing",
+        // },
+        // {
+        //   path: [`/claims/assessment`],
+        //   title: "Damage Assessment",
+        //   icon: "assessment",
+        //   page: "Damage Assessment",
+        // }
+      ],
+    });
     nav.push({
       path: [`/dashboard`],
       title: "Dashboard",

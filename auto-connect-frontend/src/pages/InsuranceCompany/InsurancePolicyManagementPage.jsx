@@ -3,6 +3,9 @@ import './InsurancePolicyManagementPage.css';
 import { useNavigate } from "react-router-dom";
 import PolicyDetailsTestData from './testData/PolicyDetailsTestData';
 
+import * as insurancePolicyApiService from "@services/insurancePolicyApiService"; // Ensure the service is imported
+import { toast } from 'react-toastify';
+
 const InsurancePolicyManagement = () => {
   const [policies, setPolicies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +15,8 @@ const InsurancePolicyManagement = () => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [policiesPerPage, setPoliciesPerPage] = useState(10);
+
+  const [policyTypes, setPolicyTypes] = useState([]);
 
   const navigate = useNavigate();
 
@@ -43,8 +48,28 @@ const InsurancePolicyManagement = () => {
 
   // Initialize and check for expired policies on component mount
   useEffect(() => {
-    const updatedPolicies = updateExpiredPolicies([...PolicyDetailsTestData]);
-    setPolicies(updatedPolicies);
+    const fetchPolicies = async () => {
+      try {
+        const data = await insurancePolicyApiService.getAllInsurancePolicies();
+        const updatedPolicies = updateExpiredPolicies(data.data);
+        setPolicies(updatedPolicies);
+      } catch (error) {
+        console.error("Error fetching policies:", error);
+      }
+    };
+
+    const fetchPolicyTypes = async () => {
+      try {
+        const typesData = await insurancePolicyApiService.getAllInsurancePolicyTypes();
+        setPolicyTypes(typesData.data);
+      } catch (error) {
+        toast.error("Failed to fetch policy types.");
+        console.error("Error fetching policy types:", error);
+      }
+    };
+
+   // fetchPolicyTypes();
+    fetchPolicies();
   }, []);
 
   // Clear all filters
@@ -64,9 +89,9 @@ const InsurancePolicyManagement = () => {
   const filteredPolicies = policies.filter(policy => {
     const searchMatch =
       policy.policyNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      policy.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      policy.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      policy.vehicleModel.toLowerCase().includes(searchTerm.toLowerCase());
+      policy.vehicle.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      policy.customer.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      policy.vehicle.model.toLowerCase().includes(searchTerm.toLowerCase());
 
     const statusMatch = statusFilter ? policy.status.toLowerCase() === statusFilter.toLowerCase() : true;
     
@@ -191,9 +216,9 @@ const InsurancePolicyManagement = () => {
                     className={isExpired ? 'expired-row' : ''}
                   >
                     <td>{policy.policyNumber}</td>
-                    <td>{policy.customerName}</td>
-                    <td>{policy.vehicleNumber}</td>
-                    <td>{policy.vehicleModel}</td>
+                    <td>{policy.customer.fullName}</td>
+                    <td>{policy.vehicle.vehicleNumber}</td>
+                    <td>{policy.vehicle.model}</td>
                     <td>{policy.policyType}</td>
                     <td>{policy.premium.toLocaleString()}</td>
                     <td>{policy.startDate}</td>

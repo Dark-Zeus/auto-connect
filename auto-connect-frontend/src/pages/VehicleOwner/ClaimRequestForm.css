@@ -1014,7 +1014,7 @@
   font-size: 14px;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type="checkbox"].hidden-checkbox {
   display: none;
 }
 
