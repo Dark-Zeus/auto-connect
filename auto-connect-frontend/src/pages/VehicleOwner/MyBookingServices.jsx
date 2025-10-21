@@ -35,7 +35,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar} from "@mui/material";
 
 import OverlayWindow from "@components/OverlayWindow";
 import BookingDetailsPage from "./BookingDetailsPage";
