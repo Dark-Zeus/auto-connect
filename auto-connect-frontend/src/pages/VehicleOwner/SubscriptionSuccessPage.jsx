@@ -36,7 +36,7 @@ const SubscriptionSuccessPage = () => {
   useEffect(() => {
     if (status !== "success") return;
     if (countdown <= 0) {
-      navigate("/marketplace/subscription"); // or your subscriptions dashboard
+      navigate("/marketplace/my-plans"); // or your subscriptions dashboard
       return;
     }
     const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
@@ -62,10 +62,10 @@ const SubscriptionSuccessPage = () => {
             <h1 className="tw:mt-6 tw:text-2xl tw:font-bold">Subscription Activated</h1>
             <p className="tw:text-gray-600 tw:mt-2">Redirecting in {countdown}s...</p>
             <button
-              onClick={() => navigate("/marketplace/subscriptions")}
+              onClick={() => navigate("/marketplace/my-plans")}
               className="tw:mt-6 tw:w-full tw:bg-blue-600 tw:text-white tw:py-3 tw:rounded-lg"
             >
-              Go Home
+              My Plans
             </button>
           </>
         )}

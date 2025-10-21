@@ -89,7 +89,7 @@ const PaymentSuccessPage = () => {
   };
 
   const goMyAds = () => navigate("/marketplace/my-ads");
-  const listAnother = () => navigate("/marketplace/sell-vehicle");
+  const listAnother = () => navigate("/marketplace/sell");
 
   return (
     <div className="tw:min-h-screen tw:bg-gradient-to-br tw:from-slate-50 tw:via-blue-50 tw:to-indigo-50 tw:flex tw:items-center tw:justify-center tw:px-4 tw:py-8">

@@ -99,7 +99,7 @@ const VehicleFilterForm = ({ onFilter }) => {
   };
 
   return (
-    <div className="tw:max-w-md tw:mx-auto tw:bg-white tw:rounded-2xl tw:shadow-2xl tw:border tw:border-gray-100 tw:overflow-hidden">
+    <div className="tw:max-w-sm tw:max-h-sm tw:mx-auto tw:bg-white tw:rounded-2xl tw:shadow-2xl tw:border tw:border-gray-100 tw:overflow-hidden">
       <div className="tw:bg-[linear-gradient(135deg,var(--sky-blue),var(--navy-blue))] tw:p-6 tw:text-white">
         <div className="tw:flex tw:items-center tw:gap-3">
           <svg className="tw:w-6 tw:h-6" fill="currentColor" viewBox="0 0 24 24">

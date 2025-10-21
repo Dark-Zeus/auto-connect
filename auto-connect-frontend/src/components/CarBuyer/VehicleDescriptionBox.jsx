@@ -47,7 +47,7 @@ const VehicleDescriptionBox = ({ description }) => {
 
         {/* Description Content */}
         <div className="tw:p-6">
-          <p className="tw:text-gray-700 tw:leading-relaxed tw:text-base">
+          <p className="tw:text-gray-700 tw:leading-relaxed tw:text-base tw:whitespace-pre-line">
             {expanded || !shouldShowExpandButton 
               ? desc
               : truncateText(desc, 200)
