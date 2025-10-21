@@ -1,0 +1,6 @@
+#create a namespace for the application
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: auto-connect
+--- END OF FILE ---

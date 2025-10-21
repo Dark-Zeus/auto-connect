@@ -1,0 +1,15 @@
+# backend-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auto-connect-backend-service
+  namespace: auto-connect
+spec:
+  selector:
+    app: auto-connect-backend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+--- END OF FILE ---

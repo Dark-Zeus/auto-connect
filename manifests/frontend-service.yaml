@@ -1,0 +1,15 @@
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auto-connect-frontend-service
+  namespace: auto-connect
+spec:
+  selector:
+    app: auto-connect-frontend
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
+  type: ClusterIP
+--- END OF FILE ---

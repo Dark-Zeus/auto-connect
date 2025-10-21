@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: auto-connect
+  name: ${FRONTEND_DEPLOYMENT_NAME}
+  labels:
+    app: ${FRONTEND_APP_NAME}
+spec:
+  replicas: ${FRONTEND_REPLICAS}
+  selector:
+    matchLabels:
+      app: ${FRONTEND_APP_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${FRONTEND_APP_NAME}
+    spec:
+      containers:
+        - name: ${FRONTEND_CONTAINER_NAME}
+          image: ${DOCKER_REGISTRY}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
+          ports:
+            - containerPort: ${FRONTEND_CONTAINER_PORT}
+          env:
+            - name: REACT_APP_BACKEND_URL
+              value: "${REACT_APP_BACKEND_URL}"
+            - name: REACT_APP_FRONTEND_URL
+              value: "${REACT_APP_FRONTEND_URL}"
+          resources:
+            requests:
+              memory: "${FRONTEND_MEMORY_REQUEST}"
+              cpu: "${FRONTEND_CPU_REQUEST}"
+            limits:
+              memory: "${FRONTEND_MEMORY_LIMIT}"
+              cpu: "${FRONTEND_CPU_LIMIT}"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: ${FRONTEND_CONTAINER_PORT}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: ${FRONTEND_CONTAINER_PORT}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+--- END OF FILE ---

@@ -1,0 +1,63 @@
+# Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: auto-connect
+  name: ${BACKEND_DEPLOYMENT_NAME}
+  labels:
+    app: ${BACKEND_APP_NAME}
+spec:
+  replicas: ${BACKEND_REPLICAS}
+  selector:
+    matchLabels:
+      app: ${BACKEND_APP_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${BACKEND_APP_NAME}
+    spec:
+      containers:
+        - name: ${BACKEND_CONTAINER_NAME}
+          image: ${DOCKER_REGISTRY}/${BACKEND_IMAGE_NAME}:${IMAGE_TAG}
+          ports:
+            - containerPort: ${BACKEND_CONTAINER_PORT}
+          env:
+            - name: DATABASE_URL
+              value: "${DATABASE_URL}"
+            - name: JWT_SECRET
+              value: "${JWT_SECRET}"
+            - name: SMTP_HOST
+              value: "${SMTP_HOST}"
+            - name: SMTP_PORT
+              value: "${SMTP_PORT}"
+            - name: SMTP_USER
+              value: "${SMTP_USER}"
+            - name: SMTP_PASS
+              value: "${SMTP_PASS}"
+            - name: EMAIL_FROM
+              value: "${EMAIL_FROM}"
+            - name: CORS_ORIGIN
+              value: "${CORS_ORIGIN}"
+          resources:
+            requests:
+              memory: "${BACKEND_MEMORY_REQUEST}"
+              cpu: "${BACKEND_CPU_REQUEST}"
+            limits:
+              memory: "${BACKEND_MEMORY_LIMIT}"
+              cpu: "${BACKEND_CPU_LIMIT}"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: ${BACKEND_CONTAINER_PORT}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: ${BACKEND_CONTAINER_PORT}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+--- END OF FILE ---

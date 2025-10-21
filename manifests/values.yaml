@@ -1,0 +1,55 @@
+# Values
+replicaCount: 1
+image:
+  repository: docker.io/darkzeus2002/auto-connect
+  pullPolicy: Always
+  tag: latest
+frontend:
+  deploymentName: auto-connect-frontend
+  replicas: 1
+  containerName: auto-connect-frontend
+  imageName: auto-connect-frontend
+  containerPort: 3000
+  memoryRequest: 256Mi
+  cpuRequest: 250m
+  memoryLimit: 512Mi
+  cpuLimit: 500m
+  reactAppBackendUrl: "http://localhost:3000"
+  reactAppFrontendUrl: "http://localhost:3001"
+backend:
+  deploymentName: auto-connect-backend
+  replicas: 1
+  containerName: auto-connect-backend
+  imageName: auto-connect-backend
+  containerPort: 3000
+  memoryRequest: 256Mi
+  cpuRequest: 250m
+  memoryLimit: 512Mi
+  cpuLimit: 500m
+  databaseUrl: "mongodb://mongo:27017/auto-connect"
+  jwtSecret: "your_jwt_secret_key"
+  smtpHost: "smtp.example.com"
+  smtpPort: 587
+  smtpUser: "your_smtp_user"
+  smtpPass: "your_smtp_password"
+  emailFrom: "your_email@example.com"
+  corsOrigin: "http://localhost:3001"
+mongo:
+  deploymentName: mongo
+  replicas: 1
+  containerName: mongo
+  imageName: mongo
+  containerPort: 27017
+  memoryRequest: 256Mi
+  cpuRequest: 250m
+  memoryLimit: 512Mi
+  cpuLimit: 500m
+  storageSize: 5Gi
+  storageClassName: standard
+  mongoRootUsername: "mongoAdmin"
+  mongoRootPassword: "mongoPassword"
+  mongoDatabase: "auto-connect"
+  mongoPort: 27017
+  mongoHost: "mongo"
+  mongoUri: "mongodb://mongoAdmin:mongoPassword@mongo:27017/auto-connect?authSource=admin"
+--- END OF FILE ---
