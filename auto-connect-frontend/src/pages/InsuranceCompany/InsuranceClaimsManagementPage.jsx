@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './InsuranceClaimsManagementPage.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
+
+import * as InsuranceClaimsApiService from '../../services/insuranceClaimApiService';
+import { toast } from 'react-toastify';
 
 // Status color mapping
 const getStatusColor = (status) => {
@@ -19,7 +22,7 @@ const getStatusColor = (status) => {
 };
 
 const InsuranceClaimsManagement = () => {
-  const [claims] = useState([...ClaimDetailsTestData]);
+  const [claims, setClaims] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -57,13 +60,29 @@ const InsuranceClaimsManagement = () => {
     setCurrentPage(1);
   };
 
+  const fetchClaims = async () => {
+    try {
+      // Fetch claims from API
+      const data = await InsuranceClaimsApiService.getInsuranceClaimsByCompany();
+      setClaims(data.data); // Uncomment when integrating with real API
+      toast.success("Insurance claims fetched successfully");
+    } catch (error) {
+      toast.error(error.message || "Error fetching insurance claims");
+      console.error("Error fetching insurance claims:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchClaims();
+  }, []);
+
   // Filter and sort claims
   const filteredAndSortedClaims = claims
     .filter(claim => {
       const searchMatch =
-        claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        claim.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        claim.customer.toLowerCase().includes(searchTerm.toLowerCase());
+        claim._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        claim?.vehicleRef?.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (claim?.customerRef?.firstName + ' ' + claim?.customerRef?.lastName).toLowerCase().includes(searchTerm.toLowerCase());
 
       const statusMatch = statusFilter ? claim.status.toLowerCase() === statusFilter.toLowerCase() : true;
 
@@ -77,11 +96,11 @@ const InsuranceClaimsManagement = () => {
       // First, sort by status priority
       const statusA = statusOrder[a.status] || 999;
       const statusB = statusOrder[b.status] || 999;
-      
+
       if (statusA !== statusB) {
         return statusA - statusB;
       }
-      
+
       // If status is the same, sort by date in descending order (newest first)
       return new Date(b.date) - new Date(a.date);
     });
@@ -105,10 +124,10 @@ const InsuranceClaimsManagement = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Search and Filter Section */}
       <div className="filter-section">
-        <input 
+        <input
           type="text"
           placeholder="Claim ID, Vehicle number or Customer"
           value={searchTerm}
@@ -161,90 +180,96 @@ const InsuranceClaimsManagement = () => {
               <th>Vehicle</th>
               <th>VehicleNumber</th>
               <th>Type</th>
-              <th>Amount (LKR)</th>
               <th>Status</th>
               <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentClaims.length > 0 ? (
-            currentClaims.map(claim => (
-              <tr 
-                key={claim.id} 
-                onClick={() => navigate(`/insurance-claims/${claim.id}`)}
-              >
-                <td>{claim.id}</td>
-                <td>{claim.customer}</td>
-                <td>{claim.vehicle}</td>
-                <td>{claim.vehicleNumber}</td>
-                <td>{claim.type}</td>
-                <td>{claim.amount.toLocaleString()}</td>
-                <td>
-                  <span className={`status-badge ${getStatusColor(claim.status)}`}>
-                    {claim.status}
-                  </span>
-                </td>
-                <td>{claim.date}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8" style={{ textAlign: 'center', padding: '1rem' }}>
-                {isFraudMode ? 'No rejected claims found.' : 'No claims found.'}
-              </td>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentClaims.length > 0 ? (
+              currentClaims.map(claim => (
+                <tr
+                  key={claim.id}
+                  onClick={() => navigate(`/insurance-claims/${claim._id}`)}
+                >
+                  <td>{claim._id}</td>
+                  <td>{claim.customerRef?.firstName + ' ' + claim.customerRef?.lastName}</td>
+                  <td>{claim.vehicleRef?.model + ' ' + claim.vehicleRef?.make}</td>
+                  <td>{claim.vehicleRef?.registrationNumber}</td>
+                  <td>{claim.incidentType}</td>
+                  <td>
+                    <span className={`status-badge ${getStatusColor(claim.status)}`}>
+                      {claim.status}
+                    </span>
+                  </td>
+                  <td>{
+                    new Date(claim.incidentAt).toLocaleString([], {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  }</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" style={{ textAlign: 'center', padding: '1rem' }}>
+                  {isFraudMode ? 'No rejected claims found.' : 'No claims found.'}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className='pagination-container'>
-          <div className="pagination">
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-          &lt;&lt;
-            </button>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className='pagination-container'>
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                &lt;&lt;
+              </button>
 
-            {[...Array(totalPages)].map((_, i) => (
-          <button 
-            key={i} 
-            onClick={() => setCurrentPage(i + 1)}
-            className={currentPage === i + 1 ? 'active' : ''}
-          >
-            {i + 1}
-          </button>
-            ))}
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={currentPage === i + 1 ? 'active' : ''}
+                >
+                  {i + 1}
+                </button>
+              ))}
 
-            <button 
-          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-            >
-          &gt;&gt;
-            </button>
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                &gt;&gt;
+              </button>
 
-            <span style={{ marginLeft: '1rem' }}>Per Page</span>
+              <span style={{ marginLeft: '1rem' }}>Per Page</span>
 
-            {/* Claims Per Page Selector */}
-          <select
-            value={claimsPerPage}
-            onChange={(e) => {
-              setClaimsPerPage(Number(e.target.value));
-              setCurrentPage(1); // reset to first page
-            }}
-            className="claims-per-page"
-          >
-            {[5, 10, 20, 50, 100].map(num => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
-        </div>
-        </div>
-      )}
+              {/* Claims Per Page Selector */}
+              <select
+                value={claimsPerPage}
+                onChange={(e) => {
+                  setClaimsPerPage(Number(e.target.value));
+                  setCurrentPage(1); // reset to first page
+                }}
+                className="claims-per-page"
+              >
+                {[5, 10, 20, 50, 100].map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
   );
 };
 

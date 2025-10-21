@@ -5,13 +5,20 @@ import ClaimDetailsTestData from './testData/ClaimDetailsTestData';
 import PolicyDetailsTestData from './testData/PolicyDetailsTestData';
 import OverlayWindow from '../../components/OverlayWindow';
 
+import * as InsuranceClaimApiService from '../../services/insuranceClaimApiService';
+import { toast } from 'react-toastify';
+
+const getAbsoluteUrl = (relativePath) => {
+  return `${import.meta.env.VITE_REACT_APP_BACKEND_URL}${relativePath}`;
+};
+
 const InsuranceClaimDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   // Mock data
-  const [claims, setClaims] = useState([...ClaimDetailsTestData]);
-  const claim = claims.find(c => c.id === id);
+  const [claims, setClaims] = useState([]);
+  const [claim, setClaim] = useState(null);
   const [comment, setComment] = useState('');
   const [selectedServiceProviders, setSelectedServiceProviders] = useState([]);
   const [reRequestCount, setReRequestCount] = useState(0);
@@ -19,7 +26,7 @@ const InsuranceClaimDetailsPage = () => {
   const [repairEstimate, setRepairEstimate] = useState(null);
   const [showProviderOverlay, setShowProviderOverlay] = useState(false);
   const [providerSearch, setProviderSearch] = useState('');
-  
+
   // Message popup states
   const [showMessagePopup, setShowMessagePopup] = useState(false);
   const [messagePopupContent, setMessagePopupContent] = useState({
@@ -27,7 +34,7 @@ const InsuranceClaimDetailsPage = () => {
     message: '',
     type: 'success'
   });
-  
+
   // Final report states
   const [showFinalReportOverlay, setShowFinalReportOverlay] = useState(false);
   const [finalReportData, setFinalReportData] = useState({
@@ -59,34 +66,47 @@ const InsuranceClaimDetailsPage = () => {
     setShowMessagePopup(true);
   };
 
+  const fetchClaims = async () => {
+    try {
+      const data = await InsuranceClaimApiService.getInsuranceClaimsByCompany();
+      setClaims(data.data); // Uncomment when integrating with real API
+      setClaim(data.data.find(c => c._id === id));
+    } catch (error) {
+      console.error("Error fetching insurance claims:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchClaims();
+  }, []);
+
   useEffect(() => {
     setComment(claim?.comments || '');
-    
-    if (claim) {
-      const policyDetails = PolicyDetailsTestData.find(
-        policy => policy.vehicleNumber === claim.vehicleNumber
-      );
-      
+
+    if (claim?.status === "Approved") {
       setFinalReportData({
-        vehicleNumber: claim.vehicleNumber || 'ABC-1234',
-        policyNumber: policyDetails?.policyNumber || 'POL-001-2024',
-        customerName: claim.customer || 'John Silva',
-        accidentDate: claim.date || '2024-12-15',
-        accidentLocation: 'Galle Road, Colombo 06',
-        accidentDescription: claim.accidentReport || 'Vehicle collision with front-end damage.',
-        serviceProvider: 'AutoFix Garage - Colombo 03',
-        repairsCompleted: 'Front bumper replacement, headlight assembly repair, paint touch-up work.',
-        totalCost: '125,000',
-        additionalNotes: 'All repairs completed to manufacturer specifications.',
-        inspectionDate: new Date().toISOString().split('T')[0],
-        inspectorName: 'Inspector Perera',
-        qualityRating: '5'
+        vehicleNumber: claim.vehicleRef?.registrationNumber,
+        policyNumber: claim.insurancePolicyRef?.policyNumber,
+        customerName: claim.customerRef?.firstName + ' ' + claim.customerRef?.lastName,
+        accidentDate: claim?.incidentAt ? new Date(claim.incidentAt).toISOString().split('T')[0] : '',
+        accidentLocation: claim?.incidentLocation,
+        accidentDescription: claim?.description,
+        serviceProvider: claim?.finalReport?.serviceProvider || '',
+        repairsCompleted: claim?.finalReport?.repairsCompleted || '',
+        totalCost: claim?.finalReport?.totalCost || '',
+        additionalNotes: claim?.finalReport?.additionalNotes || '',
+        inspectionDate: claim?.finalReport?.inspectionDate ? new Date(claim.finalReport.inspectionDate).toISOString().split('T')[0] : '',
+        inspectorName: claim?.finalReport?.inspectorName || '',
+        qualityRating: claim?.finalReport?.qualityRating || '1'
       });
     }
   }, [claim]);
 
-  const handleStatusChange = (newStatus) => {
+  const handleStatusChange = async (newStatus) => {
+    await InsuranceClaimApiService.updateInsuranceClaimStatus(id, { status: newStatus });
     setClaims(claims.map(c => c.id === id ? { ...c, status: newStatus } : c));
+    setClaim({ ...claim, status: newStatus });
+    toast.info(`Claim status updated to ${newStatus}`);
   };
 
   const handleApprove = () => {
@@ -94,9 +114,11 @@ const InsuranceClaimDetailsPage = () => {
     showMessage('Claim Approved', 'Notifications sent to customer and service provider.', 'success');
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
+    await InsuranceClaimApiService.updateInsuranceClaimStatus(id, { status: 'Rejected' });
     setClaims(claims.map(c => c.id === id ? { ...c, status: 'Rejected' } : c));
-    showMessage('Claim Rejected', 'The claim has been rejected successfully.', 'error');
+    setClaim({ ...claim, status: 'Rejected' });
+    toast.info('Claim has been rejected. Redirecting to claims management page...');
     setTimeout(() => navigate(-1), 2000);
   };
 
@@ -123,9 +145,9 @@ const InsuranceClaimDetailsPage = () => {
       showMessage('No Provider Selected', 'No service provider selected by customer yet.', 'warning');
       return;
     }
-    
+
     showMessage('Request Sent', 'Accident details sent to service provider. Waiting for estimate...', 'info');
-    
+
     setTimeout(() => {
       const estimate = {
         provider: customerSelectedProvider.name,
@@ -157,21 +179,25 @@ const InsuranceClaimDetailsPage = () => {
     }));
   };
 
-  const handleCompleteFinalReport = () => {
+  const handleCompleteFinalReport = async () => {
     const requiredFields = ['vehicleNumber', 'policyNumber', 'customerName', 'accidentDate', 'serviceProvider', 'totalCost'];
-    const missingFields = requiredFields.filter(field => !finalReportData[field].trim());
-    
+    const missingFields = requiredFields.filter(field => !finalReportData[field]);
+
     if (missingFields.length > 0) {
       showMessage('Missing Fields', `Please fill in all required fields: ${missingFields.join(', ')}`, 'warning');
       return;
     }
 
-    setClaims(claims.map(c => c.id === id ? { 
-      ...c, 
+    const data = await InsuranceClaimApiService.submitFinalReport(id, finalReportData);
+
+    setClaims(claims.map(c => c.id === id ? {
+      ...c,
       status: 'Completed',
       finalReport: finalReportData
     } : c));
-    
+
+    setClaim(data.data);
+
     setShowFinalReportOverlay(false);
     showMessage('Report Completed', 'Final report completed successfully!', 'success');
   };
@@ -222,7 +248,7 @@ const InsuranceClaimDetailsPage = () => {
                   <p>Claim submitted and awaiting initial review. All basic information has been collected.</p>
                 </div>
               </div>
-              <button 
+              <button
                 className="action-btn investigating-btn"
                 onClick={() => handleStatusChange('Investigating')}
               >
@@ -247,13 +273,13 @@ const InsuranceClaimDetailsPage = () => {
                 </div>
               </div>
               <div className="investigation-actions">
-                <button 
+                <button
                   className="action-btn processing-btn"
-                  onClick={() => handleStatusChange('Processing-Period-01')}
+                  onClick={() => handleStatusChange('Approved')}
                 >
-                  Investigation Complete - Proceed
+                  Investigation Complete - Approve
                 </button>
-                <button 
+                <button
                   className="action-btn reject-btn"
                   onClick={handleReject}
                 >
@@ -264,123 +290,123 @@ const InsuranceClaimDetailsPage = () => {
           </section>
         );
 
-      case 'Processing-Period-01':
-        return (
-          <section className="section-card stage-specific">
-            <div className="section-header">
-              <h3>Service Provider Selection</h3>
-            </div>
-            <div className="stage-actions">
-              <div className="stage-info">
-                <div className="stage-icon">🔧</div>
-                <div>
-                  <h4>Select Service Providers</h4>
-                  <p>Select recommended service providers to send to the customer.</p>
-                </div>
-              </div>
-              <button
-                className="action-btn send-btn"
-                onClick={() => setShowProviderOverlay(true)}
-              >
-                Select Service Providers
-              </button>
+      // case 'Processing-Period-01':
+      //   return (
+      //     <section className="section-card stage-specific">
+      //       <div className="section-header">
+      //         <h3>Service Provider Selection</h3>
+      //       </div>
+      //       <div className="stage-actions">
+      //         <div className="stage-info">
+      //           <div className="stage-icon">🔧</div>
+      //           <div>
+      //             <h4>Select Service Providers</h4>
+      //             <p>Select recommended service providers to send to the customer.</p>
+      //           </div>
+      //         </div>
+      //         <button
+      //           className="action-btn send-btn"
+      //           onClick={() => setShowProviderOverlay(true)}
+      //         >
+      //           Select Service Providers
+      //         </button>
 
-              {selectedServiceProviders.length > 0 && (
-                <div className="selected-providers-list">
-                  <h5>Selected Service Providers:</h5>
-                  <div className="provider-grid">
-                    {selectedServiceProviders.map(provider => (
-                      <div key={provider.id} className="provider-card selected">
-                        <div className="provider-info">
-                          <h6>{provider.name}</h6>
-                          <p>📍 {provider.location}</p>
-                          <p>⭐ {provider.rating}/5</p>
-                          <p>🔧 {provider.specialization}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+      //         {selectedServiceProviders.length > 0 && (
+      //           <div className="selected-providers-list">
+      //             <h5>Selected Service Providers:</h5>
+      //             <div className="provider-grid">
+      //               {selectedServiceProviders.map(provider => (
+      //                 <div key={provider.id} className="provider-card selected">
+      //                   <div className="provider-info">
+      //                     <h6>{provider.name}</h6>
+      //                     <p>📍 {provider.location}</p>
+      //                     <p>⭐ {provider.rating}/5</p>
+      //                     <p>🔧 {provider.specialization}</p>
+      //                   </div>
+      //                 </div>
+      //               ))}
+      //             </div>
+      //           </div>
+      //         )}
 
-              {!claim.providersSent && (
-                <div className="selection-summary">
-                  <p>Selected: {selectedServiceProviders.length}</p>
-                  <button
-                    className="action-btn send-btn"
-                    onClick={() => {
-                      if (selectedServiceProviders.length < 1) {
-                        showMessage('Selection Required', 'Please select at least 1 service provider.', 'warning');
-                        return;
-                      }
-                      setClaims(claims.map(c =>
-                        c.id === id ? { ...c, providersSent: true } : c
-                      ));
-                      handleStatusChange('Processing-Period-02');
-                      showMessage('Providers Sent', `${selectedServiceProviders.length} service provider(s) sent to customer.`, 'success');
-                    }}
-                    disabled={selectedServiceProviders.length < 1}
-                  >
-                    Send to Customer ({selectedServiceProviders.length})
-                  </button>
-                </div>
-              )}
-              {claim.providersSent && (
-                <div className="selection-summary">
-                  <p><strong>Service providers sent to customer. Waiting for selection.</strong></p>
-                </div>
-              )}
-            </div>
-          </section>
-        );
+      //         {!claim.providersSent && (
+      //           <div className="selection-summary">
+      //             <p>Selected: {selectedServiceProviders.length}</p>
+      //             <button
+      //               className="action-btn send-btn"
+      //               onClick={() => {
+      //                 if (selectedServiceProviders.length < 1) {
+      //                   showMessage('Selection Required', 'Please select at least 1 service provider.', 'warning');
+      //                   return;
+      //                 }
+      //                 setClaims(claims.map(c =>
+      //                   c.id === id ? { ...c, providersSent: true } : c
+      //                 ));
+      //                 handleStatusChange('Processing-Period-02');
+      //                 showMessage('Providers Sent', `${selectedServiceProviders.length} service provider(s) sent to customer.`, 'success');
+      //               }}
+      //               disabled={selectedServiceProviders.length < 1}
+      //             >
+      //               Send to Customer ({selectedServiceProviders.length})
+      //             </button>
+      //           </div>
+      //         )}
+      //         {claim.providersSent && (
+      //           <div className="selection-summary">
+      //             <p><strong>Service providers sent to customer. Waiting for selection.</strong></p>
+      //           </div>
+      //         )}
+      //       </div>
+      //     </section>
+      //   );
 
-      case 'Processing-Period-02':
-        return (
-          <section className="section-card stage-specific">
-            <div className="section-header">
-              <h3>Customer Service Provider Selection</h3>
-            </div>
-            <div className="stage-actions">
-              <div className="stage-info">
-                <div className="stage-icon">⚙️</div>
-                <div>
-                  <h4>Customer Selected Service Provider</h4>
-                  <p>Customer has selected a service provider. Request repair estimate.</p>
-                </div>
-              </div>
-              
-              <div className="selected-provider">
-                <h5>Customer Selected Provider:</h5>
-                <div className="provider-card selected">
-                  <div className="provider-info">
-                    <h6>AutoFix Garage</h6>
-                    <p>📍 Colombo, Sri Lanka</p>
-                    <p>⭐ 4.8/5</p>
-                    <p>🔧 Body Repair</p>
-                  </div>
-                  <div className="selected-badge">✅ Selected</div>
-                </div>
-                <button 
-                  className="action-btn processing-btn2"
-                  onClick={() => {
-                    setCustomerSelectedProvider({
-                      id: 1,
-                      name: "AutoFix Garage",
-                      location: "Colombo, Sri Lanka",
-                      rating: 4.8,
-                      specialization: "Body Repair"
-                    });
-                    requestRepairEstimate();
-                  }}
-                >
-                  Send Accident Details & Request Repair Estimate
-                </button>
-              </div>
-            </div>
-          </section>
-        );
+      // case 'Processing-Period-02':
+      //   return (
+      //     <section className="section-card stage-specific">
+      //       <div className="section-header">
+      //         <h3>Customer Service Provider Selection</h3>
+      //       </div>
+      //       <div className="stage-actions">
+      //         <div className="stage-info">
+      //           <div className="stage-icon">⚙️</div>
+      //           <div>
+      //             <h4>Customer Selected Service Provider</h4>
+      //             <p>Customer has selected a service provider. Request repair estimate.</p>
+      //           </div>
+      //         </div>
 
-      case 'Processing-Period-03':
+      //         <div className="selected-provider">
+      //           <h5>Customer Selected Provider:</h5>
+      //           <div className="provider-card selected">
+      //             <div className="provider-info">
+      //               <h6>AutoFix Garage</h6>
+      //               <p>📍 Colombo, Sri Lanka</p>
+      //               <p>⭐ 4.8/5</p>
+      //               <p>🔧 Body Repair</p>
+      //             </div>
+      //             <div className="selected-badge">✅ Selected</div>
+      //           </div>
+      //           <button
+      //             className="action-btn processing-btn2"
+      //             onClick={() => {
+      //               setCustomerSelectedProvider({
+      //                 id: 1,
+      //                 name: "AutoFix Garage",
+      //                 location: "Colombo, Sri Lanka",
+      //                 rating: 4.8,
+      //                 specialization: "Body Repair"
+      //               });
+      //               requestRepairEstimate();
+      //             }}
+      //           >
+      //             Send Accident Details & Request Repair Estimate
+      //           </button>
+      //         </div>
+      //       </div>
+      //     </section>
+      //   );
+
+      // case 'Processing-Period-03':
         return (
           <section className="section-card stage-specific">
             <div className="section-header">
@@ -405,24 +431,24 @@ const InsuranceClaimDetailsPage = () => {
                   <h5>Repair Estimate</h5>
                   <span className="estimate-date">{new Date().toLocaleDateString()}</span>
                 </div>
-                
+
                 <div className="estimate-details">
                   <div className="estimate-total">
                     <strong>Total Amount: 125,000 LKR</strong>
                   </div>
                   <p className="estimate-description">Repairing the vehicle body and related parts.</p>
                 </div>
-                
+
                 <div className="estimate-actions">
                   <button className="download-btn" onClick={() => showMessage('Download', 'Estimate document downloading.', 'info')}>📥 Download Estimate</button>
                   <div className="approval-actions">
-                    <button 
+                    <button
                       className="action-btn approve-btn"
                       onClick={handleApprove}
                     >
                       Approve & Process
                     </button>
-                    <button 
+                    <button
                       className="action-btn re-request-btn"
                       onClick={reRequestEstimate}
                     >
@@ -449,7 +475,7 @@ const InsuranceClaimDetailsPage = () => {
                   <p>Create comprehensive final report with all claim details.</p>
                 </div>
               </div>
-              <button 
+              <button
                 className="action-btn final-report-btn"
                 onClick={() => setShowFinalReportOverlay(true)}
               >
@@ -473,29 +499,29 @@ const InsuranceClaimDetailsPage = () => {
                   <p>All processing completed successfully. Final report is available.</p>
                 </div>
               </div>
-              
+
               <div className="completed-summary">
                 <div className="summary-grid">
                   <div className="summary-item">
                     <span className="summary-label">Total Claim Amount:</span>
-                    <span className="summary-value">{finalReportData.totalCost} LKR</span>
+                    <span className="summary-value">{claim?.finalReport?.totalCost} LKR</span>
                   </div>
                   <div className="summary-item">
                     <span className="summary-label">Service Provider:</span>
-                    <span className="summary-value">{finalReportData.serviceProvider}</span>
+                    <span className="summary-value">{claim?.finalReport?.serviceProvider}</span>
                   </div>
                   <div className="summary-item">
                     <span className="summary-label">Completion Date:</span>
-                    <span className="summary-value">{new Date().toLocaleDateString()}</span>
+                    <span className="summary-value">{claim?.finalReport?.inspectionDate}</span>
                   </div>
                   <div className="summary-item">
                     <span className="summary-label">Quality Rating:</span>
-                    <span className="summary-value">{'⭐'.repeat(parseInt(finalReportData.qualityRating))} ({finalReportData.qualityRating}/5)</span>
+                    <span className="summary-value">{'⭐'.repeat(parseInt(claim?.finalReport?.qualityRating))} ({claim?.finalReport?.qualityRating}/5)</span>
                   </div>
                 </div>
               </div>
 
-              <button 
+              <button
                 className="action-btn download-final-btn"
                 onClick={() => showMessage('Download', 'Final report downloaded successfully!', 'success')}
               >
@@ -526,7 +552,7 @@ const InsuranceClaimDetailsPage = () => {
       <div className="page-headerP">
         <div className="header-content">
           <div>
-            <h2>Claim Details - {claim.id}</h2>
+            <h2>Claim Details - {claim._id}</h2>
             <p>Complete claim information and processing details</p>
           </div>
         </div>
@@ -545,52 +571,52 @@ const InsuranceClaimDetailsPage = () => {
         <div className="section-header">
           <h3>Claim Information</h3>
         </div>
-        
+
         <div className="claim-info-grid">
           <div className="info-item">
             <div className="info-icon">👤</div>
             <div className="info-content">
               <p className="info-label">Customer</p>
-              <p className="info-value">{claim.customer}</p>
+              <p className="info-value">{claim.customerRef?.firstName + ' ' + claim.customerRef?.lastName}</p>
             </div>
           </div>
-          
+
           <div className="info-item">
             <div className="info-icon">🚗</div>
             <div className="info-content">
               <p className="info-label">Vehicle</p>
-              <p className="info-value">{claim.vehicle}</p>
+              <p className="info-value">{claim.vehicleRef?.model + ' ' + claim.vehicleRef?.make}</p>
             </div>
           </div>
-          
+
           <div className="info-item">
             <div className="info-icon">⚠️</div>
             <div className="info-content">
               <p className="info-label">Incident Type</p>
-              <p className="info-value">{claim.type}</p>
+              <p className="info-value">{claim.incidentType}</p>
             </div>
           </div>
-          
+
           <div className="info-item">
             <div className="info-icon">📅</div>
             <div className="info-content">
               <p className="info-label">Date Filed</p>
-              <p className="info-value">{claim.date}</p>
-            </div>
-          </div>
-          
-          <div className="info-item">
-            <div className="info-icon">🏷️</div>
-            <div className="info-content">
-              <p className="info-label">Priority</p>
-              <p className="info-value">{claim.priority}</p>
+              <p className="info-value">{new Date(claim.incidentAt).toLocaleString([], {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}</p>
             </div>
           </div>
         </div>
-        
+
         <div className="accident-report">
-          <h4>Accident Report</h4>
-          <p>{claim.accidentReport || 'No report provided.'}</p>
+          <h4>Police Report</h4>
+          {claim.policeReport ?
+            <a href={getAbsoluteUrl(claim.policeReport?.url)} target='_blank'>{claim.policeReport?.originalName}</a>
+            : <p>No police report uploaded for this claim.</p>}
         </div>
       </section>
 
@@ -599,25 +625,46 @@ const InsuranceClaimDetailsPage = () => {
         <div className="section-header">
           <h3>Damage Evidence</h3>
         </div>
-        
+
         <div className="photos-section">
-          <h4>Photos ({claim.images?.length || 0})</h4>
+          <h4>Photos ({claim.photos.special.length + 4 || 0})</h4>
           <div className="image-gallery">
-            {claim.images?.map((img, i) => (
+            {
+              claim.photos.front ? (<div className="image-container">
+                <img src={getAbsoluteUrl(claim.photos?.front?.url)} alt="Front Damage" />
+              </div>) : null
+            }
+            {
+              claim.photos.back ? (<div className="image-container">
+                <img src={getAbsoluteUrl(claim.photos?.back?.url)} alt="Back Damage" />
+              </div>) : null
+            }
+            {
+              claim.photos.left ? (<div className="image-container">
+                <img src={getAbsoluteUrl(claim.photos?.left?.url)} alt="Left Side Damage" />
+              </div>) : null
+            }
+            {
+              claim.photos.right ? (<div className="image-container">
+                <img src={getAbsoluteUrl(claim.photos?.right?.url)} alt="Right Side Damage" />
+              </div>) : null
+            }
+
+            {claim.photos.special?.map((img, i) => (
               <div key={i} className="image-container">
-                <img src={img} alt={`claim-${i}`} />
+                <img src={getAbsoluteUrl(img.url)} alt={`claim-${i}`} />
               </div>
             ))}
           </div>
         </div>
-        
-        <div className="video-gallery">
+
+        {/* <div className="video-gallery">
           <div className="video-icon">🎥</div>
           <div>
             <h4>Videos</h4>
             <p>No videos uploaded for this claim.</p>
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* Section 3: Policy Details */}
@@ -625,27 +672,27 @@ const InsuranceClaimDetailsPage = () => {
         <div className="section-header">
           <h3>Policy Details</h3>
         </div>
-        {policyDetails ? (
+        {claim.insurancePolicyRef?._id ? (
           <div className="policy-grid">
             <div className="policy-item">
               <p className="policy-label">Policy Number</p>
-              <p className="policy-value">{policyDetails.policyNumber}</p>
+              <p className="policy-value">{claim.insurancePolicyRef?.policyNumber}</p>
             </div>
             <div className="policy-item">
               <p className="policy-label">Coverage Type</p>
-              <p className="policy-value">{policyDetails.policyType}</p>
+              <p className="policy-value">{claim.insurancePolicyRef?.policyType}</p>
             </div>
             <div className="policy-item">
               <p className="policy-label">Start Date</p>
-              <p className="policy-value">{policyDetails.startDate}</p>
+              <p className="policy-value">{claim.insurancePolicyRef?.startDate}</p>
             </div>
             <div className="policy-item">
               <p className="policy-label">End Date</p>
-              <p className="policy-value">{policyDetails.endDate}</p>
+              <p className="policy-value">{claim.insurancePolicyRef?.endDate}</p>
             </div>
             <div className="policy-item">
               <p className="policy-label">Annual Premium</p>
-              <p className="policy-value">{policyDetails.premium.toLocaleString()} LKR</p>
+              <p className="policy-value">{claim.insurancePolicyRef?.premium.toLocaleString()} LKR</p>
             </div>
           </div>
         ) : (
@@ -654,11 +701,11 @@ const InsuranceClaimDetailsPage = () => {
       </section>
 
       {/* Section 4: Additional Documents */}
-      <section className="section-card">
+      {/* <section className="section-card">
         <div className="section-header">
           <h3>Additional Documents</h3>
         </div>
-        
+
         <div className="document-list">
           <div className="document-item">
             <div className="document-info">
@@ -683,7 +730,7 @@ const InsuranceClaimDetailsPage = () => {
             </div>
           )}
         </div>
-      </section>
+      </section> */}
 
       {/* Section 5: Customer Contact */}
       <section className="section-card">
@@ -695,30 +742,30 @@ const InsuranceClaimDetailsPage = () => {
             <div className="contact-icon">📞</div>
             <div className="contact-info">
               <p className="contact-label">Phone</p>
-              <p className="contact-value">+94 77 123 4567</p>
+              <p className="contact-value">{claim.customerRef?.phone}</p>
             </div>
           </div>
-          
+
           <div className="contact-item">
             <div className="contact-icon">✉️</div>
             <div className="contact-info">
               <p className="contact-label">Email</p>
-              <p className="contact-value">john.silva@email.com</p>
+              <p className="contact-value">{claim.customerRef?.email}</p>
             </div>
           </div>
-          
+
           <div className="contact-item">
             <div className="contact-icon">📍</div>
             <div className="contact-info">
               <p className="contact-label">Address</p>
-              <p className="contact-value">123 Colombo Road, Dehiwala</p>
+              <p className="contact-value">{claim.customerRef?.address?.street + ', ' + claim.customerRef?.address?.city + ', ' +claim.customerRef?.address?.district + ', ' +claim.customerRef?.address?.province + ', ' +claim.customerRef?.address?.postalCode}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Section 6: Internal Notes & Actions */}
-      <section className="section-card">
+      {/* <section className="section-card">
         <div className="section-header">
           <h3>Internal Notes</h3>
         </div>
@@ -730,12 +777,12 @@ const InsuranceClaimDetailsPage = () => {
           />
           <button onClick={handleAddComment}>Save Comment</button>
         </div>
-      </section>
+      </section> */}
 
       {/* Action Buttons */}
       <div className="action-buttons">
         <div className="buttons">
-          <button className="back-btn" onClick={() => navigate(-1)}>Back</button> 
+          <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
         </div>
       </div>
 
@@ -744,7 +791,7 @@ const InsuranceClaimDetailsPage = () => {
         <OverlayWindow closeWindowFunction={() => setShowProviderOverlay(false)}>
           <div className="overlay-content">
             <div className="search-section">
-              <input 
+              <input
                 className="search-input"
                 type="text"
                 placeholder="Search by name, location, or specialization"
@@ -814,6 +861,7 @@ const InsuranceClaimDetailsPage = () => {
                       value={finalReportData.vehicleNumber}
                       onChange={(e) => handleFinalReportChange('vehicleNumber', e.target.value)}
                       required
+                      readOnly={true}
                     />
                   </div>
                   <div className="form-group">
@@ -823,6 +871,7 @@ const InsuranceClaimDetailsPage = () => {
                       value={finalReportData.policyNumber}
                       onChange={(e) => handleFinalReportChange('policyNumber', e.target.value)}
                       required
+                      readOnly={true}
                     />
                   </div>
                   <div className="form-group">
@@ -832,6 +881,7 @@ const InsuranceClaimDetailsPage = () => {
                       value={finalReportData.customerName}
                       onChange={(e) => handleFinalReportChange('customerName', e.target.value)}
                       required
+                      readOnly={true}
                     />
                   </div>
                   <div className="form-group">
@@ -841,6 +891,7 @@ const InsuranceClaimDetailsPage = () => {
                       value={finalReportData.accidentDate}
                       onChange={(e) => handleFinalReportChange('accidentDate', e.target.value)}
                       required
+                      readOnly={true}
                     />
                   </div>
                 </div>
@@ -855,6 +906,7 @@ const InsuranceClaimDetailsPage = () => {
                     type="text"
                     value={finalReportData.accidentLocation}
                     onChange={(e) => handleFinalReportChange('accidentLocation', e.target.value)}
+                    readOnly={true}
                   />
                 </div>
                 <div className="form-group">
@@ -863,6 +915,7 @@ const InsuranceClaimDetailsPage = () => {
                     rows={4}
                     value={finalReportData.accidentDescription}
                     onChange={(e) => handleFinalReportChange('accidentDescription', e.target.value)}
+                    readOnly={true}
                   />
                 </div>
               </div>
@@ -947,15 +1000,15 @@ const InsuranceClaimDetailsPage = () => {
             </div>
 
             <div className="form-actions">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="cancel-btn"
                 onClick={() => setShowFinalReportOverlay(false)}
               >
                 Cancel
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="complete-btn"
                 onClick={handleCompleteFinalReport}
               >
@@ -978,7 +1031,7 @@ const InsuranceClaimDetailsPage = () => {
             </div>
             <h3 className="message-popup-title">{messagePopupContent.title}</h3>
             <p className="message-popup-message">{messagePopupContent.message}</p>
-            <button 
+            <button
               className="message-popup-close-btn"
               onClick={() => setShowMessagePopup(false)}
             >

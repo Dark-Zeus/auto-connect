@@ -193,6 +193,7 @@ export const passwordResetLimiter = createRateLimit(
 export const securityMiddleware = [
   // Set security HTTP headers
   helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],

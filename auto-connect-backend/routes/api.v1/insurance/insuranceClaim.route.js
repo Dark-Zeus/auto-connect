@@ -24,6 +24,9 @@ router.post(
 
 router.get("/", insuranceClaimController.getAllInsuranceClaims);
 router.get("/customer/:customerId", insuranceClaimController.getInsuranceClaimsByCustomer);
-router.post("/company", insuranceClaimController.getAllInsuranceClaimsByCompany);
+router.get("/company", insuranceClaimController.getAllInsuranceClaimsByCompany);
+
+router.put("/:claimId/status", protect, insuranceClaimController.updateInsuranceClaimStatus);
+router.put("/:claimId/final-report", protect, insuranceClaimController.updateInsuranceClaimWithFinalReport);
 
 export default router;

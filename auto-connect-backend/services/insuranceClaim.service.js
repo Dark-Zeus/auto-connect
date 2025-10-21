@@ -14,10 +14,15 @@ function getInsuranceClaimsByCustomer(customerId) {
 }
 
 function getAllInsuranceClaimsByCompany(companyId) {
-    return InsuranceClaim.find()
-        .populate({
+    return InsuranceClaim.find().populate('vehicleRef').populate('insurancePolicyRef').populate('customerRef');
+}
 
-        });
+function updateInsuranceClaimStatus(claimId, status) {
+    return InsuranceClaim.findByIdAndUpdate(claimId, { status: status }, { new: true });
+}
+
+function updateInsuranceClaimWithFinalReport(claimId, finalReportData) {
+    return InsuranceClaim.findByIdAndUpdate(claimId, { finalReport: finalReportData, status: "Completed" }, { new: true });
 }
 
 export default {
@@ -25,4 +30,6 @@ export default {
     getAllInsuranceClaims,
     getInsuranceClaimsByCustomer,
     getAllInsuranceClaimsByCompany,
+    updateInsuranceClaimStatus,
+    updateInsuranceClaimWithFinalReport,
 };

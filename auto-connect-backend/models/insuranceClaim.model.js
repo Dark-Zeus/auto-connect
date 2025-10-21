@@ -27,6 +27,16 @@ const InsuranceClaimSchema = new mongoose.Schema({
   digitalSignature: { type: String, required: true },
   confirmation: { type: Boolean, required: true },
   status: { type: String, default: 'pending' },
+
+  finalReport: {
+    additionalNotes: { type: String },
+    inspectionDate: { type: Date },
+    inspectorName: { type: String },
+    qualityRating: { type: Number, min: 1, max: 5 },
+    repairsCompleted: { type: String },
+    serviceProvider: { type: String },
+    totalCost: { type: Number }
+  },
 }, { timestamps: true });
 
 const InsuranceClaim = mongoose.model('InsuranceClaim', InsuranceClaimSchema);
